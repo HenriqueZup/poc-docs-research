@@ -1,0 +1,37 @@
+schema-version: v3
+kind: action
+metadata:
+  name: tw-test-urls
+  display-name: tw-test-urls
+  description: Action to test URLs of local builds or public domains for Technical Writers Team
+  version: 1.0.0
+spec:
+  type: python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  justification: Technical writers Team needs a tool for testing URLS locally in a safe way.
+  inputs:
+    - label: Select a local or public server domain
+      name: url_site
+      type: select
+      items:
+        - "http://localhost:3000/"
+        - "https://docs.stackspot.com"
+      default: "http://localhost:3000/"
+      required: true
+    - label: Enter a value for the search recursion depth
+      name: max_depth
+      type: int
+      help: 'Is recommended use a value between 10 ~ 50. (The higher the value, the longer the search time will be)'
+      # pattern: ^\d+$
+      required: true
+  computed-inputs:
+    max_depth_value: "{{max_depth}}"
+    selected_site: "{{url_site}}"
+  python:
+    workdir: .
+    script: script.py
+  
+
+      
