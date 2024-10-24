@@ -73,11 +73,28 @@ Files containing the broken links found, saved in the user's "Documents" folder:
 
 ### Step 1. Run the Action locally:
 
-Inside the Action folder, run the following command.
+>Inside the Action folder, run the following command.
 
 ```bash
 stk run action .
 ```
+
+>To use the **published** Action, you must use the STG `stk-stg run action` command.
+
+Example: 
+
+Without Stack:
+
+```
+stk-stg run action test/tech-writing/tw-test-urls@1.0.0
+```
+
+With Stack version
+
+```
+stk-stg run action tech-writing/<stack>/tw-test-urls
+```
+
 
 ### Step 2. Fill in the inputs:
 

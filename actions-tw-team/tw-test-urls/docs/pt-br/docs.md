@@ -73,11 +73,28 @@ Arquivos contendo os links quebrados encontrados, salvos na pasta "Documentos" d
 
 ### Passo 1. Executar a Action localmente:
 
-> Dentro da pasta da Action, execute o comando a seguir.
+>Dentro da pasta da Action, execute o comando a seguir.
 
 ```bash
 stk run action .
 ```
+
+>Para executar a Action **publicada**, use o comando na versão STG: `stk-stg run action`.
+
+Exemplo: 
+
+Sem Stack:
+
+```
+stk-stg run action test/tech-writing/tw-test-urls@1.0.0
+```
+
+Com a versão da Stack
+
+```
+stk-stg run action tech-writing/<stack>/tw-test-urls
+```
+
 
 ### Passo 2. Preencha os inputs:
 
