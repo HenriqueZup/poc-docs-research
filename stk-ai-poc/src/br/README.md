@@ -12,32 +12,32 @@ tagline: The multi-agent platform for software development.
 actions:
   - text: Comece por Aqui!
     icon: lightbulb
-    link: ./stackspot-ai/getting-started.md
+    link: ./demo/
     type: primary
 
-  - text: What's News!
-    link: ./stackspot-ai/coming-soon.md
-    icon: star 
+  - text: Novidades!
+    link: ./guide/
+    icon: star
 
 highlights:
-  - header: What can you do with StackSpot AI?
+  - header: O que você pode fazer com a StackSpot AI?
     features:
-      - title: Create Stacks AI
+      - title: Criar Stacks AI
         icon: clipboard-check
         details: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ut faucibus lectus. Etiam nec augue pulvinar erat pharetra pellentesque. Maecenas.
         link: ./stackspot-ai/getting-started.md
 
-      - title: Leverage Knowledge Sources
+      - title: Aproveitar Knowledge Sources
         icon: box-archive
         details: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ut faucibus lectus. Etiam nec augue pulvinar erat pharetra pellentesque. Maecenas.
         link: ./stackspot-ai/getting-started.md
 
-      - title: Collaborate with Agents
+      - title: Colaborar com Agentes
         icon: bell
         details: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ut faucibus lectus. Etiam nec augue pulvinar erat pharetra pellentesque. Maecenas.
         link: ./stackspot-ai/getting-started.md
 
-      - title: Improve code quality
+      - title: Melhorar a qualidade do código
         icon: table-columns
         details: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ut faucibus lectus. Etiam nec augue pulvinar erat pharetra pellentesque. Maecenas.
         link: ./stackspot-ai/getting-started.md
