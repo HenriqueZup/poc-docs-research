@@ -1,1 +1,11 @@
 // you can change colors here
+
+/* Estilo para o tema claro */
+[data-theme="light"] .vp-icon {
+  filter: invert(1);
+}
+
+/* Estilo para o tema escuro*/
+[data-theme="dark"] .vp-icon {
+  filter: none;
+}

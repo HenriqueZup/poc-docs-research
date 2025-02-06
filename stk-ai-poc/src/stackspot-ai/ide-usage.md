@@ -1,5 +1,5 @@
 ---
-title: "Uso da StackSpot AI IDE"
+title: "StackSpot AI IDE Usage"
 ---
 
 ## The standard Lorem Ipsum passage, used since the 1500s

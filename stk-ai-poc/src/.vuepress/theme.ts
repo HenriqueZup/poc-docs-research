@@ -1,19 +1,19 @@
 import { hopeTheme } from "vuepress-theme-hope";
 
-import { enNavbar, zhNavbar } from "./navbar/index.js";
-import { enSidebar, zhSidebar } from "./sidebar/index.js";
+import { enNavbar, ptNavbar } from "./navbar/index.js";
+import { enSidebar, ptSidebar } from "./sidebar/index.js";
 
 export default hopeTheme({
-  hostname: "https://vuepress-theme-hope-docs-demo.netlify.app",
+  //hostname: "https://vuepress-theme-hope-docs-demo.netlify.app",
 
-  author: {
-    name: "Mr.Hope",
-    url: "https://mister-hope.com",
+  logo: "/assets/image/stackspot-ai-light.svg",
+  logoDark: "/assets/image/stackspot-ai-dark.svg",
+
+  navbarLayout: {
+    start: ["Brand"],
+    //center: ["Links"],
+    end: ["Links", "Language", "Repo", "Outlook", "Search"], // "Links" foi adicionado para exibir no esquerda da navbar.
   },
-
-  logo: "https://theme-hope-assets.vuejs.press/logo.svg",
-
-  repo: "vuepress-theme-hope/vuepress-theme-hope",
 
   docsDir: "src",
 
@@ -29,44 +29,44 @@ export default hopeTheme({
 
       displayFooter: true,
 
-      metaLocales: {
-        editLink: "Edit this page on GitHub",
-      },
+      // metaLocales: {
+      //   editLink: "Edit this page on GitHub",
+      // },
     },
 
     /**
      * Chinese locale config
      */
-    "/zh/": {
+    "/br/": {
       // navbar
-      navbar: zhNavbar,
+      navbar: ptNavbar,
 
       // sidebar
-      sidebar: zhSidebar,
+      sidebar: ptSidebar,
 
-      footer: "默认页脚",
+      footer: "Footer Padrão",
 
       displayFooter: true,
 
       // page meta
-      metaLocales: {
-        editLink: "在 GitHub 上编辑此页",
-      },
+      // metaLocales: {
+      //   editLink: "在 GitHub 上编辑此页",
+      // },
     },
   },
 
-  encrypt: {
-    config: {
-      "/demo/encrypt.html": {
-        hint: "Password: 1234",
-        password: "1234",
-      },
-      "/zh/demo/encrypt.html": {
-        hint: "Password: 1234",
-        password: "1234",
-      },
-    },
-  },
+  // encrypt: {
+  //   config: {
+  //     "/demo/encrypt.html": {
+  //       hint: "Password: 1234",
+  //       password: "1234",
+  //     },
+  //     "/zh/demo/encrypt.html": {
+  //       hint: "Password: 1234",
+  //       password: "1234",
+  //     },
+  //   },
+  // },
 
   // These features are enabled for demo, only preserve features you need here
   markdown: {

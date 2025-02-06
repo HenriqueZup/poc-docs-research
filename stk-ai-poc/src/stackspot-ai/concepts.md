@@ -1,5 +1,5 @@
 ---
-title: "Principais Conceitos"
+title: "Key Concepts"
 ---
 
 ## The standard Lorem Ipsum passage, used since the 1500s

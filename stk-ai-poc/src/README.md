@@ -2,45 +2,48 @@
 home: true
 icon: house
 title: StackSpot AI
-heroImage: https://theme-hope-assets.vuejs.press/logo.svg
-bgImage: https://theme-hope-assets.vuejs.press/bg/6-light.svg
-bgImageDark: https://theme-hope-assets.vuejs.press/bg/6-dark.svg
+heroImage: /assets/image/stackspot-ai-light.svg
+heroImageDark: /assets/image/stackspot-ai-dark.svg
+bgImage: /assets/image/landing-background.svg
 bgImageStyle:
-  background-attachment: fixed
-heroText: StackSpot AI
+  background-attachment: scroll
+  background-repeat: repeat
+  background-size: cover
+heroText: "StackSpot AI"
 tagline: The multi-agent platform for software development.
 actions:
-  - text: Comece por Aqui!
-    icon: lightbulb
-    link: ./stackspot-ai/getting-started.md
+  - text: Getting Started!
+    icon: /assets/icon/StackSpot.svg
+    link: /stackspot-ai/get-started.md
     type: primary
 
   - text: What's News!
-    link: ./stackspot-ai/coming-soon.md
-    icon: star 
+    link: /stackspot-ai/coming-soon.md
+    icon: /assets/icon/Star.svg
 
 highlights:
-  - header: What can you do with StackSpot AI?
+  - #header: What can you do with StackSpot AI?
+    bgImage: /assets/image/landing-background.svg
     features:
       - title: Create Stacks AI
-        icon: clipboard-check
+        icon: /assets/icon/StackSpot.svg
         details: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ut faucibus lectus. Etiam nec augue pulvinar erat pharetra pellentesque. Maecenas.
-        link: ./stackspot-ai/getting-started.md
+        link: /stackspot-ai/getting-started.md
 
       - title: Leverage Knowledge Sources
-        icon: box-archive
+        icon: /assets/icon/StackSpot.svg
         details: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ut faucibus lectus. Etiam nec augue pulvinar erat pharetra pellentesque. Maecenas.
-        link: ./stackspot-ai/getting-started.md
+        link: /stackspot-ai/getting-started.md
 
       - title: Collaborate with Agents
-        icon: bell
+        icon: /assets/icon/StackSpot.svg
         details: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ut faucibus lectus. Etiam nec augue pulvinar erat pharetra pellentesque. Maecenas.
-        link: ./stackspot-ai/getting-started.md
+        link: /stackspot-ai/getting-started.md
 
       - title: Improve code quality
-        icon: table-columns
+        icon: /assets/icon/StackSpot.svg
         details: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ut faucibus lectus. Etiam nec augue pulvinar erat pharetra pellentesque. Maecenas.
-        link: ./stackspot-ai/getting-started.md
+        link: /stackspot-ai/getting-started.md
 
 copyright: false
 footer: Theme by <a href="https://theme-hope.vuejs.press/" target="_blank">VuePress Theme Hope</a> | MIT Licensed, Copyright © 2019-present Mr.Hope

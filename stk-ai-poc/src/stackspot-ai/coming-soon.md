@@ -1,5 +1,5 @@
 ---
-title: "Novidades"
+title: "What's new"
 ---
 
 ## The standard Lorem Ipsum passage, used since the 1500s

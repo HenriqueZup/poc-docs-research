@@ -1,5 +1,5 @@
 ---
-title: "Primeiros Passos"
+title: "Getting Started"
 ---
 
 ## The standard Lorem Ipsum passage, used since the 1500s

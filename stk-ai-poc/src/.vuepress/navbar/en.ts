@@ -1,31 +1,23 @@
 import { navbar } from "vuepress-theme-hope";
 
 export const enNavbar = navbar([
-  "/",
-  "/portfolio",
-  "/demo/",
   {
-    text: "Guide",
-    icon: "lightbulb",
-    prefix: "/guide/",
+    text: "StackSpot AI CookBook",
+    icon: "/assets/icon/StackSpot.svg",
+    prefix: "/stackspot-ai/",
     children: [
       {
         text: "Bar",
-        icon: "lightbulb",
+        icon: "/assets/icon/StackSpot.svg",
         prefix: "bar/",
-        children: ["baz", { text: "...", icon: "ellipsis", link: "#" }],
+        children: ["baz", { text: "...", icon: "ellipsis", link: "" }],
       },
       {
         text: "Foo",
-        icon: "lightbulb",
+        icon: "/assets/icon/StackSpot.svg",
         prefix: "foo/",
-        children: ["ray", { text: "...", icon: "ellipsis", link: "#" }],
+        children: ["ray", { text: "...", icon: "ellipsis", link: "" }],
       },
     ],
-  },
-  {
-    text: "V2 Docs",
-    icon: "book",
-    link: "https://theme-hope.vuejs.press/",
   },
 ]);
