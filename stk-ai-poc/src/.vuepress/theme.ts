@@ -15,6 +15,8 @@ export default hopeTheme({
     end: ["Links", "Language", "Repo", "Outlook", "Search"], // "Links" foi adicionado para exibir no esquerda da navbar.
   },
 
+  darkmode: "toggle",
+
   docsDir: "src",
 
   locales: {
@@ -25,7 +27,7 @@ export default hopeTheme({
       // sidebar
       sidebar: enSidebar,
 
-      footer: "Default footer",
+      footer: '<footer><picture><img src="/assets/image/logo-light-footer.svg" alt="Logo StackSpot"></picture><p>© 2022 StackSpot. All rights reserved</p></footer>',
 
       displayFooter: true,
 
@@ -44,7 +46,7 @@ export default hopeTheme({
       // sidebar
       sidebar: ptSidebar,
 
-      footer: "Footer Padrão",
+      footer: '<footer><picture><img src="/assets/image/logo-light-footer.svg" alt="Logo StackSpot"></picture><p>© 2022 StackSpot. Todos os direitos reservados</p></footer>',
 
       displayFooter: true,
 
