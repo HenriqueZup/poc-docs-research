@@ -37,7 +37,7 @@ export default hopeTheme({
     },
 
     /**
-     * Chinese locale config
+     * Portuguese locale config
      */
     "/br/": {
       // navbar
@@ -143,21 +143,21 @@ export default hopeTheme({
   plugins: {
     // Note: This is for testing ONLY!
     // You MUST generate and use your own comment service in production.
-    comment: {
-      provider: "Giscus",
-      repo: "vuepress-theme-hope/giscus-discussions",
-      repoId: "R_kgDOG_Pt2A",
-      category: "Announcements",
-      categoryId: "DIC_kwDOG_Pt2M4COD69",
-    },
+    // comment: {
+    //   provider: "Giscus",
+    //   repo: "vuepress-theme-hope/giscus-discussions",
+    //   repoId: "R_kgDOG_Pt2A",
+    //   category: "Announcements",
+    //   categoryId: "DIC_kwDOG_Pt2M4COD69",
+    // },
 
     components: {
-      components: ["Badge", "VPCard"],
+      components: ["Badge", "VPCard",],
     },
 
-    icon: {
-      prefix: "fa6-solid:",
-    },
+    // icon: {
+    //   prefix: "fa6-solid:",
+    // },
 
     // Install @vuepress/plugin-pwa and uncomment these if you want a PWA
     // pwa: {
