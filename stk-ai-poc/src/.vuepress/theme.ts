@@ -4,7 +4,7 @@ import { enNavbar, ptNavbar } from "./navbar/index.js";
 import { enSidebar, ptSidebar } from "./sidebar/index.js";
 
 export default hopeTheme({
-  //hostname: "https://vuepress-theme-hope-docs-demo.netlify.app",
+  hostname: "henrique-stk-poc-vuepress.netlify.app",
 
   logo: "/assets/image/stackspot-ai-light.svg",
   logoDark: "/assets/image/stackspot-ai-dark.svg",
