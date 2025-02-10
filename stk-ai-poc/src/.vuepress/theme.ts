@@ -151,8 +151,24 @@ export default hopeTheme({
     //   categoryId: "DIC_kwDOG_Pt2M4COD69",
     // },
 
+    search: {
+      locales: {
+        '/': {
+          placeholder: 'Search...',
+        },
+        '/br/': {
+          placeholder: 'Buscar...',
+        },        
+      },
+      hotKeys: [
+      
+      ],
+
+    
+    },
+
     components: {
-      components: ["Badge", "VPCard",],
+      components: ["Badge", "VPCard","VPBanner",],
     },
 
     // icon: {

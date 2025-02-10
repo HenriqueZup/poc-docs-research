@@ -11,6 +11,9 @@ importers:
       '@orama/vue-components':
         specifier: 0.3.2
         version: 0.3.2
+      '@orama/wc-components':
+        specifier: ^0.4.1
+        version: 0.4.1
       '@oramacloud/client':
         specifier: ^2.1.4
         version: 2.1.4
@@ -21,6 +24,9 @@ importers:
       '@vuepress/bundler-vite':
         specifier: 2.0.0-rc.19
         version: 2.0.0-rc.19(@types/node@22.13.1)(sass-embedded@1.83.4)
+      '@vuepress/plugin-search':
+        specifier: 2.0.0-rc.74
+        version: 2.0.0-rc.74(vuepress@2.0.0-rc.19(@vuepress/bundler-vite@2.0.0-rc.19(@types/node@22.13.1)(sass-embedded@1.83.4))(vue@3.5.13))
       sass-embedded:
         specifier: ^1.83.0
         version: 1.83.4
@@ -32,7 +38,7 @@ importers:
         version: 2.0.0-rc.19(@vuepress/bundler-vite@2.0.0-rc.19(@types/node@22.13.1)(sass-embedded@1.83.4))(vue@3.5.13)
       vuepress-theme-hope:
         specifier: 2.0.0-rc.71
-        version: 2.0.0-rc.71(markdown-it@14.1.0)(sass-embedded@1.83.4)(vuepress@2.0.0-rc.19(@vuepress/bundler-vite@2.0.0-rc.19(@types/node@22.13.1)(sass-embedded@1.83.4))(vue@3.5.13))
+        version: 2.0.0-rc.71(@vuepress/plugin-search@2.0.0-rc.74(vuepress@2.0.0-rc.19(@vuepress/bundler-vite@2.0.0-rc.19(@types/node@22.13.1)(sass-embedded@1.83.4))(vue@3.5.13)))(markdown-it@14.1.0)(sass-embedded@1.83.4)(vuepress@2.0.0-rc.19(@vuepress/bundler-vite@2.0.0-rc.19(@types/node@22.13.1)(sass-embedded@1.83.4))(vue@3.5.13))
 
 packages:
 
@@ -637,6 +643,9 @@ packages:
   '@orama/wc-components@0.3.2':
     resolution: {integrity: sha512-Ghhqc5PS7qMrybXDHH7G6ECmwjiaABgwD4ypCaRMTz0t05SHO+uX/nGbn7YbWvA9dGwQjQz/2Fm2jCrUsqbmpA==}
 
+  '@orama/wc-components@0.4.1':
+    resolution: {integrity: sha512-RImo+ZPtEBMb8Ak28EdOVnHyxRGaZdN4yBJcDynAZOLaiBbHGf29NNmYcF021B/OuuT/7hewxnzmkgBcgtwQzQ==}
+
   '@oramacloud/client@2.1.4':
     resolution: {integrity: sha512-uNPFs4wq/iOPbggCwTkVNbIr64Vfd7ZS/h+cricXVnzXWocjDTfJ3wLL4lr0qiSu41g8z+eCAGBqJ30RO2O4AA==}
 
@@ -1097,6 +1106,11 @@ packages:
         optional: true
       sass-loader:
         optional: true
+
+  '@vuepress/plugin-search@2.0.0-rc.74':
+    resolution: {integrity: sha512-zDSl/vLRjtQIT8a8jZJ/fFQyJYZMSqcFJFUqpOWojNgDiTNZwa83PJxl0Tq8YdfSgmi4odwTl06xzpAuY6Pi3g==}
+    peerDependencies:
+      vuepress: 2.0.0-rc.19
 
   '@vuepress/plugin-seo@2.0.0-rc.74':
     resolution: {integrity: sha512-Z5Q35Y3TALhfhOs8DocBtQcyRCp0/Btjec7DfnDih5p5rhRI7dHI7DIdf9aJHTuz1VxpzCfru6sApqSdbPlc5g==}
@@ -2800,6 +2814,23 @@ snapshots:
       shiki: 1.29.2
       sse.js: 2.5.0
 
+  '@orama/wc-components@0.4.1':
+    dependencies:
+      '@orama/highlight': 0.1.8
+      '@orama/orama': 3.0.5
+      '@orama/switch': 3.0.5(@orama/orama@3.0.5)(@oramacloud/client@2.1.4)
+      '@oramacloud/client': 2.1.4
+      '@phosphor-icons/webcomponents': 2.1.5
+      '@stencil/core': 4.25.3
+      '@stencil/store': 2.0.16(@stencil/core@4.25.3)
+      dompurify: 3.2.4
+      highlight.js: 11.11.1
+      markdown-it: 14.1.0
+      marked: 13.0.3
+      marked-highlight: 2.2.1(marked@13.0.3)
+      shiki: 1.29.2
+      sse.js: 2.5.0
+
   '@oramacloud/client@2.1.4':
     dependencies:
       '@orama/cuid2': 2.2.3
@@ -3451,6 +3482,15 @@ snapshots:
       vuepress: 2.0.0-rc.19(@vuepress/bundler-vite@2.0.0-rc.19(@types/node@22.13.1)(sass-embedded@1.83.4))(vue@3.5.13)
     optionalDependencies:
       sass-embedded: 1.83.4
+    transitivePeerDependencies:
+      - typescript
+
+  '@vuepress/plugin-search@2.0.0-rc.74(vuepress@2.0.0-rc.19(@vuepress/bundler-vite@2.0.0-rc.19(@types/node@22.13.1)(sass-embedded@1.83.4))(vue@3.5.13))':
+    dependencies:
+      '@vuepress/helper': 2.0.0-rc.74(vuepress@2.0.0-rc.19(@vuepress/bundler-vite@2.0.0-rc.19(@types/node@22.13.1)(sass-embedded@1.83.4))(vue@3.5.13))
+      chokidar: 3.6.0
+      vue: 3.5.13
+      vuepress: 2.0.0-rc.19(@vuepress/bundler-vite@2.0.0-rc.19(@types/node@22.13.1)(sass-embedded@1.83.4))(vue@3.5.13)
     transitivePeerDependencies:
       - typescript
 
@@ -4613,7 +4653,7 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  vuepress-theme-hope@2.0.0-rc.71(markdown-it@14.1.0)(sass-embedded@1.83.4)(vuepress@2.0.0-rc.19(@vuepress/bundler-vite@2.0.0-rc.19(@types/node@22.13.1)(sass-embedded@1.83.4))(vue@3.5.13)):
+  vuepress-theme-hope@2.0.0-rc.71(@vuepress/plugin-search@2.0.0-rc.74(vuepress@2.0.0-rc.19(@vuepress/bundler-vite@2.0.0-rc.19(@types/node@22.13.1)(sass-embedded@1.83.4))(vue@3.5.13)))(markdown-it@14.1.0)(sass-embedded@1.83.4)(vuepress@2.0.0-rc.19(@vuepress/bundler-vite@2.0.0-rc.19(@types/node@22.13.1)(sass-embedded@1.83.4))(vue@3.5.13)):
     dependencies:
       '@vuepress/helper': 2.0.0-rc.74(vuepress@2.0.0-rc.19(@vuepress/bundler-vite@2.0.0-rc.19(@types/node@22.13.1)(sass-embedded@1.83.4))(vue@3.5.13))
       '@vuepress/plugin-active-header-links': 2.0.0-rc.74(vuepress@2.0.0-rc.19(@vuepress/bundler-vite@2.0.0-rc.19(@types/node@22.13.1)(sass-embedded@1.83.4))(vue@3.5.13))
@@ -4654,6 +4694,7 @@ snapshots:
       vuepress-plugin-md-enhance: 2.0.0-rc.71(markdown-it@14.1.0)(sass-embedded@1.83.4)(vuepress@2.0.0-rc.19(@vuepress/bundler-vite@2.0.0-rc.19(@types/node@22.13.1)(sass-embedded@1.83.4))(vue@3.5.13))
       vuepress-shared: 2.0.0-rc.71(vuepress@2.0.0-rc.19(@vuepress/bundler-vite@2.0.0-rc.19(@types/node@22.13.1)(sass-embedded@1.83.4))(vue@3.5.13))
     optionalDependencies:
+      '@vuepress/plugin-search': 2.0.0-rc.74(vuepress@2.0.0-rc.19(@vuepress/bundler-vite@2.0.0-rc.19(@types/node@22.13.1)(sass-embedded@1.83.4))(vue@3.5.13))
       sass-embedded: 1.83.4
     transitivePeerDependencies:
       - '@vue/repl'
