@@ -31,6 +31,11 @@ export default hopeTheme({
 
       displayFooter: true,
 
+      // blogLocales: {
+      //   article: "/release/",
+      //   release: "Release Notes",
+      // },
+
       // metaLocales: {
       //   editLink: "Edit this page on GitHub",
       // },
@@ -55,6 +60,14 @@ export default hopeTheme({
       //   editLink: "在 GitHub 上编辑此页",
       // },
     },
+  },
+
+  blogLocales: {
+    release: "Release Notes",
+  },
+
+  blog: {
+    sidebarDisplay: "mobile",
   },
 
   // encrypt: {
@@ -151,21 +164,67 @@ export default hopeTheme({
     //   categoryId: "DIC_kwDOG_Pt2M4COD69",
     // },
 
-    search: {
+    // search: {
+    //   locales: {
+    //     '/': {
+    //       placeholder: 'Search...',
+    //     },
+    //     '/br/': {
+    //       placeholder: 'Buscar...',
+    //     },        
+    //   },
+    //   hotKeys: [
+      
+    //   ],
+
+    docsearch: {
+      appId:"DLA8CH4FAG",
+      apiKey: "3d1c2f136e87162a759c83fc677f02d1",
+      indexName: "stk_index",
       locales: {
         '/': {
-          placeholder: 'Search...',
+          placeholder: 'Search Documentation',
+          translations: {
+            button: {
+              buttonText: 'Search Documentation',
+            },
+          },
         },
         '/br/': {
-          placeholder: 'Buscar...',
-        },        
+          placeholder: 'Buscar na Documentação',
+          translations: {
+            button: {
+              buttonText: 'Buscar na Documentação',
+            },
+          },
+        },
       },
-      hotKeys: [
-      
+
+
+    },
+    
+    sitemap: true, 
+
+    blog: {
+      type: [
+        {
+          key:"release",
+          //path: "/release/",
+          filter: (page) => page.frontmatter.description.startsWith("Release Notes"), 
+          sorter: (pageA, pageB) => {
+            const dateA = new Date(pageA.filePathRelative?.match(/(\d{4}-\d{2}-\d{2})/)?.[0] || 0);
+            const dateB = new Date(pageB.filePathRelative?.match(/(\d{4}-\d{2}-\d{2})/)?.[0] || 0);
+            return dateB.getTime() - dateA.getTime();
+          },
+          frontmatter: () => ({ 
+            title: "Release Notes",
+          }),
+        },
+        
       ],
+    },
 
     
-    },
 
     components: {
       components: ["Badge", "VPCard","VPBanner",],

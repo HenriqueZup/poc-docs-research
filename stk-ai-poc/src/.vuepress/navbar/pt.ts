@@ -3,20 +3,18 @@ import { navbar } from "vuepress-theme-hope";
 export const ptNavbar = navbar([
   {
     text: "StackSpot AI CookBook",
-    icon: "/assets/icon/StackSpot.svg",
-    prefix: "/br/stackspot-ai/",
+    icon: "/assets/icon/Book.svg",
+    prefix: "/br/",
     children: [
       {
-        text: "Bar",
-        icon: "/assets/icon/StackSpot.svg",
-        prefix: "bar/",
-        children: ["baz", { text: "...", icon: "ellipsis", link: "" }],
+        text: "Release Notes",
+        icon: "/assets/icon/Tag.svg",
+        link: "/br/article/",
       },
       {
-        text: "Foo",
-        icon: "/assets/icon/StackSpot.svg",
-        prefix: "foo/",
-        children: ["ray", { text: "...", icon: "ellipsis", link: "" }],
+        text: "Contents",
+        icon: "/assets/icon/QuickCommand.svg",
+        link: "/br/troubleshooting.md" 
       },
     ],
   },
