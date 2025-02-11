@@ -12,6 +12,7 @@
   },
   "devDependencies": {
     "@vuepress/bundler-vite": "2.0.0-rc.19",
+    "@vuepress/plugin-docsearch": "2.0.0-rc.76",
     "@vuepress/plugin-search": "2.0.0-rc.74",
     "sass-embedded": "^1.83.0",
     "vue": "^3.5.13",
@@ -23,6 +24,7 @@
     "@orama/vue-components": "0.3.2",
     "@orama/wc-components": "^0.4.1",
     "@oramacloud/client": "^2.1.4",
-    "@oramacloud/vue-client": "^2.1.4"
+    "@oramacloud/vue-client": "^2.1.4",
+    "@vuepress/plugin-sitemap": "2.0.0-rc.3"
   }
 }

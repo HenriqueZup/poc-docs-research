@@ -46,3 +46,6 @@ highlights:
 copyright: false
 footer: '<footer style="text-align: center; padding: 20px;"><picture><source srcset="/assets/image/logo-dark-footer.svg" media="(prefers-color-scheme: dark)"><img src="/assets/image/logo-light-footer.svg" alt="Logo StackSpot"></picture><p style="margin-top: 10px; font-size: 14px; color: #666;">© 2022 StackSpot. Todos os direitos reservados</p></footer>'
 ---
+
+## Features e Plugins do framework Vuepress theme-hope
+

@@ -1,5 +1,6 @@
 ---
 title: "Use Agents"
+order: 2
 ---
 
 ## The standard Lorem Ipsum passage, used since the 1500s
