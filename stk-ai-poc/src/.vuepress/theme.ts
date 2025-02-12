@@ -177,31 +177,31 @@ export default hopeTheme({
       
     //   ],
 
-    docsearch: {
-      appId:"DLA8CH4FAG",
-      apiKey: "3d1c2f136e87162a759c83fc677f02d1",
-      indexName: "stk_index",
-      locales: {
-        '/': {
-          placeholder: 'Search Documentation',
-          translations: {
-            button: {
-              buttonText: 'Search Documentation',
-            },
-          },
-        },
-        '/br/': {
-          placeholder: 'Buscar na Documentação',
-          translations: {
-            button: {
-              buttonText: 'Buscar na Documentação',
-            },
-          },
-        },
-      },
+    // docsearch: {
+    //   appId:"DLA8CH4FAG",
+    //   apiKey: "3d1c2f136e87162a759c83fc677f02d1",
+    //   indexName: "stk_index",
+    //   locales: {
+    //     '/': {
+    //       placeholder: 'Search Documentation',
+    //       translations: {
+    //         button: {
+    //           buttonText: 'Search Documentation',
+    //         },
+    //       },
+    //     },
+    //     '/br/': {
+    //       placeholder: 'Buscar na Documentação',
+    //       translations: {
+    //         button: {
+    //           buttonText: 'Buscar na Documentação',
+    //         },
+    //       },
+    //     },
+    //   },
 
 
-    },
+    // },
     
     sitemap: true, 
 
