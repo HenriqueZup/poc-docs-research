@@ -25,6 +25,9 @@
     "@orama/wc-components": "^0.4.1",
     "@oramacloud/client": "^2.1.4",
     "@oramacloud/vue-client": "^2.1.4",
-    "@vuepress/plugin-sitemap": "2.0.0-rc.3"
+    "@vuepress/plugin-sitemap": "2.0.0-rc.3",
+    "markdown-it": "^14.1.0",
+    "markdown-it-anchor": "^9.2.0",
+    "markdown-it-toc-done-right": "^4.2.0"
   }
 }
