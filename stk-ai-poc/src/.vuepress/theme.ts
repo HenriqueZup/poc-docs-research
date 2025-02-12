@@ -30,15 +30,7 @@ export default hopeTheme({
       footer: '<footer><picture><img src="/assets/image/logo-light-footer.svg" alt="Logo StackSpot"></picture><p>© 2022 StackSpot. All rights reserved</p></footer>',
 
       displayFooter: true,
-
-      // blogLocales: {
-      //   article: "/release/",
-      //   release: "Release Notes",
-      // },
-
-      // metaLocales: {
-      //   editLink: "Edit this page on GitHub",
-      // },
+      
     },
 
     /**
@@ -55,10 +47,6 @@ export default hopeTheme({
 
       displayFooter: true,
 
-      // page meta
-      // metaLocales: {
-      //   editLink: "在 GitHub 上编辑此页",
-      // },
     },
   },
 
@@ -69,19 +57,6 @@ export default hopeTheme({
   blog: {
     sidebarDisplay: "mobile",
   },
-
-  // encrypt: {
-  //   config: {
-  //     "/demo/encrypt.html": {
-  //       hint: "Password: 1234",
-  //       password: "1234",
-  //     },
-  //     "/zh/demo/encrypt.html": {
-  //       hint: "Password: 1234",
-  //       password: "1234",
-  //     },
-  //   },
-  // },
 
   // These features are enabled for demo, only preserve features you need here
   markdown: {
@@ -154,55 +129,7 @@ export default hopeTheme({
   },
 
   plugins: {
-    // Note: This is for testing ONLY!
-    // You MUST generate and use your own comment service in production.
-    // comment: {
-    //   provider: "Giscus",
-    //   repo: "vuepress-theme-hope/giscus-discussions",
-    //   repoId: "R_kgDOG_Pt2A",
-    //   category: "Announcements",
-    //   categoryId: "DIC_kwDOG_Pt2M4COD69",
-    // },
 
-    // search: {
-    //   locales: {
-    //     '/': {
-    //       placeholder: 'Search...',
-    //     },
-    //     '/br/': {
-    //       placeholder: 'Buscar...',
-    //     },        
-    //   },
-    //   hotKeys: [
-      
-    //   ],
-
-    // docsearch: {
-    //   appId:"DLA8CH4FAG",
-    //   apiKey: "3d1c2f136e87162a759c83fc677f02d1",
-    //   indexName: "stk_index",
-    //   locales: {
-    //     '/': {
-    //       placeholder: 'Search Documentation',
-    //       translations: {
-    //         button: {
-    //           buttonText: 'Search Documentation',
-    //         },
-    //       },
-    //     },
-    //     '/br/': {
-    //       placeholder: 'Buscar na Documentação',
-    //       translations: {
-    //         button: {
-    //           buttonText: 'Buscar na Documentação',
-    //         },
-    //       },
-    //     },
-    //   },
-
-
-    // },
-    
     sitemap: true, 
 
     blog: {
@@ -227,66 +154,5 @@ export default hopeTheme({
     components: {
       components: ["Badge", "VPCard","VPBanner",],
     },
-
-    // icon: {
-    //   prefix: "fa6-solid:",
-    // },
-
-    // Install @vuepress/plugin-pwa and uncomment these if you want a PWA
-    // pwa: {
-    //   favicon: "/favicon.ico",
-    //   cacheHTML: true,
-    //   cacheImage: true,
-    //   appendBase: true,
-    //   apple: {
-    //     icon: "/assets/icon/apple-icon-152.png",
-    //     statusBarColor: "black",
-    //   },
-    //   msTile: {
-    //     image: "/assets/icon/ms-icon-144.png",
-    //     color: "#ffffff",
-    //   },
-    //   manifest: {
-    //     icons: [
-    //       {
-    //         src: "/assets/icon/chrome-mask-512.png",
-    //         sizes: "512x512",
-    //         purpose: "maskable",
-    //         type: "image/png",
-    //       },
-    //       {
-    //         src: "/assets/icon/chrome-mask-192.png",
-    //         sizes: "192x192",
-    //         purpose: "maskable",
-    //         type: "image/png",
-    //       },
-    //       {
-    //         src: "/assets/icon/chrome-512.png",
-    //         sizes: "512x512",
-    //         type: "image/png",
-    //       },
-    //       {
-    //         src: "/assets/icon/chrome-192.png",
-    //         sizes: "192x192",
-    //         type: "image/png",
-    //       },
-    //     ],
-    //     shortcuts: [
-    //       {
-    //         name: "Demo",
-    //         short_name: "Demo",
-    //         url: "/demo/",
-    //         icons: [
-    //           {
-    //             src: "/assets/icon/guide-maskable.png",
-    //             sizes: "192x192",
-    //             purpose: "maskable",
-    //             type: "image/png",
-    //           },
-    //         ],
-    //       },
-    //     ],
-    //   },
-    // },
   },
 });

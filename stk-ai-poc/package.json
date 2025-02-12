@@ -13,21 +13,27 @@
   "devDependencies": {
     "@vuepress/bundler-vite": "2.0.0-rc.19",
     "@vuepress/plugin-docsearch": "2.0.0-rc.76",
+    "@vuepress/plugin-register-components": "^1.9.10",
     "@vuepress/plugin-search": "2.0.0-rc.74",
-    "sass-embedded": "^1.83.0",
+    "sass-embedded": "^1.83.4",
     "vue": "^3.5.13",
     "vuepress": "2.0.0-rc.19",
     "vuepress-theme-hope": "2.0.0-rc.71"
   },
   "packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0",
   "dependencies": {
-    "@orama/vue-components": "0.3.2",
+    "@orama/vue-components": "0.4.1",
     "@orama/wc-components": "^0.4.1",
     "@oramacloud/client": "^2.1.4",
     "@oramacloud/vue-client": "^2.1.4",
+    "@vue/component-compiler-utils": "^3.3.0",
     "@vuepress/plugin-sitemap": "2.0.0-rc.3",
+    "@vuepress/plugin-slimsearch": "2.0.0-rc.61",
+    "@vuepress/shared-utils": "1.9.10",
+    "lru-cache": "^6.0.0",
     "markdown-it": "^14.1.0",
     "markdown-it-anchor": "^9.2.0",
+    "markdown-it-emoji": "2.0.2",
     "markdown-it-toc-done-right": "^4.2.0"
   }
 }

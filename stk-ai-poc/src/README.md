@@ -6,9 +6,8 @@ heroImage: /assets/image/stackspot-ai-light.svg
 heroImageDark: /assets/image/stackspot-ai-dark.svg
 bgImage: /assets/image/landing-background.svg
 bgImageStyle:
-  background-attachment: scroll
-  background-repeat: repeat
-  background-size: cover
+  background-attachment: fixed
+  background-repeat: space
 heroText: "StackSpot AI"
 tagline: The multi-agent platform for software development.
 actions:
