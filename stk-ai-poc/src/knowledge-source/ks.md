@@ -1,5 +1,7 @@
 ---
 title: Set Knowledge Source Default
+category:
+  - Knowledge Source
 ---
 
 ## The standard Lorem Ipsum passage, used since the 1500s

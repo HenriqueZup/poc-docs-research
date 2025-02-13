@@ -1,5 +1,10 @@
 ---
 title: "IDE Quick Command Examples"
+category:
+  - Quick Command
+  - Examples
+tag: 
+  - ide
 ---
 
 ## The standard Lorem Ipsum passage, used since the 1500s

@@ -6,8 +6,8 @@ heroImage: /assets/image/stackspot-ai-light.svg
 heroImageDark: /assets/image/stackspot-ai-dark.svg
 bgImage: /assets/image/landing-background.svg
 bgImageStyle:
-  background-attachment: fixed
-  background-repeat: space
+  background-repeat: repeat
+  background-size: initial
 heroText: StackSpot AI
 tagline: The multi-agent platform for software development.
 actions:
@@ -21,7 +21,7 @@ actions:
     icon: /assets/icon/Star.svg
 
 highlights:
-  - #header: O que você pode fazer com a StackSpot AI?
+  - header: O que você pode fazer com a StackSpot AI?
     bgImage: /assets/image/landing-background.svg
     features:
       - title: Criar Stacks AI

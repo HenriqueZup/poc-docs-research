@@ -1,5 +1,9 @@
 ---
 title: "Use Quick Command IDE"
+category:
+  - Quick Command
+tag: 
+  - use
 ---
 
 ## The standard Lorem Ipsum passage, used since the 1500s

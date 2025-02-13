@@ -1,5 +1,9 @@
 ---
 title: "Create and Execute Remote Quick Commands"
+category:
+  - Quick Command
+tag: 
+  - remote
 ---
 
 ## The standard Lorem Ipsum passage, used since the 1500s

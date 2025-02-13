@@ -1,5 +1,11 @@
 ---
 title: "Remote Quick Command Example"
+category:
+  - Quick Command
+  - Examples
+tag: 
+  - ide
+  - remote
 ---
 
 ## The standard Lorem Ipsum passage, used since the 1500s

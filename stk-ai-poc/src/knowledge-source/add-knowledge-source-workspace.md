@@ -1,5 +1,11 @@
 ---
 title: "Add or Delete Knowledge Source to a Workspace"
+category:
+  - Knowledge Source
+tag: 
+  - workspace
+  - add 
+  - delete
 ---
 
 ## The standard Lorem Ipsum passage, used since the 1500s

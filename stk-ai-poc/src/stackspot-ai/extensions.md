@@ -1,5 +1,10 @@
 ---
 title: "StackSpot AI Extensions"
+category:
+  - StackSpot AI
+tag: 
+  - info
+  - extensions
 ---
 
 ## The standard Lorem Ipsum passage, used since the 1500s

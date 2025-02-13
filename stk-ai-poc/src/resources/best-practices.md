@@ -1,5 +1,9 @@
 ---
 title: "Prompt Engineering"
+category:
+  - Resources
+tag: 
+  - best practices
 ---
 
 ## The standard Lorem Ipsum passage, used since the 1500s

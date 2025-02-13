@@ -1,5 +1,12 @@
 ---
 title: "Create, Share & Use Personal Content"
+category:
+  - Resources
+tag: 
+  - create
+  - share
+  - use
+  - personal content
 ---
 
 ## The standard Lorem Ipsum passage, used since the 1500s
