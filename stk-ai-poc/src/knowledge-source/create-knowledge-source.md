@@ -1,5 +1,9 @@
 ---
 title: "Create Knowledge Sources"
+category:
+  - Knowledge Source
+tag: 
+  - create
 ---
 
 ## The standard Lorem Ipsum passage, used since the 1500s

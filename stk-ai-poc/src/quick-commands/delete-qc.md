@@ -1,5 +1,9 @@
 ---
 title: "Delete Quick Commands"
+category:
+  - Quick Command
+tag: 
+  - delete
 ---
 
 ## The standard Lorem Ipsum passage, used since the 1500s

@@ -1,5 +1,11 @@
 ---
 title: Troubleshooting
+category:
+  - StackSpot AI
+  - Troubleshooting
+  - FAQ
+tag: 
+  - info
 ---
 
 ## The standard Lorem Ipsum passage, used since the 1500s

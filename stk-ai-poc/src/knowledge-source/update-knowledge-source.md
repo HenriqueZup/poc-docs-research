@@ -1,5 +1,9 @@
 ---
 title: "Update Knowledge Source Content"
+category:
+  - Knowledge Source
+tag: 
+  - update
 ---
 
 ## The standard Lorem Ipsum passage, used since the 1500s

@@ -1,5 +1,10 @@
 ---
 title: "Create, update, and delete KS via API"
+category:
+  - Knowledge Source
+tag: 
+  - create
+  - api
 ---
 
 ## The standard Lorem Ipsum passage, used since the 1500s

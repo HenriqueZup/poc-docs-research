@@ -1,5 +1,8 @@
 ---
 title: "Getting Started"
+category:
+  - StackSpot AI
+  - Guides
 ---
 
 ## The standard Lorem Ipsum passage, used since the 1500s

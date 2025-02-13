@@ -1,5 +1,11 @@
 ---
 title: "Configure Collection to Execute Remote Quick Command"
+category:
+  - Quick Command
+  - Examples
+tag: 
+  - collection
+  - configure
 ---
 
 ## The standard Lorem Ipsum passage, used since the 1500s

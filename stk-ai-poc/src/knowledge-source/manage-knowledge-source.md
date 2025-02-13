@@ -1,5 +1,9 @@
 ---
 title: "Manage Knowledge Source Content"
+category:
+  - Knowledge Source
+tag: 
+  - manage
 ---
 
 ## The standard Lorem Ipsum passage, used since the 1500s

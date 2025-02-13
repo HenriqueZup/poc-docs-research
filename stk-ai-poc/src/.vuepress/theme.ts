@@ -134,7 +134,7 @@ export default hopeTheme({
       indexContent: true,
       customFields: [
         {
-          name: 'description',
+          //name: 'description',
           getter: (page) => page.frontmatter.description,
           formatter: 'Description: $content',
         },
@@ -145,6 +145,7 @@ export default hopeTheme({
           meta: true,
         },
       ],
+      autoSuggestions: false,
     },
 
     sitemap: true, 

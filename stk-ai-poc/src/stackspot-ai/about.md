@@ -1,5 +1,9 @@
 ---
 title: "About"
+category:
+  - StackSpot AI
+tag: 
+  - info
 ---
 
 ## The standard Lorem Ipsum passage, used since the 1500s

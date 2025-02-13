@@ -1,6 +1,10 @@
 ---
 title: "Create Agents"
 order: 1
+category:
+  - Agents
+tag: 
+  - use
 ---
 
 ## The standard Lorem Ipsum passage, used since the 1500s

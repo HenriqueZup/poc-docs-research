@@ -1,5 +1,7 @@
 ---
 title: "Project Index"
+category:
+  - Resources
 ---
 
 ## The standard Lorem Ipsum passage, used since the 1500s

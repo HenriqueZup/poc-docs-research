@@ -1,5 +1,12 @@
 ---
 title: "StackSpot AI IDE Usage"
+category:
+  - StackSpot AI
+  - Guides
+tag: 
+  - info
+  - ide
+  - extension
 ---
 
 ## The standard Lorem Ipsum passage, used since the 1500s

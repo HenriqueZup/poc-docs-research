@@ -1,5 +1,7 @@
 ---
 title: What is a Quick Command
+category:
+  - Quick Command
 ---
 
 ## The standard Lorem Ipsum passage, used since the 1500s
