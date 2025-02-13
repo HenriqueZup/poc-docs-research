@@ -130,6 +130,23 @@ export default hopeTheme({
 
   plugins: {
 
+    slimsearch: {
+      indexContent: true,
+      customFields: [
+        {
+          name: 'description',
+          getter: (page) => page.frontmatter.description,
+          formatter: 'Description: $content',
+        },
+      ],
+      hotKeys: [
+        {
+          key: "k",
+          meta: true,
+        },
+      ],
+    },
+
     sitemap: true, 
 
     blog: {
