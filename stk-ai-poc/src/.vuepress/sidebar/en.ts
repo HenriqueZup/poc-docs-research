@@ -67,5 +67,15 @@ export const enSidebar = sidebar([
           icon: "/assets/icon/Tag.svg",
           link: "/release/",    
         },
+        {
+          text: "Features",
+          icon: "/assets/icon/Resources.png",
+          prefix: "/features/",
+          collapsible: true,
+          expanded: false,
+          children: [
+            
+          ],
+        },
     
 ]);
