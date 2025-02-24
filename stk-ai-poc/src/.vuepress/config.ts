@@ -19,9 +19,8 @@ export default defineUserConfig({
   head: [
     [
       "script",
-      {},
-      `\        
-        <!-- Matomo -->
+      {},      
+       ` <!-- Matomo -->
         <script>
           var _paq = window._paq = window._paq || [];
           /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
@@ -38,8 +37,8 @@ export default defineUserConfig({
           })();
         </script>
         <noscript><p><img referrerpolicy="no-referrer-when-downgrade" src="//localhost:8080/matomo.php?idsite=1&amp;rec=1" style="border:0;" alt="" /></p></noscript>
-        <!-- End Matomo Code -->
-      `,
+        <!-- End Matomo Code -->`
+        ,
     ],
   ],
 
