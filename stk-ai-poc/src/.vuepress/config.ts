@@ -20,21 +20,16 @@ export default defineUserConfig({
     [
       "script",
       {},      
-       ` <!-- Matomo -->
-          <script>
-            var _paq = window._paq = window._paq || [];
-            /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-            _paq.push(['trackPageView']);
-            _paq.push(['enableLinkTracking']);
-            (function() {
-              var u="https://stkpocvuepressthemehopenetlifyapp.matomo.cloud/";
-              _paq.push(['setTrackerUrl', u+'matomo.php']);
-              _paq.push(['setSiteId', '1']);
-              var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-              g.async=true; g.src='https://cdn.matomo.cloud/stkpocvuepressthemehopenetlifyapp.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
-            })();
-          </script>
-          <!-- End Matomo Code -->`
+       `<!-- Matomo Tag Manager -->
+        <script>
+          var _mtm = window._mtm = window._mtm || [];
+          _mtm.push({'mtm.startTime': (new Date().getTime()), 'event': 'mtm.Start'});
+          (function() {
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.async=true; g.src='https://cdn.matomo.cloud/stkpocvuepressthemehopenetlifyapp.matomo.cloud/container_aV0gfOSt.js'; s.parentNode.insertBefore(g,s);
+          })();
+        </script>
+        <!-- End Matomo Tag Manager -->`
         ,
     ],
   ],
