@@ -20,8 +20,7 @@ export default defineUserConfig({
     [
       "script",
       {},      
-       `<!-- Matomo Tag Manager -->
-        <script>
+       ` <script>
           var _mtm = window._mtm = window._mtm || [];
           _mtm.push({'mtm.startTime': (new Date().getTime()), 'event': 'mtm.Start'});
           (function() {
@@ -29,7 +28,6 @@ export default defineUserConfig({
             g.async=true; g.src='https://cdn.matomo.cloud/stkpocvuepressthemehopenetlifyapp.matomo.cloud/container_aV0gfOSt.js'; s.parentNode.insertBefore(g,s);
           })();
         </script>
-        <!-- End Matomo Tag Manager -->`
         ,
     ],
   ],
