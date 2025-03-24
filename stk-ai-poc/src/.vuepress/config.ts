@@ -50,32 +50,44 @@ export default defineUserConfig({
       {},
       `
       document.addEventListener("DOMContentLoaded", function () {
-    var observer = new MutationObserver(function (mutationsList, observer) {
-      for (var mutation of mutationsList) {
-        if (mutation.type === "childList") {
-          // Verifica se o elemento com ID "search-pro" foi adicionado
-          var searchInput = document.getElementById("search-pro");
-          if (searchInput) {
-            // Adiciona o listener ao elemento de input
-            searchInput.addEventListener("input", function (event) {
+  var observer = new MutationObserver(function (mutationsList, observer) {
+    for (var mutation of mutationsList) {
+      if (mutation.type === "childList") {
+        // Verifica se o elemento com ID "search-pro" foi adicionado
+        var searchInput = document.getElementById("search-pro");
+        if (searchInput) {
+          // Adiciona o listener para capturar o evento de pressionar "Enter"
+          searchInput.addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
               var inputValue = event.target.value;
               // Envia o valor capturado como um evento para o OpenReplay
               if (window.OpenReplay && window.OpenReplay.event) {
                 window.OpenReplay.event("search_input", { value: inputValue });
               }
-              console.log("Texto capturado:", inputValue); // Apenas para depuração
-            });
+              console.log("Texto enviado ao pressionar Enter:", inputValue); // Apenas para depuração
+            }
+          });
 
-            // Após encontrar o elemento e adicionar o listener, podemos desconectar o observer
-            observer.disconnect();
-          }
+          // Adiciona o listener para capturar o evento de clicar fora do input
+          searchInput.addEventListener("blur", function (event) {
+            var inputValue = event.target.value;
+            // Envia o valor capturado como um evento para o OpenReplay
+            if (window.OpenReplay && window.OpenReplay.event) {
+              window.OpenReplay.event("search_input", { value: inputValue });
+            }
+            console.log("Texto enviado ao perder o foco:", inputValue); // Apenas para depuração
+          });
+
+          // Após encontrar o elemento e adicionar os listeners, podemos desconectar o observer
+          observer.disconnect();
         }
       }
-    });
-
-    // Configura o observer para monitorar alterações no body
-    observer.observe(document.body, { childList: true, subtree: true });
+    }
   });
+
+  // Configura o observer para monitorar alterações no body
+  observer.observe(document.body, { childList: true, subtree: true });
+});
       `,
     ],
 
