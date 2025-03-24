@@ -1,0 +1,41 @@
+// you can change colors here
+
+/* Estilo para o tema claro */
+[data-theme="light"] .vp-icon {
+  filter: invert(1);
+}
+
+/* Estilo para o tema escuro*/
+[data-theme="dark"] .vp-icon {
+  filter: none;
+}
+
+/* Estilo para o tema claro */
+[data-theme="light"] footer picture img {
+  content: url('/assets/image/logo-light-footer.svg');
+  width: 100%; /* Define a largura da imagem como 100% do container */
+  max-width: 200px; /* Define um limite máximo para a largura da imagem */
+  display: block; /* Garante que a imagem fique em uma nova linha */
+  margin: 0 auto; /* Centraliza a imagem */
+}
+
+/* Estilo para o tema escuro */
+[data-theme="dark"] footer picture img {
+  content: url('/assets/image/logo-dark-footer.svg');
+  width: 100%; /* Define a largura da imagem como 100% do container */
+  max-width: 200px; /* Define um limite máximo para a largura da imagem */
+  display: block; /* Garante que a imagem fique em uma nova linha */
+  margin: 0 auto; /* Centraliza a imagem */
+}
+
+/* Estilo geral para o footer */
+footer {
+  text-align: center;
+  padding: 20px;
+}
+
+footer p {
+  font-size: 1em; /* Define o tamanho do texto */
+  color: #666;
+  margin-top: 10px; /* Adiciona espaço entre a imagem e o texto */
+}
