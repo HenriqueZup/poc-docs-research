@@ -21,8 +21,7 @@ export default defineUserConfig({
     [
       "script",
       {},
-      `\
-        <script>
+      `
           var initOpts = {
             projectKey: "PIaRRuIghVZcnCFjjBlc",
             defaultInputMode: 2,
@@ -44,7 +43,6 @@ export default defineUserConfig({
             r.isActive=function(){return false};
             r.getSessionToken=function(){};
           })("//static.openreplay.com/latest/openreplay.js",1,0,initOpts,startOpts);
-        </script>
       `,
     ],
     
