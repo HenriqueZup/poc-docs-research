@@ -44,7 +44,8 @@ export default defineUserConfig({
             r.getSessionToken=function(){};
           })("//static.openreplay.com/latest/openreplay.js",1,0,initOpts,startOpts);
       `,
-
+    ],
+    [
       "script",
       {},
       `
