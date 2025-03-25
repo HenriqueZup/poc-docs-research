@@ -35,5 +35,15 @@
     "markdown-it-anchor": "^9.2.0",
     "markdown-it-emoji": "2.0.2",
     "markdown-it-toc-done-right": "^4.2.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "highlight.js@>=9.0.0 <10.4.1": ">=10.4.1",
+      "postcss@<8.4.31": ">=8.4.31",
+      "braces@<3.0.3": ">=3.0.3",
+      "micromatch@<4.0.8": ">=4.0.8",
+      "http-proxy-middleware@<2.0.7": ">=2.0.7",
+      "esbuild@<=0.24.2": ">=0.25.0"
+    }
   }
 }
