@@ -1,0 +1,199 @@
+---
+title: "Atividades"
+sidebar_position: 2
+description: Conheça o painel de Atividades.
+sidebar_custom_props: 
+  icon: Activity
+---  
+
+> Nesta seção, você encontra como funciona o painel de Atividades da sua Aplicação e Infraestrutura.
+
+<br/>
+
+Na seção Atividades, você encontra informações sobre as atividades feitas na sua Aplicação ou Infraestrutura. 
+
+As atividades podem ser:
+
+- Workflows;
+- Actions;
+- Deploy;
+- Rollback (Reverter);  
+- Destroy; 
+- Mudanças de Infraestrutura.     
+
+Porém, para **visualizar as atividades** feitas no repositório da sua Aplicação **cujo [deploy foi feito via pipeline](deployment/deploy/register-app-deployment.mdx) ou [Self-hosted](deployment/deploy/self-hosted-runtime.mdx)**, você precisa configurar um **Web-hook dentro do GitHub** que permite que essas atividades sejam registradas no Portal da StackSpot EDP. Para fazer isso, confira os passos a seguir: 
+
+:::warning Atenção! 
+
+Se o seu Deploy foi feito via [**StackSpot Runtime Engine**](deployment/runtime-engine/intro-runtime-engine.mdx), você visualiza as atividades da sua Aplicação **de forma automática** dentro do Portal da StackSpot EDP. Ou seja, **não precisa configurar o Web-hook**. 
+
+Porém, o fluxo de configuração de Deploy na StackSpot feito desta forma só está disponível para:
+
+1. **Contas Enterprise criadas antes de 2024**.
+
+**Contas Enterprise criadas a partir de Janeiro de 2024** devem fazer Deploy via [**Runtime Self-hosted**](deployment/deploy/self-hosted-runtime.mdx). 
+
+::: 
+
+## **Configurar Webhook para registrar atividades do repositório da Aplicação implantada via pipeline ou Self-hosted** 
+
+### **Pré-requisitos**: 
+
+1. **Permissões**: Você precisa ter permissão de **criar e editar repositórios** na conta do Github; 
+2. **Validação do account-slug na URL**: O account-slug deve ser válido e cadastrado na StackSpot.
+3. **Cadastro do repositório**: O repositório associado ao webhook deve estar cadastrado em uma Aplicação.
+4. **Restrições de IP**: A URL do webhook só pode ser acessada por IPs do GitHub, não sendo possível executar a chamada localmente.
+
+### **Passos para configurar**
+
+**Passo 1.** Faça login na sua conta do Github e **acesse o repositório da sua Aplicação** o qual você quer registrar os logs no Portal da StackSpot EDP; 
+
+**Passo 2.** Dentro do repositório, clique na aba **Settings**, como indicado na imagem a seguir;
+
+![Captura de tela de um repositório no Github com um quadrado indicando onde está a aba settings](/img/setup-webhook-activities-1.png)
+
+**Passo 3.** Dentro das configurações, clique em **Webhooks** no menu lateral esquerdo; 
+
+**Passo 4.** Em Webhooks, clique em **Add Webhook**; 
+
+**Passo 5.** Preencha os campos do formulário aberto da seguinte forma para configurar o Webhook: 
+
+- **Payload URL**: insira a url `https://workflow-api.v1.stackspot.com/accounts/account-slug/github/webhook`. Insira o **slug da sua conta StackSpot no lugar de `account-slug`**.  
+
+:::info Informação Adicional 
+
+- Se sua conta for do tipo **Enterprise**, o slug da sua conta StackSpot normalmente é o nome da sua Empresa.
+- Se sua conta for do tipo **Personal**, o slug da sua conta é o seu nome. Se você tiver mais de um nome, separe-os por hifens. 
+::: 
+
+- **Content type**: selecione **'application/json'**; 
+- **Secret**: deixe vazio;
+- **SSL Verification**: escolha a opção **'Enable SSL verification'**;
+- **Which events would you like to trigger this webhook?**: selecione os eventos que você quer mandar para a StackSpot. Clique em **Let me select individual events** e selecione: **'Workflow runs'** e **'Workflow jobs'**
+- **Active**: deixe a caixa marcada. 
+
+**Passo 6.** Clique no botão **'Add webhook'**; 
+
+Pronto, você configurou o Webhook. 
+
+## **Encontrar seção de Atividades no Portal** 
+
+Para encontrar a seção de Atividades, siga os passos:
+
+**Passo 1.** Entre no seu Workspace;
+
+**Passo 2.** No menu principal:
+
+- Clique em **'Aplicações'** e selecione a Aplicação que você quer ver as atividades; ou
+- Clique em **'Infraestruturas'** e selecione a que você quer ver as atividades;
+
+**Passo 3.** Dentro da Aplicação ou da Infraestrutura, no menu principal, clique em **'Atividades'**;
+
+Pronto, você está no dashboard de Atividades.
+
+O dashboard é dividido por abas e para ver todas as atividades em um só lugar, clique em **'Todas as atividades'**.
+
+Confira mais detalhes sobre cada subseção:
+
+## **Todas as Atividades**
+
+Na aba **'Todas as atividades'**, você pode acompanhar os status dos Plugins que estão em deployment. 
+
+Nesta tela, você pode ver outros detalhes, como por exemplo:
+
+- Histórico dos Plugins  
+- Data  
+- Versão  
+- Se houver erro, a mensagem dele será exibida.  
+- Status de cada Plugin. Ele pode ser:  
+  - **Sucesso**: o Plugin foi aplicado com sucesso no deploy.  
+  - **Erro**: houve um erro no deploy no ambiente em que o Plugin seria aplicado. [**Para mais detalhes, confira os principais erros na seção de Troubleshooting**](home/troubleshooting.mdx) e as possível soluções para eles.  
+
+![Captura de tela do portal da StackSpot EDP exibindo a seção de atividades. A interface mostra uma lista de atividades recentes realizadas no ambiente, com informações como data, hora e descrição de cada ação.](/img/activities.png)
+
+## **Atividades de Actions** 
+
+Na aba **'Actions'** em Atividades, você pode acompanhar os status das Actions executadas em recursos já provisionados de Aplicações e Infraestruturas.
+
+Nesta tela, você pode ver detalhes de cada Action, como:
+
+- O histórico;
+- Status;
+- Identificar quem executou a Action;
+
+## **Atividades de Deploy**
+
+Nesta tela, você pode:
+
+- Acompanhar o histórico de deploys realizados com suas respectivas versões;
+- Acompanhar os status de cada deploy realizado;
+- Identificar quem fez o deploy;
+- Fazer o **rollback de versão da sua Aplicação ou da Infraestrutura**.
+
+### **Como fazer Rollback (Reverter)**
+
+Siga os passos:
+
+**Passo 1.** Vá para a aba **'Deploy'** em Atividades;
+
+**Passo 2.** Clique no botão com a seta para baixo, no canto direito da atividade de deploy que você quer fazer o rollback;
+
+**Passo 3.** Clique no botão **'Rollback'**;
+
+**Passo 4.** Verifique as informações na tela de resumo da versão atual e da versão anterior. Após verificar, clique no botão **'Rollback'** novamente;
+
+O Rollback demora alguns minutos, mas você também pode conferir o status dessa atividade no Dashboard de Atividades.
+
+
+<!--
+## Atividades de Desvio
+
+Na aba **Desvios**, você acompanha os Desvios detectados pela Runtime Engine e onde você pode fazer a Reconciliação automática
+
+Nesta tela, você pode:
+
+- Acompanhar o histórico e os status de cada Desvio;
+- Identificar quem executou o desvio;
+- Identificar o status de Reconciliação.
+
+### **Como fazer Reconciliação**
+
+Siga os passos:
+
+**Passo 1.** Vá para a aba **'Desvio'** em Atividades;
+
+**Passo 2.** Clique no botão com a seta para baixo, no canto direito do Desvio que você quer fazer a Reconciliação;
+
+**Passo 3.** Clique no botão **'Reconciliação'**;
+
+**Passo 4.** Verifique as informações na tela de resumo do valor atual e dos valores corretos. Após verificar, clique no botão **'Reconciliação'** novamente;
+
+Pronto! O Reconciliação pode demorar alguns minutos, mas você também pode conferir o status dessa atividade no Dashboard de Atividades.
+
+Para mais detalhes sobre Desvio, confira a página:
+
+- [**Detecção de Desvios**](deployment/runtime-engine/drift-detection.mdx)
+-->
+
+## **Atividades de Workflows**
+
+Na aba de Workflows, você pode acompanhar os eventos de Workflows gerados a partir dos comandos **`stk create app`** e **`stk create infra`**.
+
+Nesta tela, você pode:
+
+- Ver os status do Workflow.
+- Identificar quem iniciou e qual horário o Workflow foi iniciado.
+- Identificar quais Actions o Workflow está executando.
+- Ver logs de execução dentro do Workflow.
+
+### **Logs de execução do Workflow**
+
+Sigas os passos para ver os logs:
+
+**Passo 1.** Vá para a aba **'Workflow'** em Atividades;
+
+**Passo 2.** Selecione o Workflow que você quer ver os logs de execução;
+
+**Passo 3.** Clique no botão **'Ver logs de execução'**.
+
+Pronto, você acessou os logs!

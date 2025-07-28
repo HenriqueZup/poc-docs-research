@@ -1,0 +1,158 @@
+---
+title: "Configurar conta Cloud AWS"
+sidebar_position: 9
+description: Configure a sua conta cloud AWS na StackSpot.
+sidebar_custom_props: 
+  icon: Draggable
+---
+
+> Nesta seção, você encontra um guia de como configurar sua conta Cloud AWS na StackSpot.
+
+<br/>
+
+
+Você deve configurar uma conta Cloud na StackSpot para conseguir fazer o deploy das suas Aplicações. Esta configuração é feita dentro do seu Workspace, mas antes é preciso delegar o acesso entre contas AWS usando funções do IAM para conceder à StackSpot o acesso ao perfil da sua Conta.
+
+
+
+## **Pré-requisitos**
+
+- Possuir acesso ao console da AWS;
+- Possuir acesso a um Workspace;
+- Possuir um ambiente para ser utilizado no seu Workspace;
+- Possuir permissão para gerenciar contas de Cloud em sua conta StackSpot: `cloud_services:manage_cloud_account`. Confira [**como adicionar essa permissão em sua conta**](home/account/organization/access-management/roles.mdx).
+- Ter permissão para configurar o IAM. 
+
+:::caution Cuidado!
+
+O fluxo de configuração e adição de contas Cloud na StackSpot desta forma só está disponível para:
+
+- **Contas Enterprise criadas antes de 2024**.
+
+<br/>
+
+**Contas Enterprise criadas a partir de Janeiro de 2024** devem conectar suas contas Cloud via [**Self-hosted**](deployment/deploy/self-hosted-runtime.mdx). 
+
+:::
+
+## **Passo 1. Criar função IAM**
+
+Na página da Amazon AWS:
+
+1. Faça o [**login na sua Conta AWS**](https://console.aws.amazon.com/);
+2. No menu localizado no lado superior esquerdo da página, clique no botão **'Services'** e, em seguida, **'All Services'**;
+3. Identifique e acesse na lista o '**IAM** (Identity and Access management)';
+4. No painel lateral esquerdo, no menu **'Access Management'**, clique em **'Roles'**;
+5. Na tela de **'Roles'**, clique no botão **'Create role'**;
+
+<br/>
+<img src="/img/create-iam-role-1.gif" title="IAM Role" alt="IAM Role creation" width="500px"/>
+<br/><br/>
+
+6. Na tela **'Select trusted entity'**, em **'Trusted entity type'**, marque a opção **'AWS account'**; 
+7. Em seguida, na seção **'An AWS account'**, selecione a opção **'Another AWS account'**:
+
+<br/>
+  
+  - Insira o ID da conta AWS da StackSpot.
+  
+  ```bash
+  742799255367
+  ```
+
+  <br/>
+  <img src="/img/create-iam-role-2.png" title="AWS Account" alt="StackSpot AWS Account" width="500px"/>
+  <br/><br/>
+  
+  > O ID da conta é um número de 12 dígitos. Em seguida, clique no botão **'Next'**;
+
+<br/>
+
+8. Na tela **'Add permissions'**, marque entre as policies gerenciadas pela AWS e as gerenciadas pelo cliente. 
+
+<br/>
+
+As [**policies**](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html) devem ser as necessárias para executar o seu recurso de Cloud.
+
+Depois, clique em **'Next'**;
+
+<br/>
+<img src="/img/create-iam-role-3.png" title="Policies" alt="AWS Policies list" width="500px"/>
+<br/><br/>
+
+9. Na tela **'Name, review, and create'**, preencha os campos a seguir:  
+
+<br/>
+
+- **Role name**: insira um nome significativo para identificar esta função. Como por exemplo: **AWSIDRole**.  
+- **Description**: adicione uma breve explicação para esta função.
+
+Confira se a política de confiança possui o **ID da conta AWS StackSpot** e as permissões conforme o exemplo a seguir:
+
+<br/>
+<img src="/img/create-iam-role-4.png" title="Trusted entity" alt="StackSpot Trusted entity" width="500px"/>
+<br/><br/>
+
+Em seguida, clique no botão **'Create role'**;
+
+10. Você será redirecionado para a lista de funções. Localize a função criada e clique sobre ela. Na tela de **Summary** da função:
+
+<br/>
+
+1. Localize e salve o número do **`ARN`**;    
+2. Na aba **'Trust relationships'**, clique em **'Edit trust policy'** e substitua o JSON atual pelo código a seguir:
+
+<br/>
+<img src="/img/create-iam-role-5.png" title="IAM Role Summary" alt="IAM Role ARN" width="500px"/> 
+<br/><br/>
+
+:::warning Atenção!
+
+A AWS role: **"`arn:aws:iam::742799255367:role/runtime-manager`"** será depreciada, caso você ainda utilize esta role, altere para **"`"arn:aws:iam::742799255367:role/stackspot"`"** como no exemplo a seguir
+
+:::
+
+```json title="trust policy"
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowStackspotRuntime",
+            "Effect": "Allow",
+            "Principal": {
+// new-line                
+                "AWS": "arn:aws:iam::742799255367:role/stackspot"
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}
+```
+
+## **Passo 2. Conectar sua conta no ambiente do seu Workspace**
+
+Na StackSpot:
+
+1. Faça o [**login na Plataforma**](https://app.stackspot.com/login);
+2. Acesse o seu Workpace;
+3. No menu principal, em Configurações, clique em **“Contas de cloud”**;
+4. Localize o ambiente que você vai usar e clique em **"Conectar cloud"**;
+5. Em **"Selecionar Cloud Provider"** escolha a opção **"AWS"**;    
+6. Insira o ARN gerado anteriormente na criação da função e clique no botão **“Próximo”**;
+7. Confira os dados e clique no botão **“Conectar Cloud”**.
+
+## **Desconectar conta Cloud**
+
+1. Faça o [**login na Plataforma**](https://app.stackspot.com/login);
+2. Acesse o seu Workpace;
+3. No menu principal, em Configurações, clique em **“Cloud Account”**;
+4. Selecione o ambiente que você deseja desconectar a conta cloud e clique em:
+
+- **Disconnect Cloud Account** para desconectar o ambiente desejado;
+- **Disconnect All** para desconectar todos os ambientes daquele Workspace.
+
+> Cada ambiente possui a informação **'Connected'** quando possuir uma conta cloud conectada ou **Disconnected** quando não houver.
+
+## **Próximo passo**
+
+- Fazer o Deploy da sua Aplicação. [**Confira a seção de Deploy**](deployment/runtime-engine/app-deployment.mdx)

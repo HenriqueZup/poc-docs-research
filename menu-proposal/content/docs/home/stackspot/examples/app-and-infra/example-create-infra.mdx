@@ -1,0 +1,507 @@
+---
+title: "Criar Infraestrutura com deploy no STK CLI"
+sidebar_position: 11
+description: Exemplo de como criar uma Infraestrutura na STK CLI aplicando um Plugin por vez.
+---
+
+## **Introdução**
+
+- **Nível Intermediário**
+
+Este exemplo mostra:
+
+- Como criar uma Infraestrutura aplicando um Plugin por vez.
+- Como registrar essa Infraestrutura. 
+- Como fazer o deploy dessa Infraestrutura.
+
+## **Pré-requisitos**
+
+1. [**STK CLI**](https://www.stackspot.com/pt/download-pt) instalado;
+
+2. Estar **logado na conta** StackSpot. Para isso, executar o comando no terminal:
+
+```bash
+stk login
+```
+
+3. Estar dentro de um Workspace, nesse exemplo o Workspace é chamado Runtimes.
+
+4. Ter uma Stack de infraestrutura pronta adicionada ao Workspace. Neste exemplo será utilizado uma Stack com os seguintes [**Plugins de Infra**](create-use/create-content/plugin/plugins.mdx) já criados:
+
+- **s3-bucket:** este plugin gera um bucket s3.
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<details> 
+<summary>Confira os arquivos do Plugin e Terraform</summary> 
+<Tabs>
+<TabItem value="plugin.yaml" label="plugin.yaml" default>
+
+```yaml 
+schema-version: v2
+kind: plugin
+metadata:
+  name: s3-bucket
+  display-name: s3-bucket
+  description: aws s3 bucket
+  version: 0.0.1
+spec:
+  type: infra
+  runtime:
+    environment:
+      - terraform-1-3
+  about: docs/about.md
+  implementation: docs/implementation.md
+  release-notes: docs/release-notes-0.0.1.md
+  requirements: docs/requirements.md
+  technologies: # Ref: https://docs.stackspot.com/content-creator/studio/yaml-files/plugin-yaml/#technologies
+    - AWS S3
+  generates:
+    connections:
+      - type: aws-s3-conn
+        alias: created-s3-bucket
+        outputs:
+          - from: aws-s3-arn
+            to: arn
+          - from: aws-s3-bucket-name
+            to: bucket_name
+  inputs:
+    - label: Name
+      name: name
+      type: text
+      required: true 
+      help: 'Inform your resource name'
+```
+</TabItem>
+<TabItem value=".tf" label=".tf">
+
+```
+resource "aws_s3_bucket" "{{ name }}" {
+  bucket = "{{ name }}-bucket"
+  acl    = "private"
+}
+output "aws-s3-bucket-name" {
+  value = aws_s3_bucket.{{ name }}.id
+}
+
+output "aws-s3-arn" {
+  value = aws_s3_bucket.{{ name }}.arn
+}
+```
+
+</TabItem>
+</Tabs>
+</details>
+
+- **s3-create-and-publish:** Este Plugin exige Connection Interfaces do tipo **`sqs`** e do tipo **`s3`**. O Plugin utiliza o **`arn`** do **`sqs`** para criar um arquivo com o conteúdo do próprio **`arn`** do **`sqs`**. E também faz o upload desse arquivo para o s3 utilizado.
+
+<details> 
+<summary>Confira os arquivos do Plugin e Terraform</summary> 
+<Tabs>
+  <TabItem value="plugin.yaml" label="plugin.yaml" default>
+
+```yaml 
+schema-version: v2
+kind: plugin
+metadata:
+  name: s3-create-and-publish
+  display-name: s3-create-and-publish
+  description: create a file and publish file on s3
+  version: 0.0.1
+spec:
+  type: infra
+  runtime:
+    environment:
+      - terraform-1-3
+  about: docs/about.md
+  implementation: docs/implementation.md
+  release-notes: docs/release-notes-0.0.1.md
+  requirements: docs/requirements.md
+  technologies: # Ref: https://docs.stackspot.com/content-creator/studio/yaml-files/plugin-yaml/#technologies
+    - AWS S3
+  requires:
+    connections:
+      - type: aws-s3-conn
+        alias: my-s3
+      - type: aws-sqs-conn
+        alias: my-sqs
+  generates:
+    connections: []
+  inputs:
+    - label: Name
+      name: name
+      type: text
+      required: true 
+      help: 'Inform your resource name'
+    - label: File Path
+      name: path
+      type: text
+      required: true 
+      help: 'Inform file path'
+```
+  
+  </TabItem>
+  <TabItem value=".tf" label=".tf">
+
+```
+resource "local_file" "{{ name }}" {
+  content  = "{{ connections['my-sqs'].arn }}"
+  filename = "{{ path }}"
+}
+
+resource "aws_s3_bucket_object" "{{ name }}_create_and_publish" {
+  bucket = "{{ connections['my-s3'].bucket_name }}"
+  key    = "{{ path }}"
+  source = "{{ path }}"
+
+  depends_on = [ local_file.{{ name }} ]
+}
+```
+
+  </TabItem>
+</Tabs>
+</details>
+
+- **sqs-queues:** É um **`sqs`** simples. Esse plugin gera duas Connection Interfaces do tipo **`sqs`**, simulando a criação de uma fila e a **DLQ** [Fila de Mensagem não entregue](https://aws.amazon.com/pt/what-is/dead-letter-queue/) associada.
+
+<details> 
+<summary> Confira os arquivos do Plugin e Terraform  </summary>
+
+<Tabs>
+  <TabItem value="plugin.yaml" label="plugin.yaml" default>
+
+```yaml 
+schema-version: v2
+kind: plugin
+metadata:
+  name: sqs-queues
+  display-name: sqs-queues
+  description: aws sqs queue and dlq
+  version: 0.0.2
+spec:
+  type: infra
+  runtime:
+    environment:
+      - terraform-1-3
+  about: docs/about.md
+  implementation: docs/implementation.md
+  release-notes: docs/release-notes-0.0.1.md
+  requirements: docs/requirements.md
+  technologies: # Ref: https://docs.stackspot.com/content-creator/studio/yaml-files/plugin-yaml/#technologies
+    - AWS SNS
+  generates:
+    connections:
+      - type: aws-sqs-conn
+        alias: created-queue
+        outputs:
+          - from: sqs-arn
+            to: arn
+          - from: sqs-url
+            to: url
+          - from: sqs-queue-name
+            to: queue_name
+      - type: aws-sqs-conn
+        alias: created-queue-dlq
+        outputs:
+          - from: sqs-dlq-arn
+            to: arn
+          - from: sqs-dlq-url
+            to: url
+          - from: sqs-dlq-queue-name
+            to: queue_name
+  inputs:
+    - label: Name
+      name: name
+      type: text
+      required: true 
+      help: 'Inform your resource name'
+```
+  
+  </TabItem>
+  <TabItem value=".tf" label=".tf">
+
+```
+resource "aws_sqs_queue" "{{ name }}" {
+  name                       = "{{ name }}_queue"
+  receive_wait_time_seconds  = 20
+  message_retention_seconds  = 43200
+  visibility_timeout_seconds = 900
+}
+
+resource "aws_sqs_queue" "{{ name }}_dlq" {
+  name                       = "{{ name }}_queue_dlq"
+  receive_wait_time_seconds  = 20
+  message_retention_seconds  = 43200
+  visibility_timeout_seconds = 900
+}
+output "sqs-queue-name" {
+  value = "{{ name }}_queue"
+}
+
+output "sqs-arn" {
+  value = aws_sqs_queue.{{ name }}.arn
+}
+
+output "sqs-url" {
+  value = aws_sqs_queue.{{ name }}.id
+}
+
+output "sqs-dlq-queue-name" {
+  value = "{{ name }}_queue_dlq"
+}
+
+output "sqs-dlq-arn" {
+  value = aws_sqs_queue.{{ name }}_dlq.arn
+}
+
+output "sqs-dlq-url" {
+  value = aws_sqs_queue.{{ name }}_dlq.id
+}
+```
+
+  </TabItem>
+</Tabs>
+</details>
+
+
+## **Passos para criação, registro e deploy da Infraestrutura**
+
+
+### **Criar Infraestrutura e aplicar Plugins**
+
+**Passo 1.** No terminal, acessar o Workspace para criar a Infraestrutura. 
+
+```bash
+stk use workspace runtimes 
+```
+
+**Passo 2.** Agora é o momento de criar a Infraestrutura. Para isso, é preciso executar o comando no terminal: 
+
+```bash
+stk create infra 
+``` 
+
+Depois disso, responder as perguntas da STK CLI com os seguintes dados:
+
+- **? Name your infrastructure:** example-infra-1
+
+- **? Do you want to init a git repository?** No
+
+- **? Infrastructure description:** Exemplo de deploy por Plugin
+
+- **? Select the studio:** estudio-nome
+
+> Neste momento, você seleciona o estúdio onde a Stack se encontra.
+
+- **? Select the Stack:**  example-stack
+
+> Selecionar a Stack descrita nos pré-requisitos acima.
+
+- **? Select the desired infra plugins:** [s3-bucket@0.0.1]
+
+> Selecionar apenas o **`bucket-s3`**. Isso para aplicar um plugin de cada vez.
+
+- **? Name de usage of the plugin (runtime-demo-dbp/deploy-by-plugin/s3-bucket):** bucket-1
+
+> Esse é o spec **`alias` de aplicação do Plugin**. É o nome que você dá para a utilização do Plugin na sua Infraestrutura, pois ele pode ser aplicado mais de uma vez.
+
+- **? Name the connector for 'created-s3-bucket (aws-s3-conn)'**: deploy-by-plugin-s3-example
+
+> O nome da Connection Interface que será criada no Portal da StackSpot.
+
+- **? Name:** deploy-by-plugin-s3-exemplo
+
+> Nome do recurso que será criado na AWS.
+
+Depois de responder todas as perguntas e apertar **enter**. O **primeiro Plugin foi aplicado** e a Infraestrutura foi **criada**.  
+
+Agora, o **segundo Plugin deste exemplo será aplicado**. É o Plugin de **`sqs`** .
+
+**Passo 3.** **Acessar novamente a pasta do projeto da Infraestrutura**. Executar o comando:
+
+```bash
+cd example-infra-1
+```
+
+**Passo 4.** Executar o comando para aplicar o Plugin **`sqs-queues`**:
+
+```bash
+stk apply plugin studio-name/example-stack/sqs-queues
+
+```
+
+Depois disso, responder as perguntas da STK CLI com os seguintes dados:
+
+- **? Name de usage of the plugin (studio-name/example-stack/sqs-queues)**: sqs-1
+
+> Esse é o spec **`alias` de aplicação do Plugin**. É o nome que você dá para a utilização do Plugin na sua Infraestrutura, pois ele pode ser aplicado mais de uma vez.
+
+**? Name de connector for 'created-queue (aws-sqs-conn)':** sqs-example 
+> É o nome da Connection Interface que será criada no Portal da StackSpot.
+
+**? Name de connector for 'created-queue-dlq (aws-sqs-conn)':** sqs-dlq-example 
+> Nome da Connection Interface que será criada no Portal da StackSpot.
+
+**? Name sqs-example:** sqs-example
+> Nome do recurso que será criado na AWS.
+
+Pronto! O **segundo Plugin** foi aplicado.
+
+**Passo 5.** Agora só falta aplicar o Plugin **`s3-create-and-publish`**.
+
+Para isso, executar o comando:
+
+```bash
+stk apply plugin studio-name/example-stack/s3-create-and-publish
+```
+
+Em seguida, responder as perguntas:
+
+- **? Name the usage of the plugin (studio-name/example-stack/s3-create-and-publish):**
+s3-publish
+
+> Esse é o spec **`alias` de aplicação do Plugin**. É o nome que você dá para a utilização do Plugin na sua Infraestrutura, pois ele pode ser aplicado mais de uma vez.
+
+- **? Choose a connector for 'aws-s3-conn (my-s3)':** deploy-by-plugin-s3-exemplo
+
+> selecionar: s3-example
+
+- **? Choose a connector for 'aws-sqs-conn (my-sqs)':** sqs-example
+
+> Neste exemplo, tem apenas uma Connection Interface do tipo **sns** disponível. O STK CLI automaticamente já escolheu essa opção.
+
+- **? Name:** s3-publish
+
+- **? File Path:** create_files/deploy_by_plugin_file.txt
+
+> É um parâmetro do Plugin que indica onde você quer colocar o arquivo que será criado.
+
+Pronto! O **último Plugin foi aplicado** e agora a Infraestrutura está criada.
+
+O arquivo de **stk.yaml** gerado pela Infraestrutura deve ser igual a este:
+
+<details>
+<summary> Confira o arquivo stk.yaml da Infraestrutura </summary>
+
+```yaml
+schema-version: v2
+kind: manifest
+metadata:
+  name: example-infra-1
+  description: exemplo de deploy por plugin
+  stack-version-id: 01H96ESKYYGVW18V90CNM196MC
+  stack: example-stack
+spec:
+  type: infra
+  infra-id: 01H96FE739PKBVJFZ9TA2P6JDD
+  plugins:
+    - name: studio-name/example-stack@0.1.0/s3-bucket@0.0.1
+      alias: bucket-1
+      plugin-version-id: 01H96ENMCGRSTTZ9F70Q7R3GKZ
+      stack-version-id: 01H96ESKYYGVW18V90CNM196MC
+      type: infra
+      inputs:
+        name: deploy-by-plugin-s3-exempl
+      inputs-envs: {}
+      connections:
+        generates:
+          - type: aws-s3-conn
+            selected: deploy-by-plugin-s3-exemplo
+            alias: created-s3-bucket
+        requires: []
+      links:
+        generates: []
+    - name: studio-name/example-stack@0.2.0/sqs-queues@0.0.2
+      alias: sqs-1
+      plugin-version-id: 01H96FQ6HS3HRAMXPNF3JFKWVC
+      stack-version-id: 01H96FR353X94TJTFTCYHHJ6NB
+      type: infra
+      inputs:
+        name: sqs-example
+      inputs-envs: {}
+      connections:
+        generates:
+          - type: aws-sqs-conn
+            selected: sqs-example
+            alias: created-queue
+          - type: aws-sqs-conn
+            selected: sqs-dlq-example
+            alias: created-queue-dlq
+        requires: []
+      links:
+        generates: []
+    - name: studio-name/example-stack@0.1.0/s3-create-and-publish@0.0.1
+      alias: s3-publish
+      plugin-version-id: 01H96EPFS2N0176PHG1SB0SQY9
+      stack-version-id: 01H96ESKYYGVW18V90CNM196MC
+      type: infra
+      inputs:
+        name: s3-publish
+        path: create_files/deploy_by_plugin_file.txt
+      inputs-envs: {}
+      connections:
+        generates: []
+        requires:
+          - type: aws-s3-conn
+            selected: deploy-by-plugin-s3-exemplo
+            alias: my-s3
+          - type: aws-sqs-conn
+            selected: sqs-example
+            alias: my-sqs
+      links:
+        generates: []
+  global-inputs: {}
+  global-computed-inputs: {}
+  repository: https://github.com/repository
+```
+</details>
+
+:::info Informação Adicional
+
+Com o spec **`alias`**, é possível fazer uma **ligação** entre o **nome** que o criador do Plugin (ou dos Plugins) colocou na Connection Interface na hora de criá-lo. E, o **tipo de Connection Interface** que existe dentro do Workspace que a pessoa desenvolvedora irá usar para criar a Infraestrutura.
+
+:::
+
+### **Registrar Infraestrutura**
+
+Depois que você criar a Infraestrutura, é preciso ser **registrá-la**. Para isso, executar o comando:
+
+```bash
+stk register infra
+```
+
+Depois disso, responder algumas perguntas no terminal:
+
+**? Repository URL:** Link do repositório onde a Infraestrutura deve estar.
+**? Base branch:** main
+
+Pronto, você registrou a Infraestrutura.
+
+Você pode visualizar a Infraestrutura no Workspace dentro do [**Portal da StackSpot**](https://app.stackspot.com/login). Acessar onde a Infraestrutura foi criada e entrar na seção **'Infraestrutura'** do menu principal.
+
+### **Fazer deploy da Infraestrutura**
+
+Depois de registrar, é o momento de fazer o deploy da Infraestrutura.
+
+Para isso, executar o comando:
+
+```bash
+stk deploy infra  –version v1 –env qastaging 
+```
+
+- > A flag **`-version`** indica a versão da Infraestrutura.
+- > A flag **`-env`** indica o ambiente em que o deploy acontecerá.
+
+Agora, o acompanhamento do deploy mostra o status individual por Plugin. Para acompanhar, executar o comando:
+
+```bash
+stk deploy status <id da Infraestrutura> --watch 
+```
+
+Confira como é a visualização:
+
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<ThemedImage alt="Visualização de deploy por plugin." width="auto" sources={{ light: useBaseUrl('/img/status-deploy-by-plugin.png'), dark: useBaseUrl('/img/status-deploy-by-plugin.png'), }} />

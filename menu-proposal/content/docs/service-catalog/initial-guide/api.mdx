@@ -1,0 +1,174 @@
+---
+title: "API"
+sidebar_position: 2
+description: Informações gerais sobre API no Catálogo de Serviços. 
+sidebar_custom_props:
+    icon: SharedInfrastructure
+---
+
+> Nesta seção, você encontra detalhes sobre API no Catálogo de Serviços.
+
+<br/> 
+
+Na StackSpot, a entidade de API representa uma Aplicação exposta como uma API no Catálogo de APIs. Depois que uma API é criada e implantada, é disponibilizada no Catálogo da StackSpot.
+
+A API pode:
+
+- Usar o modelo **code based** criada automaticamente, caso use;
+- Caso use o modelo **contract based**, ela será criada manualmente.
+
+Dentro do Catálogo, você pode acessar as informações das APIs, confira:  
+
+- Lista de todas as APIs disponíveis em uma conta.  
+- Ambiente que as APIs estão associadas.  
+- Versão das APIs.  
+- Documentação.  
+
+Quando uma API é criada no Catálogo, ela pode ter três status:
+
+1. **Rascunho (Draft)**: a API é exibida no Catálogo de Serviços somente para o Workspace dono da API criada. E pode ser publicada por qualquer membro da equipe do Workspace, mas não é exibida no Catálogo para toda organização.
+
+2. **Publicada (Published)**: neste status a API é exibida no Catálogo para toda organização.
+
+3. **Despublicada (Unpublished)**: a API para de ser exibida no Catálogo e também não pode ser publicada novamente, sendo exibida somente no histórico do Catálogo.
+
+:::tip Dica!
+As referências de API já estão prontas para uso.
+:::
+
+### **Exemplo**
+
+Confira o exemplo de conteúdo de API para um arquivo no padrão **OpenAPI 3.0**, que tem os métodos de **`GET`**, **`POST`**, **`PUT`** e **`DELETE`**. Este arquivo é responsável pela "materialização" de uma API no Catálogo de Serviços.
+
+```javascript
+openapi: 3.0.0
+
+info:
+  title: Minha API
+  description: Esta é a minha API
+  version: 1.0.0
+
+paths:
+  /users:
+    get:
+      operationId: getUser
+      description: Obtém um usuário
+      responses:
+        '200':
+          description: Usuário encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Usuário não encontrado
+    post:
+      operationId: createUser
+      description: Cria um usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: Usuário criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Dados inválidos
+  /users/{userId}:
+    get:
+      operationId: getUserById
+      description: Obtém um usuário pelo ID
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Usuário encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Usuário não encontrado
+    put:
+      operationId: updateUser
+      description: Atualiza um usuário
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Usuário atualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Dados inválidos
+    delete:
+      operationId: deleteUser
+      description: Exclui um usuário
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: integer
+          required: true
+      responses:
+        '204':
+          description: Usuário excluído
+        '404':
+          description: Usuário não encontrado
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: João da Silva
+        email:
+          type: string
+          example: joao.da.silva@example.com
+        phone:
+          type: string
+          example: (11) 9999-9999
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+```
+
+:::tip Dica!
+Este é apenas um exemplo. Você pode personalizá-lo de acordo com as necessidades da sua API.
+:::
+
+## **Próximos Passos**
+
+- [**Criar API direto em uma Aplicação**](service-catalog/partner-access/api-app.mdx)
+- [**Criar e Publicar API no Catálogo**](service-catalog/partner-access/api-catalog.mdx)
+- [**Adicionar API a partir de uma Aplicação existente**](service-catalog/partner-access/create-api-app.mdx)
+- [**FAQ**](home/faq.mdx)

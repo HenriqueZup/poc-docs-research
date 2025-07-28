@@ -1,0 +1,171 @@
+---
+title: Papéis
+sidebar_position: 2
+description: Conheça sobre papéis e permissões.
+---
+
+> Nesta seção, você encontra: Detalhes sobre papéis na Conta StackSpot.
+
+<br/>
+
+Na StackSpot, os **papéis categorizam os usuários ou grupos de usuários** e definem as **permissões** que esses usuários têm na conta. Como, por exemplo, quais os dados que podem ler ou os recursos da conta que podem modificar
+
+Confira os **papéis padrão StackSpot**:
+
+**Papel** |  **Descrição** | **Permissões** |
+------------ |  ---------------- | ---------|
+**Account Holder** (`account_holder`) | Este papel tem permissão para executar qualquer ação dentro da Plataforma StackSpot. | Este papel tem todas as [**permissões**](beta-version/access-management/permissions.mdx) existentes na Plataforma. |
+**System Administrator** (`sys_admin`) | Gerencia as principais funcionalidades da StackSpot como um sistema, por exemplo, fazer o gerenciamento de permissão, configuração de SSO e SCM. Este papel tem como objetivo ajudar o Account Holder. | `create_studio`; `view_studio`; `view_private_studio`; `download_plugin`; `create_workspace`; `view_workspace`; `view_application`; `view_shared_infra`; `view_automatic_connection_interface`; `view_api`; `create_environment`; `update_environment`; `view_product`; `create_cloud_provider`; `update_cloud_provider`; `view_custom_cloud_account`; `create_custom_cloud_account`;  `update_custom_cloud_account`; `delete_custom_cloud_account`; `view_managed_cloud_account`; `create_managed_cloud_account`; `update_managed_cloud_account`; `delete_managed_cloud_account`; `view_alert`; `view_cloud_resource`; `download_studio_report`; `download_account_report`; `view_partner`; `update_partner`; `delete_partner`; `associate_shared_account`; `disassociate_shared_account`; `view_sso`; `create_sso`; `update_sso`; `create_group`; `update_group`; `delete_group`; `associate_group`; `disassociate_group`; `view_group`; `create_roles`; `update_roles`; `delete_roles`; `associate_roles`; `disassociate_roles`; `view_roles`; `associate_member`; `create_member`; `update_member`; `view_member`; `create_scm`; `view_scm`; `update_scm`; `create_invites`; `update_invites`; `delete_invites`; `view_credentials`; `create_credentials`; `delete_credentials`; `associate_credentials`; `disassociate_credentials`; `view_resource_type`; `view_personal_access_token`; `create_personal_access_token`| `view_resource`; `view_permission`. |
+**Account Administrator** (`account_admin`) | Este papel tem permissão para auxiliar no gerenciamento das entidades de uma Conta StackSpot, como Workspace, Estúdios e ambientes. Mas não tem permissão para fazer configurações de segurança e integração como, por exemplo, integrar SSO e SCM. | `create_studio`; `update_studio`; `delete_studio`; `view_studio`; `change_visibility_studio`; `associate_workspace_studio`; `disassociate_workspace_studio`; `view_private_studio`; `publish_plugin`; `unpublish_plugin`; `deprecate_plugin`;  `delete_plugin`; `download_plugin`; `create_static_link`; `delete_static_link`; `publish_action`; `unpublish_action`; `deprecate_action`; `download_action`; `publish_stack`; `unpublish_stack`; `deprecate_stack`; `view_stack`; `create_stack`; `update_stack`; `setup_stack`; `deprecate_starter`; `create_workspace`; `update_workspace`; `delete_workspace`; `view_workspace`; `associate_stack`; `disassociate_stack`; `view_stack`; `create_application`; `delete_application`; `update_application`; `deploy_application`; `rollback_application`; `destroy_application`; `view_application`; `create_shared_infra`; `delete_shared_infra`; `update_shared_infra`; `deploy_shared_infra`; `rollback_shared_infra`; `destroy_shared_infra`; `view_shared_infra`; `view_automatic_connection_interface`; `view_api`; `create_api`; `update_api`; `delete_api`; `publish_api`; `unpublish_api`; `create_environment`; `update_environment`; `update_workspace_context`; `view_workspace_context`; `update_account_context`; `view_account_context`; `update_workspace_workflow`; `view_workspace_workflow`; `update_account_workflow`; `view_account_workflow`; `view_product`; `create_product`; `update_product`; `delete_product`; `create_cloud_provider`; `update_cloud_provider`; `view_custom_cloud_account`; `create_custom_cloud_account`;  `update_custom_cloud_account`; `delete_custom_cloud_account`; `view_managed_cloud_account`; `create_managed_cloud_account`; `update_managed_cloud_account`; `delete_managed_cloud_account`; `view_alert`; `view_cloud_resource`; `download_studio_report`; `download_account_report`; `view_studio_dashboard`; `view_partner`; `update_partner`; `delete_partner`; `associate_api`; `disassociate_api`; `grant_access_api`; `view_grant_access_api`; `associate_product`; `disassociate_product`; `view_member`; `update_invite`; `view_resource_type`; `view_personal_access_token`; `create_personal_access_token`|
+**Workspace Administrator** (`workspace_admin`) | Gerencia um ou mais Workspaces. Define padrões (contextos), por exemplo, sobre como as Stacks devem ser utilizadas dentro de um Workspace.  |  `view_studio`; `download_plugin`; `download_action`; `view_stack`; `update_workspace`; `delete_workspace`; `view_workspace`; `associate_stack`; `disassociate_stack`; `view_stack`; `create_application`; `delete_application`; `update_application`; `deploy_application`; `rollback_application`; `destroy_application`; `view_application`; `create_shared_infra`; `delete_shared_infra`; `update_shared_infra`; `deploy_shared_infra`; `rollback_shared_infra`; `destroy_shared_infra`; `view_shared_infra`; `create_connection_interface`; `view_automatic_connection_interface`; `view_api`; `create_api`; `update_api`; `publish_api`; `view_workspace_context`; `update_workspace_context`; `update_workspace_workflow`; `view_workspace_workflow`; `view_product`; `create_product`; `update_product`; `delete_product`; `create_cloud_provider`; `update_cloud_provider`; `view_custom_cloud_account`; `create_custom_cloud_account`;  `update_custom_cloud_account`; `delete_custom_cloud_account`; `view_managed_cloud_account`; `create_managed_cloud_account`; `update_managed_cloud_account`; `delete_managed_cloud_account`; `view_cloud_resource`; `view_grant_access_api`; `view_member`; `view_resource_type`; `view_personal_access_token`; `create_personal_access_token`|
+**Studio Administrator** (`studio_admin`) | Gerencia Estúdios. Uma pessoa com esta permissão pode definir quais Stacks podem ser publicadas na Conta e qual conteúdo pode sr depreciado ou removido, por exemplo. | `update_studio`; `delete_studio`; `view_studio`; `change_visibility_studio`; `associate_workspace_studio`; `disassociate_workspace_studio`; `view_private_studio`; `unpublish_plugin`; `deprecate_plugin`;  `download_plugin`; `create_static_link`; `delete_static_link`; `unpublish_action`; `deprecate_action`; `download_action`; `publish_stack`; `unpublish_stack`; `deprecate_stack`; `view_stack`; `create_stack`; `update_stack`; `setup_stack`; `deprecate_starter`; `view_workspace`; `view_custom_cloud_account`; `view_managed_cloud_account`; `view_cloud_resource`; `download_studio_report`; `view_studio_dashboard`; `view_member`; `view_personal_access_token`; `create_personal_access_token`|
+**Content Creator**  (`creator`) | Este papel é responsável por criar conteúdo nos Estúdios. Por exemplo, Plugins, Actions e Stacks. |`view_member`; `view_personal_access_token`; `create_personal_access_token`|
+**Developer** (`dev`) | Pessoa desenvolvedora tem permissão para utilizar conteúdos (Plugins, Starters, Stacks, Actions) para criar Aplicações dentro dos Workspaces. | `view_studio`; `download_plugin`; `download_action`; `view_stack`; `view_workspace`; `create_application`; `update_application`; `deploy_application`; `rollback_application`; `view_application`; `create_connection_interface`; `view_automatic_connection_interface`; `view_api`; `create_api`; `update_api`; `view_workspace_context`; `view_account_context`; `view_workspace_workflow`; `view_product`; `view_custom_cloud_account`; `view_managed_cloud_account`; `view_cloud_resource`; `download_studio_report`; `view_member`; `view_resource_type`; `view_personal_access_token`; `create_personal_access_token`|
+**Site Reliability Engineer** (`sre`) | Este papel tem permissão para utilizar conteúdo (Plugins, Starters, Stacks, Actions) dentro dos Workspaces e podem criar Infraestruturas.  | `view_studio`;`download_plugin`; `download_action`; `view_stack`; `view_workspace`; `create_application`; `deploy_application`; `rollback_application`; `view_application`; `create_shared_infra`; `delete_shared_infra`; `update_shared_infra`; `deploy_shared_infra`; `rollback_shared_infra`; `view_shared_infra`; `create_connection_interface`; `view_automatic_connection_interface`; `view_api`; `create_api`; `update_api`; `update_workspace_context`; `view_workspace_context`; `view_workspace_workflow`; `view_product`; `view_custom_cloud_account`; `create_custom_cloud_account`;  `update_custom_cloud_account`; `delete_custom_cloud_account`; `view_managed_cloud_account`; `create_managed_cloud_account`; `update_managed_cloud_account`; `delete_managed_cloud_account`; `view_alerts`; `view_cloud_resources`; `view_member`; `view_resource_type`; `view_personal_access_token`; `create_personal_access_token`|
+**Partner Administrator** (`partner_admin`) | Este papel pode gerenciar os membros da Conta de Parceiros. | `view_workspace`; `view_api`; `view_product`; `associate_member`; `create_member`; `create_invite`; `update_invite`; `view_personal_access_token`; `create_personal_access_token`|
+**Partner Member** (`partner_member`)  | Este papel pode consumir APIs  e produtos das Contas de clientes StackSpot que estão disponível nas contas de Parceiros. | `view_workspace`; `view_api`; `view_product`; `create_invite`; `update_invite`; `view_personal_access_token`; `create_personal_access_token`| 
+**Member** (`member`)  | Este papel pode visualizar, atualizar, deletar e criar Secrets. | `studio:view`; `user_scm:delete`; `user_scm:view`; `create_invite`; `update_invite`; `apiv2:consume`; `account_variable:view`; `workflow:download`; `view_secret`;`update_secret`; `delete_secret`; `create_secret`| 
+ 
+
+:::warning Atenção!  
+
+Em alguns papéis, você pode ter a permissão de visualizar Stacks, mas pode não conseguir visualizar Estúdios, por exemplo. Isso acontece porque para visualizar um Estúdio, é preciso ter, nos atributos do seu papel, **uma permissão configurada de acesso a um ou mais Estúdios**.
+
+:::
+
+Embora existam papéis já pré-definidos pela StackSpot, você pode:
+
+- [**Customizar as permissões**](#customizar-papéis) dos papéis já existentes;
+
+- [**Criar novos papéis**](#como-criar-papéis) com diferentes combinações de permissão.
+
+**Por exemplo:**
+
+- Você pode dar permissão de gerenciamento de estúdios para um Dev, que é o papel mais básico da StackSpot.  
+
+## **Configurar papéis**
+
+## Pré-requisitos
+
+- [Você precisa ter permissão de **Account Holder** ou **SysAdmin**](home/account/organization/access-management/overview.md#account-holder).
+
+As configurações e o fluxo de permissões ocorrem no [**portal da StackSpot**](https://stackspot.com/pt). Você pode alterar o papel (e seu conjunto de permissões) dos membros de uma conta.
+
+Somente os papéis que possuem acesso a configurações de permissões, podem inserir e remover membros de um determinado grupo.
+
+:::info Informação Adicional
+
+- Todo membro adicionado à Conta começa como **Dev**.
+- O membro da Conta que tiver seu papel alterado, deve reautenticar tanto no Portal, quanto na CLI, para atualizá-lo.
+- Um membro pode ter **mais de um papel**.
+:::
+
+Para saber como customizar as permissões, criar novos papéis e adicionar papéis a membros da sua Conta, siga os passos:
+
+### **Customizar papéis**
+
+**Passo 1.** Acesse diretamente link do [**Portal da Conta**](http://myaccount.stackspot.com); ou após fazer [**login no Portal StackSpot**](https://app.stackspot.com/), clique no **seu avatar de perfil**;
+
+**Passo 2.** Selecione a opção **'Organização'** no menu exibido; 
+
+**Passo 3.** No menu principal do Portal da Conta, clique em **Gerenciamento de Acessos**;
+
+**Passo 4.** Clique na seção **'Papéis e Permissões'**;
+
+**Passo 5.** Clique no Papel o qual você deseja alterar as permissões;
+
+**Passo 6.** Dentro da aba **'Permissões'**, selecione o recurso o qual você quer habilitar ou desabilitar uma ação. Por exemplo:
+
+- Dentro do papel **Developer**, selecione o recurso **'Dashboard'** e habilite a ação de **'view_studio'**.  
+
+**Passo 7.** Habilite ou desabilite as ações que deseja;
+
+**Passo 8.** Clique no botão **'Salvar'**.
+
+<!--
+Confira os passos no Gif:
+
+![Gif demonstra a navegação no portal da StackSpot EDP, na seção de Gerenciamento de Acessos, sob a aba de Papéis. O cursor move-se para selecionar o papel 'Developer', ativa a opção 'Visualizar Estúdio' (view studio) e, em seguida, clica no botão 'Salvar' para aplicar a alteração.](/img/customize_role.gif)
+
+--> 
+Pronto, você customizou as permissões de um papel.
+
+### **Como alterar o nome e descrição de um Papel**
+
+**Passo 1.** Acesse diretamente link do [**Portal da Conta**](http://myaccount.stackspot.com); ou após fazer [**login no Portal StackSpot**](https://app.stackspot.com/), clique no **seu avatar de perfil**;
+
+**Passo 2.** Selecione a opção **'Organização'** no menu exibido; 
+
+**Passo 3.** No menu principal do Portal da Conta, clique em **Gerenciamento de Acessos**;
+
+**Passo 4.** Clique na seção **'Papéis e Permissões'**;
+
+**Passo 5.** Clique no Papel o qual você deseja alterar o nome e a descrição;
+
+**Passo 6.** Clique no botão de edição no lado superior direito da tela, na mesma linha do nome do Papel;
+
+**Passo 7.** Edite as informações e clique no botão **'Salvar'**.
+
+<!--
+Confira os passos no GIF:
+
+![Gif mostra a seção de Papéis no portal da StackSpot. O cursor seleciona o papel 'Developer' e, em seguida, clica no botão 'Editar Papel'. Uma nova janela se abre, onde a descrição do papel é alterada. Após a edição, o cursor move-se e clica no botão 'Salvar'.](/img/edit_name_role.gif)
+--> 
+
+### **Como criar papéis**
+
+Você pode criar papéis de acordo com a necessidade da sua organização. Para fazer isso, siga os passos:
+
+**Passo 1.** Acesse diretamente link do [**Portal da Conta**](http://myaccount.stackspot.com); ou após fazer [**login no Portal StackSpot**](https://app.stackspot.com/), clique no **seu avatar de perfil**;
+
+**Passo 2.** Selecione a opção **'Organização'** no menu exibido; 
+
+**Passo 3.** No menu principal do Portal da Conta, clique em **Gerenciamento de Acessos**;
+
+**Passo 4.** Clique na seção **'Papéis e Permissões'**;
+
+**Passo 5.** Clique no botão **'Criar papel'**;
+
+**Passo 6.** Insira o nome e descrição que você quer dar para o novo papel;
+
+**Passo 7.** Procure pelo nome do Papel que você criou na barra de busca e clique nele;
+
+**Passo 8.** Dentro da aba **'Permissões'**, selecione o recurso o qual você quer habilitar ou desabilitar uma ação. Por exemplo: 
+
+- Selecione o recurso **'Dashboard'** e habilite a ação de **'view_studio'**.  
+
+Repita o processo até habilitar todas as permissões que você quer.  
+
+**Passo 9.** Clique no botão **'Salvar'**.
+
+Pronto, você criou um novo papel para sua organização.
+
+<!--
+Confira os passos no GIF:
+
+![Gif mostra criação de um novo papel no portal da StackSpot, na seção de Papéis. O cursor move-se para clicar no botão 'Criar papel', onde é preenchido com um nome e descrição para o novo papel. Após a criação, o cursor seleciona o papel recém-criado da lista e procede para adicionar permissões específicas, marcando a opção 'Visualizar Estúdio' (view_studio). Clica no botão 'Salvar'](/img/create_role.gif)
+-->
+
+### **Como deletar Papéis**
+
+**Passo 1.** Acesse diretamente link do [**Portal da Conta**](http://myaccount.stackspot.com); ou após fazer [**login no Portal StackSpot**](https://app.stackspot.com/), clique no **seu avatar de perfil**;
+
+**Passo 2.** Selecione a opção **'Organização'** no menu exibido; 
+
+**Passo 3.** No menu principal do Portal da Conta, clique em **Gerenciamento de Acessos**;
+
+**Passo 4.** Clique na seção **'Papéis e Permissões'**;
+
+**Passo 4.** Procure pelo Papel que você quer apagar da sua conta;
+
+**Passo 5.** Clique no botão **'Remover'** ao lado dele.
+
+<!--
+![Gif mostra como apagar de um novo papel no portal da StackSpot, na seção de Papéis. O cursor é direcionado para selecionar um papel específico da lista de papéis disponíveis. Após a seleção, o cursor move-se para clicar no botão 'Remover', localizado ao lado do nome do papel.](/img/delete_role.gif)
+-->
+
+## **Próximos Passos**
+
+- [**Confira como adicionar papéis a Grupos**](home/account/organization/access-management/groups.mdx);
+- [**Adicionar papéis diretamente a um membro da conta**](home/account/organization/access-management/members.mdx);
+- Confira todas as [**Permissões**](home/account/organization/access-management/permissions.mdx) da StackSpot. 

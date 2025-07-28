@@ -1,0 +1,86 @@
+---
+title: StackSpot Action AI Prompt Execution
+sidebar_position: 1
+description: Como usar uma StackSpot Action para executar prompts da StackSpot AI pelo Workflow.
+---
+
+Esta Action interage com o StackSpot AI Code Buddy para processar um prompt fornecido pelo usuário e retornar uma resposta gerada por IA. Ela utiliza informações contextuais, como detalhes da conta do usuário, sistema operacional e Workspace, para aprimorar a compreensão da IA e fornecer uma resposta mais precisa.
+
+Action:
+
+```bash
+stackspot-core/stackspot-ai@1
+```
+
+## **Inputs**
+
+| **Nome**                | **Tipo**   | **Descrição**                                                                                                   | **Obrigatório** |
+|---------------------|--------|------------------------------------------------------------------------------------------------------------|-------------|
+| `prompt`            | String |  O prompt ou a pergunta fornecida pela pessoa usuária para ser processado pela IA.                                    | Sim         |
+| `knowledge_sources` | Lista  | Uma lista de Knowledge Sources (fontes de conhecimento) para fornecer contexto adicional à IA.                                  | Não         |
+| `conversation_id`   | String | (Opcional) Identificador único da conversa. Se não informado, será usado o ID de execução do Workflow ou um timestamp. | Não         |
+| `agent_id`          | String | (Opcional) Identificador único do Agente. Se não informado, será utilizado o Agente padrão da StackSpot AI. | Não         |
+
+
+O `agent_id` pode ser obtido na URL do Agente no Portal da StackSpot AI. Exemplo: `https://ai.stackspot.com/agents/01JSMM61QVZTSS7C03DDC5T7ME`. O `agent_id` é `01JSMM61QVZTSS7C03DDC5T7ME`.
+
+## **Outputs**
+
+| **Nome**     | **Tipo**   | **Descrição**                                               |
+|----------|--------|---------------------------------------------------------|
+| `answer` | String | A resposta gerada pela IA para o prompt fornecido.      |
+
+## **Contexto**
+
+A Action coleta as seguintes informações contextuais para aprimorar a resposta da IA:  
+
+- **Account Slug**: identificador da conta da pessoa usuária.  
+- **Account ID**: ID da conta da pessoa usuária (v2).  
+- **Username**: e-mail da pessoa usuária.  
+- **Sistema Operacional**: sistema operacional do ambiente da pessoa usuária.  
+- **Conversation ID**: identificador único da conversa.  
+- **Workspace**: ID do workspace resolvido pelo CLI.  
+- **Plataforma**: plataforma utilizada (neste caso, CLI).  
+- **Knowledge Source**: lista de Knowledge Sources fornecidos como entrada.  
+
+## **Implementação**
+
+A Action é implementada em Python e executa os seguintes passos:
+
+1. **Tratamento de Entradas**: lê o `prompt`, `knowledge_sources` e, opcionalmente, o `conversation_id` dos metadados de entrada.  
+2. **Criação do Contexto**: constrói um dicionário de contexto usando a função `context`, incluindo detalhes da conta, SO, Workspace e outras informações relevantes.  
+3. **Interação com a IA**: chama a função `prompt_code_buddy` do módulo `oscli.apis.ai.codebuddy.service`, passando o prompt e o contexto.  
+4. **Saída**: imprime a resposta da IA e a define como `answer` nos metadados de saída, tornando-a acessível para outros passos do Workflow.  
+
+## **Exemplo de Uso**
+
+```yaml
+schema-version: v1
+kind: workflow
+metadata:
+  name: exemplo
+  display-name: exemplo
+  description: exemplo
+  version: 0.0.1
+spec:
+  type: reusable
+  label: exemplo
+  inputs:
+    - name: prompt
+      label: prompt
+      type: text
+
+  jobs:
+
+    - id: job_1
+      label: Interagir com IA
+      steps:
+        - id: step_1
+          label: Interagir com IA
+          name: "stackspot-core/stackspot-ai@1"
+          type: action
+          inputs:
+            prompt: "{{ inputs.prompt }}"
+            conversation_id: "{{ var.STK_WORKFLOW_EXECUTION_ID }}"
+            agent_id: 01JSMM61QVZTSS7C03DDC5T7ME
+```

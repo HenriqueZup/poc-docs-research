@@ -1,0 +1,313 @@
+---
+title: FAQ
+sidebar_position: 7
+description: Perguntas mais frequentes.
+sidebar_custom_props: 
+  icon: Question
+---
+
+> Nesta seção, você encontra as perguntas e respostas mais frequentes sobre a StackSpot.
+
+## Conceitos e uso da StackSpot
+
+### **A Plataforma é open source?**
+
+A Plataforma oferece duas versões: uma versão Enterprise (Empresarial) e uma versão Personal (Pessoal).
+
+- A versão Enterprise requer que as pessoas usuárias entrem em contato com nossa equipe de vendas e passem por um processo formal de contrato.
+- Na versão Personal, as pessoas usuárias podem criar uma conta usando seu login do GitHub para acessar recursos limitados. Por exemplo, pessoas usuárias não podem configurar Single Sign-On (SSO). Atualmente, não há uma versão de código aberto disponível, pois hospedar a plataforma de forma independente não é suportado.
+
+### **StackSpot é acessível?**
+
+[**Confira mais detalhes na página de Acessibilidade da StackSpot**](home/stackspot/accessibility.mdx).
+
+### O que é Conteúdo? É desenvolvido pela própria StackSpot?​
+
+Conteúdo é toda a peça criada por meio da StackSpot Engine framework. Os conteúdos podem ser Stacks, Starters, Plugins, Actions, Links e são capazes de serem reutilizados.
+Quem cria os conteúdos são as pessoas desenvolvedoras criadoras da StackSpot dentro dos [**Estúdios**](create-use/studio/intro-studio.mdx).
+
+A StackSpot fornece a estrutura de Workspaces para você utilizar os conteúdos desenvolvidos pelos Estúdios e para criar Aplicações e Infraestruturas.
+
+Confira mais detalhes nas páginas:
+
+- [**Como criar uma Aplicação**](create-use/use-content/application/index.mdx).
+- [**Como criar uma Infraestrutura**](create-use/use-content/infra/infrastructure.mdx).
+
+### **Haverá uma opção para integrar a StackSpot por meio de APIs?**
+
+Para recursos específicos da StackSpot, as pessoas usuárias podem se conectar diretamente à API para integrar facilmente com outras ferramentas que já utilizam. Isso é possível se uma pessoa usuária usar um portal de desenvolvedor e precisar de acesso a informações sobre Stacks, Plugins, Actions e links para uso dentro de seu portal. Você pode gerenciar autenticação e tokens dentro do Portal StackSpot.
+
+### **Com quais SCMs (Source Code Manager) a StackSpot se integra?**
+
+StackSpot se integra com GitHub, Bitbucket, Azure DevOps Repos e GitLab.
+
+### **Sou uma software house e quero apenas uma conta vinculada a algumas contas SCM. É possível?**
+
+É possível vincular apenas uma conta StackSpot a uma conta SCM.
+
+### **O que é um Workspace?**
+
+É onde o conteúdo criado em um Estúdio pode ser utilizado.
+
+O Workspace é área de trabalho onde as Aplicações e as Infraestruturas são criadas e organizadas. Tudo depende da necessidade e do contexto que você precisa. Além disso, é no Workspace que a configuração do provedor da nuvem é feita.
+Confira mais detalhes na seção [**Sobre Workspaces**](home/workspace/about-workspace.mdx).
+
+### **Quando eu tenho acesso a uma conta, eu consigo automaticamente ver todos os Workspaces dela?**
+
+Dentro da [**Plataforma StackSpot**](https://app.stackspot.com/login), **sim**. Ao estar em uma conta, você consegue ver todos os Workspaces dela. Porém, para poder utilizar o Workspace você deve fazer parte de algum **grupo vinculado a ele**.
+
+Já no **STK CLI**, você só consegue visualizar os Workspaces em que você já esteja vinculado. 
+
+Confira mais detalhes: 
+
+- [**Sobre Workspace**](home/workspace/about-workspace.mdx)
+
+### **O que uma pessoa com o papel de Pessoa Desenvolvedora (Dev) pode fazer em um Workspace?**
+
+Se a pessoa faz parte do Workspace, ela poderá:
+
+- Criar Aplicações e Infraestrutura
+- Definir contextos de Stacks.
+
+Se não estiver em um Workspace, só poderá visualizar o que existe no Workspace.
+Confira mais detalhes em:
+
+- [**Papéis e Permissões**](home/account/organization/access-management/roles.md ).
+- [**Sobre Workspaces**](home/workspace/about-workspace.mdx).
+
+### **Aplicações e Infraestruturas podem ser criadas fora do Workspace?**
+
+Não. Para criar e fazer o deploy de uma Aplicação ou Infraestrutura, você **precisa estar dentro de um Workspace** e utilizar o conteúdo (Plugins, Stacks, Starters, etc.) disponibilizado dentro dele.
+
+### **Quando devo gerar uma nova versão de Plugin e/ou Stack?**
+
+Sempre que uma alteração for feita dentro da Stack ou Plugin.
+
+Para mais informações, confira as páginas:
+
+- [**Publicar nova versão de Plugin**](create-use/create-content/plugin/publish-plugin.md#versionamento-de-plugin)
+- [**Publicar nova versão de Stack**](create-use/create-content/stack/create-stack.mdx)
+
+### **O que é um Starter?**  
+
+São um conjunto de Plugins predefinidos de uma Stack, que serão aplicados no comando **`stk create app`**. Ao utilizar um Starter, o usuário pode criar um app e aplicar um pacote de Plugins em um único comando do STK CLI.
+
+Os Starters são úteis para que os criadores de Stack definam dentro da própria Stack combinações comuns de Plugins, e definam "receitas prontas" para as combinações mais comuns dentro da Stack. Os usuários podem definir seus próprios Starters para agilizar o processo de criação de projetos que usem um pacote predefinido de  Plugins.
+
+Para mais informações, confira [**Como criar e adicionar um Starter na Stack**](create-use/create-content/stack/create-stack.md#criar-um-starter-na-stack).
+
+### **O Starter pode ser versionado?**
+
+Sim. O Starter é versionado de acordo com a Stack. Para criar uma nova versão, você deve criar uma nova versão da Stack.
+
+Para mais informações, confira a seção [**Como criar e adicionar um Starter na Stack**](create-use/create-content/stack/create-stack.md#criar-um-starter-na-stack).
+
+### **O que é um Contexto?**
+
+Contexto são conjuntos de valores utilizados para definir as configurações de conteúdos na StackSpot. E estão divididos em três níveis:
+
+- Conta
+- Workspace
+- Aplicação
+- Os valores definidos no nível da sua Conta sobrescrevem valores definidos no Workspace, e assim ele sobrescreve os valores definidos em Aplicações. Por exemplo:
+
+Os valores de inputs definidos a nível de Conta podem ser configurados como mandatório, ou como sugestões. Uma vez que um valor é configurado como mandatório, ele não poderá ser alterado dentro do Workspace ou Aplicação.
+
+Confira tudo sobre Contextos na seção [**Configurar Contextos**](home/account/organization/configure-context-account.mdx).
+
+### **Como eu configuro o Contexto na minha Stack?**
+
+Para configurar um Contexto na sua Stack, você deve adicioná-la ao seu Workspace e definir os inputs dentro dela.
+
+- Confira o passo a passo detalhado, em [**Adicionar Stack ao Workspace**](home/workspace/stacks-and-context/add-stacks.md ).
+
+### **Qual é a diferença entre o Contexto de Conta/Workspace/Aplicação e do Contexto de Workflow?** 
+
+No [**Contexto da Conta/Workspace/Aplicação**](home/account/organization/configure-context-account.mdx), você define os valores dos inputs dos Plugins e Actions existentes nas Stacks nesses três níveis, respectivamente: Conta, Workspace e Aplicação. Você pode definir os valores como **mandatórios** ou **sugestões**.
+
+Os valores dos inputs das Actions definidos nesses Contextos serão utilizados quando a pessoa desenvolvedora executar o comando **`stk run action studio/stack/action`** na **STK CLI**.
+
+Já no [**Contexto de Workflow**](home/account/organization/workflow/configure-workflow.mdx), você define os valores dos inputs das Actions do Workflow que foi criado **dentro do Portal StackSpot EDP**.  
+Este contexto será utilizado **somente dentro do Portal StackSpot EDP**, de acordo com o tipo de Workflow criado, por exemplo, Workflow de Criar Aplicação ou Criar Infra.
+
+Assim, quando a pessoa desenvolvedora seguir, por exemplo, o fluxo de Criar Aplicação dentro do Portal, os valores dos inputs das Actions que serão utilizados serão os valores que você definiu dentro do Workflow de Criar Aplicação.
+
+O contexto de Workflow também respeita níveis de hierarquia, sendo eles: Conta, Stack na Conta e Stack no Workspace.
+
+Para saber mais, confira: 
+
+- [**Como configurar Contexto na Conta**](home/account/organization/configure-context-account.mdx);
+- [**Como configurar Contexto no Workspace**](home/workspace/stacks-and-context/setup-context.mdx);
+- [**Como configurar contexto a nível de Conta no Workflow**](home/account/organization/workflow/configure-workflow.mdx);
+- [**Como configurar um Contexto de Workflow em uma Stack a nível de Conta**](home/account/organization/workflow/configure-stack-context.mdx)
+- [**Como configurar um Contexto de Workflow em uma Stack a nível de Workspace**](home/workspace/configure-workflow.mdx)
+
+### **O Contexto de Conta/Workspace/Aplicação sobrepõe o contexto de Workflow e vice e versa?** 
+
+Não. Como visto na pergunta acima, os Contextos são utilizados de formas diferentes, em momentos diferentes. 
+
+Os valores dos inputs das Actions definidos nos [**Contextos de Conta/Workspace/Aplicação**](home/account/organization/configure-context-account.mdx) serão utilizados quando a pessoa desenvolvedora executar o comando **`stk run action studio/stack/action`** na **STK CLI**.
+
+Já no [**Contexto de Workflow**](home/account/organization/workflow/configure-workflow.mdx), você define os valores dos inputs das Actions do Workflow que você criou **dentro do Portal StackSpot EDP**.
+
+Então, esse contexto será utilizado **somente dentro do Portal StackSpot EDP**, de acordo com o tipo de Workflow criado, por exemplo, Workflow de Criar Aplicação ou Criar Infra.
+
+Assim, os valores não se sobrepõem.
+
+Para saber mais, confira: 
+
+- [**Como configurar Contexto na Conta**](home/account/organization/configure-context-account.mdx);
+- [**Como configurar Contexto no Workspace**](home/workspace/stacks-and-context/setup-context.mdx);
+- [**Como configurar contexto a nível de Conta no Workflow**](home/account/organization/workflow/configure-workflow.mdx);
+- [**Como configurar um Contexto de Workflow em uma Stack a nível de Conta**](home/account/organization/workflow/configure-stack-context.mdx)
+- [**Como configurar um Contexto de Workflow em uma Stack a nível de Workspace**](home/workspace/configure-workflow.mdx)
+
+### **O que comando `stk-validate-app` valida?**
+
+O comando **`stk-validate-app`** valida a estrutura de uma aplicação. Para validar uma aplicação, execute o comando dentro da pasta da aplicação.
+
+O comando:
+
+- Valida a estrutura da sua aplicação;
+- Remove pastas vazias;
+- Ignora arquivos e pastas que você não deseja ao finalizar o desenvolvimento da sua aplicação.
+
+Para mais informações, confira os [**Comandos da STK CLI**](home/stk-cli/commands/index.mdx).
+
+### **Como Criar e publicar um Plugin?**
+
+Confira os passos para criar e publicar Plugins:
+
+- [**Criar Plugin**](create-use/create-content/plugin/create-plugin.mdx).
+- [**Publicar Plugin**](create-use/create-content/plugin/publish-plugin.mdx).
+
+### **Como checar os meus logs?**
+
+Os logs estão na pasta **.stk** dentro do seu usuário **/user/.stk/logs**.
+
+### **Como aplicar um Plugin localmente?**
+
+Execute o comando:
+
+```bash
+stk apply plugin <path-local>
+```
+
+No Windows:
+
+```bash
+stk apply plugin 'path-completo-do-plugin'
+```
+
+### **O login do STK CLI acontece apenas no navegador default?**
+
+Sim, o login via STK CLI sempre direciona para o seu navegador principal.
+
+### **Como funciona a busca (Search Engine) na Plataforma StackSpot?** 
+
+A search engine da StackSpot é uma ferramenta que permite que você procure pelo conteúdo que quiser na Plataforma de forma objetiva, por meio de buscas semânticas. 
+
+O sistema utiliza inteligência artificial para extrair o contexto da sua busca e agrupar informações, mesmo que os resultados não sejam exatamente iguais ao que você pesquisou. 
+
+Por exemplo, se você pesquisar por "Java" e não existir nenhum conteúdo relacionado a isso, a busca irá retornar os resultados mais próximos possíveis. 
+
+------
+
+
+### **Posso ver os logs de erro do STK CLI na tela?**
+
+Sim, utilize: **`export HTTP_ENABLE_DEBUG=true`**
+
+### **Como versionar um Plugin dentro de uma Stack?**
+
+> Você precisa estar no time do Estúdio e ter permissão para editar.
+
+Siga as instruções:
+
+1. No SKT CLI, execute o comando **`stk publish`** com a nova versão do Plugin. Indique a versão correta no plugin.yaml.
+
+2. Acessar o Portal. Clicar em **'Estúdio > Stack'**;
+
+3. Na sua Stack, clicar no botão de **'Nova Versão'**;
+
+4. No menu principal, selecione o Plugin (app ou infra);
+
+5. Clique no botão **'Adicionar Plugin'** e selecione a nova versão do Plugin;
+
+6. Publique a sua Stack.
+
+### **Como adicionar a nova versão de um Plugin dentro de um Starter (versionar o Starter)?**
+
+> Você precisa estar no time do Estúdio e ter permissão para editar.
+
+1. No SKT CLI, execute o comando **`stk publish`** com a nova versão do Plugin. Indique a versão correta no plugin.yaml.
+
+2. Acessar o Portal. Clicar em **'Estúdio > Stack'**; Na sua Stack, clicar no botão de **'Nova Versão'**;
+
+3. No menu principal, selecione o Plugin (app ou infra);
+
+4. Clique no botão **'Adicionar Plugin'** e selecione a nova versão do Plugin;
+
+5. Retorne a Stack e selecione o Starter;
+
+6. Remova o Plugin com versão anterior
+
+> Se o Starter tem apenas 1 Plugin, ele será excluído. Nesse caso, é necessário criar um novo Starter.
+
+7. Adicione o Plugin com a versão atual. Finalize e publique a Stack.
+
+
+## **Pipelines**
+
+### **Posso usar a StackSpot com minha Pipeline atual?**
+
+Como pessoa usuária, você pode vincular suas pipelines a StackSpot, incluindo GitHub Actions, Bitbucket Pipelines, Azure Pipelines e Gitlab CI/CD. Se optar por não integrar diretamente via APIs, você pode usar a CLI dentro de um runner para realizar as tarefas da StackSpot durante a execução da pipeline.
+
+### **A StackSpot substitui minha pipeline atual?**
+
+Não, ela complementa sua pipeline. As aplicações criadas com a StackSpot seguem a pipeline padrão de CI/CD do cliente. Atualmente, a StackSpot suporta pipelines através de seus SCMs, como GitHub Actions, Bitbucket Pipelines, Azure Pipelines e, futuramente, GitLab CI/CD.
+
+- Se uma pessoa usuária utiliza exclusivamente Plugins para Aplicação ou código puro, ele só precisa se conectar ao StackSpot quando necessitar de contexto configurado no Workspace. Se o usuário não precisar dessa funcionalidade, não há necessidade de conexão.
+- Se um cliente usa Plugins para infraestrutura para abstrair a nuvem e o Terraform, ele deve usar nosso módulo Runtime. Nesse caso, é necessário adicionar um passo na pipeline para se conectar a StackSpot e usar a funcionalidade.
+
+-------
+
+## **Catálogo de Serviços**
+
+### **Ao tentar fazer o upload do arquivo no padrão OpenAPI, meu arquivo não aparece para eu selecionar.**
+
+Confira se arquivo tem a extensão **`.yaml`**, **`.yml`** ou **`.json`**.
+
+### **Ao criar uma API a URL do Gateway é solicitada, mas onde eu consigo essa URL?**
+
+Você precisa entrar em contato com o responsável pela sua Infraestrutura para que ele forneça a URL do Gateway.
+
+### **Eu criei um Produto, mas ele não aparece no Catálogo para meu Parceiro**  
+
+O produto é criado em Draft, ou seja, para que ele seja exibido é necessário publicá-lo no Catálogo. 
+
+### **Eu criei uma API, mas ela não aparece no Catálogo para meu Parceiro**  
+
+A API é criada em Draft, ou seja, para que ela seja exibida é necessário publicá-la no Catálogo.
+
+### **Mesmo após publicar minha API ou Produto, eu não consigo visualizar no Catálogo**
+
+O Catálogo de Serviços é exibido por ambiente. Então, quando acessá-lo você deve selecionar o ambiente em que a API ou Produto foram publicados.
+
+### **Cadastrei meu Parceiro, mas como ele será notificado para acessar o Portal de Parceiros?**
+
+O Parceiro receberá um e-mail convidando-o para acessar o Portal. Nele, ele terá que definir uma senha de acesso e, em seguida, fazer o login.
+
+### **Estou tentando solicitar acesso à uma API, mas não consigo selecionar minha Aplicação consumidora**  
+
+Quando já existe uma solicitação ou um acesso liberado a uma API, não é permitido que seja solicitado novamente. Para ver a credencial gerada, basta acessar a API no menu API Credential.
+
+### **Solicitei acesso a uma API, como vou saber que ele foi liberado?  
+
+Assim que o administrador do cliente fazer a liberação, um e-mail será enviado avisando sobre. Outra maneira de acompanhar é verificar se a credencial foi gerada na tela da API, no menu API Credential. Se mesmo assim demorar, entre em contato com o administrador.
+
+### **Eu recebi o e-mail dizendo que o acesso a API foi liberado, mas mesmo assim não consigo acessar pela minha Aplicação.**  
+
+Entre em contato com o administrador para que ele analise o que pode ter ocorrido com as credenciais ou disponibilidade.
+
+------

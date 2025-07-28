@@ -1,0 +1,78 @@
+---
+title: "Gestão de Visibilidade"
+sidebar_position: 14
+description: Aprenda a fazer a gestão de visibilidade do Estúdio.
+sidebar_custom_props: 
+  icon: Eye
+---
+
+> Nesta seção, você encontra como fazer a gestão de visibilidade no Estúdio.
+
+<br/>
+
+É possível alterar a visibilidade de um Estúdio **antes e depois da criação** dele. O criador do Estúdio e o Admin são os únicos com permissões para alterar a Visibilidade.
+
+## **Opções de visibilidade**
+
+As opções de visibilidades disponíveis são:
+
+- **Acesso Restrito**: Apenas o criador do Estúdio e os membros da Equipe têm acesso.
+- **Toda a Conta**: Todos os membros da Organização podem acessar o Estúdio.
+- **Workspaces Predefinidos**: Apenas os Workspaces selecionados pelo criador do Estúdio podem visualizar o conteúdo.
+
+## **Regras gerais**
+
+- **Alterar a visibilidade de um Estúdio já criado:** ele não pode estar em uso ou depender do conteúdo de outro Estúdio, como um Plugin, por exemplo.
+
+- **Visualização:** todos os Estúdios de uma Conta podem ser visualizados por todos os usuários que pertencem à ela, exceto os Estúdios que têm a visibilidade de **Acesso Restrito**. Neste caso, os Estúdios são visualizados apenas pela Equipe que o criou.
+
+- **Acesso restrito a criadores de conteúdo**: Um usuário com acesso de criador de conteúdo só terá acesso a um Estúdio com visibilidade do tipo **'Workspaces Predefinidos'**, se pertencer à Equipe que criou esse Estúdio.
+
+- Se um Estúdio tem Stacks utilizadas por outros Workspaces, a visibilidade do Estúdio não pode ser alterada. Por exemplo: se um Estúdio tem a visibilidade de **Toda a Conta**, é possível alterar para o tipo de Workspaces Selecionados. Porém, o Workspace que utiliza a Stack será selecionado automaticamente e não poderá ser removido da Organização.
+
+- Um Estúdio só pode voltar a ter Acesso Restrito se nenhum Workspace ou outro Estúdio estiver utilizando o conteúdo publicado nele.
+
+## **Regras por tipo de visibilidade**
+
+### **Toda a Conta**  
+
+Este tipo de visibilidade permite que conteúdos criados no Estúdio sejam utilizados por qualquer outro Estúdio, mas precisam estar na mesma Conta.
+
+> Se um Estúdio com a visibilidade **Toda a Conta** está sendo usado, a visibilidade desse Estúdio não pode ser alterada para **Acesso Restrito**.
+
+### **Acesso Restrito**  
+
+Visível somente para o Criador e os membros da Equipe do Estúdio. Podem visualizar o conteúdo, mas não têm permissão para utilizá-lo em um Workspace.  
+
+### **Workspaces Predefinidos**
+
+Os conteúdos do Estúdio só podem ser utilizados em Workspaces específicos, ou seja, já selecionados pelo Criador do Estúdio. Outro Estúdio não pode usar o conteúdo do Estúdio criador e não é possível deletar um Workspace que está em uso.
+
+## **Como alterar a visibilidade**
+
+Para alterar a visibilidade de um Estúdio, acesse o Dashboard do Estúdio no Portal da StackSpot EDP e siga os passos:
+
+**Passo 1.** Localize o seu Estúdio ou utilize a busca. Em seguida, clique no Estúdio;
+
+**Passo 2.** Clique no botão **'Configurações'** e, em seguida, clique na aba **'Visibilidade'**. Confira a atual visibilidade do Estúdio e as regras;
+
+:::info Informação Adicional
+
+Por padrão, os Estúdios criados antes desta funcionalidade terão a visibilidade definida como **Toda a Conta**. Os novos Estúdios são criados, por padrão, com a visibilidade de **Acesso Restrito**, mas é possível alterar o tipo de visibilidade.   
+:::
+
+**Passo 3.** Clique no botão **'Editar'** e selecione uma das opções disponíveis:
+
+- **Acesso Restrito**: somente membros de equipes que pertencem a este Estúdio podem visualizar o conteúdo;
+
+- **Toda a Conta**: somente membros da organização podem visualizar este Estúdio;
+
+- **Workspaces Predefinidos**: somente os Workspaces selecionados poderão visualizar este Estúdio.
+
+Confira como mudar a visibilidade:
+
+![GIF mostrando os passos para mudar a visibilidade de um Estúdio no Portal da StackSpot EDP. O processo inclui acessar o Estúdio, ir para a seção de Configurações, clicar em Visibilidade e selecionar uma das opções disponíveis: Acesso Restrito, Toda a Conta ou Workspaces Predefinidos.](/img/studio-visibility.gif)
+
+Para confirmar a sua escolha, clique no botão **'Sim, alterar visibilidade'**.  
+
+Pronto, você alterou a visibilidade do seu Estúdio.  

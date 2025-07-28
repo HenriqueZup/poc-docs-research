@@ -1,0 +1,266 @@
+---
+title: Tipos Inputs
+sidebar_position: 1
+description: Saiba quais são os tipos de Inputs disponíveis no Workflow.
+---
+
+## **Tipos de Input**
+
+Confira os tipos de Inputs disponíveis no Workflow da StackSpot. Eles são definidos no campo **`type`**.
+
+Tipos  | Valor
+--------- | ------
+**`text`**  | String.|
+**`textarea`**  | String.|
+**`bool`** | Boolean. |
+**`int`**  | Integer.|  
+**`password`** | Criptografa o valor informado. (string) |
+**`select`** | Lista os valores, permitindo escolher apenas 1 valor (string). |
+**`multiselect`** | Lista os valores, permitindo escolher 1 ou mais valores (string). |
+**`list`** | Lista de Inputs de um mesmo tipo (text, int, object e required-connection). |
+**`object`** | Armazena um conjunto de Inputs dentro de um objeto. O objeto passa a ser um input pai com um conjunto de inputs filhos. |
+**`required-connection`** | Armazena um conjunto de Inputs necessários para se conectar em uma Infraestrutura dentro de um objeto.  |
+**`generated-connection`** | Armazena um conjunto de Inputs necessários para criar uma Infraestrutura dentro de um objeto.  |
+
+Confira a seguir um exemplo de **`workflow.yaml`** do tipo **`create`** com Inputs dos tipos **`select`**, **`text`** e **`bool`**. 
+
+```yaml
+schema-version: v1
+kind: workflow
+metadata:
+  name: create-app-node-nest-api
+  display-name: Criação de API Node/Nest
+  description: "Orquestra a criação de uma API usando Node.js 22 e NestJS."
+  version: 1.0.0    
+spec:
+  type: create   
+  label: "Create Node API"
+  targets:
+    - app
+  docs:
+    en-us: docs/en_us/docs.md
+    pt-br: docs/pt_br/docs.md
+// new-line-start
+  inputs:
+    - label: "Nome da Squad"
+      scope: default
+      name: squad_name
+      type: select
+// new-line-end      
+      help: "Informe o nome da squad responsável pelo recurso."
+      items:
+        - alpha
+        - beta
+        - gamma
+        - delta
+
+    - label: "Contexto do Projeto (kebabcase)"
+      scope: default
+      name: project_context
+// new-line-start      
+      type: text
+// new-line-end      
+      required: true
+      pattern: '^[a-z0-9]+(-[a-z0-9]+)*$'
+      help: "Informe o contexto do projeto. Exemplo: meu-projeto-api"
+
+    - label: "Adicionar MongoDB?"
+      scope: default
+      name: add_mongodb
+// new-line-start      
+      type: bool
+// new-line-end      
+      required: true
+      default: false
+      help: "Adiciona dependências do MongoDB."
+
+    - label: "Adicionar PostgreSQL?"
+      scope: default
+      name: add_postgresql
+      type: bool
+      required: true
+      default: false
+      help: "Adiciona dependências do PostgreSQL."
+
+    - label: "Adicionar Redis?"
+      scope: default
+      name: add_redis
+      type: bool
+      required: true
+      default: false
+      help: "Adiciona dependências do Redis."
+
+  jobs:
+    - id: job_create_app_code
+      label: "Criação do código da aplicação"
+      steps:
+        - id: step_create_code
+          name: fictitious-org/starter-node-nest-api@1.0.0
+          type: workflow
+          inputs:
+            add_redis: "{{ add_redis }}"
+            add_mongodb: "{{ add_mongodb }}"
+            add_postgresql: "{{ add_postgresql }}"
+            squad_name: "{{ squad_name }}"
+            project_context: "{{ project_context }}"
+
+    - id: job_create_app_repository
+      label: "Criação do repositório da aplicação"
+      depends-on:
+        - job_create_app_code
+      steps:
+        - id: create_git_repository
+          name: fictitious-org/reusable-create-git-repo@0.0.1
+          type: workflow
+          inputs:
+            project_id: "{{var.PROJECT_ID}}"
+            project_name: "{{var.PROJECT_NAME}}"
+            repository_name: "{{squad_name}}-api-{{project_context}}"
+
+    - id: job_commit_app_code
+      label: "Commit do código da aplicação"
+      depends-on:
+        - job_create_app_repository
+      steps:
+        - id: step_commit_code
+          name: fictitious-org/reusable-commit-git-repo@0.0.1
+          type: workflow
+          inputs:
+            source_branch_name: "main"
+            commit_message: "Commit automático realizado pela StackSpot."
+            repository_url: "{{ outputs.job_create_app_repository.create_git_repository.repository_url }}"
+
+    - id: job_deploy_app
+      label: "Deploy da aplicação"
+      depends-on:
+        - job_commit_app_code
+      steps:
+        - id: step_print_info
+          label: "Informações Importantes"
+          type: run
+          script: |
+            echo "------------------------------------------- ATENÇÃO -------------------------------------------"
+            echo " "
+            echo " O deploy da aplicação deve ser realizado através das pipelines do seu provedor de CI/CD!"
+            echo " "
+            echo "-----------------------------------------------------------------------------------------------"
+```
+
+:::tip Dica!  
+
+Confira [**nesta página os campos obrigatórios dos Inputs com os respectivos exemplos**](create-use/create-content/yaml-files/inputs.md#campos-obrigatórios-do-input).
+
+:::
+
+## **Importar Inputs dos conteúdos no Workflow**
+
+O Workflow usa nos Steps dos Jobs os Inputs de diferentes conteúdos disponíveis nos Estúdios, como Plugins, Actions e outros Workflows. 
+
+Para usar esses inputs, você precisa declarar manualmente os Inputs de cada conteúdo. Se o seu Workflow executa uma Action, aplica um Plugin ou utiliza outro Workflow ao mesmo tempo, é necessário **declarar os inputs separadamente** para cada um deles.
+
+Para facilitar o uso dos Inputs no seu Workflow, você pode:
+
+- Gerar um input do tipo **import** para reunir todos os Inputs necessários em um único objeto.   
+- Usar a opção **inputs-from** nos Steps do seu Workflow para aproveitar os Inputs importados ou um input do tipo objeto.  
+
+Você **não precisa** declarar cada input separadamente.
+
+:::warning Atenção!  
+
+A StackSpot **não oferece suporte** para import de Inputs com o `scope:env (inputs-envs)`, como no exemplo a seguir:
+
+```yaml
+  inputs:
+    - name: nome
+      scope: env
+```
+
+:::
+
+#### **Input do tipo `import`**
+
+O Input do tipo **import** deve ser utilizado apenas em Workflows da StackSpot e possui os campos a seguir:
+
+- **type:** o tipo do Input. O seu valor deve ser **`import`**.  
+- **from:** referência dos Inputs que você deseja importar. A referência deve conter a sintaxe: **'job_id.step_id'**, exemplo: “job_01.step_01”. Os Steps referenciados devem ser do tipo **‘plugin’**, **‘action’** ou **‘workflow’**.  
+- **label:** texto exibido no terminal para o seu Input do tipo import.
+- **name:** nome do input para identificar os Inputs importados.
+- **includes:** campo **Opcional**. Lista para especificar quais Inputs importar.
+- **excludes:** campo **Opcional**. Lista para especificar quais Inputs não importar.
+
+
+:::caution Cuidado
+
+Se você **não utilizar** os campos **`includes`** e **`excludes`**, todos os Inputs do step que você está referenciando serão importados.
+
+::: 
+
+Confira um exemplo de Input do tipo import:
+
+```yaml title="Campo 'inputs' de um workflow.yaml"
+inputs: 
+  - type: import
+    label: Add your bucket S3 inputs
+    from: job_create_app.step_workflow_starter # steps do tipo action, plugin, workflow
+    name: s3_starter_inputs
+    includes: # Opcional: importar inputs específicos.
+      - bucket_name
+      - region
+    excludes: # Opcional: excluir inputs específicos.
+      - encryption 
+```
+
+### **Usar campo inputs-from em Steps**
+
+O campo **`inputs-from`** permite usar inputs importados diretamente no conteúdo de um Step do Workflow. Esses conteúdos podem ser Actions, Plugins e Workflows executados em Steps do mesmo tipo.
+
+:::warning Atenção!
+
+Use apenas Inputs do **tipo objeto** no campo **`inputs-from`**. Os objetos que você pode usar são:
+
+- **Input do tipo import:** ao criar um Input do tipo import, ele gera um objeto com todos os Inputs importados.  
+- **Objeto** `- input`: é um objeto que contém todos os Inputs de um conteúdo.  
+- Usar um Input do tipo objeto diretamente no campo `ìnputs-from`.  
+
+:::
+
+Você pode mesclar o uso do de Inputs importados com `inputs-from` e `inputs`:
+
+```yaml title="Campo 'steps' de um workflow.yaml"
+steps:
+  - id: call_starter
+    type: workflow
+    name: stackspot-cloud/aws-s3-starter-workflow@1
+    workdir: storage-infra/stackspot/{{ var.STK_WORKFLOW_EXECUTION_ID }}
+    inputs-from:
+      - s3_starter_inputs
+    inputs:
+      bucket_encryption: true # Inputs adicionais ou fixos
+```
+
+Usar o objeto Inputs para enviar todos os Inputs de um conteúdo para o Workflow:
+
+```yaml title="Campo 'steps' de um workflow.yaml"
+steps:
+  - id: call_starter
+    type: workflow
+    name: stackspot-cloud/aws-s3-starter-workflow@1
+    workdir: storage-infra/stackspot/{{ var.STK_WORKFLOW_EXECUTION_ID }}
+    inputs-from:
+      # todos os inputs são repassados para o Workflow sendo chamado
+      - inputs
+```
+
+Usar um Input do tipo objeto:
+
+```yaml title="Campo 'steps' de um workflow.yaml"
+steps:
+  - id: call_starter
+    type: workflow
+    name: test-cloud/aws-s3-starter-workflow@1
+    workdir: storage-infra/stackspot/{{ var.STK_WORKFLOW_EXECUTION_ID }}
+    inputs-from:
+      # todos os campos do input object_input são repassados para o Workflow sendo chamado
+      - object_input
+```
+

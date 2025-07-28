@@ -1,0 +1,350 @@
+---
+title: Inputs Avançados
+sidebar_position: 9
+description: Conheça mais sobre os inputs avançados.
+---
+
+> Nesta seção, você encontra: Referência dos inputs avançados do arquivo **`plugin.yaml`**. Computed Inputs e Global Inputs.
+
+<br/>
+
+Os inputs avançados permitem aplicar regras mais complexas aos inputs, auxiliando na criação de Plugins.
+
+## **Dependência de inputs avançados entre Plugins**
+
+Quando os inputs avançados são usados em seus Plugins, é preciso se atentar sobre o comportamento da renderização dos Plugins. Ao criar uma Aplicação com Plugins de Aplicação e Infraestrutura, primeiro todos os Plugins de Infraestruturas são renderizados. Isso é feito para garantir que todas as dependências de infraestrutura sejam criadas antes.
+
+:::danger Atenção!
+
+- Um problema pode ocorrer quando um [**Plugin de Infraestrutura com a opção `app-allowed: true`**](create-use/create-content/yaml-files/plugin-yaml.md#app-allowed) depende de um input avançado como os **inputs globais** ou **global-computed-inputs** de um Plugin de Aplicação.
+
+- Quando o Plugin de Infraestrutura for renderizado, os inputs globais do Plugin de Aplicação ainda não foram renderizados. Isso um erro ou comportamento inesperado durante a criação da sua Aplicação. Plugins de tipos diferentes ainda podem compartilhar inputs avançados desde que estejam sendo usados para criar a mesma Aplicação.
+
+- Sempre que um Plugin de Infraestrutura tiver uma dependência de um input avançado, o input avançado precisa ser de um outro Plugin de Infraestrutura.
+
+:::
+
+## **Computed Inputs**
+
+Por meio do **`computed-inputs`**, é possível:
+
+- Criar inputs com base em outros inputs; Computed inputs são calculados baseados nos valores dos inputs.
+- Usar o valor num Plugin que está sendo aplicado no momento.
+
+Confira o exemplo na utilização de um filtro **title**, a primeira letra de cada nome é transformada em letra maiúscula (upper case):
+
+```yaml
+spec:
+  inputs:
+    - label: Type your name
+      name: name
+      type: text
+
+  computed-inputs:
+    name_formatted: "{{ name | title }}"
+```
+
+## **Global Input**
+
+Quando você definir os inputs globais dentro de um app (via Plugin), qualquer Plugin pode acessá-los ou modificá-los.
+
+Você deve declarar um input global por meio da flag **`global: true`**, confira:
+
+```yaml
+spec:
+  inputs:
+  - label: Commit message
+    type: text
+    default: example
+    name: message
+    required: true
+    global: true
+```
+
+:::danger Atenção!
+
+Para usar a propriedade **`global`** nos inputs a seguir:
+
+- [**`list`**](create-use/create-content/yaml-files/inputs.md#input-do-tipo-list)
+- [**`object`**](create-use/create-content/yaml-files/inputs.md#input-do-tipo-object)
+
+Você deve declarar a propriedade **`global: true`** apenas no input pai, os demais não podem ser declarados como **`global`**, ou seja, todos os inputs que são "filhos" **são considerados globais**. Exemplo:
+
+```yaml title="Exemplo de Input do tipo object com a propriedade global: true"
+- type: object
+  name: objeto-pai
+  // new-line
+  global: true
+  label: Dados do objeto pai
+    input: 
+      type: required-connection
+      name: s3
+      label: Escolha a conexão s3
+      connection-type: aws-s3-conn
+```
+
+:::
+
+### **Exemplo 1: Plugin base com input global**
+
+O Plugin base neste exemplo, possui um input global que pode ser utilizado em outras aplicações de Plugins, ou seja, no mesmo app em que foi criado com este Plugin:
+
+:::tip Informação Adicional
+
+Inputs globais são compatíveis no portal da StackSpot. Para mais informações, [**acesse o uso de Jinja no portal da StackSpot**](create-use/create-content/yaml-files/jinja.md#jinja-no-portal-da-stackspot).
+
+:::
+
+```yaml
+schema-version: v3
+kind: plugin
+metadata:
+  name: global-plugin
+  display-name: global-plugin
+  description: Plugin that has a input from global
+  version: 0.0.1
+spec:
+  type: app
+  compatibility:
+    - python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  technologies:
+    - Api
+  inputs:
+    - label: Project name
+      type: text
+      name: project_name
+      default: project-name
+      global: true
+```
+
+No exemplo acima, como o input **`project_name`** está definido como global, qualquer valor informado nele pode ser usado por outros Plugins.
+
+### **Exemplo 2: Plugin utilizando o input global dos seus outros Plugins**
+
+O valor de um input global definido em um Plugin pode ser usado dentro de um outro Plugin. Não é necessário defini-lo novamente no arquivo **`plugin.yaml`**.  
+Para acessar o valor de um input definido em um Plugin, adicione o nome do input entre chaves duplas **`"{{  ...  }}"`** formando a expressão **`{{ <nome-do-input> }}`**. Confira o exemplo utilizando um input "**`project_name`**" de um Plugin, a expressão será **`{{ project_name }}`**.
+
+:::tip Informação Adicional
+
+Inputs globais são compatíveis no portal da StackSpot. Para mais informações, [**acesse o uso de Jinja no portal da StackSpot**](create-use/create-content/yaml-files/jinja.md#jinja-no-portal-da-stackspot).
+
+:::
+
+```yaml
+schema-version: v3
+kind: plugin
+metadata:
+  name: global-plugin
+  display-name: global-plugin
+  description: Plugin that has a input from global input
+  version: 0.0.1
+spec:
+  type: app
+  compatibility:
+    - python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  technologies:
+    - Api
+  inputs:
+    - label: Insert any text
+      type: text
+      name: json_body
+  hooks:
+    - type: edit-json
+      trigger: after-render
+      path: package.json
+      indent: "\t"
+      encoding: utf-8
+      changes:
+        - jsonpath: "$.name[?name = '{{ project_name }}']"
+          update:
+            value: |
+              {
+                 "name": "other-project",
+                 "version": "1.2.5",
+                 "bin": {
+                   "other-project": "./path/to/project"
+                 }
+              }
+```
+
+O valor do input **`project_name`** definido no Plugin é usado como parte da expressão do jsonpath utilizado em um Hook Declarativo **`edit-json`** ao aplicar o Plugin.
+
+### **Exemplo 3: Plugin utilizando o input global como valor default em um dos seus inputs**
+
+Você pode usar o valor do input global para definir o valor default de um Plugin que será aplicado após outro Template (ou Plugin) tenha definido um input global:
+
+:::tip Informação Adicional
+
+Inputs globais são compatíveis no portal da StackSpot. Para mais informações, [**acesse o uso de Jinja no portal da StackSpot**](create-use/create-content/yaml-files/jinja.md#jinja-no-portal-da-stackspot).
+
+:::
+
+```yaml
+schema-version: v3
+kind: plugin
+metadata:
+  name: global-plugin
+  display-name: global-plugin
+  description: Plugin that uses a global input as default value
+  version: 0.0.1
+spec:
+  type: app
+  compatibility:
+    - python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  technologies:
+    - Api
+  inputs:
+    - label: Project Name
+      type: text
+      name: project_name
+      default: project_name
+      global: true
+```
+
+# **Global Computed Inputs**
+
+O **`global computed inputs`** possibilita o uso de **`computed-inputs`** de maneira global nos Plugins.
+
+Por meio do **`global-computed-inputs`**, é possível:
+
+- Usar **`computed-inputs`** de maneira global;
+- Reaproveitar o valor do input em Plugins subsequentes.
+
+### **Exemplo 1. Definindo um `global-computed-input` em um Plugin**
+
+:::tip Informação Adicional
+
+Inputs **`global-computed-inputs`** aceita **expressões Jinja** e são compatíveis no portal da StackSpot. Para mais informações, [**acesse o uso de Jinja no portal da StackSpot**](create-use/create-content/yaml-files/jinja.md#jinja-no-portal-da-stackspot).
+
+:::
+
+```yaml
+schema-version: v3
+kind: plugin
+metadata:
+  name: global-computed-input-template
+  display-name: global-computed-input-template
+  description: Template that has a global computed input
+  version: 0.0.1
+spec:
+  type: app
+  compatibility:
+    - python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  technologies:
+    - Api
+  inputs:
+    - label: Project name
+      type: text
+      name: project_name
+      default: project-name
+  global-computed-inputs:
+    project_name_sanitized: "{{project_name|replace('-', '_')|lower}}"
+```
+
+O valor **`project_name_sanitized`** pode agora ser usado em todos as aplicações subsequentes de Plugins.
+
+### **Exemplo 2. Plugin usando o valor `global-computed-input`**  
+
+Plugin com **`global-computed-inputs`**. Os Plugins aplicados em seguida terão acesso ao valor do **global-computed-inputs**.
+
+Para usar o valor **`project_name_sanitized`** definido como **`global computed input`** no Plugin anterior, basta defini-lo como **`{{project_name_sanitized}}`** no arquivo onde o parse será feito:
+
+Por exemplo, para usar este valor em um arquivo **README.md** que seria criado pelo Plugin:
+
+:::tip Informação Adicional
+
+Inputs **`global-computed-inputs`** aceita **expressões Jinja** e são compatíveis no portal da StackSpot. Para mais informações, [**acesse o uso de Jinja no portal da StackSpot**](create-use/create-content/yaml-files/jinja.md#jinja-no-portal-da-stackspot).
+
+:::
+
+```bash
+|_plugin.yaml
+|_templates
+  |_README.MD
+
+README.md
+```
+
+O valor **`project_name_sanitized`** é **`{{project_name_sanitized}}`**.
+
+:::warning Atenção!
+
+Não é necessário redefinir essa parte no **`plugin.yaml`**.
+
+:::
+
+### Exemplo completo com **`computed-inputs`** e **`global computed inputs`**
+
+:::tip Informação Adicional
+
+Inputs **`global-computed-inputs`** aceita **expressões Jinja** e são compatíveis no portal da StackSpot. Para mais informações, [**acesse o uso de Jinja no portal da StackSpot**](create-use/create-content/yaml-files/jinja.md#jinja-no-portal-da-stackspot).
+
+:::
+
+```yaml
+schema-version: v3
+kind: plugin
+metadata:
+  name: my-plugin
+  display-name: my-plugin
+  description: Describe your plugin explaining its purpose
+  version: 0.0.1
+spec:
+  type: app
+  compatibility:
+    - python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  technologies: # Ref: https://docs.stackspot.com/create-use/create-content/yaml-files/plugin-yaml/#technologies
+    - Api
+  inputs:
+    - label: Select the connection for your my-task-connection
+      name: my-task-conn
+      type: required-connection
+      connection-interface-type: ecs-task-conn
+    - label: Type name of your resource
+      name: resource
+      type: text
+      required: true  #default false
+      default: Client
+      pattern: '([A-Z][a-z]+)+'
+      help: 'Inform your resource name (e.g.: Client)'
+    - label: Choose http method of new endpoint
+      name: method
+      type: select
+      items:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - PATCH
+      default: GET
+      required: true
+      help: 'Inform the method of the endpoint (e.g.: post or delete)'
+  global-computed-inputs:
+    name_formatted_global: "{{ resource | upper }}"
+  computed-inputs:
+    name_formatted: "{{ resource | upper }}"
+  hooks:
+    - type: run
+      trigger: before-input
+      commands:
+        - echo plugin before-input!
+    - type: run
+      trigger: after-render
+      commands:
+        - echo plugin after-render!
+```

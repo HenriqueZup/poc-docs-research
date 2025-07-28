@@ -1,0 +1,273 @@
+---
+title: "(Descontinuado) Criar Aplicação via CLI"
+sidebar_position: 1
+description: Como criar Aplicações.
+---
+
+:::danger Atenção!
+
+Este conteúdo está sendo descontinuado, [**conheça como Criar Aplicação via CLI**](create-use/use-content/application/create-app-cli.mdx).
+
+:::
+
+> Nesta seção, você encontra um guia de como criar sua Aplicação via Portal ou STK CLI.
+
+<br/>
+
+## **Diagrama de criação de Aplicação**
+
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<ThemedImage alt="Diagrama ilustrando os passos para criar uma aplicação no Portal da StackSpot. As etapas incluem: 1. Criar um app. 2. Selecionar uma Stack e uma versão. 3. Selecionar Starter. 4. Adicionar Plugins ao fluxo de criação (plugins podem ser de aplicação ou infraestrutura. 5. E realizar o deploy da aplicação." width="auto" sources={{ light: useBaseUrl('/img/diagrams/CRIARAPP-PT-light.png'), dark: useBaseUrl('img/diagrams/CRIARAPP-PT-dark.png'), }} />
+
+## **Pré-requisitos**
+
+- Já ter o [**STK CLI**](home/stk-cli/install.mdx) e ser membro de um [**Workspace**](home/workspace/about-workspace.mdx).
+- Estar **logado** em uma conta StackSpot.  
+- [**Acessar um Estúdio**](create-use/studio/intro-studio.mdx).
+- [**Você precisa de uma Stack e um Starter criados e prontos para serem utilizados**](create-use/create-content/stack/create-stack.mdx).
+- Já ter [**ambientes criados**](home/account/organization/create-env.mdx).
+- [**Já ter configurado o Deployment via Self-Hosted para configurar e conectar os ambientes na Conta Cloud**](deployment/deploy/overview.mdx). 
+- Já ter [**SCM configurado**](home/account/organization/scm-integration/index.mdx) (Quem faz essa configuração é a pessoa responsável por **administrar sua conta**).
+- Confira com o administrador da conta o **gerenciamento do acesso ao <Tooltip text="Source code management (SCM) rastreia alterações em um repositório de código, mantendo um registro de modificações e auxiliando na gestão de conflitos que surgem ao integrar atualizações de diferentes colaboradores.">SCM</Tooltip> via PAT (Personal Access Token) do usuário ou da conta**. Você deve configurá-lo em [**'Conexões Externas'**](home/account/profile/external-connections.mdx).
+
+<br/> 
+
+**Se você não cumprir algum dos requisitos acima, pare de seguir esse guia e acesse o link do requisito que falta.**
+
+:::warning Atenção!
+
+- O nome da Aplicação deve ter no máximo **60 caracteres**.
+
+:::
+
+<br/>
+
+## **Passo a Passo para Criar Aplicação pelo STK CLI**
+
+**Passo 1.** No seu **terminal**, selecione o Workspace que você quer utilizar para criar a Aplicação. Execute o comando:
+
+```bash
+
+stk use workspace
+
+```
+
+Os Workspaces da sua conta serão listados no terminal. Selecione o Workspace e pressione Enter.
+
+:::tip Dica!
+
+Confira a lista de Workspaces disponíveis pelo seu terminal, execute o comando [**`stk list workspace`**](home/stk-cli/commands/workspace-commands.mdx).
+O Workspace que você está tem um asterisco.
+
+Você também pode conferir no [**Portal da StackSpot**](https://app.stackspot.com/login) na seção de **'Workspaces'**.
+
+:::
+
+
+**Passo 2.** Para criar a Aplicação, execute o comando:
+
+```bash
+
+stk create app
+
+```
+
+Responda às perguntas no terminal:
+
+:::info Informação Adicional
+
+- Se existirem [**Contextos definidos**](home/account/organization/configure-context-account.mdx), algumas (ou todas) as variáveis já estarão preenchidas. E, quando as variáveis são mandatórias, você não consegue mudá-las.
+
+- O **preenchimento de inputs** deve conter apenas caracteres alfanuméricos, sublinhado (_) e hífen (-), conforme o regex: **`^[a-zA-Z0-9_-]+$`**. Por exemplo: nome_Input, Nome_input, NOME_INPUT, Nome-input, nome-input, N0m3-1nput. 
+
+- Para mais informações sobre **inputs de Plugin**, consulte o [**Guia de Inputs**](create-use/create-content/yaml-files/inputs.mdx).
+::: 
+
+- **Nomeie sua Aplicação**: Insira o nome da sua Aplicação;
+
+:::tip Dica!  
+
+Se você quiser nomear a Aplicação com um nome diferente da pasta (diretório), use o parâmetro **`--target`** ou **`-o`**.  
+
+Confira um exemplo de como o comando deveria ficar a seguir: 
+
+`stk create app my-app-name --starter my-studio/my-stack/starter-name --target home/user/Applications/my-app`
+
+:::
+
+- **Iniciar um repositório git:** Informe Sim (Y) ou Não (N).
+- **Adicionar remote (essa pergunta só aparece se você responder "Sim" para a pergunta anterior)**: Informe Sim (Y) ou Não (N). Se **sim**, informe a **URL do repositório remoto** que você quer utilizar para a sua Aplicação. Caso você responda **'Não'**, você irá criar um repositório novo localmente e depois deve transformá-lo em remoto (subir para o GitHub).   
+- **Descrição da Aplicação**: Insira uma breve descrição para a sua Aplicação;  
+- **Selecione o Estúdio**: Selecione um dos Estúdios disponíveis em sua conta;  
+- **Selecione a Stack**: Selecione a Stack desejada;  
+- **Selecione a versão da Stack**: Selecione a versão da Stack que você quer utilizar. [**Se a versão for por range**](create-use/create-content/plugin/plugin-version.mdx), a Stack sempre usará a última versão disponível do Plugin dentro da Stack.
+
+- **Nomeie a utilização do Plugin**: A utilização dos Plugins são preenchidas automaticamente, você deve em seguida responder os inputs dos Plugins.
+
+:::warning Atenção!
+
+Você **pode aplicar um mesmo Plugin mais de uma vez na sua Aplicação**. Por isso, a pergunta aparece todas as vezes: 
+
+**`? Nomeie a utilização do Plugin (studio/stack/nome-do-plugin)`**
+
+Este é o [**`alias`**](create-use/create-content/plugin/v2-migration-guide.mdx) de utilização do Plugin e já vem preenchido automaticamente pelo STK CLI. Por exemplo:
+
+- O nome do Plugin é **base-html-plugin**
+- Se for a primeira vez que você aplica este Plugin, o **`alias`** já vem preenchido com o nome **base-html-plugin-1694809616257**.
+
+O **`alias`** serve para indicar qual é o objetivo desta primeira aplicação do Plugin e evitar nomes duplicados.
+
+**O `alias` é imutável depois de configurado.**
+
+:::  
+
+<br/>
+
+Você também pode criar sua Aplicação informando todos os parâmetros no comando pela opção **`--starter`** do comando. Por exemplo:
+
+```bash
+
+stk create app my-app-name --starter my-studio/my-stack/starter-name
+```
+
+> Para acessar a lista de Starters disponíveis pelo seu terminal, execute o comando [**`stk list starter`**](home/stk-cli/commands/general-commands.mdx).
+
+
+**Passo 3.** Aplique os Plugins da Stack/Starter que você escolheu. Cada Plugin tem inputs diferentes para serem configurados;
+
+**Passo 4.** Caso algum Plugin exija alguma [**Connection Interface**](create-use/connections/index.mdx), você deve adicionar um alias para o uso de cada uma;
+
+Repita o processo com todos os Plugins até que todos estejam aplicados. Sua aplicação está criada.
+
+:::danger Atenção!
+
+O arquivo **`stk.yaml`** de uma Aplicação ou Infraestrutura não deve ser editado manualmente. Você pode modificar os Plugins da sua Aplicação ou Infraestrutura, para isso, use comandos a seguir:
+
+- Para modificar a versão ou configurações de um Plugin:
+
+```bash
+stk update plugin
+```
+
+- Para remover um Plugin:
+
+```bash
+stk remove plugin
+```
+
+- Para adicionar novos recursos ao seu projeto:
+
+```bash
+stk apply plugin
+```
+
+::: 
+
+**Passo 5.** Agora, registre sua Aplicação na conta. Para isso, primeiro acesse o diretório da Aplicação:
+
+```bash
+cd <nome-da-aplicação>  
+```
+
+Em seguida execute o comando para registrar:
+
+```bash
+stk register app
+```
+
+Responda as perguntas:
+
+- **URL do repositório**: Informe o repositório que irá armazenar o código da sua aplicação;
+- **Base branch**: Informe a branch para ser utilizada no repositório.
+
+<!--
+
+Confira todos os passos executados acima:
+
+<br/>
+<div>
+  <p>
+    Terminal solicitando a criação de uma aplicação com o comando stk create app. O usuário deve responder perguntas como nome da aplicação, se deseja iniciar um repositório Git, adicionar um repositório remoto, fornecer uma descrição, selecionar o estúdio, stack e versão da stack. O terminal também solicita a nomeação da utilização dos plugins aplicados, com a possibilidade de aplicar o mesmo plugin mais de uma vez. Após configurar todos os parâmetros, o usuário deve registrar a aplicação com o comando stk register app, fornecendo a URL do repositório e a branch base.
+  </p>
+<AsciinemaPlayer src="/videos/create-app.cast " autoplay="true" loop="true" speed="3" /><br/>
+</div>
+
+--> 
+
+Agora você pode conferir os dados da sua Aplicação dentro do seu Workspace no [**portal da StackSpot**](https://app.stackspot.com/pt/login) na seção **'Aplicações'**.
+
+Pronto, você criou e registrou sua Aplicação!
+
+:::caution Cuidado!
+
+- O **deploy da Infraestrutura** da Aplicação **só é feito neste momento** caso sua organização tenha [**configurado o deploy via Runtime Self-Hosted**](deployment/deploy/self-hosted-runtime.mdx).  
+- Você deve fazer **deploy da Aplicação em si** por meio da sua pipeline e executar o **registro do deploy na Plataforma StackSpot EDP** para poder acompanhar os logs dentro da tela de [**Atividades**](deployment/manage/activities.mdx). Confira o processo na [**seção de Registro do deploy da Aplicação**](deployment/deploy/register-app-deployment.mdx).
+
+:::
+
+### **Erro ao criar uma Aplicação**
+
+<br/>
+
+> Confira como reexecutar o **'Workflow de Criação de uma Aplicação'** em caso de erro. Este processo é apenas possível dentro do **Portal da StackSpot EDP**.
+
+<br/>
+
+Ao criar uma Aplicação e clicar em **'Commit'** para enviar a Aplicação para o repositório, você **inicia um [Workflow](home/account/organization/workflow/configure-workflow.mdx)**. Os Workflows definem a ordem em que Actions serão executadas, por exemplo, para enviar uma Aplicação para um repositório.
+
+Caso este Workflow **retorne um erro**, a criação da Aplicação será interrompida. Você precisará verificar o que está errado e **reexecutar o Workflow** para criar a Aplicação corretamente.
+
+Siga os passos para reexecutar o Workflow:
+
+**Passo 1.** Dentro do Workspace, depois de começar a criar sua Aplicação, clique na janela **'Running'** que aparece no canto inferior esquerdo da página após clicar em **'Commit'**. Depois, clique em **'Ver detalhes'**. 
+
+:::warning Atenção!
+
+Se você **fechou o modal** com o log de execução da sua Infraestrutura:
+
+1. Vá para o seu Workspace;  
+2. Clique em **'Aplicações'** no menu principal e selecione sua Aplicação;  
+3. Dentro da sua Aplicação, clique em **'Atividades'** no menu principal;  
+4. Selecione o Workflow que você quer revisar e revise o erro no atributo "errorLog";  
+5. Dentro do log, clique no botão **'Retornar para a revisão da criação da aplicação'**;  
+6. Continue a partir do **'Passo 3'**.
+
+:::
+
+**Passo 2.** Na página de **'Commit'**, clique em **'Voltar para Revisão'**;
+
+**Passo 3.** Verifique se há algo errado e edite clicando no botão **'Editar'** ou voltando nas etapas de criação clicando no botão **'Voltar'**;
+
+**Passo 4.** Salve suas alterações e clique novamente no botão **'Commit'**.
+
+:::warning Atenção!
+
+Se ocorrer um erro, repita o processo.
+
+:::
+
+## **Como usar as Variáveis de Conta para configurar Plugins na sua Aplicação**
+
+Você pode escolher [**utilizar Variáveis Customizadas criadas pela sua Organização**](create-use/create-content/variables.mdx) para preencher os inputs de Plugins e Actions ao criar sua Aplicação. 
+
+Para isso:
+
+1. Escreva **`{{`** ao responder o input; 
+2. Selecione a Variável que você deseja utilizar. 
+
+[**Acesse a página Como criar Variáveis de Conta para saber mais.**](home/account/organization/variables/create-variables.mdx) 
+
+## **Próximos passos**
+
+:::danger Atenção!
+
+Após criar sua Aplicação ou Infraestrutura, é preciso realizar o deploy. Os passos para isso podem variar conforme a configuração da pipeline da sua Organização. Para mais informações, entre em contato com o Account Admin ou a pessoa responsável pela configuração do Self-hosted.
+
+::: 
+
+- [**Registre o deploy da sua Aplicação via pipeline**](deployment/deploy/register-app-deployment.mdx).
+- [**Gerenciar a execução de Actions na sua aplicação**](create-use/use-content/application/actions-application.mdx).
+- [**Gerencie e acompanhe sua Aplicação**](deployment/manage/activities.mdx).
+- Para **destruir** sua Aplicação, [**confira a seção de Destroy**](deployment/deploy/register-app-destroy.mdx).

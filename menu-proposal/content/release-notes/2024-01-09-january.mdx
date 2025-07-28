@@ -1,0 +1,33 @@
+---
+title: "Janeiro 24"
+description: Release Notes
+---
+
+> Nesta seção, você encontra: Referência das novas features da StackSpot & alterações relevantes na documentação.
+
+## **Features**
+
+### **O que há de novo?**
+
+- Novo comando [**`stk show me`**](/home/stk-cli/commands/general-commands) do STK CLI que permite obter diretamente no terminal os dados da sua Conta StackSpot.
+
+- Novas variáveis [**`stk`**](/create-use/create-content/plugin/create-plugin) adicionadas. Elas funcionam como valores para os inputs e podem conter diversas informações sobre a conta, Workspace, Estúdio, Stack entre outras durante o uso de Plugins e criação de Aplicações.
+
+- **Novo modelo de Gerenciamento de Acessos:**  agora são utilizados os sistemas Policy-Based Access Control (PBAC - Controle de Acesso baseado em Políticas), Attribute-Based Access Control (ABAC - Controle de acesso baseado em atributos) e Role-Based Access Control (RBAC - Controle de acessos baseado em papéis) para criar uma estrutura de controle de acessos poderosa e flexível.
+
+Para conhecer o novo modelo de gerenciamento de acessos, papéis e permissões das contas StackSpot, confira a seção [**Gerenciamento de Acessos**](/home/account/organization/access-management/overview).
+
+- **Guia de migração de Gerenciamento de acessos:**  A StackSpot está em **processo de migração** do modelo de gestão de acessos, papéis e permissões.
+
+O modelo novo será implementado em todas as contas até o **dia 02/02/2024**.
+para auxiliar você a entender as mudança, foi criado um **guia** que explica as diferenças entre o modelo em depreciação e o atual.
+
+## **Melhorias e Correções**
+
+- O nome do alias ao aplicar Plugins de Infraestrutura foi atualizado para o máximo de 50 caracteres.
+
+- Nova seção do arquivo [**`action.yaml`**](/create-use/create-content/yaml-files/action-yaml). Você encontra todos os campos e configurações para serem utilizadas em suas Actions.
+
+- Foram atualizadas informações sobre a publicação de Stacks pelo STK CLI. Mais detalhes sobre os requisitos e regras de validação para fazer a publicação de uma Stack foram adicionados. [**Confira o guia**](/create-use/create-content/stack/create-stack-starter-cli).
+
+- Atualização do arquivo [**`plugin.yaml`**](/create-use/create-content/yaml-files/intro-yaml). Foram removidos os campos referentes a documentação do Plugin e adicionado o campo **`docs`**.

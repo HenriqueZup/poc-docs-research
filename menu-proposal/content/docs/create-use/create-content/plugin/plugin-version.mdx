@@ -1,0 +1,155 @@
+---
+title: "Plugin na Stack"
+sidebar_position: 7
+description: Versionar, Depreciar ou Deletar versão do Plugin na Stack. 
+---
+
+> Nesta seção você encontra como versionar, depreciar ou deletar a versão de um Plugin na Stack. 
+
+## **Versionar um Plugin**
+
+A StackSpot segue o [**padrão semântico (SemVer)**](https://devhints.io/semver).
+
+Na padronização do SemVer, é possível escolher um dos tipos:
+
+- **Versão específica**: representa uma só versão do Plugin, como `1.0.0`, por exemplo.
+
+- **Range**: na sequência `1.0.0, 1.2.3, 1.2.4, 1.2.5, 1.2.6, 1.3.1.`, o `~1.2.3` ou `>1.2.3.` representa qualquer versão maior ou igual a `>=1.2.3` e menor que `<1.3.0`. No **range**, você pode definir um intervalo de versões permitidas para o Plugin, como `~1.2.3`, por exemplo. Só é possível alterar o **PATCH** e **MINOR** do range uma versão. A range da **MAJOR** é imutável.
+
+:::danger Atenção!  
+
+Em alguns cenários não é possível publicar a versão de um Plugin que seja inferior ao range da MAJOR, porque isso quebra a compatibilidade da versão. Confira outras ações que **quebram a MAJOR** de um range:
+
+- Adição/Remoção de novas Connection Interfaces, tanto no atributo de [**requires**](create-use/create-content/yaml-files/spec-file.mdx) quanto no de [**generates**](create-use/create-content/yaml-files/spec-file.mdx).  
+- Adição/Remoção de Plugins.
+- Remoção de inputs.
+- Adição de [**inputs required**](create-content/yaml-files/inputs.mdx) sem valor default. 
+
+
+:::
+
+### **Cenários para versionar**
+
+O versionamento dos Plugins acontece em dois cenários:
+
+**Cenário 1.** Quando existe algum erro no Plugin;
+
+**Cenário 2.** Para adicionar alguma funcionalidade nova no Plugin.
+
+Para versionar um Plugin em uma Stack, entre [**no Portal da StackSpot EDP**](https://app.stackspot.com/login) e siga os passos:
+
+**Passo 1.** Na Stack, clique na seção de Plugin e, em seguida, em **'Adicionar Plugins'**.
+
+**Passo 2.** Na aba lateral, clique no ícone de seta do Plugin que você quer versionar e adicionar à sua Stack.
+
+**Passo 3.** Selecione uma **versão única** ou selecione o **range de versões** e digite os exemplos de intervalos de versões. 
+
+**Passo 4.** Clique na caixa de seleção do Plugin e, em seguida, clique no botão **'Adicionar Plugins'**. 
+
+Pronto, você adicionou uma nova versão do Plugin na Stack. 
+
+---
+
+## **Alterar a versão de um Plugin**  
+
+Você pode alterar a versão de um Plugin adicionado na Stack enquanto ela ainda está em **`Draft`**, ou seja, enquanto a Stack ainda não foi publicada. 
+
+Confira o passo a passo para alterar a versão de um Plugin dentro da Stack.
+
+**Passo 1.** Acesse a Stack em que o Plugin está adicionado;
+
+**Passo 2.** Na seção de Plugins, clique no botão que indica a versão atual do Plugin que você quer alterar;
+
+**Passo 3.** Dentro da aba **'Adicionar Plugin'**, clique na caixa de versões e, em seguida, clique na versão ou range que você quer alterar na Stack; 
+
+**Passo 4.** Clique no botão **'Adicionar Plugins'**.
+
+Pronto, você alterou a versão de um Plugin na Stack. 
+
+:::caution Cuidado!  
+
+Se a nova versão do Plugin tiver outros conteúdos requeridos, você também terá que adicioná-los na Stack. Para fazer isso, confira o passo a passo: 
+
+**Passo 1.** Na linha do Plugin, clique no botão **'Adicionar conteúdo requerido'**;
+
+**Passo 2.** Selecione os conteúdos indicados na tela;
+
+**Passo 3.** Clique no botão **'Adicionar Requeridos'**. 
+
+Pronto, você adicionou os conteúdos requeridos.
+
+:::
+
+## **Depreciar a versão de um Plugin**  
+
+:::tip Dica!
+
+Confira [**as regras de depreciação**](create-use/studio/deprecate-unpublish-delete.mdx).
+
+:::
+
+Na depreciação da versão de um Plugin dentro da Stack, em qualquer versão publicada do Plugin, o conteúdo dentro dele terá uma flag indicando a depreciação.
+
+Confira o passo a passo para depreciar a versão de um Plugin na Stack:
+
+**Passo 1**. Entre na Stack em que o Plugin está e, logo em seguida, clique na aba **'Plugins'**;
+
+**Passo 2**. Clique no Plugin que você quer depreciar;
+
+**Passo 3**. Na seção Histórico de Versões, clique em **'Versão'**. Escolha a versão que você quer depreciar e clique no botão **'Depreciar Versão'** para depreciar essa versão do Plugin.
+
+Pronto, a versão do Plugin foi depreciada da Stack.
+
+---
+
+## **Deletar um Plugin**
+
+Na StackSpot é possível deletar a versão de um Plugin em uma Stack. Porém, ele só pode ser removido se a Stack em que ele está **ainda não foi publicada**. 
+
+Quando uma versão de um Plugin é deletada da Stack, só é removido o relacionamento que eles têm na Stack, já que a versão do Plugin permanece no Estúdio em que ele está publicado.
+
+:::tip Dica!
+
+Quando há somente **uma versão** de um Plugin publicada e ela é deletada, o Plugin **também é deletado**. Ou seja, se você quiser deletar totalmente um Plugin, você precisa deletar todas as versões publicadas dele.
+:::
+
+Para fazer a deleção, é preciso seguir as regras:  
+
+1. A versão do Plugin não pode estar sendo usada ou associada A nenhuma Stack;
+2. Ter um perfil com permissão de remoção de conteúdo.
+
+:::warning Atenção!
+
+A deleção da versão de um conteúdo **não tem rollback**. Mas caso você queira usar o conteúdo novamente, é possível criar a mesma versão deletada ou continuar gerando uma nova versão dele.
+
+:::
+
+Para deletar a versão de um Plugin em um Estúdio, entre no Portal da StackSpot e siga os passos:
+
+**Passo 1.** Dentro do seu Estúdio, clique na seção de Plugin e selecione o Plugin que você quer deletar;
+
+**Passo 2.** Na **'Descrição'** do Plugin, clique no botão que indica a versão atual do Plugin;
+
+**Passo 3.** Em **'Histórico de Versões'**, clique no botão ao lado da **versão do Plugin** que você quer deletar.
+
+**Passo 4.**  Preencha o seguinte campo:  
+
+- O **slug** e a **versão** da Stack que você quer deletar.
+
+Para continuar, clique no botão **'Deletar Plugin'**.
+
+Pronto, você deletou uma versão do Plugin.
+
+### **Deletar a versão de um Plugin de uma Stack (Opcional)**
+
+Na StackSpot é possível deletar a versão de um Plugin em uma Stack. Porém, ele só pode ser removido se a Stack em que ele está **ainda não foi publicada**.
+
+Confira o passo a passo para deletar o Plugin de uma Stack:
+
+**Passo 1**. Entre na Stack em que o Plugin está e, logo em seguida, clique na aba **'Plugin'**.
+
+**Passo 2**. Na listagem de Plugins da Stack, clique no botão **Mais Opções** do Plugin que você quer deletar.
+
+**Passo 3**. Clique no botão **'Deletar'** para deletar o Plugin.
+
+Pronto, o Plugin foi deletado da Stack.

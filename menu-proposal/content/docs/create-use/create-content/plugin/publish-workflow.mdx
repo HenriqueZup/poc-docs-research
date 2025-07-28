@@ -1,0 +1,97 @@
+---
+title: "Publicar Plugin via Pipeline"
+sidebar_position: 10
+description: Tutorial para publicar um Plugin via pipeline.
+---
+
+> Nesta seção, você encontra um tutorial de publicar um Plugin via pipeline.
+
+<br/>
+
+:::warning Atenção!
+Este tutorial foi criado utilizando Plugins na versão 1.
+:::
+
+### **Objetivo**  
+
+Este tutorial tem o objetivo de orientar a publicação de Plugins no Portal da StackSpot através de um ou mais workflows no GitHub.
+
+Você aprende como configurar um repositório com uma [**Action do GitHub**](https://github.com/features/actions). Você pode usar essa Action dentro do workflow, executá-la e utilizá-la na publicação de um ou mais Plugins na StackSpot.  
+
+Com isso, é possível fazer uma publicação automática por meio da pipeline, mas seguindo o trigger do GitHub Action.
+
+:::info Informação Adicional
+Atualmente, a publicação de Plugins via pipeline pode ser feita apenas nos ambientes em **PROD**.  
+:::
+
+**Nível:** Iniciante/Intermediário
+
+Confira o resumo dos passos:
+
+1. Preencher os parâmetros do workflow;
+2. Conferir a localização do workflow no repositório;
+3. Checar a publicação no Portal da StackSpot.
+
+### **Pré-requisitos:**
+
+- Ter ou estar em uma conta StackSpot;  
+- Ter um repositório no GitHub.
+
+### **Passo 1. Configurar o workflow no GitHub**
+
+Dentro do seu repositório, configure o workflow preenchendo os seguintes parâmetros:
+
+- **`uses`**: \<stackspot/nome-da-action@número-da-versão> 
+- **`client_id`** e **`client_key`**. [**Acesse a documentação**](home/account/profile/access-token.mdx) e saiba como gerá-los.
+- **`realm`**  
+- **`studio`**: Escolha o Estúdio para publicar o Plugin.
+- **`path`**: Caminho do Plugin que você quer publicar. Este é um campo opcional.  
+
+Confira um exemplo do workflow configurado:
+
+```yaml
+name: Plugin publish test
+
+on:
+  push:
+    branches: 
+      - main
+      
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Run publish
+        uses: stack-spot/publish-plugin-action@v1.1.1
+        with:
+          client_id: ${{ secrets.CLIENT_ID }}
+          client_key: ${{ secrets.CLIENT_KEY }}
+          realm: ${{ secrets.REALM }}
+          studio: stackspot-content
+```
+
+### **Passo 2. Verificar se o workflow está na raiz do repositório**
+
+Para que a Action funcione corretamente, confira se o workflow está na pasta raiz do repositório do Plugin que você quer publicar:
+
+![Captura de tela do Visual Studio Code mostrando a estrutura de arquivos da pasta .github/workflows. Os arquivos listados são: action-test.yml, .gitignore, LICENSE, README.md e action.yml.](/img/path-workflow.png)
+
+> Para saber como configurar o o workflow do GitHub, acesse a [**documentação oficial**](https://docs.github.com/pt/actions/quickstart).
+
+### **Passo 3. Checar a publicação do Plugin no Portal da StackSpot**
+
+Depois de ter configurado o workflow com todos os parâmetros necessários, siga os passos:
+
+1. Acesse o Portal da StackSpot;
+2. Entre no Estúdio em que você indicou no workflow e acesse a subseção de Plugins;
+3. Procure o Plugin na barra de busca do Estúdio. A página do Plugin deverá exibir todas as informações que foram incluídas no workflow, como descrição, versão e nome.  
+
+Pronto, você publicou um Plugin na StackSpot via workflow.  

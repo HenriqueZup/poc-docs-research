@@ -1,0 +1,127 @@
+---
+title: Criar Aplicação via STK CLI
+sidebar_position: 3
+description: Confira como criar uma Aplicação pelo Workflow no STK CLI.
+---
+
+## **Visão Geral**
+
+Na StackSpot, uma Aplicação é qualquer código fonte que implementa regras de negócio, trechos de código como classes, métodos e importações de bibliotecas ou um código de uma Aplicação minimamente funcional. 
+
+As Aplicações são desenvolvidas dentro dos **Workspaces**, utilizando ferramentas como **Plugins**, **Stacks**, **Starters** ou os **Workflows disponíveis**, que tornam o desenvolvimento e a entrega de soluções mais rápidos e simples.
+
+Na StackSpot, você pode criar Aplicações de duas formas:
+
+- **STK CLI**; e  
+- **Portal StackSpot EDP**  
+
+Para criar uma Aplicação, é necessário utilizar uma **Stack** e um **Starter** ou um **Workflow**.  
+
+A seguir, você confere o passo a passo para **criar Aplicações pelo STK CLI utilizando Workflows**.  
+
+## **Pré-requisitos**
+
+- Já ter o [**STK CLI**](home/stk-cli/install.mdx) e ser membro de um [**Workspace**](home/workspace/about-workspace.mdx).
+- Estar **logado** em uma conta StackSpot.  
+- [**Acessar um Estúdio**](create-use/studio/intro-studio.mdx).  
+- [**Você precisa de uma Stack com um Starter e Workflow do tipo 'create'/'starter', criados e prontos para serem utilizados**](create-use/create-content/stack/create-stack.mdx).  
+- Já ter [**ambientes criados**](home/account/organization/create-env.mdx).  
+- [**Já ter configurado o Deployment via Self-Hosted para configurar e conectar os ambientes na Conta Cloud**](deployment/deploy/overview.mdx).  
+- Já ter [**SCM configurado**](home/account/organization/scm-integration.mdx) (Quem faz essa configuração é a pessoa responsável por **administrar sua conta**).  
+- Confira com o administrador da conta o **gerenciamento do acesso ao <Tooltip text="Source code management (SCM) rastreia alterações em um repositório de código, mantendo um registro de modificações e auxiliando na gestão de conflitos que surgem ao integrar atualizações de diferentes colaboradores.">SCM</Tooltip> via PAT (Personal Access Token) do usuário ou da conta**. Você deve configurá-lo em [**'Conexões Externas'**](home/account/profile/external-connections.mdx).  
+
+<br/>
+
+:::caution Cuidado!
+
+**Se você não atender a algum dos pré-requisitos mencionados, pause este guia e acesse o link correspondente ao requisito pendente para resolvê-lo antes de continuar.**
+
+:::
+
+<br/>
+
+## **Passo a Passo para Criar Aplicação pelo STK CLI com um Workflow**
+
+**Passo 1.** No seu **terminal**, selecione o Workspace que você quer utilizar para criar a Aplicação. Execute o comando:
+
+```bash
+
+stk use workspace
+
+```
+
+Os Workspaces da sua conta serão listados no terminal. Selecione o Workspace e pressione Enter.
+
+:::tip Dica!
+
+Confira a lista de Workspaces disponíveis pelo seu terminal, execute o comando [**`stk list workspace`**](home/stk-cli/commands/workspace-commands.mdx). O Workspace que você está tem um asterisco.
+
+Você também pode conferir no [**Portal da StackSpot**](https://app.stackspot.com/login) na seção de **'Workspaces'**.
+
+:::
+
+**Passo 2.** Para criar a Aplicação, execute o comando:
+
+:::tip Dica!
+
+Para os nomes de Estúdio, Stack, e Workflow, sempre use o **slug**. O slug é o nome que está registrado no Portal da StackSpot EDP. O nome utilizado pode ter alguma diferença do nome registrado no Portal, o que pode causar erros ao criar a Aplicação pelo STK CLI.
+
+:::  
+
+```bash
+stk create app [NOME-APP] --workflow [NOME-ESTUDIO(slug)/NOME-STACK(slug)/NOME-WORKFLOW(slug)]
+```
+
+Exemplo:
+
+```bash
+stk create app app-com-workflow --workflow nome-stack/nome-estudio/nome-workflow-create-app
+```
+
+:::warning Atenção!
+
+- Se o argumento **`--workflow`** for fornecido, a CLI executará o Workflow especificado do tipo **`create`** ou **`starter`**.  
+- O Workflow será responsável por todas as etapas, incluindo aplicação de Plugins, configuração de inputs e qualquer lógica adicional definida no Workflow.  
+- Caso ambos os argumentos **`--starter`** e **`--workflow`** sejam fornecidos, a CLI retornará um erro, pois eles são mutuamente exclusivos.
+
+:::
+
+Responda às perguntas do Workflow no terminal e sua Aplicação será criada.
+
+:::tip Dica!  
+
+Se você quiser nomear a Aplicação com um nome diferente da pasta (diretório), use o parâmetro **`--target`** ou **`-o`**.  
+
+Confira um exemplo de como o comando deveria ficar a seguir: 
+
+`stk create app app-com-workflow --workflow nome-stack/nome-estudio/nome-workflow-create-app --target home/user/Applications/my-app`
+
+:::
+
+**Passo 3.** Agora, registre sua Aplicação na conta. Para isso, primeiro acesse o diretório da Aplicação:
+
+```bash
+cd <nome-da-aplicação>  
+```
+
+Em seguida execute o comando para registrar:
+
+```bash
+stk register app
+```
+
+Responda as perguntas:
+
+- **URL do repositório**: Informe o repositório que irá armazenar o código da sua aplicação;
+- **Base branch**: Informe a branch para ser utilizada no repositório.
+
+Agora você pode conferir os dados da sua Aplicação dentro do seu Workspace no [**Portal da StackSpot**](https://app.stackspot.com/pt/login) na seção **'Aplicações'** e a [**execução do Workflow na seção Atividades**](deployment/manage/activities.mdx).
+
+Pronto, você criou e registrou sua Aplicação!
+
+:::caution Cuidado!
+
+- O **deploy da infraestrutura** da Aplicação **só é feito neste momento** caso sua organização tenha [**configurado o deploy via Runtime Self-Hosted**](deployment/deploy/self-hosted-runtime.mdx).  
+- Você deve fazer **deploy da Aplicação em si** por meio da sua pipeline ou Workflow do tipo deploy e executar o **registro do deploy na Plataforma StackSpot EDP** para poder acompanhar os logs dentro da tela de [**Atividades**](deployment/manage/activities.mdx). Confira o processo na [**seção de Registro do deploy da Aplicação**](deployment/deploy/register-app-deployment.mdx).
+
+:::

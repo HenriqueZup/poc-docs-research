@@ -1,0 +1,86 @@
+---
+title: "Configurar Workspace"
+sidebar_position: 3
+description: Como configurar Workspaces.
+sidebar_custom_props: 
+  icon: BorderRadius
+---
+
+import FlowChart from '@site/src/components/MdxComponents/FlowChart';
+
+<FlowChart steps={[
+  { title: 'Configurar Conta', link: 'home/account/intro-account.md', default: true },
+  { title: 'Configurar Deploy', link: 'deployment/deploy/overview.md' },
+  { title: 'Criar Conteúdo', link: 'create-use/create-content/getting-started.md' },
+  { title: 'Usar Conteúdo', link: 'create-use/use-content/quickstart.md' },
+]} />
+
+## Requisito
+
+[**Você precisa ter permissão de Account Holder, Workspace Admin ou Account Admin para continuar**](home/account/organization/access-management/roles.md ).
+
+## **Configurar seu Workspace**
+
+Siga os passos para configurar o seu Workspace [**no Portal da StackSpot EDP**](https://app.stackspot.com/login):
+
+### **Passo 1. Criar o seu Workspace**
+
+É preciso criar o seu Workspace para organizar suas Aplicações e Infraestrutura. Para isso, [**siga os passos na página Criar um Workspace**](home/workspace/create-workspace.mdx).
+
+### **Passo 2. Adicionar Stacks e configurar Contexto**
+
+Agora, adicione as Stacks no seu Workspace. Depois, configure o **Contexto** seguindo os [**passos do guia**](home/workspace/stacks-and-context/setup-context.mdx).
+
+> Contexto são configurações prévias de valores de inputs de Plugins e outros recursos de uma Stack, para **padronizar** ou **agilizar a criação** de Aplicações e Infraestruturas na StackSpot.
+
+
+### **Passo 3. Inserir links úteis**
+
+Você pode inserir links de ferramentas externas no seu Workspace. Confira mais detalhes na seção [**Adicionar links**](home/workspace/links-on-workspace.mdx).
+
+### **Passo 4. Configuração da conta de Cloud**
+
+> Essa configuração é feita por quem tem acesso a uma conta AWS.
+
+<br/>
+
+Depois de criar um Workspace, defina um Conta de Cloud (Cloud Provider) para um dos ambientes que foram configurados na conta. Para isso, você deve:
+
+1. Ir ao menu lateral;
+2. Dentro de **'Configurações'** clique em **'Contas de Cloud'**;
+3. Clique no botão **'Configure a nuvem'**;
+4. Selecione a forma como você quer configurar sua Conta Cloud neste Workspace:  
+
+  - Marque **'Crie serviços de cloud da StackSpot'**: para utilizar os serviços de Cloud Services da StackSpot.   
+
+  - Marque **'Conecte sua própria Conta Cloud'**: para utilizar suas próprias contas Cloud neste Workspace.   
+
+Você deve configurar uma conta cloud na StackSpot para conseguir fazer o deploy das suas Aplicações. Essa configuração é feita via Self-Hosted. Para configurar, confira o [**guia de configuração de Self-hosted**](deployment/deploy/use-self-hosted/index.mdx).  
+
+:::caution Cuidado!
+Caso a sua Conta se inclua nas condições a seguir: 
+
+1. **Contas Enterprise criadas antes de 2024**.
+
+Caso você tenha marcado a **opção de conectar sua própria Conta Cloud**, siga os passos a seguir:
+
+1. Você será redirecionado para uma página com os **ambientes criados** na sua Conta. Selecione em qual você quer configurar e conectar uma Conta Cloud;
+
+2. Selecione um dos provedores (AWS ou Azure) e faça as configurações necessárias. 
+
+<br/>
+
+Para conferir como configurar cada provedor, acesse: 
+
+O deploy ainda pode ser feito via **Engine de Deploy da StackSpot EDP**. Então, você precisa configurar sua Conta Cloud dentro do seu Workspace. Para ver como configurar cada provedor, acesse:
+
+- [**Configurar Conta Cloud AWS**](home/workspace/config-cloud-account.mdx);
+- [**Configurar Conta Cloud Azure**](home/workspace/config-cloud-account-azure.mdx);
+
+
+Para configurar sua **Conta Cloud via Self-hosted**, confira o [**guia de configuração Self-hosted**](deployment/runtime-engine/self-hosted-runtime.mdx). 
+
+Para conferir informações sobre esse modelo de deploy, [**confira a seção StackSpot Deploy Engine**](deployment/runtime-engine/intro-runtime-engine.mdx). 
+
+::: 
+

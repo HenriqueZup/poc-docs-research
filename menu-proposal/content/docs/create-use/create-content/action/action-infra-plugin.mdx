@@ -1,0 +1,57 @@
+---
+title: "Associar Action a Plugin de Infra"
+sidebar_position: 10
+description: Associar uma Action a um Plugin de Infra. 
+---
+
+> Nesta seção, você encontra um guia de como associar uma Action a um Plugin de Infra.
+
+Depois de [**publicar**](create-use/create-content/action/publish-action.mdx) e [**validar**](create-content/action/run-action.mdx) uma Action em um **Estúdio**, você pode **associá-la a um [Plugin de Infra](create-use/create-content/plugin/plugins.mdx)** de uma Stack no seu **Workspace**.  
+
+:::danger Atenção!
+
+Antes de continuar este guia, confirme se Action **requere pelo menos uma Connection Interface que o Plugin de Infra gera**. Caso você ainda não tenha uma Action assim, acesse o guia de [**Como criar uma Action**](create-use/create-content/action/run-action.md#usar-connections-interfaces).   
+
+:::
+
+## **Pré-requisitos**
+
+- Estar [**logado no Portal da StackSpot EDP**](https://app.stackspot.com/login);
+- Estar em um **Estúdio**;
+- Ter uma **Stack** que contenha Plugins de Infra.
+- Ter Actions [**adicionadas na Stack**](create-use/create-content/action/add-action-stack.mdx).  
+
+## **Passo a passo**
+
+Confira os passos:
+
+**Passo 1.** Faça [**login no Portal da StackSpot EDP**](https://app.stackspot.com/login);
+
+**Passo 2.** Clique no botão **'Acessar Estúdios'** ou clique na seção **'Estúdios'**, no lado esquerdo da tela. Procure pelo Estúdio da Stack que tem o Plugin de Infra que você quer associar a Action. Selecione o Estúdio.
+
+**Passo 3.** No menu central do Estúdio, clique em **'Stacks'**;
+
+**Passo 4.** Acesse a Stack e clique na **versão da Stack** em que você quer associar a Action ao Plugin de Infra;
+
+:::danger Atenção!
+
+A Stack deve estar em **rascunho** para você poder associar uma Action ao Plugin de Infra dela.
+
+Caso ela já esteja publicada, você deve [**criar uma nova versão da Stack**](create-use/create-content/stack/stack-version.mdx).
+
+:::
+
+**Passo 5.** Na seção Stack, no menu central, clique na subseção **'Plugin'** e depois em **'Infra'**;
+
+**Passo 6.** Selecione o Plugin de Infra que você quer associar uma Action. Em seguida, clique no botão **'Selecionar Actions'**;
+
+**Passo 7.** Na lateral direita da tela, selecione as Actions que você quer associar ao seu Plugin de Infra. Depois clique no botão **'Adicionar'**.
+
+:::danger Atenção!    
+
+Ao associar uma Action no Plugin de Infra que utiliza o [**modelo de range**](create-use/create-content/plugin/plugin-version.mdx), não será possível escolher uma versão específica da Action.
+
+:::
+
+Pronto, você associou uma Action a um Plugin de Infra.
+Agora, sempre que o Plugin de Infra gerar Connection Interfaces, estes serão os mesmos a serem utilizados e configurados na Action.

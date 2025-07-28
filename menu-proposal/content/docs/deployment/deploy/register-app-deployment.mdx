@@ -1,0 +1,213 @@
+---
+title: "Registrar deploy da Aplicação"
+sidebar_position: 4
+description: Como funciona o deploy da Aplicação na StackSpot EDP.
+sidebar_custom_props:
+    icon: Upload
+---
+
+> Nesta seção, você encontra como registrar o deploy de uma Aplicação na sua Pipeline StackSpot EDP para acompanhar os fluxos pela tela de Atividades. 
+
+<br/>
+
+
+## **Visão Geral**
+
+O deploy na StackSpot EDP funciona da seguinte forma: o [**Self-Hosted**](deployment/deploy/self-hosted-runtime.mdx) adiciona ao seu Workflow as etapas para fornecer recursos de nuvem usando a orquestração do Deploy Engine com os runners da sua organização. Por enquanto, o Self-Hosted oferece suporte apenas ao serviço **GitHub Actions**. 
+
+Porém, na StackSpot EDP, quando você **realiza o deploy** de uma Aplicação, **apenas a infraestrutura dela é implantada**. 
+
+Para efetuar o **deploy da Aplicação propriamente dita**, é necessário utilizar a sua **própria Pipeline CI/CD** fora do Portal da StackSpot EDP. Por isso, para acompanhar todos os Workflows da Aplicação, você precisa  **registrar o deploy por meio do STK CLI** usando o seguinte comando na sua pipeline:
+
+```
+stk register app-deploy
+```
+Dessa forma, você consegue:
+
+1.  **Informar a StackSpot que o deploy foi feito**, assim você pode **monitorar e acompanhar a execução do workflow diretamente na Plataforma**. As atividades relacionadas ao deploy serão exibidas como [**Atividades**](deployment/manage/activities.mdx) dentro da Aplicação, com a execução detalhada de seus jobs, como na imagem a seguir: 
+
+:::danger Atenção! 
+Para **visualizar todos os logs do Workflow do repositório** da sua Aplicação no Workspace, você precisa **configurar um Webhook** dentro do GitHub. 
+Para fazer isso, [**siga os passos no guia Configurar Webhook para registrar atividades do repositório na tela de Atividades**](deployment/manage/activities.mdx)
+::: 
+
+![Um print screen do portal StackSpot EDP exibe textos em inglês. A captura de tela é de uma página dentro de um Workspace, na seção de Activities de uma aplicação chamada Benefícios. Na tela de Activities, a aba All Activities está selecionada. Nessa aba, aparece a data do log de 14 de novembro, com o Workflow ao lado indicando os logs de Workflow preparation, CLI Preparation e CLI create app. Todos possuem status de Completed e a opção de expandir os logs para ver mais detalhes.](/img/activities-register-app2.png) 
+
+2. **Visualizar as diferentes versões** de Infraestrutura e Aplicação no header da Aplicação dentro do Portal StackSpot, como na imagem a seguir: 
+
+![Um print screen do portal StackSpot EDP exibe textos em inglês. A captura de tela é de uma página dentro de um Workspace, na seção de Activities de uma aplicação chamada Benefícios. O print está cortado e mostra apenas o header da aplicação Benefícios, destacando as versões Infra Version: 3.0.1 e App Version: 3.0.0, ao lado da data de criação da aplicação, que é 15 de junho de 2024.](/img/app-infra-versions.png) 
+
+:::warning Atenção!  
+
+Atualmente, o único provedor CI/CD suportado para esta integração  é o **GitHub Actions.**
+::: 
+
+
+Confira o fluxo completo de deploy no diagrama a seguir: 
+
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<ThemedImage alt="Diagrama de fluxo de deploy" width="auto" sources={{ light: useBaseUrl('/img/Fluxo-de-deploy-PT-Light.png'), dark: useBaseUrl('/img/Fluxo-de-deploy-PT-Dark.png'), }} />
+
+
+Confira os passos para integrar os comandos à sua Pipeline: 
+
+## **Configurar integração na sua Pipeline:** 
+
+O comando `stk register app-deploy` deve ser executado em um dos passos do workflow onde será feito o deploy da Aplicação na sua Pipeline. 
+
+O comando envia a versão que está sendo implantada, o ambiente, o status (success ou error) e o conteúdo do manifesto da Aplicação no Workspace no Portal da StackSpot EDP. Confira um exemplo à seguir:  
+
+```
+stk register app-deploy --version 1.3.1 --environment dev --status success
+```
+
+Existem duas formas de fazer essa integração dos comandos com a sua Pipeline: 
+
+1. Automatizada, por meio de uma Action (**recomendado**); ou
+2. Manualmente. 
+
+Confira a seguir os passos para as duas maneiras: 
+
+### **1. Integrar comandos na Pipeline via [**Action**](create-use/create-content/action/actions.mdx) (recomendado)** 
+
+A [**Action se encontra no Marketplace da StackSpot**](https://github.com/marketplace/actions/stackspot-run-command) e performa as seguintes automações na sua pipeline: 
+
+- Instala o STK CLI na sua pipeline (caso ainda não esteja instalada); 
+- Autentica com Client_ID, Client_KEY e REALM;
+- Integra e executa os comandos `stk register app-deploy`, `stk register app-destroy` e `stk delete app`; 
+
+Para utilizá-la, siga os passos: 
+ 
+**Passo 1.** Configure as chaves de autenticação CI/CD no repositório onde está a sua Aplicação. [**Para isso, siga os passos no guia Autenticar via CI/CD**](/home/stk-cli/pipeline-ci-cd.md#autenticar-via-cicd).
+
+**Passo 2.** [**Adicione a Action**](https://github.com/marketplace/actions/stackspot-run-command) no workflow de deploy da sua Aplicação. Para isso, copie o snippet de código abaixo e cole no seu arquivo:
+
+- **Deploy com status sucesso:**
+
+```
+- uses: stack-spot/
+cli-github-action-run-command@v1.0.0
+        id: stk-register-app-deploy-success
+        with:
+          client_id: ${{ secrets.CLIENT_ID }}
+          client_key: ${{ secrets.CLIENT_KEY }}
+          realm: ${{ secrets.REALM }}
+          command_stk: "register app-deploy --target my-app/ --version 1.0.0 --env dev --status success"
+```
+
+- **Deploy com status error:**
+
+```
+      - uses: stack-spot/
+      cli-github-action-run-command@v1.0.0
+        id: stk-register-app-deploy-fail
+        with:
+          client_id: ${{ secrets.CLIENT_ID }}
+          client_key: ${{ secrets.CLIENT_KEY }}
+          realm: ${{ secrets.REALM }}
+          command_stk: "register app-deploy --target my-app/ --version 1.0.0 --env dev --status error"
+```
+
+**Passo 3.**  Configure as flags do comando **`stk register app-deploy`** com as variáveis corretas: 
+
+- **`target`**: caminho do diretório da aplicação;  
+- **`version`**: versão da aplicação que está sendo implantada; 
+- **`env`**: ambiente do deploy;
+- **`status`**: status do deploy (error, success) 
+
+[**Para mais informações, acesse a página do comando `stk register-app deploy`**](home/stk-cli/commands/application-commands.mdx) 
+
+:::info Informação Adicional
+
+Para registrar o deploy da Aplicação, você precisa estar dentro de um Workspace. Para executar comandos que precisam de um Workspace ativo, antes desses comandos, adicione o comando `command_stk: "use workspace [workspace-name]"` como no exemplo a seguir:: 
+
+```
+- uses: stack-spot/cli-github-action-run-command@v1.0.0
+        id: stk-delete-app
+        with:
+          client_id: ${{ secrets.CLIENT_ID }}
+          client_key: ${{ secrets.CLIENT_KEY }}
+          realm: ${{ secrets.REALM }}
+          command_stk: "use workspace my-workspace-name"
+          command_stk: "register app-deploy --target my-app/ --version 1.0.0 --env dev --status error"
+```
+::: 
+
+### **2. Integrar comandos na Pipeline Manualmente** 
+
+Para a sua comodidade, a StackSpot recomenda o uso da Action. Mas você pode configurar os passos manualmente em sua pipeline.
+
+#### **Pré-requisitos**: 
+
+- [**Cadastrar os dados de **`Client_ID`, `Client_Key`** e **`Realm`** do seu Access Token como GitHub secrets**](home/stk-cli/pipeline-ci-cd.mdx)
+- [**STK CLI instalado na sua pipeline**](docs/home/stk-cli/pipeline-ci-cd.mdx); 
+- Fazer [**autenticação na Pipeline**](docs/home/stk-cli/pipeline-ci-cd.md#autenticar-via-cicd); 
+- Ter Workspace ativo na sua Pipeline. 
+
+Após seguir os passos anteriores, o arquivo da pipeline deve ser como no exemplo a seguir:
+
+:::warning Atenção!
+O trecho da pipeline a seguir é apenas um exemplo. Se você utiliza o runner **`ubuntu-latest`** as ferramentas **jq, git e curl** não são necessárias, caso contrário você deve instalá-las.
+::: 
+
+```yaml title=".github/workflows/run-cli-commands.yml"
+name: Run CLI Commands
+
+on: [push]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      LANG: C.UTF-8
+      LANGUAGE: C.UTF-8
+      LC_ALL: C.UTF-8
+      PYTHONIOENCODING: utf-8
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Download STK CLI
+        shell: bash
+        run: |
+          curl \
+            --fail \
+            --http2-prior-knowledge \
+            --location \
+            --output /tmp/stk.deb \
+            --silent \
+            --show-error \
+            --tlsv1.3 \
+            https://stk.stackspot.com/installer/linux/stk.deb
+  
+      - name: Install STK CLI
+        shell: bash
+        run: |
+          sudo dpkg --install /tmp/stk.deb || echo "Installation failed with exit code: $?"
+
+      - name: Authenticate StackSpot
+        run: |
+          $HOME/.stk/bin/stk login --client-id ${{ secrets.CLIENT_ID }} --client-key ${{ secrets.CLIENT_KEY }} --realm ${{ secrets.CLIENT_REALM }}
+
+      - name: Use your Workspace
+        run: |
+          $HOME/.stk/bin/stk use workspace <workspace>
+```
+
+
+Após configurar todos os passos, adicione como próxima step na pipeline a execução do comando a seguir para registrar o deploy da sua Aplicação:
+
+```
+- name: Register App Deployment
+        run: | 
+          stk register app-deploy --target my-app/ --version 1.0.0 --status success
+```
+
+
+## **Próximos passos** 
+
+- [**Como apagar sua Aplicação no Portal StackSpot**](create-use/use-content/application/delete-app-portal.mdx)
+- [**Como registrar o destroy da sua Aplicação no Portal StackSpot**](deployment/deploy/register-app-destroy.mdx)

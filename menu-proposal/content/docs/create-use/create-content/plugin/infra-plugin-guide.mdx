@@ -1,0 +1,197 @@
+---
+title: "Guia de Boas Práticas para Criar Plugins de Infraestrutura"
+sidebar_position: 4
+description: Guia para gerar um Plugin de Infraestrutura e boas práticas
+---
+
+Ao criar Plugins de Infraestrutura na StackSpot, você deve seguir algumas boas práticas para evitar problemas de execução e garantir a consistência e segurança da sua Aplicação. Confira a seguir as principais diretrizes:
+
+#### **1. Evite usar inputs ou manipulações Jinja nos nomes de resources ou modules**
+
+Evite utilizar inputs ou expressões Jinja diretamente nos nomes de **`resources`** ou **`modules`** em arquivos Terraform. 
+
+Se você alterar um input que define o nome desses recursos, o Terraform pode perder o controle do recurso, resultando em destruição e recriação desnecessária da Infraestrutura.
+
+##### **Não recomendado**
+
+```hcl title="main.tf"
+resource "aws_lambda_function" "{{ lambda_name }}" {
+  ...
+}
+
+resource "aws_lambda_function" "stk_{{ lambda_name }}" {
+  ...
+}
+
+module "ecr_{{ app_name }}" {
+  ...
+}
+```
+
+##### **Recomendado**
+
+```hcl title="main.tf"
+resource "aws_lambda_function" "stackspot_lambda" { // sem inputs
+  filename      = "{{ lambda_zip }}"
+  function_name = "{{ lambda_name }}"
+  ....
+}
+```
+
+#### **2. Não utilize condicionais, loops ou interpolação no Jinja com Connections Interfaces**
+
+Ao optar na utilização da Connection Interfaces em templates Terraform, **não use** lógica Jinja (condicionais, loops, interpolação ou filtros) para manipular os dados dessas interfaces. O uso excessivo de Jinja pode gerar inconsistências, dificultar a manutenção e limitar o reaproveitamento dos recursos.
+
+Prefira sempre as estratégias e recursos nativos do Terraform para manipulação de variáveis, listas e objetos provenientes das Connection Interfaces.
+
+##### **Não recomendado**
+
+```hcl title="condicionais.tf"
+resource "aws_sqs_queue" "stackspot_queue_deadletter" {
+  ...
+  {% if "delayed" in connections.father_queue.queue_name  %}
+  delay_seconds             = 90
+  {% else %}
+  delay_seconds             = 0
+  {% endif %}
+}
+```
+
+```hcl title="loops.tf"
+{% for queue in connections.queues -%}
+resource "aws_sns_topic_subscription" "queues_subscription-" {
+  protocol             = "sqs"
+  raw_message_delivery = true
+  topic_arn            = aws_sns_topic.orders.arn
+  endpoint             =  {{ queue.arn }}
+}
+{% endfor %}
+```
+
+```hcl title="manipulacao.tf"
+{% for queue in connections.queues -%}
+resource "local_file" "appspec_file" {
+  content =  <EOT
+    {{ aws_codedeploy_appspec_conn.connection.json_spec | from_json | tojson(indent=4) }}
+  EOT
+
+  filename = "${path.module}/deploy-aws/deploys/appspec.json"
+}
+
+{% endfor %}
+```
+
+```hcl title="interpolacao.tf"
+resource "aws_sqs_queue" "stackspot_queue_deadletter" {
+  name                      = "{{ connections.father_queue.queue_name }}_deadletter"
+}
+```
+
+##### **Recomendado**
+
+- Utilize as **expressões condicionais** do Terraform(https://developer.hashicorp.com/terraform/language/expressions/conditionals).
+
+```hcl title="condicionais.tf"
+resource "aws_sqs_queue" "stackspot_queue_deadletter" {
+  ...
+  delay_seconds             =  strcontains({{ connections.father_queue.queue_name }}, "delayed") ? 90 : 0
+}
+```
+
+- Utilize o **meta argumento for_each** do Terraform(https://developer.hashicorp.com/terraform/language/meta-arguments/for_each).
+
+```hcl title="loops.tf"
+variable "queues" {
+  type = list(object({
+    arn        = string
+    topic_name = string
+  }))
+  default = {{ connections.queues }}
+}
+
+resource "aws_sns_topic_subscription" "orders_to_process_subscription" {
+  for_each             = var.queues
+  protocol             = "sqs"
+  raw_message_delivery = true
+  topic_arn            = aws_sns_topic.orders.arn
+  endpoint             = each.value.arn
+}
+```
+
+```hcl title="manipulacao.tf"
+{% for queue in connections.queues -%}
+resource "local_file" "appspec_file" {
+  content = jsonencode(jsondecode({{ aws_codedeploy_appspec_conn.connection.json_spec }}))
+
+  filename = "./deploy-aws/deploys/appspec.json"
+}
+{% endfor %}
+```
+
+```hcl title="interpolacao.tf"
+resource "aws_sqs_queue" "stackspot_queue_deadletter" {
+  name                      = join("_", ["{{ connections.father_queue.queue_name }}, "deadletter"])
+}
+```
+
+
+#### **3. Não use Jinja com Connections Interfaces fora de arquivos Terraform (.tf)**
+
+Ao usar Connection Interfaces, **evite interpolar** valores diretamente com Jinja em arquivos que não sejam Terraform (por exemplo, arquivos YAML, JSON, etc). Quando as Connection Interfaces são geradas na mesma Aplicação (por outros Plugins aplicados), seus valores são resolvidos em tempo de execução e devem ser tratados como variáveis do Terraform.
+
+##### **Não recomendado**
+
+```yaml title="manifest.yaml"
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ connection.eks-conn.cluster_name }}
+  ...
+```
+
+##### **Recomendado**
+
+- Utilize o próprio Terraform para resolver estes valores.
+
+```yaml title="manifest.tpl"
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ${ cluster_name }
+  ...
+```
+
+```hcl title="manifest.tf"
+resource "kubernetes_manifest" "manifest" {
+  manifest = yamldecode(templatefile("./manifest.tpl", {
+    cluster_name = {{ connection.eks-conn.cluster_name }}
+  }))
+}
+```
+
+#### **4. Não use Connections Interfaces no `tfvars`**
+
+Não utilize **Connections Interfaces** diretamente no arquivo **`tfvars`**. Essa prática pode gerar inconsistências e problemas de segurança, como:
+
+- **Exposição de dados sensíveis:** Connections Interfaces podem conter informações críticas, como ARNs, nomes de buckets ou outros identificadores de recursos. Armazenar esses dados diretamente no **`tfvars`** aumenta o risco de exposição desnecessária.
+- **Quebra de abstração:** Essa prática pode comprometer a modularidade dos Plugins, o que dificulta a reutilização e integração dos Plugins ou Stacks com outros componentes.
+
+#### **5. Cuidado com Deploy com Workflow**
+
+O Deploy com Workflow aplica todos os Terraform dos Plugins de uma Aplicação ou Infraestrutura simultaneamente. Isso pode demandar mais recursos e causar problemas em alguns casos. Confira os principais pontos de atenção:
+
+1. **Infraestruturas complexas:** uma Aplicação ou Infraestrutura com muitos Plugins de Infraestrutura que exige alto uso de memória, cache ou leitura de arquivos, utilize **runners mais potentes** para evitar problemas de performance.
+2. **Conflitos de versão de providers:** o uso de Plugins com restrições de versão diferentes para um mesmo provider pode gerar conflitos na execução do Terraform.
+
+Exemplo:
+
+Em uma Infraestrutura com um Plugin de SQS e outro de SNS aplicados:
+
+- O Plugin de SQS restringe a versão do provider AWS em **`">= 1.2.0, < 2.0.0"`**.
+- O Plugin de SNS restringe a versão do provider AWS em **`">= 4.0.0"`**.
+
+Como não há uma versão que atenda ambas as condições, o Terraform apresentará erro na inicialização.
+
+**Solução:** Certifique-se de que as versões dos providers de todos os Plugins de uma Stack sejam compatíveis. Além disso, verifique a compatibilidade de Plugins adicionais no Workspace.
+
+Seguindo essas orientações, você garantirá maior consistência e segurança na criação e execução de Plugins de Infraestrutura na StackSpot.

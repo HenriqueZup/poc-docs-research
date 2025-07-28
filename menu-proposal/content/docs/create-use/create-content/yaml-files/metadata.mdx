@@ -1,0 +1,139 @@
+---
+title: Metadata 
+sidebar_position: 11
+description: Detalhes sobre metadata.
+---
+Metadata é um objeto criado durante a execução de um **Plugin**. Ele contém diversos valores que te auxiliam na execução de outros processos ou automações.
+
+```yaml 
+metadata:
+  inputs: Dict
+  global_inputs: Dict
+  computed_inputs: Dict
+  global_computed_inputs: Dict
+  filters: Dict
+  target_path: Path
+  component_path: Path
+```
+
+#### **`metadata.inputs`**: É um dicionário com os inputs processados.
+
+> Os inputs do tipo: **global_inputs**, **computed_inputs** e **global_computed_inputs** apresentam o mesmo tipo de comportamento do **inputs**. A diferença é que cada um contém seus respectivos dados.
+
+Confira um exemplo:
+
+```yaml 
+# Exemplo em um Plugin/Hook
+hooks:
+  ...
+  commands:
+  - ping -c 4 {{ inputs.ipv4 }}
+  # ou
+  - ping -c 4 {{ ipv4 }}
+```
+
+>O input **ipv4** é solicitado durante a execução do hook e faz a interpolação dele antes de executar o comando.
+
+Os inputs processados também são adicionados na corpo do objeto. 
+
+Confira o exemplo: 
+
+```yaml
+metadata.inputs.varname
+metadata.varname
+
+# caso esteja executando dentro de template jinja o termo metadata fica omitido.
+
+{{ inputs.varname }}
+{{ varname }}
+```
+
+#### **`metadata.target_path`: Caminho do local de execução de um Plugin**. 
+
+Confira o exemplo:
+
+```yaml 
+# Exemplo em um Plugin/Hook
+hooks:
+  ...
+  commands: |
+  kubectl apply -f {{ target_path }}/deployment/main.yaml
+```
+
+>O **target_path** entrega a pasta corrente de execução, por exemplo:  
+>**`'/home/linus/scheduler'`**.
+
+#### **`metadata.component_path`: Caminho da origem de Plugin. É o local onde o Plugin está armazenado**.
+
+Confira o exemplo:
+
+```yaml 
+# Exemplo em um Plugin/Hook
+hooks:
+  ...
+  commands:
+    windows: |
+      call "{{ component_path }}\scripts\my-another.bat"
+    linux: |
+      bash "{{ component_path }}/scripts/my-another.sh"
+```
+
+> O **`component_path`** ajuda a manter os seus binários e seus scripts organizados dentro do seu **Plugin**. E também entrega uma forma simples de ligação, para execução posterior.
+
+## **Metadados Avançados**
+
+Você pode utilizar alguns metadados em recursos mais avançados.
+
+Os valores **`target_path`** e **`component_path`** são objetos do tipo [**`Path`**](https://docs.python.org/3/library/pathlib.html). Nestes casos, você pode usar as propriedades e os métodos desse objeto no contexto da execução. Confira o exemplo:
+
+```yaml 
+# Exemplo em um Plugin/Hook
+hooks:
+  ...
+  commands: |
+  # projects size
+  du -sh {{ stack_path.parent }}
+```
+
+### **Hooks**
+
+Os metadados podem ser utilizados também nos cenários de **`Hooks Declarativos`**. Por exemplo, você pode usar o **`type: run-script`** aqui, confira:
+
+```yaml 
+hooks:
+  - type: run-script
+    ...
+    script: my-custom-script.py
+```
+
+```python
+# my-custom-script.py
+import json
+from templateframework.metadata import Metadata
+
+def run(metadata: Metadata):
+    with open(f"{metadata.target_path}/package.json") as f:
+      data = json.load(f)
+
+    if data["license"] == "MIT":
+      print("license ok")
+    else:
+      print("license error, please set MIT license at package.json")
+      exit(1)
+
+    return metadata
+```
+
+### **Métodos e propriedades acessíveis por meio do metadata dentro de um script** 
+
+Método/Propriedade  | Descrição
+--------- | ------ 
+**`metadata.all_inputs()`**  | Todos os inputs processados do **Plugins**.|  
+**`metadata.inputs`** | Dicionário dos inputs. |
+**`metadata.global_inputs`**  | Dicionário de **`global inputs`**. |
+**`metadata.global_computed_inputs`**  | Dicionário de **`global computed inputs`**.|  
+**`metadata.target_path`**  | Path onde o Plugin está sendo executado. |  
+**`metadata.component_path`**  |Path do Plugin (**`~/.stk/stacks/my-stack/`**). |
+**`metadata.filters`**  | Contém filtros de string integrados ao Jinja Templates. |  
+**`metadata.group_id_folder(str)`**  | Substituí **`.`** para **`/`** |
+**`metadata.to_unidecode(str)`**  | Remove os caracteres do latim para ANSII (eg. áçhó -> acho). |  

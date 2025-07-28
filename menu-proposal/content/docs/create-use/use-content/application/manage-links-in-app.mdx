@@ -1,0 +1,155 @@
+---
+title: "Gerenciar Links na Aplicação"
+sidebar_position: 7
+description: Como adicionar e gerenciar Links dentro da sua Aplicação ou Infraestrutura.
+---
+
+> Nesta seção, você encontra um guia de como adicionar e gerenciar Links dentro da sua Aplicação ou Infraestrutura pelo Portal.
+
+<br/>
+
+Você pode integrar ferramentas externas a sua Aplicação ou Infraestrutura por meio de Links.
+
+Existem dois tipos de links que podem ser adicionados:
+
+- **Links estáticos**: aparecem no início do dashboard da Aplicação e redirecionam o usuário para a URL deles.
+Além disso, os links estáticos adicionados ao Workspace da sua Aplicação ou Infraestrutura também ficam **disponíveis** dentro do dashboard da Aplicação.
+
+- **Links incorporados**: permitem adicionar links externos que podem ser **visualizados como painéis** para incrementar a sua Aplicação. Você pode adicionar tabelas de Sheets do Google, gráficos do Grafana, Prometheus, Splunk, entre outros.
+
+:::info
+
+- Links estáticos e dinâmicos podem ser adicionados à **Stacks e Plugins**.
+- Se você adicionar alguma Stack à sua Aplicação que já tem algum Link, esses mesmos Links também são adicionados e **não podem ser deletados**.
+- Esse cenário também vale para [**Links adicionados ao Workspace**](home/workspace/links-on-workspace.mdx) em que você criou a sua Aplicação.
+
+:::
+
+À seguir, confira os passos para adicionar cada um dos tipos de links.
+
+### **Adicionar Links estáticos**
+
+Confira os **passos para adicionar Link estáticos** na sua Aplicação ou Infraestrutura:
+
+**Passo 1.** Dentro do seu Workspace, acesse a aba **'Aplicações'**. Clique na Aplicação que você quer adicionar um Link. Caso queira adicionar à sua Infraestrutura, faça o mesmo processo, porém clicando na seção **'Infraestrutura'**.
+
+**Passo 2.** No Dashboard, na barra do nome da Aplicação, clique no botão à direita com símbolo de **Adicionar**;
+
+:::info
+Se alguma Stack que você utilizou para criar a Aplicação ou a Infraestrutura tiver um Link, você verá nesta barra **após o deploy**.
+:::
+
+**Passo 3.** Preencha os campos com as informações. Confira um exemplo:
+
+- **'Nome do link'**: Service Now.
+- **'URL'**: `https://www.servicenow.com.br`.
+- **Logo**: Adicionar uma imagem demonstrativa. **É opcional**.
+
+**Passo 4.** Clique no botão **'Adicionar link'**.
+
+Pronto, você adicionou um Link na sua Aplicação ou Infraestrutura.
+
+#### Como **apagar** um link estático
+
+Confira os passos:
+
+**Passo 1.** No Dashboard da sua Aplicação ou Infraestrutura, clique com o botão direito do seu mouse no Link que você quer apagar.
+
+**Passo 2.** Um seletor com opções de **'Copiar o link'** ou **'Deletar o link'** deve aparecer. Clique em **Deletar**.
+
+:::info Informação Adicional
+
+- Você **não pode apagar links que vieram de Stacks ou Plugins.**.
+- Você **não pode editar** um link estático. Caso precise alterar algum, primeiro apague-o e depois adicione um novo.
+
+:::
+
+## **Como adicionar link incorporado**
+
+Siga as instruções:
+
+**Passo 1.** Dentro do seu Workspace, acesse a aba **'Aplicações'**. Clique na Aplicação que você quer adicionar um Link. Caso queira adicionar à sua Infraestrutura, faça o mesmo processo, porém clicando na seção **'Infraestrutura'**.
+
+**Passo 2.** No Dashboard, clique em **‘Adicionar link incorporado’**;
+
+Na tela, adicione:
+
+- **Nome do Link:** (Obrigatório)
+
+- **URL do Link:** (Obrigatório)
+
+> Certifique-se que o link que você adicionar pode ser renderizado em um iframe.
+
+- **Link logo** (Opcional)
+
+Pronto, os links estão disponíveis na sua Aplicação ou Infraestrutura.
+
+:::info Informação Adicional
+
+Para editar ou remover o link que você adicionou, clique no botão **'Mais Opções'** (**'...'**) e faça sua alteração.
+
+:::
+
+## **Como gerenciar Links na Aplicação**
+
+No Dashboard da sua Aplicação ou Infraestrutura no [**Portal StackSpot**](https://app.stackspot.com/login), você pode ver todos os **links existentes** dentro dela.
+
+Estes links podem ser:
+
+- Links estáticos adicionados diretamente à ela;
+- Links incorporados;
+- Links estáticos adicionados ao Workspace;
+- Links **estáticos** ou **dinâmicos** advindos de Stacks e Plugins;
+
+Porém, você pode **gerenciar a visibilidade dos links, ou seja, o que você quer que apareça** no Dashboard. Para isso, siga os passos:
+
+**Passo 1.** Clique na **seta dupla** no final da barra de links localizada na parte superior do Dashboard da sua Aplicação ou Infraestrutura. Então clique em **'Gerenciar Links'**.
+
+**Passo 2.** Um modal com um campo de busca e uma lista de todos os links da sua Aplicação deve aparecer. Ao lado de cada link existe um botão toggle de ativar e desativar:
+
+- **Ative** o botão para **esconder** o link do dashboard;
+- **Desative** o botão para manter o link aparente no dashboard
+
+**Passo 3.** Após fazer as configurações que deseja, clique no botão **'Aplicar mudanças'** no final do modal à esquerda.
+
+Dentro de **gerenciar links** você também pode excluir os links que adicionou manualmente na sua Aplicação.
+
+## **Adicionar URLs por ambiente**
+
+É possível adicionar URLs por ambiente em suas Aplicações sem que os links tenham origem de Workspaces, Stacks e Plugins. Através das seguintes formas:
+
+1. Via comando no STK CLI;
+2. Via Action
+
+### **1. Via comando no STK CLI**
+
+Excute o comando [**`stk register app-deploy`**](home/stk-cli/commands/application-commands.md#stk-register-app-deploy) no mesmo diretório da Aplicação, informando o parâmetro a seguir: 
+
+
+`-er`, `--links TEXT`
+
+Forneça uma lista de URLs adicionais para a sua Aplicação. Cada URL deve ser um objeto com a
+seguinte estrutura: **`"[{"title": "<title>", "url": "<url>"}]"`**.
+
+Exemplo: `stk register app-deploy --links "[{"title": "stackspot", "url": "www.stackspot.com"}]`
+
+### **2. Via Action**
+
+Utilize a Action junto do [**StackSpot Workflow Versão Beta**](beta-version\workflow-beta\howto-guide\view-url-env.mdx) para adicionar URLs em uma Aplicação.
+
+
+### **visualizar as URLs adicionadas**
+
+**Passo 1.** Acesse o [**Portal da StackSpot EDP**](https://app.stackspot.com/);
+
+**Passo 2.** Clique no Workspace em que a sua Aplicação foi criada;
+
+**Passo 3.** Acesse a Aplicação. No Dashboard dela, clique no botão **'View App'**. 
+
+> Para visualizar as URLs em outro ambiente, clique na caixa de **Ambientes** e selecione o ambiente em questão. 
+
+<br/>
+
+Confira a seguir um exemplo do botão **'View App'** no Dashboard da Aplicação no Portal da StackSpot EDP. 
+
+![](/img/new-image.png)

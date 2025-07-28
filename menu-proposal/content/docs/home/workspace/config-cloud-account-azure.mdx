@@ -1,0 +1,120 @@
+---
+title: "Configurar conta Cloud Azure"
+sidebar_position: 10
+description: Configure a sua conta cloud Azure na StackSpot.
+sidebar_custom_props: 
+  icon: Grid
+---
+
+> Nesta seção, você encontra um guia de como configurar sua conta Cloud Azure na StackSpot.
+
+<br/>
+
+Você deve configurar uma conta Cloud na StackSpot para conseguir fazer o deploy da Infraestrutura das suas Aplicações. 
+
+Você configura ela dentro do seu Workspace, mas antes é preciso delegar o acesso entre contas Azure usando as credenciais da Azure para conceder à StackSpot o acesso ao perfil da sua conta.
+
+:::caution Cuidado!
+O fluxo de configuração e adição de contas Cloud na StackSpot desta forma só está disponível para:
+
+- **Contas Enterprise criadas antes de 2024**.
+
+**Contas Enterprise criadas a partir de Janeiro de 2024** devem conectar suas contas Cloud via [**Runtime Self-hosted**](deployment/deploy/self-hosted-runtime.mdx). 
+
+:::
+
+## **Pré-requisitos**
+
+- Possuir acesso a uma [**conta Azure**](https://learn.microsoft.com/en-us/dynamics-nav/how-to--sign-up-for-a-microsoft-azure-subscription) e uma assinatura contratada.  
+- Ter o [**Azure CLI**](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli) instalado na versão 3.0.0 ou superior.  
+- Possuir acesso a um Workspace;
+- Possuir um ambiente para ser utilizado no seu Workspace;
+- Possuir permissão para gerenciar contas de Cloud em sua conta StackSpot: **`cloud_services:manage_cloud_account`**. Confira [**como adicionar essa permissão em sua conta**](home/account/organization/access-management/roles.mdx).  
+- Ter permissão para configurar o IAM. 
+- Configurar o arquivo Terraform com o provedor Microsoft Azure da seguinte maneira:
+
+```hcl
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "=3.0.0"
+    }
+  }
+}
+
+# Your code goes here
+```
+
+## **Passo 1. Gerar credenciais do provedor**  
+
+Na página da Azure:
+
+1. Faça o [**login na sua conta Azure**](https://portal.azure.com/);  
+2. No menu localizado no lado superior direito da página do Portal da Azure, clique no botão **"Subscriptions"**;  
+3. Dentro tabela, identifique a coluna de **"Subscription ID"** e copie o dado disponível na tela;
+
+<img src="/img/azure-subscriptionId.gif" alt="Obter subscription id" title="Tela Subscription" width="500" />
+
+:::tip Dica!
+A **Subscription ID** tem 35 dígitos e é criada quando você assina o plano da Azure. O número da Subscription ID utilizado neste guia é apenas um exemplo. Você deve obter a sua ID para seguir os passos. 
+:::
+
+4. Abra o seu terminal e faça o login no AZ CLI executando o comando **`az login`**.
+
+
+Em seguida, execute o comando a seguir:
+
+```bash
+az ad sp create-for-rbac --name AzureTest --role Contributor --scopes /subscriptions/817a5e57-4838-4455-a3ae-75946c05ffdf 
+```
+
+Considere que:
+- [**`az ad sp create-for-rbac`**](https://learn.microsoft.com/en-us/entra/identity-platform/howto-create-service-principal-portal): cria uma entidade de serviço e configura seu acesso aos recursos da Azure. 
+
+- **`--display-name --name -n` `AzureTest`**: nome da entidade de serviço (ou App registration). Se não tiver, o padrão é **`azure-cli-%Y-%m-%d-%H-%M-%S`**, em que o sufixo é a hora da criação da entidade.
+
+- **`--role` `Contributor`**: é a role necessária para criar e gerenciar recursos. É preciso ter, no mínimo, a role de **Contributor** para continuar. Confira [**aqui as outras roles pré-definidas**](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles). 
+
+- **`--scopes` `/subscriptions/817a5e57-4838-4455-a3ae-75946c05ffdf` (`subscription id`)**: lista de escopos, separada por espaços, onde a atribuição de função da entidade de serviço se aplica. Este comando é apenas um exemplo. O atributo **"`--scopes`"** deve ser o **"Subscription ID "** recuperado na **etapa 3** deste guia. 
+
+O terminal retornará os valores a seguir, que serão utilizados na configuração da conta no Workspace da StackSpot:
+
+- **`appId`**: representa o **`client_id`**.   
+- **`displayName`**: representa o nome.   
+- **`password`**: representa o **`client_secret`**. Guarde bem este valor, já que só é possível visualizá-lo **uma única vez no terminal** no momento em que ele é gerado.   
+- **`tentant`**: representa o **`tenant_id`**. 
+
+<AsciinemaPlayer src="/videos/create-service-principal.cast" autoplay="true" loop="true" />
+
+## **Passo 2. Conectar sua conta no ambiente do seu Workspace** 
+
+Na StackSpot:
+
+1. Faça o login na [**Plataforma**](https://app.stackspot.com/login);  
+2. Acesse o seu Workpace;  
+3. No menu principal, em **"Configurações"**, clique em **“Contas de cloud”**;  
+4. Localize o ambiente que você vai usar e clique em **"Conectar cloud"**;
+5. Em **"Selecionar Cloud Provider"** escolha a opção **"Azure"**;  
+6. Preencha os campos a seguir:  
+
+    1. **Client ID**: é o **`appId`** gerado.  
+    2. **Client Secret**: é o **`password`** gerado.  
+    3. **Tentant ID**: é o **`tentant`** gerado.  
+    4. **Subscription ID**: é o **Subscription ID** gerado no Portal da Azure.  
+
+<img src="/img/terminal-credenciais.png" alt="Terminal- output das credenciais" title="Ordem de preenchimento das credenciais" width="500" />
+
+:::warning Atenção!   
+Você não pode conectar outra conta StackSpot à Cloud usando o mesmo Subscription ID. Esse ID só pode ser usado por **uma única Conta StackSpot**. 
+:::
+
+<img src="/img/configure-azure-provider.gif" alt="Configurar Cloud Account" title="Tela de configuração da Nuvem Azure" width="500" />
+
+Em seguida, clique no botão **"Continuar"**.
+
+7. Confira os dados e clique no botão **“Conectar Cloud”**. 
+
+## **Próximo passo**
+
+- Fazer o Deploy da Infraestrutura da sua Aplicação. [**Confira a seção de Deploy**](deployment/runtime-engine/app-deployment.mdx).

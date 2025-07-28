@@ -1,0 +1,616 @@
+---
+title: "Primeiros Passos para Criar"
+sidebar_position: 1
+description: Guia para começar a criar conteúdos na StackSpot.
+sidebar_custom_props: 
+  icon: ArrowRight
+---
+
+import FlowChart from '@site/src/components/MdxComponents/FlowChart';
+
+<FlowChart steps={[
+  { title: 'Configurar Conta', link: 'home/account/intro-account.md' },
+  { title: 'Configurar Deploy', link: 'deployment/deploy/overview.md' },
+  { title: 'Criar Conteúdo', link: 'create-use/create-content/getting-started.md', default: true },
+  { title: 'Usar Conteúdo', link: 'create-use/use-content/quickstart.md' },
+]} />
+
+## **1. Entenda a jornada de Criar Conteúdo**
+
+A plataforma StackSpot EDP permite que Organizações possam criar padrões em escala para as suas tecnologias. Com isso, arquitetos de plataforma são os desenvolvedores que criam os templates com os padrões desejados, chamados de **conteúdo** na StackSpot. Estes conteúdos são organizados em **Stacks**, **Plugins** e **Actions**, publicados em Estúdios para que toda a Organização tenha acesso.
+
+### **Criando templates dinâmicos com Jinja**
+
+[**É importante que você domine o básico sobre o uso do Jinja na StackSpot**](create-use/create-content/yaml-files/jinja.mdx), para que consiga criar os templates dos Plugins e scripts das Actions de forma mais dinâmica. Você pode usar as expressões Jinja em qualquer parte do seu código fonte ou script, para que os inputs dos Plugins e Actions interajam diretamente com o código durante a execução.
+
+### **Escrevendo o seu código**
+
+Para criar conteúdos para a plataforma StackSpot EDP, o seu código deve ser pensado para distribuir um padrão. Você pode escrever o seu código normalmente, mas deve se atentar a alguns detalhes. Confira a seguir outras possibilidades de escrita de código:
+
+- É possível escrever aplicações inteiras, ou um código minimamente funcional com o essencial que deve ser utilizado. 
+
+- Você pode escrever um trecho de código que acrescente uma nova funcionalidade ou regra à uma aplicação existente. Também pode criar os templates de códigos Terraform (código IaC - *Infrastructure as Code*).
+
+- Nos Plugins de **Aplicação**: escreva e adicione o seu código e qualquer arquivo que deve ser gerado ao usar o Plugin na pasta **templates**.
+
+- Nos Plugins de **Infraestrutura**: escreva e adicione o seu código e qualquer arquivo que deve ser gerado ao usar o Plugin na pasta **templates-deploy**.
+
+:::tip Dica!
+
+Fora da pasta **templates-deploy** e **templates**, você pode usar outros arquivos que interagem com **Hooks Declarativos** por exemplo, mas que não serão renderizados ao aplicar o Plugin.
+
+:::
+
+- Nas **Actions**: escreva e adicione o script na pasta raiz da Action. Para usar usar arquivos ou scripts que possam ser executados ou complementares ao tipo da sua Action, crie uma pasta com o nome **templates** e adicione nela os arquivos desejados.
+
+## **2. Comece a criar o seu conteúdo**
+
+### **Passo 1. Crie um Estúdio ou confira o acesso a um Estúdio**
+
+1. [**Acesse o Portal da StackSpot EDP**](https://app.stackspot.com/login) e faça o login com o e-mail da sua organização;    
+2. [**Crie o seu Estúdio ou confira no Portal da StackSpot o Estúdio que você tem acesso**](create-use/studio/create-studio.mdx);    
+3. [**Faça o download do STK CLI**](home/stk-cli/install.mdx);    
+
+<br/>
+
+> Se você já tem o STK CLI instalado, execute o comando **`stk upgrade`**:  
+>```bash
+>stk upgrade
+>```
+
+### **Passo 2. Criar Plugins**
+
+**Passo 1.** Abra o seu terminal e execute o comando:
+
+```bash
+stk create plugin nome-do-plugin
+```
+
+Responda as perguntas no seu terminal. As respostas a seguir são apenas exemplos:
+
+**- Iniciar um repositório git:** informe Sim (Y) ou Não (N) para adicionar um repositório local.
+
+**- Adicionar remote**: informe Sim (Y) ou Não (N). Se sim, informe a URL do repositório remoto.
+
+**- Descrição do Plugin:** descreva o seu Plugin, explique o propósito da criação.  
+
+**- Informe por que você quer criar este conteúdo. Se o Estúdio estiver sob governança quando você solicitar a publicação, esta explicação ajudará na avaliação:** adicione informações sobre porque está criando esse conteúdo.
+
+**- Digite a versão:** adicione um número de versão para o seu Plugin. Exemplo: **(0.0.1)**.  
+
+**- Selecione o tipo do Plugin:** App ou Infra.  
+
+**- Você gostaria de adicionar uma Connection Requerida?** Não. Para entender mais sobre Connection, [**confira mais detalhes no guia**](create-use/connections/connection-interface.mdx).
+
+<br/>
+
+:::info Informação Adicional  
+
+[**Para mais detalhes, confira o guia de como criar seu Plugin**](create-use/create-content/plugin/create-plugin.mdx)
+
+:::
+
+<br/>
+
+**Passo 2**. Acesse a pasta do Plugin que você acabou de criar e confira os arquivos gerados:
+
+<Tabs groupId="plugin-folders">
+<TabItem value="app" label="Plugin de Aplicação" default>
+
+```bash title="/application-plugin-type"
+├── docs
+│   ├── en-us
+│   │   └── docs.md
+│   └── pt-br
+│       └── docs.md
+├── plugin.yaml
+├── templates
+│   └── README.md
+└── tests
+    └── test-case-apply-00
+        ├── expected
+        │   └── README.md
+        ├── target
+        └── test-case.yaml
+```
+
+</TabItem>
+<TabItem value="infra" label="Plugin de Infraestrutura" >
+
+```bash title="/infrastructure-plugin-type"
+├── docs
+│   ├── en-us
+│   │   └── docs.md
+│   └── pt-br
+│       └── docs.md
+├── plugin.yaml
+├── templates
+│   └── README.md
+├── templates-deploy
+│   └── README-deploy.md
+└── tests
+    ├── test-case-apply-00
+    │   ├── expected
+    │   │   └── README.md
+    │   ├── target
+    │   └── test-case.yaml
+    └── test-case-deploy-00
+        ├── expected
+        │   └── README-deploy.md
+        ├── target
+        └── test-case.yaml
+```
+
+</TabItem>
+</Tabs>
+
+**Passo 3.** Abra a sua **IDE** e confira o **arquivo de configuração do Plugin** (arquivo **plugin.yaml**). Você pode **editar** as informações a seguir de acordo com o que você precisa:
+
+- O campo de **metadata**; e
+- Os campos dentro de **spec**.
+
+### **Exemplo de Plugin de Aplicação**
+
+O exemplo a seguir é uma AWS Lambda em Python. A ideia é que este template adicione um padrão para que uma organização:
+
+- Possa gerar relatórios financeiros automatizados, como balanços diários ou relatórios de conformidade.
+
+- Armazene os relatórios no formato **`.csv`** em um AWS Bucket S3.
+
+### **Template do Plugin de Aplicação**
+
+```python title="meu-plugin/templates/report_s3.py"
+import boto3
+import csv
+
+s3 = boto3.client('s3')
+
+def lambda_handler(event, context):
+    # Dados simulados para o exemplo
+    transactions = {{ transactions }}
+
+    # Gera o CSV
+    csv_file = '/tmp/{{ report_name }}.csv'
+    with open(csv_file, 'w', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=['id', 'amount', 'type'])
+        writer.writeheader()
+        writer.writerows(transactions)
+
+    # Envia para o Bucket S3
+    s3.upload_file(csv_file, '{{ bucket_name }}', 'relatorios/{{ report_name }}.csv')
+
+    return {
+        'statusCode': 200,
+        'body': 'Relatório gerado e enviado para o S3.'
+    }
+```
+
+No código apresentado anteriormente, algumas variáveis foram substituídas por expressões Jinja, identificadas pelas chaves "`{{...}}`":
+
+- **`{{ transactions }}`**;
+- **`{{ report_name }}`**;
+- **`{{ bucket_name }}`**.
+
+Isso significa que esses valores não são definidos diretamente no código, mas serão interpolados (substituídos) dinamicamente durante a renderização do template.
+
+### **Arquivo `plugin.yaml` do Plugin de Aplicação**
+
+O seu Plugin deve ser editado. No exemplo a seguir, os **inputs** foram editados e adicionados para capturar os valores que serão substituídos no código do template **`report_s3.py`**.
+
+```yaml title="meu-plugin/plugin.yaml"
+schema-version: v3
+kind: plugin
+metadata:
+  name: report-s3-plugin
+  display-name: Report S3 Plugin
+  description: Plugin para gerar relatórios e enviá-los para o S3
+  version: 1.0.0
+spec:
+  type: infra
+  compatibility:
+    - python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  single-use: False
+  runtime:
+    environment:
+      - python-3-9
+      - aws-cli-2
+      - git-2
+  technologies:
+    - Api
+  stk-projects-only: false
+  // new-line-start
+  inputs:
+    - label: Transactions data
+      name: transactions
+      type: textarea
+      required: true
+      help: 'Informe os dados das transações no formato JSON (ex.: [{"id": 1, "amount": 100, "type": "deposit"}])'
+    - label: Report name
+      name: report_name
+      type: text
+      required: true
+      help: 'Informe o nome do relatório (ex.: daily_report)'
+    - label: Bucket name
+      name: bucket_name
+      type: text
+      required: true
+      help: 'Informe o nome do bucket S3 onde o relatório será enviado'
+    - label: Select an Bucket s3
+      type: required-connection
+      name: {{ name }} # busca o valor de um input global de outro Plugin
+      connection-interface-type: aws-s3-conn  
+  // new-line-end    
+```
+
+:::warning Atenção!  
+
+O exemplo apresentado anteriormente gera um código que necessita da conexão com um AWS Bucket S3. [**Note que, neste caso, foi utilizado o input do tipo `required-connection`**](create-use/create-content/yaml-files/inputs.md#input-do-tipo-required-connection).
+
+:::
+
+### **Exemplo de Plugin de Infraestrutura**
+
+O exemplo a seguir é um template de código Terraform, que gera um AWS Bucket S3. A ideia é que este template forneça uma forma mais rápida, simples e padronizada para que as pessoas desenvolvedoras de uma Organização consigam criar uma Infraestrutura usando Plugins.
+
+### **Template IaC do Plugin de Infraestrutura**
+
+```bash title="s3-bucket-plugin/templates-deploy/main.tf"
+provider "aws" {
+  region = "{{ aws_region }}"
+}
+
+resource "aws_s3_bucket" "{{ name }}" {
+  bucket = "{{ name }}"
+  acl    = "private"        # Define o bucket como privado
+
+  tags = {
+    Name        = "{{ name }}"
+    Environment = "Dev"
+  }
+}
+
+output "aws_s3_bucket_name" {
+  value = aws_s3_bucket.{{ name }}.bucket
+}
+
+output "aws_s3_bucket_arn" {
+  value = aws_s3_bucket.{{ name }}.arn
+}
+```
+
+No código IaC apresentado anteriormente, algumas variáveis foram substituídas por expressões Jinja, identificadas pelas chaves "`{{...}}`":
+
+- **`{{ aws_region }}`**  
+- **`{{ name }}`**  
+
+Isso significa que esses valores não são definidos diretamente no código, mas serão interpolados (substituídos) dinamicamente durante a renderização do template.
+
+### **Arquivo `plugin.yaml` do Plugin de Infraestrutura**
+
+Você precisa editar o seu Plugin. No exemplo a seguir, os **inputs** foram editados e adicionados para capturar os valores que serão substituídos no código do template **`main.tf`**.
+
+```yaml
+schema-version: v3
+kind: plugin
+metadata:
+  name: s3-bucket-plugin
+  display-name: S3 Bucket Plugin
+  description: Plugin para criar um bucket S3
+  version: 1.0.0
+  picture: plugin.png
+spec:
+  type: infra
+  compatibility:
+    - terraform
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  single-use: False
+  runtime:
+    environment:
+      - terraform-1-4
+      - aws-cli-2
+      - git-2
+  technologies:
+    - AWS S3
+  stk-projects-only: false
+inputs:
+  - label: AWS Region
+    name: aws_region
+    type: select
+    required: true
+    items:
+      - us-east-1
+      - us-east-2
+      - us-west-1
+      - us-west-2
+      - sa-east-1
+    default: ["us-east-1"]   
+    help: 'Selecione uma região AWS (ex.: us-east-1)'
+  - label: Bucket Name
+    name: name
+    type: text
+    required: true
+    global: true
+    help: 'Informe o nome do bucket S3'
+  - label: Selecione a connection para o seu Bucket S3
+      type: generated-connection
+      name: {{ name }} # usa o valor do input global 'name'
+      connection-interface-type: aws-s3-conn
+      outputs:
+        - from: aws_s3_bucket_name
+          to: bucket_name
+        - from: aws_s3_bucket_arn
+          to: arn
+```
+
+:::warning Atenção!  
+
+- O exemplo anterior mostra como criar uma conexão com um AWS S3 Bucket. [**Observe que, neste caso, foi utilizado um input do tipo generated-connection**](create-use/create-content/yaml-files/inputs.md#input-do-tipo-generated-connection).
+
+:::
+
+### **Passo 3. Criar uma Action**
+
+As Actions são automações escritas em scripts **Python** ou **Shell**. As Actions permitem que os scripts usem expressões Jinja para que a automação seja mais dinâmica com o uso de inputs.
+
+**Passo 1.** Para criar uma Action, execute o comando a seguir:
+
+```bash
+stk create action nome-da-action
+```
+
+Assim como no Plugin, responda as perguntas no terminal.
+
+**Passo 2.** Acesse a pasta da Action e confira os arquivos gerados, como no exemplo a seguir: 
+
+```bash
+nome-da-action/
+├── action.yaml
+├── script.py
+├── docs/
+│   ├── pt-br/
+│   │   └── docs.md
+│   └── en-us/
+│       └── docs.md
+```
+
+**Passo 3.** Abra a IDE de sua preferência e edite os arquivos da Action. Confira os exemplos a seguir.
+
+### **Exemplo de uma Action do tipo python**
+
+O exemplo a seguir é um script Python que executa um **lint** (uma ferramenta de análise de código estática) para código Terraform. 
+
+A ideia é que este script faça parte de uma Action como uma forma mais rápida, simples e automatizada para que pessoas desenvolvedoras de uma Organização consigam fazer a análise do código Terraform.
+
+### **Arquivo `script.py` da Action**
+
+Ao criar a Action, ela gera o arquivo **`script.py`**. Edite este arquivo e escreva o seu código nele.
+
+:::danger Atenção!
+
+Escreva o código dentro da função **`def run(metadata):`**, como no exemplo encontrado no arquivo **`script.py`** para interagir com metadados da sua conta e inputs:
+
+```python showLineNumbers
+
+
+def run(metadata):
+    print(f"Hello {metadata.inputs.get('user_name')}!")
+
+```
+
+:::
+
+```python title="terraform-lint-action/script.py"
+from templateframework.metadata import Metadata
+import subprocess
+import sys
+
+def run(metadata: Metadata = None):
+    """
+    Executa o lint para arquivos Terraform no diretório especificado.
+    """
+    # Obtém o diretório dos inputs da Action
+    terraform_directory = "{{ inputs.terraform_directory | default('.') }}"
+
+    try:
+        # Verifica se o tflint está instalado
+        result = subprocess.run(["tflint", "--version"], capture_output=True, text=True)
+        if result.returncode != 0:
+            print("Erro: tflint não está instalado ou não está no PATH.")
+            sys.exit(1)
+        print(f"Usando tflint versão: {result.stdout.strip()}")
+
+        # Executa o tflint no diretório especificado
+        print(f"Executando lint nos arquivos Terraform no diretório: {terraform_directory}")
+        lint_result = subprocess.run(["tflint", terraform_directory], capture_output=True, text=True)
+
+        # Exibe os resultados do lint
+        if lint_result.returncode == 0:
+            print("Lint concluído com sucesso! Nenhum problema encontrado.")
+        else:
+            print("Problemas encontrados durante o lint:")
+            print(lint_result.stdout)
+            print(lint_result.stderr)
+    except FileNotFoundError:
+        print("Erro: tflint não está instalado ou não está no PATH.")
+        sys.exit(1)
+    except Exception as e:
+        print(f"Erro inesperado: {e}")
+        sys.exit(1)
+```
+
+No código script apresentado anteriormente, algumas variáveis foram substituídas por expressões Jinja, identificadas pelas chaves "`{{...}}`":
+
+- O valor variável **`terraform_directory`** foi substituída por **`{{ inputs.terraform_directory | default('.') }}`**.
+
+Isso significa que esses valores não são definidos diretamente no código, mas serão interpolados (substituídos) dinamicamente durante a execução da Action.
+
+### **Arquivo `action.yaml` da Action**
+
+A sua Action deve ser editada. No exemplo a seguir, **inputs** foram editados e adicionados para capturar os valores que serão substituídos no código do arquivo **`script.py`**.
+
+```yaml
+schema-version: v3
+kind: action
+metadata:
+  name: terraform-lint-action
+  display-name: Terraform Lint Action
+  description: Executa lint em arquivos Terraform usando TFLint.
+  version: 1.0.0
+spec:
+  type: python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  inputs:
+    - label: Diretório com os arquivos Terraform
+      name: terraform_directory
+      type: text
+      required: true
+      default: "."
+      help: "Informe o diretório onde os arquivos Terraform estão localizados (padrão: .)"
+  python:
+    workdir: .
+    script: script.py
+```
+
+Confira alguns guias que você vai precisar consultar para construir os conteúdos na StackSpot:
+
+<br/>
+
+import CustomDocCard from '@site/src/components/MdxComponents/CustomDocCard';
+import CustomDocCardList from '@site/src/components/MdxComponents/CustomDocCardList';
+
+<CustomDocCardList>
+  <CustomDocCard title="Criar Plugins" description="Nesta seção, você encontra um guia de como criar Plugins de App e de Infra." link="/create-use/create-content/plugin/create-plugin.md" />
+  <CustomDocCard title="Criar Action" description="Nesta seção, você encontra um guia de como criar uma Action usando o STK CLI." link="/create-use/create-content/action/run-action.md" />
+  <CustomDocCard title="Usar Hooks Declarativos" description="Nesta seção você encontra: Como definir e quais são os tipos de Hooks Declarativos. Como executar condicional de um Hook Declarativo." link="/create-use/create-content/declarative-hooks/index.md" />
+  <CustomDocCard title="Configurar Arquivos .yaml de Actions e Plugins" description="Nesta seção, você encontra: os arquivos .yaml de Plugin, Actions e demais configurações dos conteúdos." link="/create-use/create-content/yaml-files/index.md" />
+  <CustomDocCard title="Usar Variáveis" description="As variáveis na StackSpot fornecem o armazenamento e reuso de informações não sensíveis de configurações." link="/create-use/create-content/variables.md" />
+  <CustomDocCard title="Documentar o seu conteúdo" description="Nesta seção, você encontra as regras de escrita de Markdown para criar a sua documentação de conteúdo." link="/create-use/studio/documentation.md" />
+  <CustomDocCard title="Criar teste de Plugins" description="Confira como criar testes unitários para os seus Plugins." link="/create-use/create-content/plugin/test-plugin.md" />
+</CustomDocCardList>
+
+<br/>
+
+## **3. Publique os seus conteúdos**
+
+**Passo 1.** Abra o seu terminal e siga os [**passos para publicar um Plugin**](create-use/create-content/plugin/publish-plugin.mdx);
+
+**Passo 2.** Agora siga os [**passos para publicar uma Action**](create-use/create-content/action/publish-action.mdx).
+
+## **4. Criar Stack no Portal da StackSpot**
+
+> [**Você também pode criar Stack e Starter via STK CLI. Confira como neste guia**](create-use/create-content/stack/create-stack-starter-cli.mdx).
+
+<br/>
+
+**Passo 1.** [**Acesse o Portal da StackSpot EDP**](https://app.stackspot.com/login). Clique no botão **'Criar'** e selecione **'Stack'**;
+
+**Passo 2.** Primeiro, **selecione o Estúdio** onde você quer criar a Stack e preencha os campos a seguir:
+
+- **Nome da Stack**: adicione um nome para a sua Stack.  
+- **Identificação (Slug)**: [**adicione um slug**](create-use/studio/slugs.mdx) para a Stack. Depois que a Stack é publicada, este campo **não pode ser alterado**.  
+- **Descrição**: descreva brevemente sobre o objetivo da sua Stack.  
+- **Logo**: inclua uma logo para a sua Stack. É **opcional**.  
+- **Tags**: descreva as tags que podem facilitar a classificação da sua Stack.
+
+**Passo 3.** Revise as informações e clique no botão **'Criar'**.
+
+
+> Para documentar uma Stack ou um Starter criados pela Plataforma da StackSpot, [**siga os passos para gerar pastas localmente.**](create-use/studio/documentation.mdx)
+
+
+<br/>
+
+:::warning Atenção!  
+A primeira versão da sua Stack foi gerada, mas ainda não está publicada. Você precisa adicionar algum conteúdo nela, seja um [**Plugin**](create-use/create-content/plugin/create-plugin.mdx), uma [**Action**](create-use/create-content/action/run-action.mdx) ou um [**Starter**](create-use/create-content/stack/create-starter.mdx).
+
+:::
+
+<br/>
+
+## [**5. Criar Starter**](create-use/create-content/stack/create-starter.mdx)
+
+**Passo 1**. Ainda no Portal da StackSpot EDP, **acesse a sua Stack**. Na aba **'Starters'**, clique no botão **'Criar um novo starter'**;  
+
+**Passo 2**. Em **'Starter info'** preencha as informações a seguir:
+
+- **Slug (Nome do starter)**: adicione um nome para o seu Starter.
+- **Descrição**: descreva brevemente sobre o seu Starter.
+
+Clique no botão **'Próximo'**.
+
+**Passo 3**. Em **'Adicionar Plugins'**, adicione os Plugins que você quer incluir no Starter.
+
+> Você pode selecionar Plugins que estão tanto no Estúdio quanto na Conta.
+
+<br/>
+
+Depois, clique no botão **'Adicionar Plugins'**.
+
+:::caution Cuidado!  
+
+Verifique a ordem que os Plugins são adicionados ao Starter. Esta ordem define a aplicação deles na Stack e ela só **pode ser alterada enquanto a Stack está em Draft**.
+
+:::
+
+**Passo 4.** Confira a ordem dos Plugins no Starter e clique no botão **'Próximo'**. 
+
+Em seguida, revise as informações e clique no botão **'Concluir'**.
+
+> Para mais informações sobre Starter, [**confira a seção de Starter**](create-use/create-content/stack/create-starter.mdx).
+
+<br/>
+
+## **6. Vincular Plugin e Actions na Stack (opcional)**
+
+> Este é um passo **opcional**, mas caso você queira adicionar mais Plugins ou vincular Actions, siga os passos a seguir:
+
+<br/>
+
+:::info Informação Adicional  
+
+A **diferença** entre Actions e Plugins é a seguinte:
+
+- As [**Actions**](create-use/create-content/action/actions.mdx) são como **tarefas efêmeras**, que executam uma ação específica, como um **automação local**.  
+- Já os [**Plugins**](create-use/create-content/plugin/plugins.mdx) geram **arquivos de templates**.
+
+:::
+
+### **Para vincular Plugins**
+
+**Passo 1.** Acesse a sua Stack e clique em Plugin;
+
+**Passo 2.** Selecione o tipo de Plugin que você quer adicionar à Stack:
+
+- **Tipo App:** clique no botão **'Adicionar App Plugin'**.
+- **Tipo Infra:** clique no botão **'Adicionar Infra Plugin'**.
+
+**Passo 3.** Escolha os Plugins e clique no botão **'Adicionar Plugins'**.
+
+### **Para vincular Actions**
+
+**Passo 1.** Dentro da sua Stack, clique em **'Actions'**. Em seguida, clique no botão **'Adicionar action'**;
+
+**Passo 2.** Na tela que será exibida, você pode adicionar as Actions que estão com o filtro **'Disponível no Estúdio'** e **'Explore'**;  
+
+> Dentro da aba **'Explore'**, você pode agrupar as Actions por Estúdio e selecionar qual **versão** da Action você quer.
+
+**Passo 3.** Depois de selecionar as Actions, clique no botão **'Adicionar Action'**.
+
+## **7. Publicar a primeira Stack**   
+
+**Passo 1.** [**Acesse o Portal da StackSpot EDP**](https://app.stackspot.com/login);   
+**Passo 2.** Clique na seção **'Stack'**;  
+**Passo 3.** Clique no botão **'Publicar'**.
+
+Pronto, você publicou a sua primeira Stack. 
+
+## Próximos Passos
+
+- [**Você pode utilizar o conteúdo que já está disponível na sua Conta da StackSpot para criar Aplicações ou Infraestruturas**](create-use/use-content/quickstart.mdx).

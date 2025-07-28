@@ -1,0 +1,30 @@
+---
+title: Detectar Desvios
+sidebar_position: 10
+description: Como detectar desvios (drifts) em sua infraestrutura.
+sidebar_custom_props:
+    hidden: true
+    icon: SearchPlus
+---
+
+> Nesta seção, você encontra como detectar desvios.
+
+<br/>
+
+## Detecção de desvio & Reconciliação automática
+
+A **Detecção de desvio** identifica quando algum recurso de Cloud, que já foi provisionado ou importado de Deploy, é alterado para um estado diferente daquele já declarado no código. E depois de encontrar o desvio, o **Reconciliação automática** substitui automaticamente o recurso diferente para o estado original, e sem precisar de uma intervenção manual.
+
+### Exemplo
+
+O banco de dados da sua aplicação precisa usar a versão X do RDS com MySQL. Mas outra pessoa alterou a versão do RDS para Y pelo console da AWS. A Detecção de desvio identifica essa alteração e o Reconciliação automática substitui o valor alterado para o seu estado original.
+
+> A identificação de desvio é automática.
+
+:::warning Atenção!
+Quando a primeira implantação de uma Aplicação é feito em um ambiente, a Aplicação é criada com o Reconciliação automática desabilitada.
+:::
+
+## Consultar o Desvio nas Atividades da Aplicação e Infraestrutura pelo Portal
+
+Para consultar aos desvios na sua Aplicação, confira a [**seção de Atividades**](deployment/manage/activities.mdx).

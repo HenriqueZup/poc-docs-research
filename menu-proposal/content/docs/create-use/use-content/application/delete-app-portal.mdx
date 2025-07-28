@@ -1,0 +1,102 @@
+---
+title: "Destruir e Deletar Aplicação via Portal"
+sidebar_position: 8
+description: Como destruir e deletar Aplicações pelo Portal StackSpot.
+---
+
+> Nesta seção, você encontra um guia de como destruir e deletar sua Aplicação via Portal. 
+
+<br/>
+
+Para você **deletar completamente a sua Aplicação** no Portal da StackSpot EDP, **todas as versões da sua Aplicação devem ser destruídas** de todo e qualquer ambiente em que ela foi implantada. Caso uma Aplicação tenha Infraestruturas associadas à ela, elas também precisam ser destruídas.
+
+:::warning Atenção!  
+
+- Através do botão **'Check Connection Interfaces'** é possível conferir qual Workspace está usando a Connection Interface compartilhada com a Aplicação ou Infraestrutura. Esse botão **só é exibido quando há deploy** em algum ambiente. 
+
+- Para destruir uma Aplicação ou Infraestrutura, é preciso ter a permissão para executar o comando [**`stk register app-destroy`**](home/stk-cli/commands/application-commands.mdx).
+
+:::
+
+Siga os passos a seguir para Destruir uma Aplicação:
+
+**Passo 1.** Acesse o seu Workspace e, em seguida, clique na Aplicação que você quer destruir;
+
+**Passo 2.** Agora, clique na subseção **’Configurações'**;
+
+**Passo 3.** Clique no botão **’Destruir Aplicação'**;  
+
+**Passo 4.** Preencha as informações a seguir:
+        - Branch: selecione a branch que está a Aplicação que você quer destruir.
+        - Digite a palavra **“DESTRUIR”**.
+
+**Passo 5.** Clique no botão **’Destruir Aplicação'**. 
+
+Quando o Workflow é concluído, um Pull Request (PR) é criado e precisa ser aprovado e mergeado, para que a Destruição da Aplicação seja concluída. 
+
+Pronto, você destruiu uma Aplicação. Ela será destruída de forma síncrona. 
+
+> Depois disso, você é a pessoa responsável por destruir a Aplicação na sua nuvem. 
+
+Para destruir uma Infraestrutura da Aplicação você precisa **remover os Plugins do tipo infra** dela. Para isso, **utilize o comando [`stk remove plugin`](home/stk-cli/commands/plugin-commands.mdx)** e execute um **deploy vazio** com os **Plugins de `infra`** removidos. Caso prefira seguir pelo Portal da StackSpot EDP, siga os passos a seguir:
+
+**Passo 1.** Acesse o seu Workspace e, em seguida, clique na Aplicação que você quer destruir a Infraestrutura;
+ 
+**Passo 2.** Agora, clique na subseção **’Configurações'**;
+
+**Passo 3.** Clique no botão **’Destruir Infraestrutura da Aplicação'**;
+
+**Passo 4.** Preencha as informações a seguir:
+
+- Branch: selecione a branch que está a Infraestrutura que você quer destruir
+- Digite a palavra **“DESTRUIR”**.
+
+**Passo 5.** Clique no botão **'Destruir Infraestrutura da Aplicação'**. 
+
+Quando o Workflow é concluído, um Pull Request (PR) é criado e precisa ser aprovado e mergeado, para que a Destruição da Infraestrutura da Aplicação seja concluída. Ela será destruída de forma assíncrona. 
+
+<br/>
+
+Com isso, você sobe uma **versão de Infraestrutura vazia** para a StackSpot EDP e, assim, é possível que você delete a sua Aplicação no Portal da StackSpot EDP. 
+
+Confira o fluxo completo de deletar a Aplicação no diagrama a seguir:
+
+## **Deletar Aplicação com deploy de Infraestrutura via Self-hosted** 
+
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<ThemedImage alt="Diagrama de apagar aplicação com deploy de infraestrutura via Self-hosted" width="auto" sources={{ light: useBaseUrl('/img/Fluxo-de-apagar-Aplicação-Self-hosted-PT-Light.png'), dark: useBaseUrl('/img/Fluxo-de-apagar-Aplicação-Self-hosted-PT-Dark.png'), }} />
+
+## **Deletar Aplicação com deploy de Infraestrutura via Runtimes Engine** 
+
+<ThemedImage alt="Diagrama de apagar aplicação com deploy de infraestrutura via Runtimes." width="auto" sources={{ light: useBaseUrl('/img/Fluxo-de-apagar-Aplicação-via-Runtimes-PT-Light.png'), dark: useBaseUrl('/img/Fluxo-de-apagar-Aplicação-via-Runtimes-PT-Dark.png'), }} />
+
+**Depois de destruir todas as versões da Aplicação e suas Infras**, siga os passos abaixo para deletá-la:
+
+:::warning Atenção!  
+
+Antes de deletar sua Aplicação, garanta que não há nenhum deploy ativo nela. Isso porque quando uma Aplicação é deletada, todos os deploys associados a ela também são deletados. 
+
+::: 
+
+
+**Passo 1.** Faça login no [**Portal StackSpot EDP**](https://app.stackspot.com/pt/login) e no menu principal da página inicial clique em **'Aplicações'**; 
+
+**Passo 2.** Procure e **selecione sua Aplicação** para acessar seu dashboard;
+
+**Passo 3.** Dentro do menu principal da Aplicação, clique na seção **'Configurações'**;
+
+**Passo 4.** Clique no botão **'Deletar Aplicação'** no fim da tela;
+
+**Passo 5.** Digite a palavra **“DELETAR”** e, em seguida, clique no botão **'Deletar Aplicação'**. 
+
+:::info Informação Adicional  
+
+O botão **’Deletar Aplicação'** fica inativo enquanto os botões **’Destruir Aplicação'** e **’Destruir Aplicação da Infraestrutura'** ainda estão pendentes. Ou seja, não é possível deletar uma Aplicação enquanto ainda houver Infraestruturas ou Aplicações implantadas.
+
+::: 
+
+
+Pronto, você deletou a sua Aplicação.
+

@@ -1,0 +1,53 @@
+---
+title: "Configurar Contexto de Workflow na Stack (Descontinuado)"
+sidebar_position: 4
+description: Como configurar Contexto do Workflow a nível de Stack. 
+---
+
+> Nesta seção, você encontrará os passos para configurar um Contexto de Workflow em uma Stack.
+
+<br/>
+
+:::danger Atenção!
+
+Este conteúdo está sendo descontinuado, [**conheça o novo Workflow da StackSpot**](create-use/create-content/workflow/overview/index.mdx).
+
+:::
+
+
+## **Introdução**
+
+Ao configurar um Contexto para seu Workflow, você define **valores de inputs para as Actions dentro desse Workflow**. Esses valores serão os **padrão para todos que utilizarem o Workflow**, independentemente de serem mandatórios ou opcionais.
+
+Você pode definir contextos de Workflow em três níveis:
+
+1. Conta;
+2. Stack na Conta;
+3. Workspace na Conta.
+
+<br/>
+
+Ao **definir um input como mandatório** para uma Action no seu Workflow, todas as Stacks e Workspaces que usam esse Workflow devem **seguir** essa regra. Mas, **inputs não mandatórios** ainda podem ser alterados.
+
+Se alguém **definir um input de uma Action do Workflow** como mandatório em uma Stack específica, esse input não poderá ser modificado no Workspace que a utiliza. E se o Administrador do Workspace definir um input diferente como mandatório, **todos no Workspace deverão seguir os inputs mandatórios** definidos na Conta, na Stack e no Workspace, sem possibilidade de alteração.
+
+Confira os passos para configurar um Contexto de Workflow em uma Stack:
+
+**Passo 1.** Acesse diretamente link do [**Portal da Conta**](http://myaccount.stackspot.com); ou após fazer [**login no Portal StackSpot**](https://app.stackspot.com/), clique no **seu avatar de perfil**;
+
+**Passo 2.** Selecione a opção **'Organização'** no menu exibido; 
+
+**Passo 3.** No menu principal do Portal da Conta, selecione o produto StackSpot EDP e clique em **'Stacks'**;
+
+**Passo 4.** Dentro da seção **'Stacks'**, clique no botão **'Detalhes do Workflow'** no **lado direito** da Stack que você quer configurar o Contexto do Workflow;
+
+**Passo 5.** Na página do Workflow, clique no **'botão de seta para baixo (dropdown)'** ao lado da Action que você deseja configurar os valores de entrada. Você tem duas opções:
+
+1. **Sugerir um input:** Simplesmente digite o valor desejado no campo.
+2. **Tornar um input como mandatório:** Insira o valor e depois marque a caixa de seleção **'Mandatório'**. Isso garante que um Workspace que utiliza esta Stack não possa alterar esse valor.
+
+Repita este processo para todas as Entradas que você deseja configurar (exceto aquelas já designadas como Obrigatórias no nível da Conta).
+
+**Passo 6.** Clique em **'Salvar'** no rodapé da página e confirme.
+
+Pronto, você configurou um Contexto de Workflow em uma Stack.

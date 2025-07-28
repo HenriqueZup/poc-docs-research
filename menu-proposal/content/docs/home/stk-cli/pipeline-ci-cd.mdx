@@ -1,0 +1,286 @@
+---
+title: Instalação em Pipelines
+sidebar_position: 4
+description: Confira como instalar e autenticar o STK CLI em pipelines CI/CD.
+sidebar_custom_props: 
+  icon: Branch
+---
+
+> Nesta seção, você encontra como instalar o STK CLI via pipelines.
+
+<br/> 
+
+Para instalar e autenticar **o STK CLI** em uma pipeline, você precisa ter uma conta [**StackSpot**](https://app.stackspot.com/login).
+
+## **Requisitos**
+
+Confira os requisitos para usar o STK CLI em uma pipeline CI/CD:
+
+- Possuir uma conta Enterprise no [**Portal da StackSpot**](https://app.stackspot.com/login).
+- [**Criar ou usar uma credencial de serviço**](home/account/organization/service-credential.mdx).
+
+## **Instalação em um runner próprio**
+
+### **1. Configure as variáveis de ambiente**
+
+Para garantir o correto funcionamento do STK CLI, principalmente nos runners da sua pipeline, configure as seguintes variáveis de ambiente em sua pipeline:
+
+```bash
+LANG: C.UTF-8
+LANGUAGE: C.UTF-8
+LC_ALL: C.UTF-8
+PYTHONIOENCODING: utf-8
+```
+
+Confira a documentação do seu serviço de CI/CD:
+
+- [**GitHub**](https://docs.github.com/en/actions/learn-github-actions/variables#about-variables);
+- [**GitLab**](https://docs.gitlab.com/ee/ci/variables/#use-cicd-variables-in-job-scripts);
+- [**Bitbucket**](https://support.atlassian.com/bitbucket-cloud/docs/variables-and-secrets/);
+- [**Azure Devops**](https://learn.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#environment-variables).
+
+Configure também as variáveis de ambiente em seu sistema:
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs>
+<TabItem value="windows" label="Variáveis de ambiente no Windows" default>
+
+1. Na barra de tarefas, pesquise por **"variáveis"** e acesse a opção **"Editar as variáveis de ambiente"**;
+2. Na janela que abrir, clique na opção **"Novo..."**. Em seguida, preencha o nome e valor da variável e clique em **"OK"**;
+<br/><br/>
+
+O nome e valor das variáveis seguem o padrão:
+
+```bash
+NOME: valor-Variavel
+```
+
+Exemplo:
+
+**Nome da variável:** NOME  
+
+**Valor da variável:** valor-Variavel
+
+<br/>
+Repita o preenchimento para todas as variáveis:  
+
+```bash
+LANG: C.UTF-8
+LANGUAGE: C.UTF-8
+LC_ALL: C.UTF-8
+PYTHONIOENCODING: utf-8
+```
+
+</TabItem>
+<TabItem value="linux-mac" label="Variáveis de ambiente em sistemas Linux e MacOS">
+
+1. No terminal, execute o comando a seguir para abrir o arquivo **`.bashrc`**:
+
+```bash
+nano ~/.bashrc
+```
+
+> Ou abra o arquivo com um editor de texto de sua preferência.
+
+<br/>
+2. Ao final do arquivo, digite todas as variáveis da seguinte forma:
+
+```bash
+export LANG=C.UTF-8
+export LANGUAGE=C.UTF-8
+export LC_ALL=C.UTF-8
+export PYTHONIOENCODING=utf-8
+```
+<br/>
+3. Salve e feche o arquivo. Em seguida, volte ao terminal e execute o comando para aplicar as mudanças:
+
+```bash
+source ~/.bashrc
+```
+
+Se você quiser conferir as variáveis de ambiente, digite no terminal o seguinte comando:
+
+```bash
+printenv
+```
+
+</TabItem>
+</Tabs>
+
+### **2. Instalar pacotes no seu runner**
+
+Os seguintes pacotes devem estar instalados em seu runner:
+
+- **`jq`**;
+- **`curl`**;
+- **`git`**.
+
+Exemplo:
+
+Confira a instalação da ferramenta **`jq`** em um runner Linux no GitHub:
+
+```yaml
+name: Build on Ubuntu
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Install jq tool
+        run: |
+          sudo apt-get update
+          sudo apt-get install jq
+```
+
+Para mais exemplos, acesse a documentação do GitHub sobre [**personalizar runners**](https://docs.github.com/pt/actions/using-github-hosted-runners/about-github-hosted-runners/customizing-github-hosted-runners).
+
+## **Instalação via curl na pipeline**
+
+Utilize nos passos da sua pipeline o código para instalar a StackSpot:
+
+```bash
+curl -fsSL https://stk.stackspot.com/install.sh | bash && exec $SHELL
+```
+
+Exemplo:
+
+```yaml title="pipeline step example."
+steps:
+  - name: Install StackSpot
+    run: |
+    curl -fsSL https://stk.stackspot.com/install.sh | bash && exec $SHELL
+```
+
+:::danger Atenção!
+
+A instalação via curl também funciona para uso local mas apenas em sistemas Unix, como Linux e MacOS.
+
+:::
+
+## **Autenticar via CI/CD**
+
+As contas [**Enterprise**](home/account/organization/index.mdx) suportam a autenticação do STK CLI via linha de comando, utilizando um **`client id`** e um **`client key`**.
+
+Esse tipo de autenticação possibilita manter uma sessão ativa com um tempo de expiração configurável, para usar o STK CLI via linha de comando, como por exemplo, em pipelines de CI/CD.
+
+:::danger
+O tempo de expiração da sessão atualmente é de 20 minutos. Em breve esse valor será configurável através do Portal da StackSpot.
+:::
+
+### **Obter as chaves e autenticar pela pipeline**
+
+Para autenticar pela pipeline, é necessário obter no Portal StackSpot as chaves para serem informadas na pipeline junto do comando **`stk login`**. Para isso, siga os passos:
+
+**Passo 1.** Faça o login no [**Portal da StackSpot**](app.stackspot/login); 
+
+**Passo 2.** No menu de boas-vindas, acesse a opção **Gerenciar Conta** e em seguida, clique em **Tokens de Acesso**;
+
+**Passo 3.** Autorize a utilização de Tokens e em seguida clique em **'Gerar Tokens'**.
+
+<img src="/img/auth-token.gif" alt="Authorize Access Token page" title="Access Token" width="500px"/>
+<br/><br/>
+<img src="/img/generate-token.png" alt="Generate the Client ID and Client Key" title="Generate Token" width="500px"/>
+
+
+:::danger Atenção!
+
+As chaves são geradas **por usuário** da organização, se um usuário gerar uma nova chave a anterior automaticamente se **tornará inválida**. Gerar uma nova chave **não invalida as chaves de outros usuários** dessa organização.
+:::
+
+
+**Passo 4.** Na sua pipeline, execute o comando substituindo os valores entre chaves pelos valores obtidos nos passos anteriores:
+
+:::info
+
+Adicione o comando sem as chaves `<` `>`
+
+::: 
+
+```bash
+stk login --client-id <ID> --client-key <KEY> --realm <REALM>
+```
+
+:::tip Dica!
+
+Cadastre seu Token como segredo em Actions do GitHub**
+
+Exemplo:
+
+- **`Client ID`** como **`CLIENT_ID`** no segredo;
+- **`Client Key`** como **`CLIENT_KEY`** no segredo;
+- **`Realm`** como **`CLIENT_REALM`** no segredo;
+
+<img src="/img/actions-secrets.gif" alt="GitHub Actions Secrets" title="GitHub Actions Secrets" width="500" /> 
+<br/><br/>
+E use na sua pipeline:
+
+```yaml title="pipeline step with GitHub secrets example"
+steps:
+  - name: Config login
+    with:
+     CLIENT_ID: ${{ secrets.CLIENT_ID }}
+     CLIENT_KEY: ${{ secrets.CLIENT_KEY }}
+     CLIENT_REALM: ${{ secrets.CLIENT_REALM }}
+```
+
+Para obter mais detalhes, siga o [**uso de segredos na documentação do GitHub Actions**](https://docs.github.com/pt/actions/security-guides/using-secrets-in-github-actions).
+
+:::
+
+## **Executar o STK CLI com GitHub-hosted runners**
+
+[**Se você for usar um GitHub-hosted runner**](https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners#using-a-github-hosted-runner) para executar o STK CLI em seu Workflow, use o exemplo a seguir no arquivo da sua pipeline:
+
+1. [**Configure as GitHubs Secrets**](#obter-as-chaves-e-autenticar-pela-pipeline);
+2. [**Opcional**] [**Adicione os comandos do STK CLI que você precisar**](home/stk-cli/commands/index.mdx);
+3. [**Opcional**] Altere o campo **`name: Run CLI Commands`** para mudar o nome do Workflow e o campo **`on: [push]`** para alterar quando ele é executado.
+
+```yaml title="Exemplo de instalação em pipeline com o GitHub-hosted runner 'ubuntu-latest'"
+name: Run CLI Commands
+
+on: [push]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      LANG: C.UTF-8
+      LANGUAGE: C.UTF-8
+      LC_ALL: C.UTF-8
+      PYTHONIOENCODING: utf-8
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Download STK CLI
+        shell: bash
+        run: |
+          curl \
+            --fail \
+            --http2-prior-knowledge \
+            --location \
+            --output /tmp/stk.deb \
+            --silent \
+            --show-error \
+            --tlsv1.3 \
+            https://stk.stackspot.com/installer/linux/stk.deb
+  
+      - name: Install STK CLI
+        shell: bash
+        run: |
+          sudo dpkg --install /tmp/stk.deb || echo "Installation failed with exit code: $?"
+
+      - name: Authenticate StackSpot
+        run: |
+          $HOME/.stk/bin/stk login --client-id ${{ secrets.CLIENT_ID }} --client-key ${{ secrets.CLIENT_KEY }} --realm ${{ secrets.CLIENT_REALM }}
+```
+
+## **Próximo passo**
+
+- [**Confira como fazer o Deploy de Infraestrutura da sua Aplicação com Runtimes**](deployment/runtime-engine/app-deployment.mdx).

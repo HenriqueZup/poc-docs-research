@@ -1,0 +1,43 @@
+---
+title: "Executar Action Publicada"
+sidebar_position: 6
+description: Executar Actions que foram publicadas.
+---
+
+## **Executar Action publicada**
+
+Actions publicadas ficam disponíveis no Portal da StackSpot, você pode executar as Actions publicadas utilizando ou não as informações pré definidas no Workspace da sua Conta.
+
+Você pode executar a Action utilizando o Workspace ou não, confira os exemplos:
+
+### **1. Executar uma Action sem usar as variáveis de contexto do Workspace**  
+
+Siga o padrão **`<studio-slug>/<action-name>@<action-version>`**. Só pode ser utilizado quando não há um Workspace ativo.
+
+Exemplo sem Workspace:
+
+```bash
+stk run action my-studio-name/action-name@1.0.0
+```
+
+> Aqui não é obrigatório indicar a versão da Action.
+
+### **2. Executar uma Action dentro do Workspace utilizado**
+
+Para fazer a execução, a Action tem que estar adicionada no seu Workspace. Para conferir se você está em um Workspace, execute o comando [**`stk use workspace`**](home/stk-cli/commands/workspace-commands.mde)
+
+Depois que uma Action foi adicionada no Workspace, é possível utilizar as variáveis de contexto. 
+
+A versão da Action (`@stack-version`) só pode ser definida se não houver um Workspace ativo: **`<studio-slug>/<stack-slug>/<action-name>@<stack-version>`**.
+
+> Se a versão não for informada, a StackSpot usará como padrão a última versão do Estúdio em que a Action está. 
+
+Exemplo com Workspace Ativo:
+
+``` bash
+stk run action my-studio-name/my-stack-name/my-action-name
+```
+
+:::warning Atenção!
+Confira se a Equipe em que você está ainda pertence ao Estúdio em que a Action foi adicionada. Caso a Equipe em que você está for deletada do Estúdio, não será possível fazer nenhuma ação nele.
+:::

@@ -1,0 +1,138 @@
+---
+title: Adicionar URLs por ambiente
+sidebar_position: 7
+description: Como adicionar e visualizar URLs por ambiente com StackSpot Workflow. 
+---
+
+> Nesta seção, você encontra o passo a passo para adicionar e visualizar URLs por ambiente no Portal da StackSpot EDP com o StackSpot Workflow. 
+
+## **Pré-requisitos**
+
+- StackSpot CLI instalado e atualizado.  
+- Ter acesso a um Estúdio com Workflows publicados.
+- Ter uma Aplicação deployada. 
+
+## **Visualizar URLs**
+
+É possível adicionar e permitir a visualização de URLs por ambiente (STG, DEV e PRD) em uma Aplicação deployada no Portal da StackSpot EDP. Isso é feito através de duas Actions que adicionam as URLs no Dashboard da Aplicação. 
+
+Confira o passo a passo a seguir:
+
+### **Adicionar URLs em uma Aplicação**
+
+A Action que adiciona URLs em uma Aplicação tem os seguintes inputs:
+
+
+| **Input** | **Descrição** | **Tipo** | **Obrigatório** |
+|-------------|------------------------------------------------|----------|-----------------|
+| `name`      | O nome da URL que será adicionada.              | `string` | Sim             |
+| `url`       | A URL que será adicionada.                  | `string` | Sim             |
+
+
+Para usar a Action, os inputs **`name`** e **`url`** devem, obrigatoriamente, ser especificados no `yaml`. 
+
+Confira um exemplo de utilização da Action:
+
+```yaml
+schema-version: v1
+kind: workflow
+metadata:
+  name: stackspot-add-link
+  display-name: Adicionar Link StackSpot
+  description: Adiciona um link à infraestrutura ou aplicação no StackSpot.
+  version: 1.0.0
+spec:
+  type: deploy
+  label: Adicionar Link
+  jobs:
+    - id: add_link
+      label: Adicionar Link ao StackSpot
+      steps:
+        - id: add_link_step
+          label: Adicionar Link
+          name: "stackspot-core/stackspot-add-link@1"
+          type: action
+          inputs:
+          // new-line-start
+            name: "Meu Link de Aplicação"
+            url: "https://example.com/my-app"
+          // new-line-end
+```
+
+### **Adicionar URLs por ambiente**
+
+Para adicionar URLs por ambientes na sua Aplicação com o StackSpot Workflow, você deve usar a StackSpot Action **`stackspot-core/stackspot-add-links-by-env@1`** em um step do tipo `action` do seu Workflow.
+
+Inputs da Action:
+
+| **Input** | **Descrição** | **Tipo** | **Obrigatório** |
+|-------------|---------------|----------|-----------------|
+| `env`       | O slug do ambiente onde você deseja adicionar a URL. | `text`   | Não |
+| `urls`      | Uma lista de URLs de repositórios a serem adicionadas. Cada objeto URL contém um rótulo e a própria URL. | `list`   | Sim             |
+
+- **Estrutura do Objeto `urls`**
+
+Cada item na lista **`urls`** deve ter a seguinte estrutura:
+
+| **Campo**   | **Descrição**               | **Tipo** | **Obrigatório** |
+|-------------|-----------------------------|----------|-----------------|
+| `label` | Um rótulo para a URL do repositório. | `string` | Sim             |
+| `url`       | A URL do repositório.       | `string` | Sim             |
+
+Para usar a Action, os inputs obrigatórios devem ser especificados no `yaml`. 
+
+Confira um exemplo de utilização da Action no Workflow:
+
+```yaml
+schema-version: v1
+kind: workflow
+metadata:
+  name: update-app-urls
+  display-name: Atualizar URLs da Aplicação / Infraestrutura
+  description: Atualiza as URLs dos repositórios da aplicação
+  version: 1.0.0
+spec:
+  type: deploy
+  label: Atualizar URL
+  jobs:
+    - id: update_url
+    // new-line-start
+      label: Resumo do Workflow de Atualização
+    // new-line-end  
+      steps:
+        - id: update_summary_step
+          label: Atualizar Resumo
+          name: "stackspot-core/stackspot-add-links-by-env@1"
+          type: action
+          inputs:
+        // new-line-start
+            urls:
+              - url: string
+                label: string
+        // new-line-end
+```
+
+:::info Informações Adicionais 
+
+- Certifique-se de que as URLs fornecidas sejam válidas e acessíveis.
+
+- Se for necessário, a Action solicitará a adição de URLs de repositórios adicionais de forma interativa.
+
+:::
+
+
+Para **visualizar as URLs adicionadas**, siga os passos a seguir:
+
+**Passo 1.** Acesse o [**Portal da StackSpot EDP**](https://app.stackspot.com/);
+
+**Passo 2.** Clique no Workspace em que a sua Aplicação foi criada;
+
+**Passo 3.** Acesse a Aplicação. No Dashboard dela, clique no botão **'View App'**. 
+
+> Para visualizar as URLs em outro ambiente, clique na caixa de **Ambientes** e selecione o ambiente em questão. 
+
+<br/>
+
+Confira a seguir um exemplo do botão **'View App'** no Dashboard da Aplicação no Portal da StackSpot EDP. 
+
+![](/img/new-image.png)

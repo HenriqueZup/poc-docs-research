@@ -1,0 +1,345 @@
+---
+title: "Adicionar Links Estáticos e Dinâmicos no Plugin"
+sidebar_position: 15
+description: Como adicionar Links Estáticos e Dinâmicos.
+sidebar_custom_props: 
+  icon: Links
+---
+
+> Nesta seção, você encontra um guia de como adicionar links estáticos e dinâmicos no seu Plugin.
+
+<br/>
+
+### **Adicionar Links Estáticos no YAML do Plugin**
+
+Você pode adicionar Links estáticos no seu Plugin. Esses links redirecionam para ambientes externos ao da StackSpot. Por exemplo, um link de documentação externa do Plugin, ou um link para um serviço de monitoramento Amazon Cloud Watch.
+
+:::info Informação Adicional
+Você pode adicionar Links tanto em Plugins de Infra, quanto de App.
+:::
+
+Para adicionar, siga o passo a passo:
+
+**Passo 1.** Adicione as seguintes informações dentro da spec **`generates`** do arquivo YAML do seu Plugin:  
+
+```yaml
+spec:
+  generates:
+    links: 
+      - name: Nome do Plugin
+        url: url do link 
+        type: static
+        picture: logo do link
+```
+
+Os **parâmetros obrigatórios** são:
+
+- `name`
+- `url`
+- `type`: atualmente a Stack suporta o tipo `static` e `dynamic`.
+- `picture`
+
+Confira um exemplo:
+
+```yaml
+#/studio-zup/plugin-grafana
+meta:
+  name: Plugin Grafana
+spec:
+  generates:
+    links: 
+      - name: Grafana Dev
+        url: https://grafana.dev.zup.com.br/
+        type: static
+        picture: docs/grafana.png
+```
+
+**Passo 2.** Publicar uma nova versão do Plugin;
+
+> Apenas se não for um novo Plugin.
+
+## **Adicionar Links Dinâmicos**
+
+Você pode adicionar e criar dois tipos de Links Dinâmicos: **Plugin** e **Aplicação**. Os dois tipos são configurados de formas diferentes na StackSpot.  
+
+### **Link de Plugin**
+
+Para criar um Link Dinâmico de Plugin, você precisa:
+
+1. Configurar o manifesto do **`plugin.yaml`** durante a Publicação do Plugin através do CLI.
+
+2. Não alterar o versionamento do manifesto, porque os campos atuais já são compatíveis com os Links Dinâmicos.
+
+3. Durante a criação do Link Dinâmico de Plugin, o valor **`dynamic`** é configurado dentro do campo **`type`** no **generates>links**.
+
+O Link do tipo Dinâmico aceita a adição das seguintes variáveis:
+
+- Outputs da `connection`
+  - Sintaxe:  
+    - **prefixo**: `connections`
+    - **meio**: `alias` (apelido) do connection
+    - **sufixo**: output da connection em si. Exemplo: `"{{connections.rds.host}}"`  
+
+Confira um exemplo:  
+
+```yaml
+generates:
+    links:
+      - name: name link
+        url: https://{{connections.rds.host}}.com.br/
+        type: dynamic
+        picture: docs/grafana.png
+```
+
+- **Inputs do Plugin**: mantém o mesmo padrão utilizado na interpolação de templates.
+
+Exemplo: **`"{{inputs.db_name}}"`**.
+
+```yaml
+generates:
+    links:
+      - name: name link
+        url: https://{{inputs.input_name}}.com.br/
+        type: dynamic
+        picture: docs/image.png
+```
+
+- **Ambiente**: você pode utilizar a variável de ambiente definida na criação na Aplicação dentro do Workspace. Exemplo: **`"{{stk_env}}"`**.
+
+```yaml
+generates:
+    links:
+      - name: name link
+        url: https://{{var.STK_ENV}}.com.br/
+        type: dynamic
+        picture: docs/image.png
+```
+
+Para configurar um Link Dinâmico, siga os passos:  
+
+**Passo 1.** Adicione as seguintes informações dentro da `spec generates` do arquivo `YAML` do seu Plugin:
+
+```yaml
+generates:
+    links:
+      - name: name link
+        url: https://{{var.STK_ENV}}.com.br/
+        type: dynamic
+        picture: docs/image.png
+```
+
+Os **parâmetros obrigatórios** são:
+
+- `name`  
+- `url`  
+- `type` 
+
+**Passo 2.** Publicar uma nova versão do Plugin. 
+
+Confira o exemplo de um manifesto completo do **`plugin.yaml`** com a criação de Links, sendo um estático e outro dinâmico, com o uso de todos os tipos de variáveis possíveis:
+
+:::caution Cuidado!
+Se você está usando um Plugin v2, a nomenclatura correta é **Links** agora.
+:::
+
+```yaml
+schema-version: v3
+kind: plugin
+metadata:
+  name: plugin-example
+  display-name: plugin-infra-v2
+  description: Descreva seu plugin explicando o propósito
+  version: 0.0.1
+spec:
+  type: infra
+  compatibility:
+    - python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+    - Api
+  runtime:
+    environment:
+      - terraform-1-4
+      - terraform-1-3
+      - aws-cli-2
+      - git-2
+  generates:
+// new-line-start         
+    links:
+      - name: Gerenciar grupos AWS
+        url: 'https://zup.service-now.com/stackspot?id=sc_cat_item&sys_id=XPTO'
+        type: static
+        picture: imgs/servicenow.png       
+      - name: Database Status
+        url: https://{{connections.test-alias-dynamo-conn.arn}}/{{inputs.resource}}/{{inputs.method}}/{{var.STK_ENV}}/status
+        type: dynamic
+        picture: imgs/db_status_ico.png
+// new-line-end        
+  inputs:
+    - label: Select the connection for my-aws-dynamo-conn
+      type: required-connection
+      name: my-aws-dynamo-conn
+      connection-interface-type: aws-dynamo-conn
+    - label: Select the connection for my-aws-eks-conn
+      type: required-connection
+      name: my-aws-eks-conn
+      connection-interface-type: aws-eks-conn 
+    - label: Type name of your resource
+      name: resource
+      type: text
+      required: true
+      default: Client
+      pattern: '([A-Z][a-z]+)+'
+      help: 'Inform your resource name (e.g.: Client)'
+    - label: Choose http method of new endpoint
+      name: method
+      type: select
+      items:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - PATCH
+    - label: Type the connection for alias-conn-01
+      type: generated-connection
+      name: alias-conn-01
+      connection-interface-type: aws-rds-conn
+      outputs:
+        - from: alias-conn-01-engine
+          to: engine
+        - from: alias-conn-01-engine_version
+          to: engine_version
+        - from: alias-conn-01-name
+          to: name
+        - from: alias-conn-01-host
+          to: host
+        - from: alias-conn-01-port
+          to: port
+        - from: alias-conn-01-user
+          to: user
+        - from: alias-conn-01-pass
+          to: pass
+      default: GET
+      required: true
+      help: 'Inform the method of the endpoint (e.g.: post or delete)'
+```
+
+Confira um exemplo com e sem o Link Dinâmico:
+
+<Tabs groupId="plugin-folders">
+<TabItem value="app" label="Com Link Dinâmico" default>
+
+```yaml
+schema-version: v3
+kind: plugin
+metadata:
+  name: my-plugin
+  display-name: my-plugin
+  description: Describe your plugin explaining its purpose
+  version: 0.0.1
+spec:
+  type: app
+  compatibility:
+    - python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  repository: https://github.com/stack-spot/test-plugin.git
+  technologies: # Ref: https://docs.stackspot.com/docs/create-stacks/yaml-files/yaml/#technologies
+    - Api
+  // new-line-start    
+  generates:
+    links:
+      - name: Grafana Dev
+        url: https://{{var.STK_ENV}}.com.br
+        type: dynamic
+        picture: docs/grafana.png
+  // new-line-end      
+  inputs:
+    - label: Select the connection for my-ecs-task-conn
+      type: required-connection
+      name: my-ecs-task-conn
+      connection-interface-type: ecs-task-conn
+    - label: Type name of your resource
+      name: resource
+      type: text
+      required: true  #default false
+      default: Client
+      pattern: '([A-Z][a-z]+)+'
+      help: 'Inform your resource name (e.g.: Client)'
+    - label: Choose http method of new endpoint
+      name: method
+      type: select
+      items:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - PATCH
+      default: GET
+      required: true
+      help: 'Inform the method of the endpoint (e.g.: post or delete)'
+```
+
+</TabItem>
+<TabItem value="infra" label="Sem Link Dinâmico">
+
+```yaml
+schema-version: v3
+kind: plugin
+metadata:
+  name: my-plugin
+  display-name: my-plugin
+  description: Describe your plugin explaining its purpose
+  version: 0.0.1
+spec:
+  type: app
+  compatibility:
+    - python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  repository: https://github.com/stack-spot/test-plugin.git
+  technologies: # Ref: https://docs.stackspot.com/docs/create-stacks/yaml-files/yaml/#technologies
+    - Api
+// old-start    
+  generates:
+    links:
+      - name: name link
+        url: https://{{var.STK_ENV}}.com.br
+        type: dynamic
+        picture: docs/grafana.png
+// old-end     
+  inputs:
+    - label: Select the connection for my-ecs-task-conn
+      type: required-connection
+      name: my-ecs-task-conn
+      connection-interface-type: ecs-task-conn
+    - label: Type name of your resource
+      name: resource
+      type: text
+      required: true  #defautl false
+      default: Client
+      pattern: '([A-Z][a-z]+)+'
+      help: 'Inform your resource name (e.g.: Client)'
+    - label: Choose http method of new endpoint
+      name: method
+      type: select
+      items:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - PATCH
+      default: GET
+      required: true
+      help: 'Inform the method of the endpoint (e.g.: post or delete)'
+```
+
+</TabItem>
+</Tabs>
+
+### **Link de Aplicação**
+
+- Para mais informações de como adicionar Links Dinâmicos de Aplicação, acesse [**a página de gerenciar Links**](create-use/use-content/application/manage-links-in-app.mdx).

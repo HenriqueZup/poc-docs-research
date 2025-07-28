@@ -1,0 +1,270 @@
+---
+title: Comandos de Infraestrutura
+sidebar_position: 6
+description: Lista de comandos para Infraestrutura.
+---
+
+> Nesta seção, você encontra a lista de comandos de Infraestrutura.
+
+<br/> 
+
+>Comando   | Descrição
+>--------- | ------
+>[**stk create infra**](#stk-create-infra) | Cria uma Infraestrutura.
+>[**stk deploy infra**](#stk-deploy-infra) | Executa o deploy da sua Infraestrutura.
+>[**stk destroy infra**](#stk-destroy-infra) | Destrói a Infraestrutura de um ambiente.
+>[**stk list infra**](#stk-list-infra) | Lista as Infraestruturas registradas no seu Workspace.
+>[**stk register infra**](#stk-register-infra) | Registra as informações de uma Infraestrutura em um Workspace.
+>[**stk rollback infra**](#stk-rollback-infra) | Executa o rollback da sua Infraestrutura.
+>[**stk update infra**](#stk-update-infra) | Atualiza as informações de uma Infraestrutura.
+>[**stk validate infra**](#stk-validate-infra) | Valida a estrutura de uma Infraestrutura.
+
+### **stk create infra**
+
+O comando **`stk create infra`** cria um ou mais recursos de Infraestrutura a partir dos Plugins do tipo **`infra`** de uma Stack.
+
+:::info Informação Adicional
+
+A opção `-o`, `--target` permite definir um nome de pasta diferente para criar o conteúdo da Infraestrutura. Se a pasta não existir, ela será criada.
+
+Se você não usar a opção `-o` ou `--target`, o nome da pasta do conteúdo da Infraestrutura será o mesmo que você deu ao criar a sua Infraestrutura.
+
+:::
+
+#### **Uso**
+
+```bash
+stk create infra [NOME_INFRA] --stack [STUDIO/STACK]
+```
+
+#### **Parâmetros**
+
+| **Opções** | **Descrição** | **Exemplo** |
+| ----------- | ----------- | --- |
+| `NOME_INFRA` | Define o nome da Infraestrutura. Se o nome não for informado, é definido o nome do repositório do parâmetro `--remote`.   | <pre>stk create infra my-infra-name</pre> |
+| `-s`, `--stack` | A Stack que contém a lista de Plugins do tipo `infra` para serem aplicados em sua Infraestrutura. Deve seguir o padrão: `[STUDIO]/[STACK]`. <br/>Você pode escolher a Stack no terminal de forma interativa. Você pode escolher a versão da Stack informando junto da flag `-s, --starter` a versão da Stack com `--starter studio-slug/stack-slug@[number-version]`. <br/> Você informar o caminho do arquivo de um Starter (`starter.yaml`) para criar a Aplicação com um Starter local.| <pre>stk create infra my-infra-name --stack my-studio/my-stack</pre> Escolher a versão da Stack: <br/><pre>stk create infra my-infra-name --starter my-studio/my-stack@3.0.0</pre>|
+| `-sr, --starter`, <br/>`--starter studio-slug/stack-slug/starter-slug` | Define o Starter que vai aplicar o conjunto de Plugins na sua Infraestrutura. Você deve informar o nome do Starter e seus dados de origem como o Estúdio e a Stack. Você pode escolher a Stack no terminal de forma interativa. <br/>Você pode escolher a versão da Stack informando junto da flag `-s, --starter` a versão da Stack com `--starter studio-slug/stack-slug@[number-version]/starter-slug`. <br/> Você pode informar o caminho do arquivo de um Starter (`starter.yaml`) para criar a Infraestrutura com um Starter local. | <pre>stk create infra my-infra-name --starter my-studio/my-stack/starter-name</pre> Escolher a versão da Stack:  <br/><pre>stk create infra my-infra-name --starter my-studio/my-stack@3.0.0/starter-name</pre> Escolher um Starter local: <br/><pre>stk create infra my-infra-name --starter User/Documents/My-Local-Starters/starter-name.yaml</pre>|
+| `-r`, `--remote <git-url>` | Define a URL do repositório remoto Git que é usada como origem do projeto. Se não for informado, o repositório remoto não será configurado e você deve fazer o processo manualmente.| <pre>stk create infra my-infra-name --remote my-git-repository-url</pre> |
+| `-sgi`, `--skip-git-init` | Utilize essa opção não inicializar um repositório Git durante a criação da Infraestrutura. | <pre>stk create infra my-infra-name --skip-git-init</pre> |
+| `-d`, `--description` | Define uma descrição da sua Infraestrutura e seu propósito. | <pre>stk create infra my-app-name --description "my infra description"</pre> |
+| `-q`, `--non-interactive` | Não pergunta para o usuário os parâmetros de entrada e retorna um erro caso algum parâmetro obrigatório não for fornecido. | <pre>stk create infra my-infra-name --non-interactive</pre> |
+| `-sp`, `--spec` [TEXTO] | Caminho para o arquivo de especificações que contém os dados de inputs e connections para cada Plugin aplicado.| <pre>stk create infra my-infra-name --spec /home/user/specs-folder/infra.yaml</pre> |
+| `-o`, `--target` |  A opção `-o`, `--target` permite definir um nome de pasta diferente para criar o conteúdo da Infraestrutura. Se a pasta não existir, ela será criada. Se você não usar a opção `-o` ou `--target`, o nome da pasta do conteúdo da Infraestrutura será o mesmo que você deu ao criar a sua Infraestrutura. | <pre>stk create infra my-infra-name --stack my-studio/my-stack --target home/user/Shared-Infra/my-infra</pre>|
+| `-er`, `--extra-repositories TEXT` | Forneça uma lista de repositórios adicionais para a sua Infraestrutura. Cada repositório deve ser um objeto JSON com a seguinte estrutura: `"[{"name":"repository_name", "description": "repository_description", "provider": "repository_provider", "url": "repository_url"}]"` | `stk create infra my-example-infra --starter studio/stack/starter-name --extra-repositories "[{"name":"my-example-infra-repo", "description": "repository for test my infra", "provider": "github", "url": "https://github.com/my-organization-name/my-example-infra-repo"}]"` |
+| `-h`, `--help` | Exibe a ajuda do comando e sai. | <pre>stk create infra --help</pre> |
+
+___
+
+### **stk deploy infra**
+
+O comando **`stk deploy infra`** executa o deploy da sua Infraestrutura em um Ambiente do seu Workspace.
+
+Antes de executar o comando você deve:
+
+1. Fazer o login na sua Conta com o comando [**stk login**](home/stk-cli/commands/general-commands.md#stk-login).
+2. Estar com um Workspace ativo, acesse um Workspace com o comando [**stk use workspace**](home/stk-cli/commands/workspace-commands.md#stk-use-workspace).
+
+#### **Uso**
+
+```bash
+stk deploy infra
+```
+
+#### **Parâmetros**
+
+| **Opções** | **Descrição** | **Exemplo** |
+| ----------- | ----------- | --- |
+| `-v`, `--version`  | Define a versão da tag de deploy. Você deve usar o padrão de versionamento semântico. Exemplo: "1.0.0" | <pre>stk deploy infra --version 1.0.0</pre> |
+| `-e`, `--env`| Define o nome do Ambiente que será usado para executar o deploy da aplicação. Consulte os Ambientes disponíveis em seu Workspace através do comando [**stk list infra**](#stk-list-infra). | <pre>stk deploy infra --env qa</pre> |
+| `-b`, `--branch` | Nome da branch do Git que será usada no deployment. **Opcional**.| <pre>stk deploy infra --branch infra-last-release</pre> |
+| `--open-api-path`  | Caminho para o arquivo Open API relativo à raiz do repositório Git. **Opcional**. | <pre>stk deploy infra --open-api-path /home/user/my-infra-folder</pre> |
+| `-w, --watch` | Monitora o status da destruição automaticamente. | <pre>stk deploy infra --env qa --watch</pre>|
+| `-h`, `--help` | Exibe a ajuda do comando e sai. | <pre>stk deploy infra --help</pre> |
+
+___
+
+### **stk destroy infra**
+
+:::warning Atenção   
+Este recurso está temporariamente desativado. Durante esse período, se precisar destruir uma Infraestrutura, contate o [**nosso suporte**](https://zup.service-now.com/csm?id=sc_category&sys_id=4cb69d19c3921200b0449f2974d3ae69).  
+:::
+
+O comando **`stk destroy infra`** destrói uma Infraestrutura de um ambiente.
+
+#### **Uso**
+
+**Sintaxe**
+
+```bash
+stk destroy infra --env<ENV_NAME>
+```
+
+**Exemplo**
+
+Você deve acessar a pasta da Infraestrutura que deseja destruir e executar o comando:
+
+```bash
+cd my-shared-infra-folder
+stk destroy infra --env prod
+```
+
+#### **Parâmetros**
+
+| **Opções** | **Descrição** | **Exemplo** |
+| ----------- | ----------- | --- |
+| `-e, --env` | Ambiente que foi feito o deploy da Infraestrutura. **Obrigatório**. | <pre>stk destroy infra --env prod</pre>|
+| `-w, --watch` | Monitora o status da destruição da Infraestrutura automaticamente. | <pre>stk destroy infra  --env prod --watch</pre>|
+| `-q`, `--non-interactive` | Não pergunta para o usuário os parâmetros de entrada e retorna um erro caso algum parâmetro obrigatório não for fornecido. | <pre>stk destroy infra --env prod --non-interactive</pre> |
+| `-h`, `--help` | Exibe a ajuda do comando e sai. | <pre>stk destroy infra --help</pre>|
+
+___
+
+### **stk list infra**
+
+O comando **`stk list infra`** exibe no terminal uma lista com todas as Infraestruturas registradas no seu Workspace.
+
+Antes de executar o comando você deve:
+
+1. Fazer o login na sua Conta com o comando [**stk login**](home/stk-cli/commands/general-commands.md#stk-login).
+2. Estar com um Workspace ativo, acesse um Workspace com o comando [**stk use workspace**](home/stk-cli/commands/workspace-commands.md#stk-use-workspace).
+
+#### **Uso**
+
+```bash
+stk list infra
+```
+
+#### **Parâmetros**
+
+| **Opções** | **Descrição** | **Exemplo** |
+| ----------- | ----------- | --- |
+| `-h`, `--help` | Exibe a ajuda do comando e sai. | <pre>stk list infra --help</pre> |
+___
+
+### **stk register infra**
+
+O comando **`stk register infra`** faz o registro de uma Infraestrutura em seu Workspace.
+
+Antes de executar o comando você deve:
+
+1. Fazer o login na sua Conta com o comando [**stk login**](home/stk-cli/commands/general-commands.md#stk-login).
+2. Estar com um Workspace ativo, acesse um Workspace com o comando [**stk use workspace**](home/stk-cli/commands/workspace-commands.md#stk-use-workspace).
+
+#### **Uso**
+
+```bash
+stk register infra
+```
+
+#### **Parâmetros**
+
+| **Opções** | **Descrição** | **Exemplo** |
+| ----------- | ----------- | --- |
+| `-r`, `--remote` | Define a URL do repositório remoto Git que é usado para hospedar a sua Infraestrutura. | <pre>stk register infra --remote https://github.com/my-git-repository-url</pre> |
+| `-bb`, `--base-branch` | Nome da branch base do repositório da sua Infraestrutura  | <pre>stk register infra --base-branch my-shared-infra-branch</pre> |
+| `-er`, `--extra-repositories TEXT` | Forneça uma lista de repositórios adicionais para a sua Infraestrutura. Cada repositório deve ser um objeto JSON com a seguinte estrutura: `"[{"name":"repository_name", "description": "repository_description", "provider": "repository_provider", "url": "repository_url"}]"` | `stk register infra --remote https://github.com/my-git-repository-url --extra-repositories "[{"name":"my-example-infra-repo", "description": "repository for test my infra", "provider": "github", "url": "https://github.com/my-organization-name/my-example-infra-repo"}]"` |
+| `-h`, `--help` | Exibe a ajuda do comando e sai. | <pre>stk register infra --help</pre> |
+___
+
+### **stk rollback infra**
+
+O comando **`stk rollback infra`** executa o rollback da sua Infraestrutura.
+
+#### **Uso**
+
+**Sintaxe**
+
+```bash
+stk rollback infra --version<VERSION> --env<ENV_NAME>
+```
+
+**Exemplo**
+
+```bash
+stk rollback infra --version 2.2.0 --env prod
+```
+
+#### **Parâmetros**
+
+| **Opções** | **Descrição** | **Exemplo** |
+| ----------- | ----------- | --- |
+| `-v, --version` | Versão da tag utilizada no deploy, o padrão deve seguir o versionamento semântico. | <pre>stk rollback infra --version 2.2.0 --env prod</pre>|
+| `-e, --env` | Ambiente que será usado para executar o rollback. Você pode consultar os ambientes disponíveis utilizando o comando [**`stk list env`**](#stk-list-env) | <pre>stk rollback infra --version 2.2.0 --env prod</pre>|
+| `-w, --watch` | Monitora o status do rollback da infraestrutura automaticamente. | <pre>stk rollback infra --version 2.2.0 --env prod --watch</pre>|
+| `-q`, `--non-interactive` | Não pergunta para o usuário os parâmetros de entrada e retorna um erro caso algum parâmetro obrigatório não for fornecido. | <pre>stk rollback infra --version 2.2.0 --env prod --non-interactive</pre> |
+| `-h`, `--help` | Exibe a ajuda do comando e sai. | <pre>stk rollback infra --help</pre>|
+
+___
+
+### **stk update infra**
+
+O comando **`stk update infra`** atualiza as informações de uma Infraestrutura na StackSpot. 
+
+Voce pode atualizar as seguintes informações da Infraestrutura:
+
+- name;
+- description;
+- repository URL;
+- default branch.
+
+#### **Uso**
+
+**Sintaxe**
+
+```bash
+stk update infra [OPTIONS]
+```
+
+**Exemplo**
+
+```bash
+stk update infra --name infra-renamed-example
+```
+
+:::info Informação Adicional
+Os dados armazenados nos metadados da Infraestrutura serão sincronizados com a API.
+::: 
+
+#### **Parâmetros**
+
+| **Opções** | **Descrição** | **Exemplo** |
+| ----------- | ----------- | --- |
+| `-n`, `--name TEXTO` | Ele atualiza o nome da Infraestrutura | <pre>stk update infra --name infra-renamed</pre> |
+| `-d`, `--description TEXTO` | Atualiza a descrição da Infraestrutura. | <pre>stk update infra --description "minha nova descrição da infraestrutura"</pre> |
+| `-r`, `--repo-url TEXTO` | Adiciona a URL do repositório Git da Infraestrutura. | <pre>stk update infra --repo-url https://github.com/my-org/my-new-infra-repository</pre> |
+| `-b`, `--repo-base-branch TEXTO` | Atualiza a Git branch base da Infraestrutura. | <pre>stk update infra --name "update/infra-branch-name"</pre> |
+| `-q`, `--non-interactive` | Ative o modo não interativo e não solicite nenhum parâmetro faltante. | <pre>stk update infra --non-interactive</pre> |
+| `-er`, `--extra-repositories TEXT` | Forneça uma lista de repositórios adicionais para a sua Infraestrutura. Cada repositório deve ser um objeto JSON com a seguinte estrutura: `"[{"name":"repository_name", "description": "repository_description", "provider": "repository_provider", "url": "repository_url"}]"` | `stk update infra --name infra-renamed --extra-repositories "[{"name":"my-example-infra-repo", "description": "repository for test my infra", "provider": "github", "url": "https://github.com/my-organization-name/my-example-infra-repo"}]"` |
+| `-h`, `--help` | Exibe a ajuda do comando e sai. | <pre>stk update infra --help</pre> |
+
+___
+
+### **stk validate infra**
+
+O comando **`stk-validate infra`** valida a estrutura de uma infraestrutura. Para validar uma infraestrutura, execute o comando dentro da pasta da infraestrutura.
+
+O comando irá:
+
+- Validar a estrutura da sua infra.;
+- Remover pastas vazias;
+- Ignorar arquivos e pastas que você não deseja ao finalizar o desenvolvimento da sua aplicação.
+
+:::info
+Os arquivos ignorados no arquivo **`.gitignore`** não serão validados pelo comando.
+:::
+
+Ao final da execução do comando, ele apresenta uma mensagem com as inconsistências e o resultado da validação.
+
+#### **Uso**
+
+```bash
+stk validate infra
+```
+
+#### **Parâmetros**
+
+| **Opções** | **Descrição** | **Exemplo** |
+| ----------- | ----------- | --- |
+| `-v`, `--verbose` | Opção para listar os detalhes de todos os itens analisados, validados e ignorados na sua infraestrutura. | <pre>stk validate infra --verbose</pre> |
+| `-h`, `--help` | Exibe a ajuda do comando e sai. | <pre>stk validate infra --help</pre> |
+___

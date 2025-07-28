@@ -1,0 +1,228 @@
+---
+title: "Criar, Depreciar ou Deletar Starter"
+sidebar_position: 6
+description: Detalhes sobre o Starter.
+---
+
+> Nesta seção, você encontra um guia de como criar Starters.
+
+<br/>
+
+Os [**Starters**](home/stackspot/main-concepts.mdx) são úteis para que os criadores de Stack definam dentro da própria Stack combinações comuns de Plugins, e definam "receitas prontas" para as combinações mais comuns dentro da Stack. Nele, você consegue adicionar quantos Plugins quiser.
+
+
+Existem dois tipos de Starter: 
+
+- **Starter de app:** uma combinação de Plugins do tipo App.
+- **Starter de infra:** uma combinação de Plugins do tipo Infra.
+
+Starter é como uma "receita pronta", porque traz as especificações do conjunto de Plugins já predefinidas e aplicadas, mas isso acontece somente quando você executa os comandos [**stk create app**](home/stk-cli/commands/application-commands.md#stk-create-app) e [**stk create infra**](home/stk-cli/commands/infraestructure-commands.md#stk-create-infra).
+
+Você pode criar um projeto que já tem um conjunto de Plugins, através de um único comando.
+
+Confira como:
+
+- [**Criar um Starter em uma Stack**](#como-criar-um-starter-na-stack);
+- [**Remover Plugins de um Starter**](#remover-a-versão-de-um-plugin-em-um-starter);
+- [**Deletar um Starter de uma Stack**](#deletar-um-starter-de-uma-stack);
+- [**Depreciar um Starter de uma Stack**](#depreciar-um-starter-de-uma-stack).
+
+## **Como criar um Starter na Stack**
+
+Para criar e adicionar um Starter na sua Stack, siga os passos:
+
+### **Pré-requisitos**
+
+- Você deve fazer parte de um **Estúdio**;
+- Ter uma **Stack criada** com Plugins do tipo **App** e/ou **Infra**.
+
+:::warning Atenção!
+
+- O limite do nome do Starter é de **60 caracteres**.
+
+:::
+
+### **Passo a passo**
+
+**Passo 1.** [**Faça login no Portal da StackSpot EDP**](https://app.stackspot.com/login) e clique no botão **'Acessar Estúdios'**;
+
+**Passo 2.** Clique na aba de **'Stacks'** e clique na Stack que você quer criar o Starter;
+
+:::caution Cuidado!
+
+Se a Stack já estiver publicada, você deve criar uma versão nova dela antes de criar um Starter. Para isso, clique no botão **'Criar nova versão'** dentro da Stack e continue os passos deste guia normalmente.
+
+:::
+
+**Passo 3.** Clique na aba **'Starters'** e, em seguida, clique no botão **'Criar starter'**; 
+
+**Passo 4.** Selecione o tipo do Starter: **App Starter** ou **Infraestrutura Starter**. Em seguida, clique no botão **'Próximo'**;
+
+**Passo 6.** Em **'Informações básicas'** preencha as informações a seguir:
+
+- **Slug**: adicione um slug para o seu Starter.
+- **Descreva o objetivo do seu Starter**: adicione uma descrição para seu Starter.
+
+Clique no botão **'Próximo'**.
+
+**Passo 7**. Em **'Plugins'**, adicione os Plugins que você quer incluir no Starter. Para isso, clique no botão **'Adicionar Plugins'**
+
+:::tip Dica!
+
+Starters do tipo App aceitam Plugins do tipo App e do tipo Infra, mas somente com a flag **app allowed true** (permissão de app) configurada no **`yaml`** do Plugin.  
+:::
+
+**Passo 8.** Você pode selecionar Plugins que estão no Estúdio, na Conta ou Inserir um Qualifier; 
+
+:::warning Atenção!
+
+Se um Plugin que será adicionado ao Starter tiver outros Plugins requeridos, você precisará adicioná-los na Stack e no Starter antes de continuar.
+
+:::
+
+Depois de selecionar os Plugins, clique no botão **'Adicionar Plugins'**.
+
+:::caution Cuidado!  
+
+Ao adicionar um Plugin no Starter que utiliza o [**modelo de range**](create-use/create-content/plugin/plugin-version.mdx), não será possível escolher uma versão específica do Plugin. 
+
+:::  
+
+**Passo 9.** Você pode conferir a ordem dos Plugins no Starter pelos números ao lado deles e definir se um Plugin terá aplicação opcional ou não. Depois de verificar, clique no botão **'Próximo'**;
+
+> Verifique a ordem que os Plugins são adicionados ao Starter. Isso define a ordem de aplicação dos Plugins durante a criação de uma Aplicação e Infraestrutura e só pode ser alterada enquanto a Stack está em **`Draft`**. No caso de Plugins que têm outros Plugins requeridos, os menos dependentes vêm primeiro na ordenação e os que dependem deles vêm depois.
+
+<br/>
+
+**Passo 10.** Revise as informações do Starter na tela de **'Resumo'** e clique no botão **'Concluir'**.
+
+Pronto, você adicionou um Starter na sua Stack.  
+
+![](/img/create-starter.gif)
+
+> O GIF está em inglês.
+
+
+---
+
+## **Alterar a versão de um Plugin em um Starter**  
+
+Você pode alterar a versão de um Plugin em um Starter, mas apenas enquanto a Stack ainda está em **`Draft`**, ou seja, enquanto ela ainda não foi publicada. Confira os passos a seguir:
+
+**Passo 1.** Acesse a Stack em que o Starter está publicado;
+
+**Passo 2.** Na seção de Starters, clique no Starter e, em seguida, no botão **'Adicionar Plugins'**; 
+
+**Passo 3.** Na aba **'Adicionar Plugin'**, clique na caixa de versões e, em seguida, clique na versão do Plugin que você quer alterar no Starter.
+
+:::warning Atenção!  
+
+Quando a versão de um Plugin for alterada no Starter, e este Plugin estiver sendo usado em outros Starters de uma Stack, essa mudança afetará todos os outros Starters e a Stack que estão usando este Plugin.
+
+Neste caso, para continuar com a alteração, clique no botão **'Continuar'**
+
+:::
+
+**Passo 4.** Clique no botão **'Adicionar Plugin'** e, em seguida, em **'Salvar'**.
+
+Pronto, você alterou a versão de um Plugin no Starter. 
+
+
+## **Remover a versão de um Plugin em um Starter**
+
+Você pode remover a versão de um Plugin em um Starter, mas apenas quando a **versão da Stack ainda não foi publicada**. Confira o passo a passo:
+
+**Passo 1.** Ainda no Portal da StackSpot, acesse o Estúdio da Stack do seu Starter;
+
+**Passo 2.** Acesse a seção **'Stacks'** e selecione a Stack que possui o Starter você quer remover a versão do Plugin;
+
+**Passo 3.** Clique na aba **'Starters'** e acesse o Starter. Dentro dele, clique no ícone de **'lixeira'** ao lado dos Plugins que você quer remover do Starter;
+
+**Passo 4.** Para concluir, clique no botão **'Salvar'**.
+
+Pronto, você deletou Plugins do seu Starter.
+
+---
+
+## **Deletar um Starter de uma Stack**
+
+:::tip Dica!
+
+Para mais informações, [**acesse a página com as regras de deleção**](create-use/studio/deprecate-unpublish-delete.mdx).
+
+:::
+
+Você pode deletar um Starter apenas se a Stack estiver em **'Draft'**.
+
+Siga os passos:
+
+**Passo 1.** Acesse o Estúdio que está o Starter que você quer deletar;  
+
+**Passo 2.** Na aba central do Estúdio, clique em **'Stacks'** e selecione a Stack que possui o Starter;
+
+**Passo 3.** Dentro da seção de Starters, clique no Starter que você quer deletar;
+
+**Passo 4.** Ainda na seção do Starter, clique em **'Configurações'**;
+
+**Passo 5.** Clique no botão **'Deletar Starter'** e preencha o campo com o **slug** do Starter;
+
+**Passo 6.** Para concluir, clique no botão **'Confirmar remoção'**. 
+
+
+Pronto, você deletou o Starter da sua Stack.
+
+![](/img/delete-starter.gif)
+
+> O GIF está em inglês. 
+
+---
+
+## **Depreciar um Starter de uma Stack**
+
+:::tip Dica!
+
+Para mais informações, [**acesse a página com as regras de depreciação**](create-use/studio/deprecate-unpublish-delete.mdx).
+
+:::
+
+Caso a Stack do seu Starter **já esteja publicada**, você não pode deletar o Starter. Mas você pode depreciá-lo. Para isso, siga as instruções a seguir:
+
+### **Pré-requisitos**
+
+- Ter perfil com permissão de depreciação de conteúdo.  
+- O usuário deve pertencer ao Estúdio ou Stack em que o Starter será depreciado.
+
+### **Passos**
+
+**Passo 1.** No seu Estúdio, clique em **'Stacks'** e selecione a versão da Stack que está o Starter que você quer depreciar;
+
+**Passo 2.** Dentro da aba de Starters, acesse o Starter que você quer depreciar;
+
+**Passo 3.** Dentro do Starter acesse a subseção **'Informações do Starter'**;
+
+**Passo 4.** Em seguida, clique no botão **'Depreciar Starter'**;
+
+**Passo 5.** Preencha os seguintes campos:
+
+- O **motivo** da depreciação:
+  - Falta de manutenção;  
+  - Problemas de segurança;  
+  - Bugs;  
+  - Outros
+
+- O **slug** do Starter que você quer remover.
+
+Para continuar, clique no botão **'Depreciar Starter'**.
+
+
+<br/>
+
+Pronto, você depreciou um Starter.
+
+![](/img/deprecate-starter.gif)
+
+> O GIF está em inglês. 
+
+## **Próximos Passos**
+
+- Confira como [**criar Aplicações**](create-use/use-content/application/index.mdx).

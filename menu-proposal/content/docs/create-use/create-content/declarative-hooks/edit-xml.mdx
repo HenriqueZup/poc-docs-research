@@ -1,0 +1,374 @@
+---
+title: edit-xml
+sidebar_position: 5
+---
+
+> Nesta seção, você encontra: Referência de um Hook Declarativo do tipo edit-xml.
+
+<br/>
+
+Um Hook Declarativo do tipo **`edit-xml`** define alterações feitas em arquivos XML existentes. Confira um exemplo de definição de um Hook Declarativo do tipo **`edit-xml`**:
+
+```yaml
+schema-version: v3
+kind: plugin
+metadata:
+  name: sqs-consumer-plugin
+  display-name: sqs-consumer-plugin
+  description: Plugin configuring Spring Cloud AWS for SQS consumption.
+  version: 0.0.1
+spec:
+  type: app
+  compatibility:
+    - kotlin
+    - spring
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  technologies: # Ref: https://docs.stackspot.com/create-use/create-content/yaml-files/plugin-yaml/#technologies
+    - AWS SQS
+    - Kotlin
+    - Maven
+    - Springboot
+  inputs:
+    - label: Select the connection for your sqs-conn
+      name: sqs-conn
+      type: required-connection
+      connection-interface-type: aws-sqs-conn
+    - label: input tag
+      name: input_tag
+      type: text
+    - label: input body
+      name: input_body
+      type: text
+  // highlight-start    
+  hooks:
+    - type: edit-xml
+      trigger: after-render
+      path: pom.xml
+      encoding: UTF-8
+      indent: "\t"
+      changes:
+        - xpath: .//dependency
+          append:
+            value: |
+              <config>
+                <vsync>1</vsync>
+              </config>
+          prepend:
+            value: <{{input_tag}}>{{input_body}}</{{input_tag}}>
+
+      - xpath: .//modelVersion
+        text:
+          value: 10.0.1
+
+      - xpath: .//description
+        text:
+          snippet: snippets/description.txt
+
+      - xpath: .//dependencies
+        remove-attributes:
+          - name: css
+
+      - xpath: .//project.build.sourceEncoding
+        attributes:
+          - name: btn-name
+            value: Build UTF-8
+
+      - xpath: .//comments
+        clear: true
+      
+      - xpath: ./dependencies/dependency/artifactId[.='spring-boot-starter-web']/..
+        remove: true
+  // highlight-end      
+```
+
+## **Ações Disponíveis**
+
+### **`path:`** 
+Define o caminho do arquivo que será editado. O caminho pode ser composto por expressões [**Jinja**](https://jinja.palletsprojects.com/en/3.1.x/).
+
+```yaml 
+path: "./some/dir_xml/{{file_name}}"
+```
+___
+### **`trigger:`** 
+Campo para definir gatilhos que informam o momento em que a edição de arquivos deve ocorrer.  
+
+**`before-input`**:   
+Executa o Hook Declarativo antes de receber os parâmetros de entrada da pessoa usuária.  
+
+```yaml 
+trigger: before-input
+```   
+
+**`before-render`**:  
+Executa o Hook Declarativo antes do Template gerar arquivos no projeto.  
+
+```yaml 
+trigger: before-render
+```
+**`after-render`**:  
+Executa o Hook Declarativo após o Template gerar arquivos no projeto. 
+
+```yaml 
+trigger: after-render
+```
+___
+
+### **`enconding:`** 
+Define o tipo de encoding que será gravado no arquivo, e aceita os formatos comuns ao XML tal como [`utf-8, ascii, windows-1252`], caso não seja informado, será mantido o padrão original do arquivo. Seu uso é **Opcional.**  
+
+```yaml 
+encoding: UTF-8
+``` 
+___
+
+### **`indent:`** 
+Define o(s) caractere(s) para a indentação do documento gerado, o valor padrão é `\t`. Seu uso é **Opcional.**  
+
+```yaml 
+indent: "\t"
+``` 
+___
+### **`changes:`** 
+É uma lista de ações de edição que são executadas na ordem em que aparecem. E o seu bloco tem como obrigatório o parâmetro **`xpath`**.
+
+:::info
+Durante o processo de pesquisa no atributo **`changes`**, todos os nós que correspondem aos critérios (atributo **`xpath`**) são alterados de uma só vez. Você pode fazer várias alterações em um arquivo apenas usando expressões.
+
+Confira algumas expressões aceitas:
+
+<details>
+<summary><strong>Confira as expressões detalhadas</strong></summary>
+
+| **Expressão** | **Descrição** |
+| :---: | :---: |
+| Ponto (`.`) | Define o objeto do elemento atual. |
+| `/` | Define o objeto do elemento raiz. |
+| `()` | Define o agrupamento em xpath. |
+| `[]` | Aplica o filtro à expressão do script. |
+| `/` | Este é um operador filho que foi usado em expressões. |
+| `..` | Este é o operador pai que foi usado em expressões. |
+| `//` | Esta é uma descida recursiva. |
+| `*` | É usado em elementos de objeto independentemente de usar seus nomes. |
+| `@` | É usado para acessar o atributo. |
+| `[]` | É o operador do subscrito Xpath que usa esse operador para iterar uma coleção de predicados de elementos. |
+| `\|` | É um operador de união nos resultados do xpath que é uma combinação de conjuntos de nós. |
+
+Para conhecer todas as expressões disponíveis, acesse a documentação do [**Xpath**.](https://www.w3.org/TR/xpath-3/#id-expressions) 
+
+</details>
+:::
+
+```yaml 
+changes:
+  - xpath: /people/person[last()]
+    ...
+```
+### **`xpath:`** 
+Permite inserir a linguagem de busca de XML. Seu uso é **Obrigatório**. 
+
+```yaml 
+- xpath: //ns:project.build.sourceEncoding
+```  
+
+É possível interpolar os valores do campo `xpath` com [**Jinja**](create-use/create-content/yaml-files/jinja.mdx):
+
+```yaml
+hooks:
+  - type: edit-xml
+    trigger: after-render
+    path: pom.xml
+    encoding: UTF-8
+    indent: "\t"
+    changes:
+      - xpath: ".//{{INTERPOLAR-INPUT-AQUI}}"
+        append:
+          value: |
+            <config>
+              <vsync>1</vsync>
+            </config>
+        prepend:
+          value: <{{input_tag}}>{{input_body}}</{{input_tag}}>
+``` 
+
+:::caution Cuidado!
+Os atributos a seguir são **opcionais**, é necessário implementar ao menos uma opção, em caso de múltiplos atributos, eles serão aplicados na seguinte ordem:
+:::
+
+#### **`clear:`(Opcional)** 
+Remove todo o conteúdo do nó dado o contexto do **`xpath`**.
+
+```yaml 
+  - xpath: //ns:dependency
+    clear: true
+```
+
+#### **`remove-attributes:`(Opcional)** 
+Remove os atributos de um nó. Os campos disponíveis são um ou mais **`name`**.
+
+```yaml 
+  - xpath: //ns:dependency
+    remove-attributes:
+      - name: css
+      - name: style
+      - name: data
+```
+
+#### **`append:`(Opcional)** 
+Adiciona nós XML dentro do contexto do resultado do **`xpath`** no fim da lista. Os campos disponíveis são **`value`** ou **`snippet`**.  
+
+**`value`**   
+Recebe o valor para ser adicionado ao XML.  
+```yaml 
+append:
+    value: |
+      <config>
+        <vsync>1</vsync>
+      </config>
+```
+**`snippet`**   
+Recebe o snippet para ser adicionado ao XML.    
+
+```yaml 
+append:
+    snippet: snippets/fragment.xml
+```  
+#### **`prepend:`(Opcional)**   
+Adiciona nós XML dentro do contexto do resultado do **`xpath`** no início da lista. Os campos disponíveis são **`value`** ou **`snippet`**.  
+
+**`value`**   
+Recebe o valor para ser adicionado ao XML.  
+
+```yaml 
+append:
+    value: <{{input_tag}}>{{input_body}}</{{input_tag}}>
+```  
+
+**`snippet`**   
+Recebe o snippet para ser adicionado ao XML.  
+
+```yaml 
+append:
+    snippet: snippets/fragment.xml
+``` 
+
+#### **`next:`(Opcional)**   
+Adiciona nós XML no mesmo nível de contexto do resultado do **`xpath`** no fim da lista. Os campos disponíveis são **`value`** ou **`snippet`**.   
+
+**`value`**   
+Recebe o valor para ser adicionado ao XML.  
+
+```yaml 
+append:
+    value: |
+       <dependency>
+          <groupId>com.stackspot.lib</groupId>
+          <artifactId>some-lib</artifactId>
+          <version>1.0.0</version>
+       </dependency>
+```  
+
+**`snippet`**   
+Recebe o snippet para ser adicionado ao XML.  
+
+```yaml 
+append:
+    snippet: snippets/fragment.xml
+``` 
+
+#### **`previous:`(Opcional)**   
+Adiciona nós XML no mesmo nível de contexto do resultado do **`xpath`** no início da lista. Os campos disponíveis são **`value`** ou **`snippet`**.
+
+**`value`**   
+Recebe o valor para ser adicionado ao XML.    
+
+```yaml 
+append:
+    value: |
+       <dependency>
+          <groupId>com.stackspot.lib</groupId>
+          <artifactId>some-lib</artifactId>
+          <version>1.0.0</version>
+       </dependency>
+```
+
+**`snippet`**   
+Recebe o snippet para ser adicionado ao XML.  
+
+```yaml 
+append:
+    snippet: snippets/fragment.xml
+``` 
+
+#### **`text:`(Opcional)**   
+Adiciona texto dentro do contexto do resultado do **`xpath`**. Os campos disponíveis são **`value`** ou **`snippet`**.  
+
+**`value`**   
+Recebe o valor para ser adicionado ao XML.  
+
+```yaml 
+append:
+    value: version-10.0.1
+```  
+
+**`snippet`**   
+Recebe o snippet para ser adicionado ao XML.  
+
+```yaml 
+append:
+    snippet: snippets/description.txt
+``` 
+
+#### **`attributes:`(Opcional)**   
+Adiciona atributos e valores a um nó. Os campos disponíveis são **`name`** e **`value`**.  
+
+**`name`**   
+Recebe o valor para ser adicionado ao XML.  
+ 
+**`value`**   
+Recebe o snippet para ser adicionado ao XML.  
+
+```yaml 
+- xpath: //ns:button
+  attributes:
+    - name: btn-name
+      value: Build UTF-8
+    - name: style
+      value: "color: #007"
+```
+
+#### **`remove:`**  
+Opção para remover um nó do arquivo XML. Use o valor `true` para remover o nó do arquivo XML.
+
+```yaml
+hooks:
+  - type: edit-xml
+    trigger: after-render
+    path: pom-remove.xml
+    changes:
+      - xpath: ./dependencies/dependency/artifactId[.='spring-boot-starter-web']/..
+        remove: true
+```
+
+#### **`when:`** 
+Ação condicional que avalia se a inserção será efetivada. A opção disponível é **`not-exists`**, que recebe o texto ou arquivo para serem avaliados pela condição.   
+
+**`not-exists:`**   
+Checa se os valores informados nos campo **`value`** existem no arquivo. Caso exista, as ações **`clear`**, **`remove-attributes`**, **`append`**, **`prepend`**, **`next`**, **`previous`**, **`text`** e **`attributes`**  não serão efetivadas. 
+
+```yaml
+hooks:
+  - xpath: ./dependencies
+    append:
+      value: |
+        <dependency>
+            <groupId>com.stackspot</groupId>
+            <artifactId>test</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    when:
+      not-exists: ./dependencies/dependency/groupId[.='com.stackspot']/../artifactId[.='test']
+```
+

@@ -1,0 +1,433 @@
+---
+title: Comandos de Aplicação
+sidebar_position: 5
+description: Lista de comandos para aplicações.
+---
+
+> Nesta seção, você encontra a lista de comandos de Aplicação.
+
+<br/> 
+
+>Comando   | Descrição
+>--------- | ------
+>[**stk create app**](#stk-create-app) | Cria uma Aplicação a partir de um ou mais Plugins.
+>[**stk delete app**](#stk-delete-app) | Deleta uma Aplicação hospedada em um repositório remoto.
+>[**stk deploy app**](#stk-deploy-app) | Executa o deploy da sua Aplicação.
+>[**stk destroy app**](#stk-destroy-app) | Destrói a Aplicação de um ambiente.
+>[**stk list app**](#stk-list-app) | Lista todos os aplicativos registrados em um Workspace.
+>[**stk register app**](#stk-register-app) | Registra as informações de uma Aplicação em um Workspace.  
+>[**stk register app-deploy**](#stk-register-app-deploy) | Registra o deploy de uma Aplicação em um Workspace.
+>[**stk register app-destroy**](#stk-register-app-destroy) | Registra a destruição de uma Aplicação em um Workspace.
+>[**stk rollback app**](#stk-rollback-app) | Executa o rollback da sua Aplicação.
+>[**stk update app**](#stk-update-app) | Atualiza o ID de uma Aplicação.
+>[**stk validate app**](#stk-validate-app) | Valida a estrutura de uma aplicação.
+
+### **stk create app**
+
+O comando **`stk create app`** cria uma Aplicação a partir de um Starter. A Aplicação é gerada com as capacidades dos Plugins utilizados no Starter, podendo ser aplicações com regras de negócio, infraestrutura ou alguma funcionalidade específica.
+
+> Aplicações criadas fora de um Workspace não podem ser registradas e implantadas na StackSpot.
+
+:::info Informação Adicional
+
+A opção `-o`, `--target` permite definir um nome de pasta diferente para criar o conteúdo da Aplicação. Se a pasta não existir, ela será criada.
+
+Se você não usar a opção `-o` ou `--target`, o nome da pasta do conteúdo da Aplicação será o mesmo que você deu ao criar a sua Aplicação.
+
+:::
+
+#### **Uso**
+
+```bash
+stk create app [NOME_APP] --starter [STUDIO/STACK/STARTER]
+```
+
+:::info Informação Adicional
+
+O uso do `stk create app` com a flag e as opções `--starter [ACCOUNT/STUDIO/STACK/STARTER]` foi depreciado e será removido. Utilize a flag sem a informação de **`ACCOUNT`** como no exemplo a seguir:
+
+Exemplo:
+
+```bash
+stk create app my-app-name --starter my-studio/my-stack/starter-name
+```
+
+:::
+
+#### **Parâmetros**
+
+| **Opções** | **Descrição** | **Exemplo** |
+| ----------- | ----------- | --- |
+| `NOME_APP` | Define o nome da aplicação. Se o nome não for informado, é definido o nome do repositório do parâmetro `--remote`.   | <pre>stk create app my-app-name</pre>|
+| `-s, --starter`, <br/>`--starter studio-slug/stack-slug/starter-slug` | Define o Starter que vai aplicar o conjunto de Plugins na sua Aplicação. Você deve informar o nome do Starter e seus dados de origem como o Estúdio e a Stack. Você pode escolher a Stack no terminal de forma interativa. <br/>Você pode escolher a versão da Stack informando junto da flag `-s, --starter` a versão da Stack com `--starter studio-slug/stack-slug@[number-version]/starter-slug`. <br/> Você pode informar o caminho do arquivo de um Starter (`starter.yaml`) para criar a Aplicação com um Starter local. | <pre>stk create app my-app-name --starter my-studio/my-stack/starter-name</pre> Escolher a versão da Stack:  <br/><pre>stk create app my-app-name --starter my-stydio/my-stack@3.0.0/starter-name</pre> Escolher um Starter local: <br/><pre>stk create app my-app-name --starter User/Documents/My-Local-Starters/starter-name.yaml</pre>|
+| `-r`, `--remote <git-url>` | Define a URL do repositório remoto Git que é usada como origem do projeto. Se não for informado, o repositório remoto não será configurado e você deve fazer o processo manualmente.| <pre>stk create app my-app-name --remote my-git-repository-url</pre> |
+| `-sgi`, `--skip-git-init` | Utilize essa opção para não inicializar um repositório Git durante a criação do app. | <pre>stk create app my-app-name --skip-git-init</pre> |
+| `-d`, `--description` | Define uma descrição da sua Aplicação e seu propósito. | <pre>stk create app my-app-name --description "my app description" --starter my-studio/my-stack/starter-name</pre> |
+| `-q, --non-interactive`| Não pergunta para o usuário os parâmetros de entrada e retorna um erro caso algum parâmetro obrigatório não for fornecido. | <pre>stk create app studio/stack/plugin --non-interactive</pre> |
+| `-sp`, `--spec` [TEXTO] | Caminho para o arquivo de especificações que contém os dados de inputs e connections para cada Plugin aplicado.| <pre>stk create app my-app-name --spec /home/user/specs-folder/app.yaml</pre> |
+| `-o`, `--target` | A opção `-o`, `--target` permite definir um nome de pasta diferente para criar o conteúdo da Aplicação. Se a pasta não existir, ela será criada. Se você não usar a opção `-o` ou `--target`, o nome da pasta do conteúdo da Aplicação será o mesmo que você deu ao criar a sua Aplicação. | <pre>stk create app my-app-name --starter my-studio/my-stack/starter-name --target home/user/Applications/my-app </pre>| 
+| `-er`, `--extra-repositories TEXT` | Forneça uma lista de repositórios adicionais para a sua Aplicação. Cada repositório deve ser um objeto JSON com a seguinte estrutura: `"[{"name":"repository_name", "description": "repository_description", "provider": "repository_provider", "url": "repository_url"}]"` | `stk create app my-example-app --starter studio/stack/starter-name --extra-repositories "[{"name":"my-example-app-repo", "description": "repository for test my apps", "provider": "github", "url": "https://github.com/my-organization-name/my-example-app-repo"}]"` |
+| `-h`, `--help` | Exibe a ajuda do comando e sai. | <pre>stk create app --help</pre> |
+
+___
+
+### **stk delete app**
+
+O comando **`stk delete app`** apaga completamente uma Aplicação de um Workspace. Não ocorre o rollback da Aplicação, o registro da Aplicação na StackSpot e o conteúdo do repositório usado no deployment da Aplicação são deletados.
+
+#### **Uso**
+
+Se a sua Aplicação possui Plugins de Infraestrutura ativos com o deploy feito pelo [**self-hosted Runtime**](deployment/deploy/self-hosted-runtime.mdx), o comando **`stk delete app`** é interrompido e você deve destruir a Infraestrutura da sua Aplicação primeiro. Caso não tenha usado o **self-hosted Runtime** e a sua Aplicação possuir deploys ativos em um ou mais ambientes, ocorrem as seguintes ações:
+
+- O comando valida se a destruição da Infraestrutura pode acontecer, caso seja possível, a Infraestrutura é destruída.
+- Somente quando a Infraestrutura de todos os ambientes for destruída com sucesso, ou seja, sem mais deploys ativos, as Connection Interfaces geradas pelos Plugins de Infraestrutura e os registros da Aplicação e Infraestrutura são deletados.
+
+Caso contrário, sem nenhum deploy ativo, apenas o registro da Aplicação ou Infraestrutura é deletado.
+
+**Sintaxe**
+
+```bash
+stk delete app --target [DIRETÓRIO DA APLICAÇÃO]
+```
+
+**Exemplo:**
+
+:::warning Atenção!
+
+O uso desse comando é exclusivo em **pipelines**, [**você precisa ter o STK CLI instalado em sua pipeline**](home/stk-cli/pipeline-ci-cd.mdx). Confira o exemplo a seguir do uso do comando dentro dos steps de uma pipeline:
+
+Na pasta da aplicação, execute o comando informando os parâmetros a seguir:
+
+```yaml title=".github/workflows/run-cli-commands.yml""
+steps: 
+  - name: Delete App
+    run: | 
+      stk delete app --target ./Applications/my-app
+```
+
+:::
+
+
+
+#### **Parâmetros**
+
+| **Opções** | **Descrição** | **Exemplo** |
+| ----------- | ----------- | --- |
+| `-o`, `--target` | Define o diretório alvo para deletar a Aplicação. | <pre>stk delete app --target ./Applications/my-app </pre>| 
+| `-h`, `--help` | Exibe a ajuda do comando e sai. | <pre>stk delete app --help</pre> |
+
+___
+
+### **stk deploy app**
+
+O comando **`stk deploy app`** executa o deploy da sua Aplicação em um Ambiente do seu Workspace.
+
+Antes de executar o comando você deve:
+
+1. Fazer o login na sua Conta com o comando [**stk login**](home/stk-cli/commands/general-commands.md#stk-login).
+2. Estar com um Workspace ativo. Acesse um com o comando [**stk use workspace**](home/stk-cli/commands/workspace-commands.md#stk-use-workspace).
+
+#### **Uso**
+
+```bash
+stk deploy app
+```
+
+#### **Parâmetros**
+
+| **Opções** | **Descrição** | **Exemplo** |
+| ----------- | ----------- | --- |
+| `-v`, `--version`  | Define a versão da tag de deploy. Você deve usar o padrão de versionamento semântico. Exemplo: "1.0.0" | <pre>stk deploy app --version 1.0.0</pre> |
+| `-e`, `--env`| Define o nome do Ambiente que será usado para executar o deploy da Aplicação. Consulte os Ambientes disponíveis em seu Workspace através do comando [**stk list env**](home/stk-cli/commands/general-commands.md#stk-list-env). | <pre>stk deploy app --env qa</pre> |
+| `-b`, `--branch` | Nome da branch do Git que será usada no deployment. **Opcional**.| <pre>stk deploy app --branch app2-last-release</pre> |
+| `--open-api-path`  | Caminho para o arquivo Open API relativo à raiz do repositório Git. **Opcional**. | <pre>stk deploy app --open-api-path /home/user/my-app-folder</pre> |
+| `-w, --watch` | Monitora o status do deploy automaticamente. | <pre>stk deploy app --env qa --watch</pre>|
+| `-h`, `--help` | Exibe a ajuda do comando e sai. | <pre>stk deploy app --help</pre> |
+___
+
+### **stk destroy app**
+
+:::warning Atenção   
+Este recurso está temporariamente desativado. Durante esse período, se precisar destruir uma Aplicação, contate o [**nosso suporte**](https://zup.service-now.com/csm?id=sc_category&sys_id=4cb69d19c3921200b0449f2974d3ae69).  
+:::
+
+O comando **`stk destroy app`** destrói uma Aplicação de um ambiente.
+
+#### **Uso**
+
+**Sintaxe**
+
+```bash
+stk destroy app --env<ENV_NAME>
+```
+
+**Exemplo**
+
+Você deve acessar a pasta da Aplicação que deseja destruir e executar o comando:
+
+```bash
+cd my-app-folder
+stk destroy app --env prod
+```
+
+#### **Parâmetros**
+
+| **Opções** | **Descrição** | **Exemplo** |
+| ----------- | ----------- | --- |
+| `-e, --env` | Ambiente que foi feito o deploy da Aplicação. **Obrigatório**. | <pre>stk destroy app --env prod</pre>|
+| `-w, --watch` | Monitora o status da destruição da aplicação automaticamente. | <pre>stk destroy app  --env prod --watch</pre>|
+| `-q`, `--non-interactive` | Não pergunta para o usuário os parâmetros de entrada e retorna um erro caso algum parâmetro obrigatório não for fornecido. | <pre>stk destroy app --env prod --non-interactive</pre> |
+| `-h`, `--help` | Exibe a ajuda do comando e sai. | <pre>stk destroy app --help</pre>|
+
+___
+
+### **stk list app**
+
+O comando **`stk list app`** exibe no terminal uma lista com todas as aplicações registradas no seu Workspace.
+
+Antes de executar o comando você deve:
+
+1. Fazer o login na sua Conta com o comando [**stk login**](home/stk-cli/commands/general-commands.md#stk-login).
+2. Estar com um Workspace ativo, acesse um Workspace com o comando [**stk use workspace**](home/stk-cli/commands/workspace-commands.md#stk-use-workspace).
+
+#### **Uso**
+
+```bash
+stk list app
+```
+
+#### **Parâmetros**
+
+| **Opções** | **Descrição** | **Exemplo** |
+| ----------- | ----------- | --- |
+| `-h`, `--help` | Exibe a ajuda do comando e sai. | <pre>stk list app --help</pre> |
+___
+
+### **stk register app**
+
+O comando **`stk register app`** faz o registro de uma Aplicação no seu Workspace.
+
+Antes de executar o comando você deve:
+
+1. Fazer o login na sua Conta com o comando [**stk login**](home/stk-cli/commands/general-commands.md#stk-login).
+2. Estar com um Workspace ativo, acesse um Workspace com o comando [**stk use workspace**](home/stk-cli/commands/workspace-commands.md#stk-use-workspace).
+
+#### **Uso**
+
+Execute, dentro da pasta da Aplicação, o comando:
+
+```bash
+stk register app
+```
+
+#### **Parâmetros**
+
+| **Opções** | **Descrição** | **Exemplo** |
+| ----------- | ----------- | --- |
+| `-r`, `--remote` | Define a URL do repositório remoto Git que é usado para hospedar a sua aplicação. Se não for informado, o repositório remoto não será configurado e você deve fazer o processo manualmente.| <pre>stk register app --remote url</pre> |
+| `-bb`, `--base-branch` | Nome da branch base do repositório da sua aplicação  | <pre>stk register app --base-branch my-app-release-branch</pre> |
+| `-er`, `--extra-repositories TEXT` | Forneça uma lista de repositórios adicionais para a sua Aplicação. Cada repositório deve ser um objeto JSON com a seguinte estrutura: `"[{"name":"repository_name", "description": "repository_description", "provider": "repository_provider", "url": "repository_url"}]"` | `stk register app --base-branch my-app-release-branch --extra-repositories "[{"name":"my-example-app-repo", "description": "repository for test my apps", "provider": "github", "url": "https://github.com/my-organization-name/my-example-app-repo"}]"` |
+| `-h`, `--help` | Exibe a ajuda do comando e sai. | <pre>stk register app --help</pre> |
+___
+
+### **stk register app-deploy**
+
+O comando **`stk register deploy`** faz o registro do deploy de uma Aplicação no seu Workspace para Aplicações que não utilizam StackSpot Runtimes.
+
+#### **Uso**
+
+:::warning Atenção!
+
+O uso desse comando é exclusivo em **pipelines**, [**você precisa ter o STK CLI instalado em sua pipeline**](home/stk-cli/pipeline-ci-cd.mdx). Confira o exemplo a seguir do uso do comando dentro dos steps de uma pipeline:
+
+Antes de executar o comando você deve:
+
+1. Fazer o login na sua Conta com o comando [**stk login**](home/stk-cli/commands/general-commands.md#stk-login).
+2. Estar com um Workspace ativo, acesse um Workspace com o comando [**stk use workspace**](home/stk-cli/commands/workspace-commands.md#stk-use-workspace).
+
+```yaml title=".github/workflows/run-cli-commands.yml""
+steps: 
+  - name: Authenticate StackSpot
+    run: |
+      stk login --client-id ${{ secrets.CLIENT_ID }} --client-key ${{ secrets.CLIENT_KEY }} --realm ${{ secrets.CLIENT_REALM }}
+
+  - name: Use your Workspace
+    run: |
+      stk use workspace my-workspace-name    
+
+  - name: Register App Deployment
+    run: |
+      stk register app-deploy --env prod --status success --version 1.0.0 --target ./Apps/my-app
+```
+
+:::
+
+Execute, dentro da pasta da Aplicação, o comando:
+
+```bash
+stk register app-deploy --env prod --status success --version 1.0.0 --target ./Apps/my-app
+```
+
+#### **Parâmetros**
+
+| **Opções** | **Descrição** | **Exemplo** |
+| ----------- | ----------- | --- |
+| `-e`, `--env` | Nome do ambiente para registrar o deploy da Aplicação. | <pre>stk register app-deploy --env dev</pre> |
+| `-s`, `--status [error, success]` | Preencha o status do deploy da Aplicação que deve ser registrado na StackSpot. Os valores aceitos são `error` (para erros no deploy) e `success` (para sucesso no deploy).  | <pre>stk register app-deploy --status success</pre> |
+| `-v`, `--version` | Informe a versão da Aplicação do deploy que você quer registrar na StackSpot. | <pre>stk register app-deploy --env prod --status success --version 1.0.0</pre> |
+| `-o`, `--target` | Informe o diretório que ocorre o deploy da Aplicação para ser registrada. | <pre>stk register app-deploy --env prod --status success --version 1.0.0 --target ./Apps/my-app</pre> |
+| `-er`, `--links TEXT` | Forneça uma lista de links adicionais para a sua Aplicação. Cada repositório deve ser um objeto JSON com a seguinte estrutura: `"[{"title":"url title", "url": "text_url"}]"` | `stk register app-deploy --links "[{"title":"url title", "url": "text_url"}]"` |
+| `-h`, `--help` | Exibe a ajuda do comando e sai. | <pre>stk register app-deploy --help</pre> |
+___
+
+### **stk register app-destroy**
+
+O comando **`stk register destroy`** faz o registro do destroy de uma Aplicação no seu Workspace para Aplicações que não utilizam StackSpot Runtimes.
+
+#### **Uso**
+
+:::warning Atenção!
+
+O uso desse comando é exclusivo em **pipelines**, [**você precisa ter o STK CLI instalado em sua pipeline**](home/stk-cli/pipeline-ci-cd.mdx). Confira o exemplo a seguir do uso do comando dentro dos steps de uma pipeline:
+
+Antes de executar o comando você deve:
+
+1. Fazer o login na sua Conta com o comando [**stk login**](home/stk-cli/commands/general-commands.md#stk-login).
+2. Estar com um Workspace ativo, acesse um Workspace com o comando [**stk use workspace**](home/stk-cli/commands/workspace-commands.md#stk-use-workspace).
+
+```yaml title=".github/workflows/run-cli-commands.yml""
+steps: 
+  - name: Authenticate StackSpot
+    run: |
+      stk login --client-id ${{ secrets.CLIENT_ID }} --client-key ${{ secrets.CLIENT_KEY }} --realm ${{ secrets.CLIENT_REALM }}
+
+  - name: Use your Workspace
+    run: |
+      stk use workspace my-workspace-name    
+
+  - name: Register App Deployment
+    run: |
+      stk register app-destroy --env prod --status success --target ./Apps/my-app
+```
+
+:::
+
+Execute, dentro da pasta da Aplicação, o comando:
+
+```bash
+stk register app-destroy --env dev --status fail --target ./Apps/my-app
+```
+
+#### **Parâmetros**
+
+| **Opções** | **Descrição** | **Exemplo** |
+| ----------- | ----------- | --- |
+| `-e`, `--env` | Nome do ambiente para registrar o destroy da Aplicação. | <pre>stk register app-destroy --env dev</pre> |
+| `-s`, `--status [success, failed]` | Preencha o status do destroy da Aplicação que deve ser registrado na StackSpot. Os valores aceitos são `success` (para sucesso do deploy) e `failed` (para falhas do deploy).  | <pre>stk register app-destroy --status success</pre> |
+| `-o`, `--target` | Informe o diretório que ocorre o destroy da Aplicação para ser registrada. | <pre>stk register app-destroy --env prod --status success --target ./Apps/my-app</pre> |
+| `-h`, `--help` | Exibe a ajuda do comando e sai. | <pre>stk register app-destroy --help</pre> |
+___
+
+### **stk rollback app**
+
+O comando **`stk rollback app`** executa o rollback da sua aplicação.
+
+#### **Uso**
+
+**Sintaxe**
+
+```bash
+stk rollback app --version<VERSION> --env<ENV_NAME>
+```
+
+**Exemplo**
+
+```bash
+stk rollback app --version 1.2.0 --env prod
+```
+
+#### **Parâmetros**
+
+| **Opções** | **Descrição** | **Exemplo** |
+| ----------- | ----------- | --- |
+| `-v, --version` | Versão da tag utilizada no deploy, o padrão deve seguir o versionamento semântico. | <pre>stk rollback app --version 1.2.0 --env prod</pre>|
+| `-e, --env` | Ambiente que será usado para executar o rollback. Você pode consultar os ambientes disponíveis utilizando o comando [**`stk list env`**](home/stk-cli/commands/general-commands.md#stk-list-env) | <pre>stk rollback app --version 1.2.0 --env prod</pre>|
+| `-w, --watch` | Monitora o status do rollback da aplicação automaticamente. | <pre>stk rollback app --version 1.2.0 --env prod --watch</pre>|
+| `-q`, `--non-interactive` | Não pergunta para o usuário os parâmetros de entrada e retorna um erro caso algum parâmetro obrigatório não for fornecido. | <pre>stk rollback app --version 1.0.0 --env prod --non-interactive</pre> |
+| `-h`, `--help` | Exibe a ajuda do comando e sai. | <pre>stk rollback app --help</pre>|
+
+___
+
+### **stk update app**
+
+O comando **`stk update app`** atualiza as informações de uma Aplicação na StackSpot.
+
+Voce pode atualizar as seguintes informações da Aplicação:
+
+- name;
+- description;
+- repository URL;
+- default branch.
+
+#### **Uso**
+
+**Sintaxe**
+
+```bash
+stk update app [OPTIONS]
+```
+
+
+**Exemplo**
+
+```bash
+stk update app --description "Updated Application description"
+```
+
+:::info Informação Adicional
+Os Dados armazenados nos metadados da aplicação serão sincronizados com a API.
+::: 
+
+#### **Parâmetros**
+
+| **Opções** | **Descrição** | **Exemplo** |
+| ----------- | ----------- | --- |
+| `-n`, `--name TEXTO` | Ele atualiza o nome da Aplicação | <pre>stk update app --name app-renamed</pre> |
+| `-d`, `--description TEXTO` | Atualiza a descrição da Aplicação. | <pre>stk update app --description "minha nova descrição do aplicativo"</pre> |
+| `-r`, `--repo-url TEXTO` | Adiciona a URL do repositório Git da Aplicação. | <pre>stk update app --repo-url https://github.com/my-org/my-new-app-repository</pre> |
+| `-b`,`--repo-base-branch TEXTO` | Atualiza a Git branch base da Aplicação. | <pre>stk update app --name "update/app-branch-name"</pre> |
+| `-q`, `--non-interactive` | Ative o modo não interativo e não solicite nenhum parâmetro faltante. | <pre>stk update app --non-interactive</pre> |
+| `-er`, `--extra-repositories TEXT` | Forneça uma lista de repositórios adicionais para a sua Aplicação. Cada repositório deve ser um objeto JSON com a seguinte estrutura: `"[{"name":"repository_name", "description": "repository_description", "provider": "repository_provider", "url": "repository_url"}]"` | `stk update app --name app-renamed --extra-repositories "[{"name":"my-example-app-repo", "description": "repository for test my apps", "provider": "github", "url": "https://github.com/my-organization-name/my-example-app-repo"}]"` |
+| `-h`, `--help` | Exibe a ajuda do comando e sai. | <pre>stk update app --help</pre> |
+
+___
+
+### **stk validate app**
+
+O comando **`stk validate app`** valida a estrutura de uma aplicação. Para validar uma aplicação, execute o comando dentro da pasta da aplicação.
+
+O comando irá:
+
+- Validar a estrutura da sua aplicação;
+- Remover pastas vazias;
+- Ignorar arquivos e pastas que você não deseja ao finalizar o desenvolvimento da sua aplicação.
+
+:::info
+Os arquivos ignorados no arquivo **`.gitignore`** não serão validados pelo comando.
+:::
+
+Ao final da execução do comando, ele apresenta uma mensagem com as inconsistências e o resultado da validação.
+
+#### **Uso**
+
+```bash
+stk validate app
+```
+
+#### **Parâmetros**
+
+| **Opções** | **Descrição** | **Exemplo** |
+| ----------- | ----------- | --- |
+| `-v`, `--verbose` | Opção para listar os detalhes de todos os itens analisados, validados e ignorados na sua aplicação. | <pre>stk validate app --verbose</pre> |
+| `-h`, `--help` | Exibe a ajuda do comando e sai. | <pre>stk validate app --help</pre> |
+___

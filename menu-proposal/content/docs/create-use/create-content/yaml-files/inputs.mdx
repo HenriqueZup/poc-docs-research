@@ -1,0 +1,1193 @@
+---
+title: Inputs
+sidebar_position: 4
+description: Detalhes para configurar os inputs no YAML.
+---
+
+Arquivos de configuração que possuem o campo **`inputs`**:
+
+- [**Plugins**](create-use/create-content/plugin/plugins.mdx) (**`plugin.yaml`**).
+- [**Actions**](create-use/create-content/action/actions.mdx) (**`action.yaml`**).
+
+Esses inputs coletam informações relevantes para o escopo do seu  Plugin ou Action. Dessa forma, os inputs são interpretados pelo **STK CLI** durante a execução dos comandos para pedir essas informações para os usuários.
+
+:::info  Informação Adicional
+
+Os inputs são opcionais. Cada arquivo **`.yaml`** pode ter nenhum ou vários inputs.
+
+:::  
+
+## **Tipos de input**
+
+Os tipos de input são definidos no campo **`type`**, confira quais são:
+
+Tipos  | Valor
+--------- | ------
+[**`text`**](#input-do-tipo-text)  | String.|
+[**`textarea`**](#input-do-tipo-textarea)  | String.|
+[**`bool`**](#input-do-tipo-bool) | Boolean. |
+[**`int`**](#input-do-tipo-int)  | Integer.|  
+[**`password`**](#input-do-tipo-password) | Criptografa o valor informado. (string) |
+[**`select`**](#input-do-tipo-select) | Lista os valores, permitindo escolher apenas 1 valor (string). |
+[**`multiselect`**](#input-do-tipo-multiselect) | Lista os valores, permitindo escolher 1 ou mais valores (string). |
+[**`list`**](#input-do-tipo-list) | Lista de inputs de um mesmo tipo (text, int, object e required-connection). |
+[**`object`**](#input-do-tipo-object) | Armazena um conjunto de inputs dentro de um objeto. O objeto passa a ser um input pai com um conjunto de inputs filhos. |
+[**`required-connection`**](#input-do-tipo-required-connection) | Armazena um conjunto de inputs necessários para se conectar em uma Infraestrutura dentro de um objeto.  |
+[**`generated-connection`**](#input-do-tipo-generated-connection) | Armazena um conjunto de inputs necessários para criar uma Infraestrutura dentro de um objeto.  |
+
+:::tip Dica!
+
+No STK CLI, confira as formas de navegar no input multiselect:
+
+- Navegar usando as setas para escolher sua opção ou digite para buscar o que deseja.
+- Selecionar tudo: utilize o CTRL + a.
+- Para inverter: utilize  CTRL + i.
+
+:::  
+
+## **Campos Obrigatórios do input**
+
+- **name**: Nome do input (será manipulado depois).
+- **label**: Texto que aparecerá no terminal pedindo o input para o usuário.
+- **type**:
+   - `text` (string).
+   - `bool` (boolean).
+   - `int` (integer).
+   - `password` (O valor na CLI fica oculto no formato: `****`).
+   - `multiselect` (lista os valores, permitindo escolher 1 ou mais valores) (string).
+   - `list` (Lista de inputs de um mesmo tipo, os tipos aceitos são: **`text`**, **`int`**, **`object`**).
+   - `object` (string).
+   - `required-connection` (string).
+ 
+### **Exemplos de inputs com campos obrigatórios**
+
+#### **Input do tipo `text`**
+
+O input do tipo **`text`** recebe um texto como string.
+
+```yaml
+inputs:
+  - label: Type your name
+    name: name
+    type: text
+```
+
+Em inputs do tipo texto você pode usar uma variável como valor deste input. [**Para mais informações, acesse a página sobre Variáveis na StackSpot**](create-use/create-content/variables.mdx).
+
+:::danger Atenção!
+
+O uso de lista com texto nos inputs foi **depreciado!**
+
+```yaml
+inputs:
+  - label: Select a day
+    name: days
+    type: text
+    items:
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+      - Saturday
+      - Sunday
+```
+
+O uso do input do tipo **`text`** [**com o campo `items`**](#items) não é mais suportado na versão atual.
+
+:::
+
+#### **Input do tipo `textarea`**
+
+O input do tipo **`textarea`** recebe um texto como string e suporta quebras de linha.
+
+```yaml
+inputs:
+  - label: Type your name
+    name: name
+    type: textarea
+```
+
+Exemplo:
+
+Considere usar um trecho de código JSON como valor do input **`textarea`**. Em ambos os canais, STK CLI e Portal da StackSpot, ao usar um valor com a estrutura do JSON a visualização do conteúdo não vai ser alterada, mantendo os espaçamentos e quebras de linha originais. Este comportamento será válido para qualquer texto informado que contenha espaçamentos e quebras de linha, não se limita a trechos de código.
+
+**Visualização do texto com input `text`:**  
+
+```json showLineNumbers title="Exemplo de uma IAM role com permissões para acessar um bucket S3 na AWS utilizando o input do tipo text."
+{ "Version": "2012-10-17", "Statement": [ { "Effect": "Allow", "Action": [ "s3:ListBucket" ], "Resource": "arn:aws:s3:::nome-do-seu-bucket" }, { "Effect": "Allow", "Action": [ "s3:GetObject", "s3:PutObject", "s3:DeleteObject" ], "Resource": "arn:aws:s3:::nome-do-seu-bucket/*" } ] }
+```
+
+**Visualização do texto com o input `textarea`:**  
+
+```json showLineNumbers title="Exemplo de uma IAM role com permissões para acessar um bucket S3 na AWS utilizando o input do tipo textarea."
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": "arn:aws:s3:::nome-do-seu-bucket"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": "arn:aws:s3:::nome-do-seu-bucket/*"
+    }
+  ]
+}
+```
+
+Em inputs do tipo texto você pode usar uma variável como valor deste input. [**Para mais informações, acesse a página sobre Variáveis na StackSpot**](create-use/create-content/variables.mdx).
+
+#### **Input do tipo `select`**  
+
+O input do tipo **`select`** recebe os itens de uma lista de texto como string. É possível escolher apenas um item da lista.
+
+```yaml
+inputs:
+  - label: Choose one color!
+    name: colors
+    type: select
+    items:
+      - Blue 
+      - Yellow 
+      - Pink 
+      - Green 
+      - Red
+```
+
+#### **Input do tipo `multiselect`**  
+
+O input do tipo **`multiselect`** recebe os itens de uma lista de texto como string. É possível escolher um ou mais itens da lista.
+
+```yaml
+inputs:
+  - label: Choose one or more days
+    name: days
+    type: multiselect
+    items:
+      - Monday 
+      - Tuesday 
+      - Wednesday 
+      - Thursday 
+      - Friday
+```
+
+#### **Input do tipo `int`**
+
+O input do tipo **`int`** recebe um valor numérico inteiro.
+
+```yaml
+inputs:
+  - label: Type your age
+    name: age
+    type: int
+```
+
+:::tip Dica!
+
+O input do tipo **`int`** pode usar o parâmetro [**pattern**](#pattern) para definir uma expressão regular para o valor recebido no input.
+
+:::
+
+#### **Input do tipo `password`**
+
+O input do tipo **`password`** recebe um valor e o criptografa onde utiliza uma chave **AES** de 256 bits (Advanced Encryption Standard). Ao digitar o valor no seu terminal, os valores são ocultados e exibidos apenas como símbolos de asteriscos ("**`****`**").
+
+:::warning Atenção!
+
+- Ao criar Aplicações que possuem Plugins e Actions com o input **`password`**, os deploys são executados. Se o deploy falhar, você precisa reexecutá-lo, **inserindo novamente o valor do input `password`**, pois o valor não é persistido para a segurança dos dados utilizados.  
+- Após inserir o valor do input **`password`**, as novas tentativas de execução do deploy devem ocorrer dentro de uma hora. Após esse tempo, você deve inserir o valor no input novamente.  
+- Quando os inputs do tipo **`password`** são impressos nos logs de execução do deploy, os valores exibidos nos logs são mascarados.  
+ 
+:::
+ 
+```yaml 
+inputs: 
+  - label: Insira a senha
+    name: account_password 
+    type: password 
+``` 
+
+#### **Input do tipo `bool`**
+
+O input do tipo **`bool`** recebe um valor boolean, sendo **`Y`** como **true** (verdadeiro) e **`n`** como **false**.
+
+```yaml
+inputs:
+  - label: Use SQL connection?
+    name: sql
+    type: bool
+```
+
+#### **Input do tipo `list`**
+
+:::danger Atenção!
+
+- Input disponível apenas para Actions e Plugins com o manifesto na versão **`v3`**. Para mais detalhes [**consulte o guia para migrar as versões  das suas Actions e Plugins**](home/stk-cli/migrate-manifest.mdx).  
+- Este input não considera as propriedades dos campos [**default**](#default) e [**pattern**](#pattern).
+
+:::
+
+O input do tipo **`list`** recebe outro input e estrutura os valores recebidos por esse input em forma de lista. A lista deve receber todos os valores do mesmo tipo, os tipos aceitos são:
+
+- [**text**](#input-do-tipo-text);
+- [**int**](#input-do-tipo-int);
+- [**object**](#input-do-tipo-object);
+- [**required-connection**](#input-do-tipo-required-connection)
+
+Na opção **`add-question`** adicione um texto como pergunta para ser repetida ao usuário para cada iteração na lista.
+
+```yaml
+inputs:
+  - label: Type your ips
+    name: ips
+    type: list
+    add-question: Do you want to add more IPs to the list?
+    input:
+      type: text
+      label: Informe os ips
+```
+
+Para acessar os valores da lista você deve informar o índex da lista. O índex começa em `[0]` (zero). Confira o Exemplo a seguir:
+
+```yaml title="Exemplo do uso de condition em um input que acessa um item da lista no index 0"
+condition:
+    variable: input_list_2[0].input_text_1_from_input_object
+    operator: "=="
+    value: "ok"
+```
+
+#### **Input do tipo `object`**
+
+:::danger Atenção!
+
+- Input disponível apenas para Actions e Plugins com o manifesto na versão **`v3`**. Para mais detalhes [**consulte o guia para migrar as versões  das suas Actions e Plugins**](home/stk-cli/migrate-manifest.mdx).  
+- Este input não considera as propriedades dos campos [**default**](#default) e [**pattern**](#pattern).
+
+:::
+
+O input do tipo **`object`** recebe outros inputs e estrutura os valores recebidos por esses inputs em forma de objetos. Não existem restrições de tipos de inputs que o objeto pode ter, o input pode ser um objeto simples ou mais complexo com diversos tipos inclusos.
+
+Na opção **`inputs`** dentro da declaração do objeto, você deve adicionar cada input que vai compor o input do tipo object.
+
+```yaml title="Exemplo de um input do tipo object que representa um objeto com um conjunto simples de inputs"
+inputs:
+  - type: object
+    name: firewall_rule
+    label: Enter the CIDR/Port of the firewall rule
+    inputs:
+      - type: text
+        name: cidr
+        label: CIDR
+        pattern: '^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}/\d{2}$'
+      - type: int
+        name: port
+        label: Port
+        required: false
+        condition:
+          variable: firewall_rule.cidr
+          operator: "=="
+          value: 192.168.0.1/25
+```
+
+```yaml title="Exemplo de um input do tipo object que representa um objeto com um conjunto complexo de inputs"
+inputs:
+  - type: object
+    name: firewall_rule
+    label: Enter the CIDR/Port of the firewall rule
+    inputs:
+      - type: text
+        name: cidr
+        label: CIDR
+        pattern: '^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}/\d{2}$'
+      - type: int
+        name: port
+        label: Port
+        required: false
+        condition:
+          variable: firewall_rule.cidr
+          operator: "=="
+          value: 192.168.0.1/25
+      - type: object
+        name: additional_rules
+        label: Additional Rules
+        required: true
+        inputs:
+        - type: select
+          name: name
+          label: Name
+          required: true
+          items:
+            - Dynamo
+            - Lambda
+        - type: text
+          name: description
+          label: Description
+          required: true
+          condition:
+            variable: firewall_rule.additional_rules.name
+            operator: "=="
+            value: Dynamo
+  - type: text
+    name: conditional_input
+    label: Conditional test
+    condition:
+      variable: firewall_rule.additional_rules.name
+      operator: "=="
+      value: Dynamo
+```
+
+#### **Input do tipo `required-connection`**
+
+:::danger Atenção!
+
+- Input disponível apenas para Actions e Plugins com o manifesto na versão **`v3`**. Para mais detalhes, [**consulte o guia para migrar as versões  das suas Actions e Plugins**](home/stk-cli/migrate-manifest.mdx).  
+- Este input não considera as propriedades dos campos [**default**](#default), [**pattern**](#pattern) e [**required**](#required).
+
+:::
+
+O input do tipo **`required-connection`** define o uso de uma Connection Interface requerida por seu Plugin ou Action. Antes de usar este input, [**consulte os tipos de Connection Interfaces disponíveis**](create-use/connections/connection-interface.md#contratos-de-connection-interface-type). O campo **`connection-interface-type`** deve ser preenchido com o nome da Connection Interface Type disponível para a sua Conta StackSpot.
+
+```yaml
+inputs:
+  - label: Select an Bucket s3
+    type: required-connection
+    name: my-s3
+    connection-interface-type: aws-s3-conn
+```
+
+#### **Input do tipo `generated-connection`**
+
+:::danger Atenção!
+
+- Input disponível apenas para Actions e Plugins com o manifesto na versão **`v3`**. [**Para mais detalhes, consulte o guia para migrar as versões das suas Actions e Plugins**](home/stk-cli/migrate-manifest.mdx).  
+- Este input não considera as propriedades dos campos [**default**](#default), [**pattern**](#pattern) e [**required**](#required).
+
+:::
+
+O input do tipo **`generated-connection`** define o uso de uma Connection Interface gerada por seu Plugin. Antes de usar este input, [**consulte os tipos de Connection Interfaces disponíveis**](create-use/connections/connection-interface.md#contratos-de-connection-interface-type). O campo **`connection-interface-type`** deve ser preenchido com o nome da Connection Interface Type disponível para a sua Conta StackSpot.
+
+```yaml
+inputs:
+    - label: Digite o nome da connection s3
+      name: bucket_s3
+      type: generated-connection
+      connection-interface-type: aws-s3-conn
+      outputs:
+         - from: aws-s3-alias-arn
+           to: arn
+         - from: aws-s3-alias-bucket_name
+           to: bucket_name
+```
+
+## **Campos Opcionais do input**
+
+Confira a seguir os campos opcionais que podem ser usados em todos os tipos de inputs. Alguns campos podem ser de uso exclusivo para um tipo de input. Nestes casos, o tipo de input aceito é informado na descrição.
+
+<!--
+- **help:** Este parâmetro adiciona um texto de apoio visível no terminal para ser exibido pela flag `--help`, com o objetivo de orientar o **usuário** a preencher o input. O texto não irá aparecer ao lado do campo de preenchimento do input como uma mensagem de apoio, somente quando o usuário utilizar qualquer comando com a flag `--help` ao lado. Por exemplo: `stk create app --template <stack-name>/<plugin-name> --help`
+
+```yaml
+- label: Type your name
+  name: name
+  type: text
+  help: "Inform your firstname (e.g: John)"
+```  
+-->
+
+### **default**
+
+Valor padrão associado ao input caso nenhum valor for informado.
+
+```yaml 
+- label: Type your name
+  name: name
+  type: text
+  default: John
+``` 
+
+O campo **`default`** aceita uma variável da Conta ou variável SackSpot, mas **não suporta** o uso de **`computed-inputs`**.
+
+:::caution Cuidado! 
+
+Para o input do tipo **`multiselect`**, são aceitos apenas os seguintes formatos:
+
+```yaml
+- label: (Input multiselect required false com 1 valor default) Qual porta deseja expor ?
+      type: multiselect
+      name: port4
+      items:
+        - "8080"
+        - "8888"
+      default: ["8888"]
+```
+
+Ou 
+
+```yaml
+- label: (Input multiselect required false com 1 valor default) Qual porta deseja expor ?
+   type: multiselect
+   name: port4
+   items:
+     - "8080"
+     - "8888"
+   default: 
+     - "8888"
+```
+
+:::
+
+#### **Valor default no modo não interativo**
+
+Ao executar o comando **`stk apply plugin`** você pode usar o parâmetro **`-q`** ou  **`--non-interactive`** para ativar o modo não interativo, e assim os inputs serão ignorados no terminal. Se algum input tiver um valor definido como **`default`**, esse valor será usado para aplicar o Plugin que estiver usando o modo não interativo.
+
+
+
+
+Esse comportamento ocorre apenas nos inputs dos tipos:
+
+- [**object**](#input-do-tipo-object)
+- [**text**](#input-do-tipo-text)
+- [**int**](#input-do-tipo-int)
+- [**bool**](#input-do-tipo-bool)
+- [**select**](#input-do-tipo-select)
+- [**multiselect**](#input-do-tipo-multiselect)
+
+### **required**
+
+Booleano que indica se um valor é opcional ou não, o valor será **`true`** caso nenhum valor for informado.
+
+```yaml  
+- label: Type your name
+  name: name
+  type: text
+  required: true
+``` 
+
+### **items**
+
+Lista de valores possíveis para o input (usado com os tipos **`select`** ou **`multiselect`**.
+
+```yaml  
+- label: Type your name
+  name: name
+  type: select # or multiselect
+  items: 
+    - John
+    - Bill
+```
+
+### **source**
+
+Recupera dados de uma API pública ou privada com domínio StackSpot para criar uma fonte externa de valores para os tipos de entrada **select** e **multiselect**.
+
+Use uma URL de endpoint de API pública ou um URL de endpoint de API privada com um domínio StackSpot.
+
+```yaml title="Não use este exemplo em seu projeto. Este exemplo é apenas para fins de demonstração de como preencher o campo 'source'."
+- label: Select External Item
+  name: select_item
+  type: select
+// new-line
+  external-items:
+    source: https://external-source.com # The API endpoint URL.
+    value: $[*].id
+    label: $[*].name
+```
+
+Para usar a opção **source** no seu **input**, você não pode usar a opção **'items'** simultaneamente. Você deve escolher entre elas.
+
+As opções de **source** são:
+
+- **value (Obrigatório):** O valor do JSON path do valor retornado que você deseja usar na lista de entrada.
+
+- **label (Opcional):** O caminho do objeto JSON, o objeto é exibido como um nome alternativo para seleção do item no input no terminal.
+
+Considere o seguinte objeto JSON do endpoint usado no campo **source**:
+
+```json
+[
+  {
+    "id": "id1",
+    "name": "item1"
+  },
+  {
+    "id": "id2",
+    "name": "item2"
+  },
+  {
+    "id": "id3",
+    "name": "item3"
+  }
+]
+```
+
+Se você quiser usar os valores **ID** como valores de entrada para a lista. Use **expressões JSON Path** para os valores **ID** na opção **value**.
+
+Para os valores usados na opção **value**. Se você quiser exibir um nome diferente para o **ID**, adicione o **JSON Path** para o outro objeto no campo **label**. Por exemplo, o objeto **name**.
+
+Exemplo:
+
+```yaml
+inputs:
+  - label: Select external item
+    name: select_items
+    type: select
+    external-items:
+      source: https://external-source.com 
+// new-line-start    
+    value: $[*].id
+    label: $[*].name
+// new-line-end    
+    required: true
+  - label: Select Multiple Items
+    name: multiselect_items
+    type: multiselect
+    external-items:
+      source: https://external-source.com 
+// new-line-start    
+      value: $[*].id
+      label: $[*].name
+// new-line-end    
+    required: true
+```
+
+Caso contrário, o valor do **ID** será mostrado como opção no terminal como opção de seleção para o input.
+
+Para obter mais detalhes sobre JSON Path, [**consulte a referência de expressões JSON PATH**](https://goessner.net/articles/JsonPath/).
+
+### **pattern**
+
+Configura uma validação do campo informado no input.
+
+```yaml 
+- label: Type your name
+  name: name
+  type: text
+  pattern: "[A-Za-z]"  
+``` 
+
+### **condition**
+
+Após receber um valor no input, uma condição é determinada para que um segundo input seja exibido para a pessoa usuária caso a condição for atendida. Se a condição não for atendida, nada acontecerá após o input com o **`condition`**.
+
+- **variable**: Nome da variável que será usada para avaliar a condição.
+- **operator**: Operador usado para avaliar a condição. Os valores de operadores válidos são: **`==`**, **`!=`**, **`>`**, **`>=`**, **`<`**, **`<=`**, **`containsAny`**, **`containsAll`**, **`containsOnly`**, **`notContainsAny`** e **`notContainsAll`**.
+
+#### **Usar índex atual na lista de objetos no `condition.variable`**
+
+No parâmetro **`condition`** a opção **`variable`** suporta o uso do **input do tipo lista de objetos**. Desta forma [**você pode referenciar o índex da lista como apresentado anteriormente no input do tipo `list`**](#input-do-tipo-list) ou **referenciar o índex atual** apenas informando as chaves vazias ("`[  ]`").
+
+Esta forma de referenciar o índex permite que você crie uma condição para exibir diferentes inputs de acordo com respostas anteriores.
+
+Exemplo:
+
+```yaml title="Input list with objects"
+inputs:
+   -  label: Type your objects
+      name: obj_list
+      type: list
+      add-question: Would you like to add items to the object list?
+      input:
+        type: object
+        label: object_in_list
+        inputs:
+          - label: text_value
+            name: text_value
+            type: text
+            required: true
+          - label: int_value
+            name: int_value
+            type: int
+            required: true
+            condition:
+            // new-line
+              variable: obj_list[].text_value
+              operator: "=="
+              value: "foo-bar"
+          - label: Type your objects
+            name: obj_list_nested
+            type: list
+            add-question: Would you like to add items to the object list?
+            input:
+              type: object
+              label: Object In List Nested
+              inputs:
+                - label: text_value
+                  name: text_value_nested
+                  type: text
+                  required: true
+                - label: int_value
+                  name: int_value_nested
+                  type: int
+                  required: true
+                  condition:
+                  // new-line
+                    variable: obj_list[].obj_list_nested[].text_value_nested
+                    operator: "=="
+                    value: "foo-bar"
+```
+
+:::caution Cuidado!
+
+Você deve usar aspas duplas para os seguintes operadores: **`"=="`**, **`"!="`**, **`">"`**, **`">="`**, **`"<"`**, **`"<="`**.
+
+:::
+
+<details>
+    <summary>
+    <strong>Confira mais detalhes dos operadores:</strong>
+    </summary>
+
+| **Operador** | **Descrição** |
+| ----- | ------ |
+| `==` | Valida se os valores são iguais. |
+| `!=` | Valida se os valores são diferentes. |
+| `>` | Valida se a variável é maior ao valor. |
+| `<` | Valida se a variável é menor ao valor. |
+| `>=` | Valida se a variável é maior ou igual ao valor. |
+| `<=` | Valida se a variável é menor ou igual ao valor. |
+| `containsAny` | Valida se a variável do tipo lista ou tipo texto contém qualquer um dos valores contidos em **`value`**. |
+| `containsAll`| Valida se a variável do tipo lista contém todos os valores valores contidos em **`value`**. |
+| `containsOnly` | Valida se a variável do tipo lista contém todos os valores valores contidos em **`value`** e não contém outros elementos. | 
+
+</details>
+
+### **value**
+
+Valor usado para a avaliação.
+
+:::info Informação Adicional
+
+O **`value`** do **`condition`** deve ser do mesmo tipo do que o input referenciado.
+
+:::
+
+
+Confira o exemplo de uso de **`condition`** em um input. Neste exemplo o usuário responde qual linguagem deseja usar dentre as opções de Java e Kotlin, e dependendo da linguagem escolhida, vê as versões disponíveis.
+
+```yaml
+inputs:
+  - label: Qual linguagem deseja usar?
+    type: select
+    name: language
+    items:
+      - Java
+      - Kotlin
+  - label: Qual versão do Java deseja usar?
+    type: select
+    name: java_version
+    items:
+      - 11
+      - 17
+    condition:
+      variable: language
+      operator: "=="
+      value: Java
+  - label: Qual versão do Kotlin deseja usar?
+    type: select
+    name: kotlin_version
+    items:
+      - 1.6
+      - 1.7
+    condition:
+      variable: language
+      operator: "=="
+      value: Kotlin
+```
+
+No exemplo exibido a **`condition`** determina a lista que será exibida, dependendo do valor do input **`language`**. Caso o valor seja igual a Java, a lista de versões de **Java** é exibida, caso seja igual a **Kotlin**, a lista de versões de Kotlin é exibida.
+
+:::info Informação Adicional
+
+Quando um input contém uma **`condition`** e recebe um valor de variável inexistente, nenhum outro input relacionado aquela **`condition`** será exibido na sequência.  
+
+:::
+
+## **Usar JINJA nos inputs**
+
+Os inputs são responsáveis por receber todos os dados que vão compor os Plugins e as Actions, e são indispensáveis para que os Plugins construam o código da Aplicação, e as Actions, as automações da forma esperada.
+
+O código é gerado pelos Plugins a partir da pasta **templates**/**templates-deploy** e as automações são programadas nos scripts das Actions. 
+
+Para um uso mais dinâmico dessas pastas e dos scripts, é importante que ao criar Actions e Plugins você use as expressões JINJA em seus inputs, código fonte e scripts.
+
+Para mais detalhes, [**acesse a página sobre como usar JINJA na StackSpot**](create-use/create-content/yaml-files/jinja.mdx)
+
+A seguir estão alguns exemplos de inputs de um Plugin com o uso do JINJA:
+
+Considere os inputs **`resource`** e **`method`**.
+
+```yaml
+inputs:
+  - label: Type the name of your resource
+  // new-line
+    name: resource
+    type: text
+    required: true
+    default: Client
+    pattern: '([A-Z][a-z]+)+'
+    help: 'Inform your resource name (e.g.: Client)'
+  - label: Choose the http method of the new endpoint
+  // new-line
+    name: method
+    type: select
+    items:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - PATCH
+    default: GET
+    required: true
+    help: 'Inform the method of the endpoint (e.g.: post or delete)'
+```
+
+Nos arquivos da pasta **templates** do seu Plugin, use as expressões JINJA "**`{{ variable_name }}`**". Desta forma, as expressões utilizadas nos inputs do exemplo anterior serão:
+
+- resource: **`{{ resource }}`**
+- method: **`{{ method }}`**
+
+### **JINJA em inputs do tipo `list`**
+
+Considere o exemplo a seguir do input **`ips`**, que é uma lista que recebe valores do tipo texto:
+
+```yaml
+inputs:
+  - type: list
+    label: Lista de IPs
+    add-question: Deseja adicionar ips na lista?
+    // new-line
+    name: ips
+    input:
+      type: text
+      label: ip
+      pattern: '^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$'
+      default: '127.0.0.1'
+```
+
+Como criador do Plugin, você pode determinar o uso do input **`ips`** das seguintes formas:
+
+#### **1. Acessar toda a lista**
+
+Use a expressão:
+
+```bash
+{{ variable_name }}
+```
+
+Exemplo:
+
+```bash
+{{ ips }}
+```
+
+#### **2. Acessar um valor da lista pelo índex**
+
+O índex da lista indica a posição em que de cada item foi adicionado na lista, onde a primeira posição do índex começa no valor **`[0]`** (zero). Use a expressão a seguir:
+
+:::info  Informação Adicional
+
+Faça uma verificação do JINJA para confirmar se essa variável existe antes de consultar uma posição dentro dela.
+
+:::
+
+Use a expressão:
+
+```bash
+{% if variable is defined %}
+{{ variable[item_position_number] }}
+{% endif %}
+```
+
+Exemplo:
+
+```bash
+{% if ips is defined %}
+{{ ips[0] }}
+{% endif %}
+```
+
+#### **3. Percorrer todos os valores da lista**
+
+Para percorrer os valores da lista **`ips`**, você deve usar a estrutura de controle do JINJA, o "**Loop `for`**". Para exibir todos os itens, declare uma variável, como por exemplo **`ip`** no *loop for* para percorrer os itens adicionados na lista. Use a expressão a seguir:
+
+```bash
+{% for [variable] in [input_list_name] %}
+- list_item: {{ variable }}
+{% endfor %}
+```
+
+Exemplo:
+
+```bash 
+{% for ip in ips %}
+- ip value: {{ ip }} 
+{% endfor %}
+```
+
+### **JINJA em inputs do tipo `object`**
+
+Considere o exemplo a seguir do input **`firewall_rule`** que é um objeto com mais dois inputs **`cidr`** e **`port`**:
+
+```yaml
+inputs:
+  - type: object
+  // new-line
+    name: firewall_rule
+    label: Enter the CIDR/Port of the firewall rule
+    inputs:
+      - type: text
+      // new-line
+        name: cidr
+        label: CIDR
+        pattern: '^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}/\d{2}$'
+        default: '0.0.0.0/24'
+      - type: int
+      // new-line
+        name: port
+        label: Port
+        default: 8080
+```
+
+O input **`firewall_rule`** é um objeto "pai ou raiz", e os outros inputs são todos "filhos" desse objeto. Para acessá-los, use as seguintes expressões:
+
+#### **1. Acessar todo o objeto**
+
+Use a expressão: 
+
+```bash
+{{ parent_object_name }}
+```
+
+Exemplo:
+
+```bash
+{{ firewall_rule }}
+```
+
+#### **2. Acessar inputs filhos**
+
+Repita a expressão para cada input filho:
+
+:::info  Informação Adicional
+Faça uma verificação do JINJA para confirmar se essa variável existe antes de consultar uma posição dentro dela.
+
+:::
+
+Use a expressão:
+```bash
+{% if parent_object_name is defined %}
+{{ parent_object_name.child_input }}
+{% endif %}
+```
+
+Exemplo:
+
+- Input **`cidr`**:
+
+```bash
+{% if firewall_rule is defined %}
+{{ firewall_rule.cidr }}
+{% endif %}
+```
+
+- Input **`port`**:
+
+```bash
+{% if firewall_rule is defined %}
+{{ firewall_rule.port }}
+{% endif %}
+```
+
+### **JINJA em inputs do tipo `list` com `object`**
+
+Considere o exemplo a seguir da lista **`buckets`** que contém um objeto constituído de diversos tipos de inputs.
+
+```yaml
+inputs:
+  - type: list
+    label: Buckets list
+    add-question: Would you like to add buckets?
+    // new-line
+    name: buckets
+    input:
+    //new-line
+      type: object
+      label: Inform the bucket
+      inputs:
+        - type: text
+        // new-line
+          name: description
+          label: Bucket Description
+        - type: int
+        // new-line
+          name: number
+          label: Bucket number
+        - type: bool
+        // new-line
+          name: encrypted
+          label: Bucket Encrypted
+        - type: select
+          items:
+            - us-east-1
+            - us-east-2
+            - sa-east-3
+          // new-line  
+          name: region
+          label: Bucket Region
+        - type: multiselect
+          items:
+            - us-east-1
+            - us-east-2
+            - sa-east-3
+          // new-line  
+          name: region_bkp
+          label: Bucket Region Backup
+        - label: Select the connection for required_bucket_object
+          type: required-connection
+          // new-line
+          name: required_bucket_object
+          connection-interface-type: aws-s3-conn
+```
+
+Para acessar uma lista que possui um objeto e acessar cada item do objeto, use as seguintes expressões:
+
+#### **1. Acessar toda a lista**
+
+Use a expressão:
+
+```bash
+{{ variable_name }}
+```
+
+Exemplo:
+
+```bash
+{{ buckets }}
+```
+
+#### **2. Acessar um valor da lista pelo índex**
+
+O índex da lista indica a posição em que de cada item foi adicionado na lista, onde a primeira posição do índex começa no valor **`[0]`** (zero). Use a expressão a seguir:
+
+:::info  Informação Adicional
+
+Faça uma verificação do JINJA para confirmar se essa variável existe antes de consultar uma posição dentro dela.
+
+:::
+
+```bash
+{% if variable_name is defined %}
+{{ variable_name[item_position_number] }}
+{% endif %}
+```
+
+Exemplo:
+
+```bash
+{% if buckets is defined %}
+{{ buckets[0] }}
+{% endif %}
+```
+
+#### **3. Percorrer todos os valores da lista**
+
+Para percorrer os valores da lista **`buckets`**, você deve usar a estrutura de controle do JINJA, o "**Loop `for`**". Para exibir todos os itens declare uma variável, por exemplo **`bucket`** no *loop for* para percorrer os itens adicionados na lista. Use a expressão a seguir:
+
+```bash
+{% for [variable] in [input_list_name] %}
+- list_item1: {{ variable }}
+- list_item2: {{ variable }}
+- list_item3: {{ variable }}
+- list_item4: {{ variable }}
+- list_item5: {{ variable }}
+- list_item6: {{ variable }}
+- list_itemN: {{ variable }}
+{% endfor %}
+```
+
+Exemplo:
+
+```bash 
+{% for bucket in buckets %}
+- bucket.description: {{ bucket.description }} 
+- bucket.number: {{ bucket.number }} 
+- bucket.encrypted: {{ bucket.encrypted }} 
+- bucket.region: {{ bucket.region }} 
+- bucket.region_bkp: {{ bucket.region_bkp }} 
+- bucket.bucket_requerido_object.selected: {{ bucket.bucket_requerido_object.selected }} 
+- bucket.bucket_requerido_object.type: {{ bucket.bucket_requerido_object.type }}
+{% endfor %}
+```
+
+### **JINJA em inputs do tipo `required-connection`**
+
+Considere o exemplo a seguir. Ele representa uma Connection Interface **`aws-s3-conn`** requerida em um Plugin.
+
+```yaml
+inputs:
+  - label: Select the connection for required_bucket_object
+    type: required-connection
+    // new-line
+    name: required_bucket_object
+    connection-interface-type: aws-s3-conn
+```
+
+Use as expressões a seguir para acessar uma Connection em duas situações:
+
+#### **1. Acessar dados da Connection**
+
+Esses dados são o **nome** e o **tipo da Connection** utilizada:
+
+:::info  Informação Adicional
+
+Faça uma verificação do JINJA para confirmar se essa variável existe antes de consultar uma posição dentro dela.
+
+:::
+
+Use as expressões: 
+
+```bash title="Exemplo para acessar o 'name' da connection"
+{% if required_connection_name is defined %}
+{{ required_connection_name.selected }}
+{% endif %}
+```
+
+```bash title="Exemplo para acessar o 'type' da connection"
+{% if required_connection_name is defined %}
+{{ required_connection_name.type }}
+{% endif %}
+```
+
+Exemplo:
+
+- Connection name:
+
+```bash
+{% if required_bucket_object is defined %}
+{{ required_bucket_object.selected }}
+{% endif %}
+```
+
+- Connection type:
+
+```bash
+{% if required_bucket_object is defined %}
+{{ required_bucket_object.type }}
+{% endif %}
+```
+
+#### **2. Acessar os outputs da Connection (Apenas no Deploy)**
+
+Esses dados são acessados apenas durante o deploy da Aplicação que requer a Connection utilizada no Plugin. Cada tipo de Connection possui os seus outputs, [**Confira os outputs da Connection do tipo `aws-s3-conn`**](docs/create-use/connections/connection-interface.md#aws-s3-conn):
+
+| **Output** | **Type** | **Descrição** |
+| -------  | ---------  | ---------  |
+| `arn`  | String | [**ARN**](https://docs.aws.amazon.com/pt_br/IAM/latest/UserGuide/reference-arns.html) da Amazon. |
+| `bucket_name` | String | Nome do Bucket da AWS. |
+
+Para acessar esses valores, use as expressões a seguir para cada um:
+
+:::info  Informação Adicional
+
+Faça uma verificação do JINJA para confirmar se essa variável existe antes de consultar uma posição dentro dela.
+
+:::
+
+```bash
+{% if required_connection_name is defined %}
+{{ required_connection_name.connection.connection_output }}
+{% endif %}
+```
+
+Exemplo:
+
+- required_bucket_object **`arn`**:
+
+```bash
+{% if required_bucket_object is defined %}
+{{ required_bucket_object.connection.arn }}
+{% endif %}
+```
+
+- required_bucket_object **`bucket_name`**:
+
+```bash
+{% if required_bucket_object is defined %}
+{{ required_bucket_object.connection.bucket_name }}
+{% endif %}
+```
+
+### **Informar o valor de um input como parâmetro**
+
+Em execuções de pipelines não é possível usar o modo interativo dos comandos que se tem na tela do terminal com o STK CLI. Para executar algum comando você deve declarar todos os parâmetros desejados disponíveis para o comando, incluindo os inputs. Para fazer isso você precisa informar o input e o valor como parâmetros.
+
+Considere o exemplo a seguir, o trecho de um Plugin que possui os seguintes inputs:
+
+```yaml tittle="Trecho de inputs de um Plugin"
+# Other Plugin infos.
+# ...
+  inputs:
+    - type: text
+   // new-line
+      name: text_input
+      label: "Type some text:"
+    - type: bool
+   // new-line
+      name: boolean_input
+      label: "Do you want to run optional job?"
+    - type: required-connection
+   // new-line
+      name: some_s3_connection
+      label: "Give an alias for required S3 connection"
+      connection-interface-type: aws-s3-conn
+```
+
+Ao aplicar o Plugin ou criar uma Aplicação que utilize este Plugin. Esses inputs devem ser informados da seguinte maneira:
+
+Após o uso do comando e seus parâmetros, use a sintaxe **`--nome_input valor do input`**. 
+
+```bash
+stk apply plugin exemplo-inputs --nome_input valor do input
+```
+
+Exemplo:
+
+Para os inputs destacados no trecho do Plugin, os valores informados como parâmetros são:
+
+**Inputs:**
+
+- `text_input`;
+- `boolean_input`;
+- `some_s3_connection`.
+
+**Valor do input preenchido como parâmetro:**
+
+```bash
+stk apply plugin estudio/stack/plugin-exemplo-inputs --text_input "Texto entre aspas(string)" --boolean_input true --some_s3_connection s3_backup_logs
+```
+
+[**Para comandos de Actions e Plugins**](home/stk-cli/commands/index.mdx) você também pode usar o parâmetro **--inputs-json** para informar os inputs no formato JSON:
+
+```bash
+stk apply plugin estudio/stack/plugin-exemplo-inputs --inputs-json '{"text_input": "Texto entre aspas(string)", "boolean_input": "true", "some_s3_connection": "s3_backup_logs"}'
+```
+
+## **Próximos passos**
+
+import CustomDocCard from '@site/src/components/MdxComponents/CustomDocCard';
+import CustomDocCardList from '@site/src/components/MdxComponents/CustomDocCardList';
+
+<CustomDocCardList>
+  <CustomDocCard title="Inputs Avançados" description="Confira a seção de Inputs Avançados." link="/create-use/create-content/yaml-files/advanced-inputs.md" />
+  <CustomDocCard title="Jinja na StackSpot" description="Confira mais detalhes sobre o uso de Jinja na StackSpot" link="/create-use/create-content/yaml-files/jinja.md" />
+</CustomDocCardList>
+

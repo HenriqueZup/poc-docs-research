@@ -1,0 +1,38 @@
+---
+title: "Outubro 23"
+description: Release Notes
+---
+
+> Nesta seção, você encontra: Referência das novas features da StackSpot & alterações relevantes na documentação.
+
+## **Features**
+
+- [**Novos contratos das Connection Interfaces Types**](/create-use/connections/connection-interface): foram criados 9 contratos e outputs de Connection Interface Types.
+
+- [**Suporte para uso de novas tecnologias em um Plugin**](/create-use/create-content/yaml-files/plugin-yaml): agora é possível usar 24 novos tipos de tecnologias em um **`plugin.yaml`**. Confira a lista atualizada.
+
+- Novas regras e possibilidades para aplicação de Plugin: novos atributos de **`plugin.yaml`** foram criados para:
+
+1. Um Plugin pode ser aplicado uma só vez em uma Aplicação ou Infraestrutura.
+2. Um Plugin só possa ser utilizado em projetos já criados na StackSpot.
+3. Determinar se um Plugin será requerido por outro.
+
+Confira mais detalhes na seção, [**Atributos Opcionais**](/create-use/create-content/yaml-files/plugin-yaml).
+
+- Novo [**self-hosted Runtime**](/deployment/deploy/self-hosted-runtime).
+
+### **Mudanças**
+
+- Correção da [**condição `containsAny`**](/create-use/create-content/yaml-files/inputs) dos inputs do plugin.yaml.
+- [**Atualização dos comandos create app e infra**](/home/stk-cli/commands/application-commands#stk-create-app). Foi adicionado o modo interativo aos comandos e a escolha da versão da Stack na opção  **`- - starter, -s`**.
+- [**Nova opção `single-use`**](/create-use/create-content/yaml-files/plugin-yaml) para o plugin.yaml, permite limitar o uso de aplicações do Plugin em uma aplicação ou Infraestrutura.
+- [**Novos filtros Jinja regex_replace e from_json**](/create-use/create-content/yaml-files/jinja#filtros).
+- Adição de [**aviso na instalação do MacOS**](/home/stk-cli/install#execute-o-instalador).
+- Adição da [**dependência de Plugins e uso da versão semântica com range em Plugins required**](create-use/create-content/yaml-files/plugin-yaml#specrequiresplugins).
+- Revisão da Action de setup do SCM e [**novo provedor GitLab**](/home/account/guides/scm-integration/gitlab).
+- Fix no [**campo `inputs-envs`**](/create-use/create-content/yaml-files/plugin-yaml). foi atualizado para o novo schema.
+
+### **Mudanças na documentação**
+
+- [**Nova seção Guias**](/guides), você confere todos os passos para criar e usar conteúdo na StackSpot.
+- Novas seções de [**Conta**](/home/account) e [**Workspace**](/home/workspace).

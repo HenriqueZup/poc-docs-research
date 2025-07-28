@@ -1,0 +1,427 @@
+---
+title: Criar Plugin de Aplicação com o STK CLI
+sidebar_position: 9
+description: Tutorial de como criar dois Plugins de Aplicação.
+---
+
+> Neste tutorial, você aprenderá como criar dois Plugins de Aplicação. O exemplo utilizado é uma API em Python usando o microframework Flask.
+
+## **Sobre o Plugin de Aplicação**
+
+Criar um Plugin de Aplicação no StackSpot EDP consiste em escrever o código da Aplicação ou parte dela dentro da estrutura de Plugins de App da StackSpot. Isso transforma o código de uma Aplicação minimamente funcional ou completa como "código base", ou um trecho de código que adiciona novas capacidades à uma Aplicação existente.
+
+Escrever o seu código como Plugin facilita o reuso e o compartilhamento desse código de forma mais estruturada e controlada dentro de grandes equipes ou empresas.
+
+Na estrutura do Plugin de Aplicação use os seguintes recursos:
+
+- **A documentação do Plugin:** use a pasta **'docs'** com os arquivos markdown para escrever as informações sobre o uso do seu Plugin. Possui suporte para dois idiomas (pt-br e en_us).  
+- **O Código da Aplicação: :** use a pasta **'templates'** para adicionar todos os arquivos e códigos fonte que compõem uma Aplicação ou parte dela. O conteúdo desta pasta representa o código que será gerado pelo Plugin para criar a Aplicação.  
+- **Casos de teste do Plugin:** use a pasta **'tests'** para criar casos de teste para o seu Plugin. Criar casos de teste se torna útil quando o Plugin possui muitos inputs ou gera muitos arquivos que sem testes podem frustrar o desenvolvimento das Aplicações.  
+- **Editar o arquivo de configuração do Plugin:** edite o arquivo **'`plugin.yaml`'**. Use os recursos como a variedade dos tipos de inputs, Hooks Declarativos e Connections Interfaces para adicionar mais inteligência e dinâmica para quem for usar o seu Plugin.  
+
+## **Antes de começar**
+
+Para criar conteúdos para a StackSpot EDP, você precisa ter acesso e permissão para usar ou criar um Estúdio para publicar os seus conteúdos. Confira as páginas a seguir antes de começar o tutorial:  
+
+- [**Entenda o papel e permissões da sua Conta**](home/account/organization/access-management/roles.mdx).
+- [**Como você pode usar um Estúdio**](create-use/studio/intro-studio.mdx).  
+- [**Criar um Estúdio**](create-use/studio/create-studio.mdx).  
+- [**Visibilidade do Estúdio**](create-use/studio/visibility.mdx).  
+
+### **Passo 1. Criar a estrutura dos Plugins**
+
+1. Crie uma pasta para criar os Plugins e depois acesse ela. No seu terminal execute os comandos a seguir:
+
+```bash title="Cria e acessa a pasta para os Plugins com o nome 'Flask-API'."
+mkdir Flask-API
+cd Flask-API
+```
+
+2. Para criar o Plugin flask-api-plugin, execute o comando **`stk create plugin`** e responda as perguntas:  
+
+:::note Informação Adicional
+
+As perguntas que você responde ao criar qualquer Plugin correspondem ao preenchimento obrigatório de metadados, como o nome e tipo do Plugin. Alguns desses metadados acompanham sugestões que ficam entre parênteses como o texto da descrição e número da versão do Plugin.  
+Outras perguntas servem para pré-configurar recursos como o uso de Connection Interfaces ou inicializar um repositório GIT na pasta do Plugin.
+
+:::
+
+<AsciinemaPlayer src="/videos/edp-create-app-plugin1.cast" />
+
+3. Para criar o Plugin **`add-endpoint-to-flask-application`**, execute o comando "**`stk create plugin`**" e responda as perguntas no terminal:
+
+<AsciinemaPlayer src="/videos/edp-create-app-plugin2.cast" />
+
+### **Passo 2. Escrever o código do Plugin `flask-api-plugin` na pasta templates**  
+
+1. Abra a pasta do Plugin **`flask-api-plugin`** e acesse a pasta **'templates'**.
+
+2. Na pasta **'templates'** crie o arquivo **`main.py`**. Copie o código a seguir e cole neste mesmo arquivo:
+
+```python title="main.py"
+from flask import Flask, jsonify, request
+
+app = Flask(__name__)
+
+# Sample data
+users = [
+    {"id": 1, "name": "John Doe"},
+    {"id": 2, "name": "Jane Doe"}
+]
+
+@app.route('/')
+def home():
+    return "Welcome to the Flask API!"
+
+@app.route('/api/users', methods=['GET'])
+def get_users():
+    return jsonify(users)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+```
+
+### **Passo 3. Editar o código do Plugin `flask-api-plugin` com expressões JINJA**
+
+Insira agora as expressões que devem receber os valores reais dos inputs para renderizar o template do Plugin.
+
+1. No arquivo **`main.py`** substitua os seguintes valores pelas expressões JINJA ou copie o exemplo:
+
+- Substitua a lista de dicionários Python **`'users`** pela expressão **`{{ sample_data }}`**.  
+- Substitua o valor da rota **`'/api/users'`** por **` '/{{ subdirectory }}/{{ path }}' `**.  
+- Substitua o valor de **`GET`** dentro de **`methods=[ ]`** por **`'{{ methods }}'`**.  
+- Em **`def get_users( ):`** substitua por **`{{ method | lower }}_{{ subdirectory }}():`**.  
+
+Seu código deve ficar como no exemplo a seguir.
+
+```python title="main.py"
+from flask import Flask, jsonify, request
+
+app = Flask(__name__)
+
+# Sample data
+users = {{ sample_data }}
+
+@app.route('/')
+def home():
+    return "Welcome to the Flask API!"
+
+@app.route('/{{ subdirectory }}/{{ path }}', methods=['{{method}}'])
+def {{ method | lower }}_{{ subdirectory }}():
+    return jsonify(users)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+```
+
+### **Passo 4. Editar o arquivo `plugin.yaml` do Plugin `flask-api-plugin`**
+
+O seu Plugin já vem previamente preenchido com inputs de exemplo. Você deve removê-los ou editá-los conforme o que você precisa.
+
+1. Em sua IDE, abra o arquivo **`plugin.yaml`** do Plugin **`flask-api-plugin`** e apague todo o bloco de inputs conforme destacado no exemplo a seguir:  
+
+```yaml title="plugin.yaml"
+schema-version: v3
+kind: plugin
+metadata:
+  name: flask-api-plugin
+  display-name: flask-api-plugin
+  description: Create an API in flask
+  version: 1.0.0
+spec:
+  type: app
+  compatibility:
+    - python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  single-use: False
+  technologies: # Ref: https://docs.stackspot.com/create-use/create-content/yaml-files/plugin-yaml/#technologies-1
+    - Api
+  stk-projects-only: false
+  // old-start
+  inputs:
+    - label: Type the name of your resource
+      name: resource
+      type: text
+      required: true
+      default: Client
+      pattern: '([A-Z][a-z]+)+'
+      help: 'Inform your resource name (e.g.: Client)'
+    - label: Choose the http method of the new endpoint
+      name: method
+      type: select
+      items:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - PATCH
+      default: GET
+      required: true
+      help: 'Inform the method of the endpoint (e.g.: post or delete)'
+  // old-end    
+```
+
+2. No lugar do trecho apagado anteriormente, copie e cole os inputs exatamente como no exemplo:  
+
+:::tip Dica!
+
+Os nomes de cada input, correspondem às variáveis das expressões JINJA que você adicionou anteriormente no código do seu Plugin.
+
+:::
+
+```yaml title="Inputs do arquivo plugin.yaml"
+inputs:
+  - label: Type the subdirectory of your URL
+  // new-line
+    name: subdirectory
+    type: text
+    required: true
+    default: users
+    pattern: '([a-z]+)+'
+  - label: Type the path of your URL
+  // new-line
+    name: path
+    type: text
+    required: true
+    default: id
+    pattern: '([a-z]+)+'
+  - label: Sample Data
+  // new-line
+    name: sample_data
+    type: list
+    add-question: Add one more user?
+    input:
+      label: User Sample data
+      type: object
+      inputs:
+        - name: id
+          type: int
+          label: User ID
+        - name: user_name
+          type: text
+          label: User Name
+  - label: Choose the http method of the new endpoint
+  // new-line
+    name: method
+    type: select
+    items:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - PATCH
+    default: GET
+    required: true
+```
+
+### **Passo 5. Criar a documentação do seu Plugin**
+
+O exemplo deste tutorial tem pré-requisitos para funcionar corretamente, o que é um detalhe importante na construção do seu Plugin. Portanto, use a pasta **'docs'** do Plugin para adicionar todas as informações relevantes. Quanto mais completa for a documentação, melhor será a experiência dos desenvolvedores que utilizarem o seu Plugin.  
+
+1. Na pasta **'docs**' abra a pasta do idioma da sua escolha e edite o arquivo **`docs.md`**. Para o exemplo edite e adicione apenas os requisitos na documentação:  
+
+- Flask==3.0.3
+- jsonify==0.5
+- requests==2.32.3
+
+```md title="docs.md"
+<!-- 
+******************************************
+
+- THIS IS AN EXAMPLE OF HOW TO FILL OUT YOUR DOCUMENTATION OF CONTENT.
+
+- FILL OUT THE TEMPLATE BELOW WITH YOUR INFORMATION SO OTHER PEOPLE CAN USE IT. THIS DOCUMENTATION WILL APPEAR ON THE SECTION OF THE STACKSPOT PORTAL.
+
+******************************************
+-->
+## **Plugin Name**
+
+<!-- Write concisely describing your Plugin. -->
+
+## **Requirements**
+
+Flask==3.0.3
+jsonify==0.5
+requests==2.32.3
+
+<!-- 
+[This is a guideline; delete this content and write your information outside this markup. <!-- ]
+
+- Describe the requirements that the user needs to know before using the Plugin.
+-->
+
+## **Usage**
+
+<!-- 
+[This is a guideline; delete this content and write your information outside this markup. <!-- ]
+
+Provide instructions on how to use your Plugin, including: 
+
+- What are the input parameters/inputs?   
+- Which methods to use?
+- What are the resources?
+- What is the file structure of the Plugin directory?
+- And if necessary, add the dependencies of your Plugin.
+-->
+
+## **Release Notes**
+
+<!-- 
+[This is a guideline; delete this content and write your information outside this markup. <!-- ]
+
+This section is only necessary if you publish a new Plugin version. Add what you modified, resolved issues, or latest enhancements.
+-->
+```
+
+#### **Testar o Plugin (Recomendado)**
+
+Para testar o comportamento do seu Plugin, a StackSpot disponibiliza uma forma de você criar casos de teste para você testar alguns cenários em seu Plugin. Para mais informações, [**acesse o guia para testes de Plugins**](create-use/create-content/plugin/test-plugin.mdx).
+
+### **Passo 6. Editar o Plugin `add-endpoint-to-flask-application`**
+
+Este Plugin irá complementar o que você criou anteriormente. Neste exemplo você vai usar um Hook Declarativo para editar o código existente de uma Aplicação criada com o Plugin **`flask-api-plugin`**.
+
+1. Acesse a pasta do Plugin **`add-endpoint-to-flask-application`** e crie uma pasta com o nome **'snippets'**.
+
+2. Dentro da pasta **'snippets'** crie um o arquivo **'`flask-endpoint.txt`'** e adicione o exemplo a seguir para aproveitar a lógica utilizada no Plugin usando as expressões JINJA:
+
+```txt title="flask-endpoint.txt"
+@app.route('/{{ subdirectory }}/{{ path }}', methods=['{{method}}'])
+def {{ method | lower }}_{{ subdirectory }}():
+    return jsonify(users)
+```
+
+### **Passo 7. Editar o arquivo `plugin.yaml` do Plugin `add-endpoint-to-flask-application`**
+
+1. Em sua IDE abra o arquivo **`plugin.yaml`** do Plugin **`add-endpoint-to-flask-application`** e apague o bloco de inputs conforme destacado no exemplo a seguir:  
+
+```yaml
+schema-version: v3
+kind: plugin
+metadata:
+  name: add-endpoint-to-flask-application
+  display-name: add-endpoint-to-flask-application
+  description: Adds a new endpoint to a flask application
+  version: 1.0.0
+spec:
+  type: app
+  compatibility:
+    - python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  single-use: False
+  technologies: # Ref: https://docs.stackspot.com/create-use/create-content/yaml-files/plugin-yaml/#technologies-1
+    - Api
+  stk-projects-only: false
+  // old-start
+  inputs:
+    - label: Type the name of your resource
+      name: resource
+      type: text
+      required: true
+      default: Client
+      pattern: '([A-Z][a-z]+)+'
+      help: 'Inform your resource name (e.g.: Client)'
+    - label: Choose the http method of the new endpoint
+      name: method
+      type: select
+      items:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - PATCH
+      default: GET
+      required: true
+      help: 'Inform the method of the endpoint (e.g.: post or delete)'
+  // old-end    
+```
+
+2. Substitua o trecho apagado anteriormente copiando e colando os inputs conforme o exemplo a seguir:  
+
+```yaml
+schema-version: v3
+kind: plugin
+metadata:
+  name: add-endpoint-to-flask-application
+  display-name: add-endpoint-to-flask-application
+  description: Adds a new endpoint to a flask application
+  version: 1.0.0
+spec:
+  type: app
+  compatibility:
+    - python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  single-use: False
+  technologies: # Ref: https://docs.stackspot.com/create-use/create-content/yaml-files/plugin-yaml/#technologies-1
+    - Api
+  stk-projects-only: false
+  // new-line-start
+  inputs:
+    - label: Type the subdirectory of your URL
+      name: subdirectory
+      type: text
+      required: true
+      default: users
+      pattern: '([a-z]+)+'
+    - label: Type the path of your URL
+      name: path
+      type: text
+      required: true
+      default: id
+      pattern: '([a-z]+)+'
+    - label: Choose the http method of the new endpoint
+      name: method
+      type: select
+      items:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - PATCH
+      default: GET
+      required: true
+  hooks: 
+  - type: edit
+    trigger: after-render
+    path: main.py
+    changes:
+      - search:
+          string: "if __name__ == '__main__':"
+          insert-before:
+            snippet: snippets/flask-endpoint.txt
+  // new-line-end          
+```
+
+### **Passo 8. Publicação dos Plugins**
+
+Publicar na StackSpot significa armazenar e disponibilizar Stacks, Plugins e Actions na plataforma. Para cada Plugin que você deseja publicar, acesse a pasta do Plugin e execute o comando a seguir:
+
+1. Certifique-se de estar logado em sua conta Para logar execute o comando **`stk login`** e escreva o seu email:
+
+```bash
+stk login tw-team@stackspot.com
+```
+
+2. Execute o comando **`stk publish plugin`**:
+
+```bash
+stk publish plugin
+```
+
+3. Selecione um Estúdio da sua conta e guarde até o final da publicação do seu Plugin.
+
+<AsciinemaPlayer src="/videos/edp-publish-plugin.cast" />
+
+Ao fim deste tutorial você terá criado um Plugin que gera uma API simples em Python usando  Flask e outro Plugin que adiciona endpoints às Aplicações criadas com o primeiro Plugin. Para se aprofundar nos conceitos utilizados neste tutorial, confira as páginas a seguir:
+
+- [**Usar Jinja na StackSpot**](create-use/create-content/yaml-files/jinja.mdx).
+- [**Input do tipo `text`**](create-use/create-content/yaml-files/inputs.md#input-do-tipo-text).
+- [**Input do tipo `list`**](create-use/create-content/yaml-files/inputs.md#input-do-tipo-list).
+- [**Input do tipo `object`**](create-use/create-content/yaml-files/inputs.md#input-do-tipo-object).
+- [**Hook Declarativo `edit`**](create-use/create-content/declarative-hooks/edit.mdx).

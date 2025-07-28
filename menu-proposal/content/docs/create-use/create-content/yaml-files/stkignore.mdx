@@ -1,0 +1,42 @@
+---
+title: Stk ignore
+sidebar_position: 12
+description: Detalhes sobre o arquivo .stkignore.
+---
+
+O arquivo **`.stkignore`** recebe uma lista de arquivos que são ignorados durante a publicação do seu projeto na StackSpot. Diferente do arquivo **`.gitignore`**, o **`.stkignore`** ignora arquivos que não devem ser publicados na StackSpot, mas que precisam ser versionados pelo Git.
+
+O arquivo é gerado dentro das respectivas pastas ao executar os seguintes comandos de criar conteúdo:
+
+- [**stk create action**](home/stk-cli/commands/action-commands.md#stk-create-action)
+- [**stk create plugin**](home/stk-cli/commands/plugin-commands.md#stk-create-plugin)
+- [**stk create stack**](home/stk-cli/commands/stack-commands.md#stk-create-stack)
+
+## **Como preencher o arquivo `.stkignore`**
+
+Para ignorar os arquivos você deve preenchê-los da mesma forma que o **`.gitignore`**, por exemplo:
+
+- Caches de dependência, como o conteúdo de `/node_modules` ou `/packages`.
+- Código compilado, como arquivos `.o`, `.pyc` e `.class`.
+- Diretórios de saída de build, como `/bin`, `/out` ou `/target`.
+- Arquivos gerados no período de execução, como `.log`, `.lock` ou `.tmp`.
+- Arquivos de sistema ocultos, como `.DS_Store` ou `Thumbs.db`.
+- Arquivos pessoais de configuração do IDE, como `.idea/workspace.xml`.
+
+:::warning Atenção!
+
+Os arquivos listados no **`.stkignore`** **não serão publicados na StackSpot**, mas serão adicionados por commits do Git normalmente caso não sejam ignorados no **`.gitignore`**.
+
+:::
+
+Preencha o caminho da pasta ou arquivo em relação a pasta raiz do código do seu Plugin ou Action por exemplo. Você pode adicionar comentários utilizando o caractere **'`#`'**:
+
+```bash title=".stkignore"
+# Ignore all files in the folders
+/log-tests
+/dev
+
+# Ignore files
+*.env
+backup.env
+```

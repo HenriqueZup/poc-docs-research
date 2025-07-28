@@ -1,0 +1,73 @@
+---
+title: "Sobre Self-Hosted"
+sidebar_position: 3
+description: Como configurar e usar um Self-Host em sua pipeline de deploy.
+sidebar_custom_props:
+    icon: Code
+---
+
+> Nesta seção, você encontra como configurar e usar um Self-Hosted na sua pipeline de deploy.
+
+<br/>
+
+import FlowChart from '@site/src/components/MdxComponents/FlowChart';
+
+<FlowChart steps={[
+  { title: 'Configurar Conta', link: 'home/account/intro-account.md' },
+  { title: 'Configurar Deploy', link: 'deployment/deploy/overview.md', default: true },
+  { title: 'Criar Conteúdo', link: 'create-use/create-content/getting-started.md' },
+  { title: 'Usar Conteúdo', link: 'create-use/use-content/quickstart.md' },
+]} />
+
+
+## **Introdução**
+
+A StackSpot EDP oferece uma solução para organizações que têm restrições de segurança e precisam usar suas próprias contas de nuvem para realizar o deploy de Aplicações.
+
+A plataforma permite que todos os processos de deploy sejam executados em uma infraestrutura gerenciada pela Organização, garantindo que as informações e artefatos, como arquivos **tfstate** e **IaC (Terraform)**, permaneçam dentro da conta do cliente. Essa forma de fazer deploy é chamada **Runtime via Self-Hosted**. 
+
+O Runtimes Self-Hosted **adiciona ao seu Workflow** as etapas necessárias para provisionar recursos de nuvem, **utilizando os runners da sua organização**. Atualmente, o Self-Hosted oferece suporte para: 
+
+- GitHub Actions; 
+- Gitlab. 
+
+As etapas do processo de deploy consistem na execução de quatro ações em sua pipeline no GitHub Actions:
+
+1. Orquestrar todos os registros para criar os recursos na nuvem;
+2. Gerar o código IaC (Terraform);
+3. Implantar o código IaC (Terraform);
+4. Destruir os recursos (Terraform).
+
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<ThemedImage
+  alt={`Diagrama que tem o título Customer Environment (self-hosted runner). Logo depois há o primeiro tópico nomeado como STK deploy - watch (STK CLI) que leva à uma caixa nomeada como Runtime Manager API. Depois há um segundo tópico nomeado como Orchestrate, que leva à uma caixa nomeada como Runtime Workers. A partir do segundo tópico há dois tipos de terceiros tópicos: um chamado Provision Cloud Resources que direciona à uma caixa superior nomeada Customer AWS Account; e outro chamado de Store / retrieve IaC, em que este último leva ao quarto tópico Store / retrieve TF State, que direciona à uma caixa nomeada como StackSpot AWS Accounts.`}
+  sources={{
+    light: useBaseUrl('/img/Desk-Systemcontext1-PT-Dark.png'),
+    dark: useBaseUrl('/img/Desk-Systemcontext1-PT-Light.png'),
+  }}
+/>
+
+<ThemedImage
+  alt={`Diagrama que tem o título Customer Environment (self-hosted runner). Logo depois dele há o primeiro tópico nomeado como Customer GitHub repository CI/CD Pipeline que direciona para o primeiro tópico nomeado como Execute, e leva à uma caixa nomeada Runtime GitHub Actions. Depois, vem o segundo tópico nomeado como Pull Images que leva à outra caixa nomeada Docker Registry. A terceira caixa nomeada de Ask redireciona para uma caixa nomeada Runtime Manager API, e que está dentro do domínio de StackSpot Environment. Depois, ela se interliga com o quarto tópico nomeado como Provision Cloud Resources + Store / retrieve IaC + TF State, que direciona para a última caixa nomeada como Customer AWS Accounts.`}
+  sources={{
+    light: useBaseUrl('/img/Desk-Systemcontext2-PT-Dark.png'),
+    dark: useBaseUrl('/img/Desk-Systemcontext2-PT-Light.png'),
+  }}
+/>
+
+<ThemedImage
+  alt={`Diagrama que mostra o funcionamento de Pipelines CI/CD com a StackSpot e com o Self-Hosted. No lado direito do diagrama há uma caixa de texto com o título Com StackSpot. Em seguida, ainda na mesma caixa de texto, há quatro frases organizadas em uma sequência vertical: Configurar STK CLI, Login (STK CLI), Usar Workspace (STK CLI) e Deploy (STK CLI + Runtime). Uma seta indicando para a direita separa a primeira caixa de texto da segunda. A segunda caixa de texto tem o título Com Self-Hosted. Depois do título há seis frases também organizadas em uma sequência vertical: Configurar STK CLI, Login (STK CLI), Usar Workspace (STK CLI), Deploy Plan (STK CLI), Obter tasks (Runtime Action) e Execução de tarefas (Runtime Action). As três últimas frases estão interligadas por uma seta que leva à frase Possibilidade de Customização.`}
+  sources={{
+    light: useBaseUrl('/img/Desk-CI-CDPipelines-PT-Light.png'),
+    dark: useBaseUrl('/img/Desk-CI-CDPipelines-PT-Dark.png'),
+  }}
+/>
+
+
+## **Próximos Passos** 
+
+- [**Configure e utilize o Self-hosted**](deployment/deploy/use-self-hosted/index.mdx);
+- [**Configure o comando de registro de deploy de Aplicação na sua pipeline**](deployment/deploy/register-app-deployment.mdx);
+- [**Configure Webhook para registrar atividades do repositório da sua Aplicação na tela de Atividades**](deployment/manage/activities.mdx).

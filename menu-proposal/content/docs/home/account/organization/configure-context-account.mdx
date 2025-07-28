@@ -1,0 +1,286 @@
+---
+title: "Configurar Contexto na Conta"
+sidebar_position: 8
+description: Como configurar Contexto na Conta.
+---
+
+> Nesta seção, você encontra os passos para configurar Contexto na Conta.
+
+## **Pré-requisito**
+
+[**Você precisa ter permissão de Account Holder ou Admin da Conta para continuar**](home/account/organization/access-management/roles.mdx).
+
+<br/>
+
+Para [**criar Aplicações**](create-use/use-content/application/index.mdx) ou [**Infraestruturas**](create-use/use-content/infra/infrastructure.mdx) dentro de um Workspace, as pessoas desenvolvedoras **utilizam as Stacks** que estão disponíveis. Ao utilizar estas Stacks, é possível **configurar os valores dos inputs dos conteúdos que existem nela, sendo eles: Plugins, Actions e Workflows.**
+
+É aqui que entra a **configuração de Contexto**:
+
+Como Administrador de uma Conta ou Workspace, você pode **definir previamente os valores dos inputs dos conteúdos (Plugins, Actions e Workflows) das Stacks**. Isso padroniza os valores e agiliza o trabalho das pessoas desenvolvedoras ao criar uma Aplicação, pois elas não precisarão configurar os inputs, apenas aceitar os valores predefinidos. Esse processo é chamado de **configurar ou definir Contextos**.
+
+#### **Formas de definir os valores de input**
+
+Você pode definir os valores de três maneiras:
+
+- **Como mandatórios:** os valores serão obrigatórios e imutáveis.  
+- **Apenas como sugestões:** os valores já aparecerão predefinidos, mas as pessoas desenvolvedoras poderão editá-los, se necessário.
+- **Por ambiente:** você pode definir valores de inputs que irão variar de acordo com o ambiente, por exemplo, Dev, QA, Prod. Estes valores também podem ser mandatórios ou apenas sugestões.
+
+#### **Níveis de configuração de Contexto**
+
+Os Contextos podem ser configurados  em **dois níveis hierárquicos** na Plataforma StackSpot:
+
+1. **Conta**: ao configurar Contextos no nível de Conta, os valores mandatórios serão obrigatoriamente utilizados no nível de Workspace. Os valores sugeridos poderão ser alterados.
+
+2. **Workspace**: ao configurar Contextos no nível de Workspace, você deve utilizar os valores mandatórios definidos no Contexto da Conta. No entanto, os valores sugeridos podem ser alterados e definidos como mandatórios para a criação de Aplicações.
+
+Então, **ao criar uma Aplicação** dentro deste Workspace, a pessoa desenvolvedora **poderá configurar** apenas **valores sugeridos** ou **não informados** em nenhum dos Contextos.
+
+Confira um exemplo de utilização de Contextos:
+
+Para entender melhor:
+
+<details> 
+  <summary>Confira um exemplo de configuração de Contexto</summary>
+
+- **Situação**
+
+Em uma empresa, o Admin de uma conta StackSpot precisa configurar uma [**Stack**](create-use/create-content/stack/create-stack.mdx) com um [**Plugin de Infra**](create-use/create-content/plugin/create-plugin.mdx) de [**Secret Manager na AWS**](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html) para gerenciar, recuperar e alternar credenciais de banco de dados, chaves de API e outros Secrets.
+
+<br/>
+
+Para fazer isso, o Admin precisa que alguns parâmetros do Secret Manager sejam sempre os mesmos ao longo da criação de [**Aplicações**](create-use/use-content/application/index.mdx) para a empresa.
+
+<br/>
+
+- **Solução**
+
+<br/>
+
+Para garantir que as pessoas desenvolvedoras utilizem os mesmos parâmetros de inputs na hora de criar Aplicações de Secret Manager dentro do Workspace, o Admin precisa configurar um Contexto em nível de Conta da Organização com:
+
+- **Inputs mandatórios:** esses valores **não podem** ser mudados pela pessoa desenvolvedora;
+- **Inputs sugeridos:** sugestões de valores que podem ser alterados pelas pessoas desenvolvedoras.
+
+<br/>
+
+Então, para isso, nesta situação hipotética, o Admin precisa seguir alguns passos, confira:
+
+<br/>
+
+1. Acessar o menu da **Conta**;
+2. Acessar a **Stack** Secret-Manager-Demo;
+3. Dentro da Stack, acessar o **Plugin de infra** Secret-manager-dois.
+
+
+:::warning Atenção!  
+
+Se você tem um Contexto de Conta e Workspace configurados e nenhum deles está definido como mandatório, o Contexto do Workspace será prevalecido. 
+
+Já se o Contexto de Conta foi definido na configuração inicial como mandatório, não é possível alterá-lo para Workspace. Neste caso, o Contexto da Conta sempre prevalece e só muda se o Contexto mudar.
+
+:::
+
+E para configurar o Contexto, é necessário definir os seguintes valores de input do Plugin:
+
+<br/>
+
+- **`Feature name`**: nome do microsserviço;
+- **`Microservice name`**: nome do microsserviço;
+- **`Owner team email`**: e-mail da equipe proprietária; 
+- **`Tech team email`**: e-mail da pessoa desenvolvedora responsável pelos Secret Managers;
+- **`KMS key Arn`**: ARN da chave KMS associada ao segredo; 
+- **`Environment`**: ambientes, por exemplo, de Dev, QA e Prod; e
+- **`Region`**: região. 
+
+<br/>
+
+Os valores de **`Feature Name`**, **`Microservice name`** e **`Owner team e-mail`** podem ser apenas sugestões. Mas, o Admin precisa definir que o mesmo engenheiro seja sempre o responsável por todos os Secret Managers, então é só configurar este valor como **`Mandatório`**.  
+
+<br/>
+
+Os valores de **`KMS key Arn`**, **`Environment`** e **`Region`** são variáveis, dependendo da situação. Por isso, eles não serão sugeridos nem configurados como mandatórios.
+
+<br/>
+
+### **Resultado**
+
+<br/>
+
+Após essa configuração, quando uma pessoa desenvolvedora acessar o Workspace para criar uma Aplicação utilizando a Stack Secret Manager, ela encontrará:
+
+<br/>
+
+- Os valores sugeridos já estarão preenchidos, mas poderão ser alterados pela pessoa desenvolvedora (Dev);
+- Os valores mandatórios já estarão preenchidos, e não poderão ser alterados;
+- Os valores que não foram configurados podem ser alterados.
+
+<br/>
+
+Essa configuração **diminui o tempo de trabalho das pessoas desenvolvedoras**, porque elas não precisam preencher todos os campos de input. Além disso, garante que a mesma pessoa seja sempre responsável pelos Secret Managers, aumentando a segurança.
+
+</details>
+
+## **Passo a passo para configurar Contextos em nível de Conta**
+
+Siga os passos para configurar o Contexto da sua Conta:
+
+### **Pré-requisitos**  
+
+- [**Ter Stacks criadas na sua Conta**](create-use/create-content/stack/create-stack.mdx);
+- Ter ambientes configurados na conta;
+- Ter permissão Account Holder.
+
+**Passo 1.** Acesse o [**Portal da Conta**](http://myaccount.stackspot.com); ou após fazer [**login no Portal da StackSpot**](https://app.stackspot.com/), clique no **seu avatar de perfil**;
+
+**Passo 2.** Selecione a opção **'Organização'**; 
+
+**Passo 3.** No menu do Portal da Conta, clique em **'StackSpot EDP'** e, em seguida, clique no botão **'Stacks'**;
+
+**Passo 4.** Selecione a Stack que você quer configurar os Inputs;
+
+**Passo 5.** Configure os inputs dos conteúdos da Stack como Contextos. Para isso, acesse a aba correspondente ao conteúdo que você deseja configurar, como por exemplo, **'Plugins'**.
+
+:::info Informação Adicional  
+
+O processo para configurar os inputs de **Plugins**, **Actions** e **Workflows** como Contextos **é o mesmo para todos os conteúdos**. Basta seguir os passos a seguir, escolhendo a aba referente ao conteúdo que você deseja configurar.
+
+:::  
+
+**Passo 6.** **Selecione o Plugin** que você quer configurar os valores dos Inputs;
+
+**Passo 7.** Clique no **campo de algum Input**, escreva seu **valor** e defina se ele será mandatório ou não:
+
+- **Marque** o checkbox **'Mandatório'**, para tornar o valor obrigatório e imutável; ou 
+- **Deixe desmarcado** o checkbox **'Mandatório'**, para que o valor seja apenas uma sugestão.
+
+<!--
+
+:::warning Atenção!
+
+- Você não pode definir um input vazio (sem valor) como mandatório.
+- **Input do tipo `list`**: se você definir esse input como mandatório, todos os itens da lista serão obrigatórios também. Você não poderá modificar nada em níveis abaixo da Conta, nem valores, nem a ordem dos itens. 
+- **Input do tipo `object`**: ao marcar o checkbox de "Mandatório", apenas os valores dos objetos que você preencher serão mandatórios. Os campos sem valor poderão ser modificados. 
+No fluxo de criação de Aplicação ou Infraestrutura, o usuário deve preencher os campos do objeto que não foram configurados anteriormente.
+
+- **Input do tipo `list` contendo `object`**: se você definir uma lista de objetos como mandatória, **a ordem da lista não pode ser alterada e não podem ser adicionados novos itens** no Workspace. No entanto, os campos dentro dos objetos podem ser alterados. Para defini-los como mandatórios, insira os valores dentro de cada campo. 
+Durante o processo de criação da Aplicação e Infraestrutura, o usuário não poderá adicionar ou remover itens da lista principal. No entanto, ele poderá preencher os campos ausentes dos objetos internos que ainda não foram configurados.
+
+- **Input do tipo `required-connection`**: a nível de **Conta**, não é possível definir Contexto, pois não é garantido que a Connection Interface esteja visível para toda a Conta. Porém, a **nível de Workspace**, você pode definir se a Connection Interface é mandatória ou não.
+
+:::
+
+
+Confira esses passos no GIF à seguir:
+
+![GIF mostra o Portal StackSpot EDP dentro da página inicial de uma conta. O mouse clica no item Stacks no menu principal. Na Conta existem quatro Stacks: test-stack-1; S3 CloudFront Stack, html-stack e S3 CloudFront Stack. O mouse seleciona a Stack S3 CloudFront Stack. Dentro dela, aperta na aba Plugins e aparece uma lista com dois plugins: bucket-s3-plugin e cloudfront-plugin. O mouse seleciona o primeiro e dentro do campo de input "Type the name of your Bucket" o cursor escreve "bucket-1" e seleciona o checkbox "mandatório". ](/img/setup-context-account-mandatory-input.gif)
+> O GIF está em inglês.
+--> 
+
+**Passo 8.** Se o Input oferecer a opção, você também pode **definir o valor por ambiente**:
+
+- **Ative** o botão **'Definir valor por ambiente** ao lado do input, escreva os valores para cada ambiente e defina se eles são **'mandatórios ou não'** clicando no checkbox.
+
+- Deixe o botão **'Definir valor por ambiente'** desativado.
+
+**Passo 9.** Você pode optar por [**utilizar uma Variável da Conta**](home/account/organization/variables/create-variables.mdx) para preencher o valor do input. Para isso, clique no botão **'Usar Variável'** ao lado do input e **selecione uma das variáveis disponíveis que aparece na lista (dropdown) do input.** 
+
+Caso o **valor não tenha sido configurado como mandatório na hora da criação da variável**, você pode **alterá-lo** e também configurá-lo como mandatório em nível de Contexto de Conta. 
+
+
+**Passo 10.** Após configurar todos os Inputs deste Plugin, clique no botão **'Salvar'**;
+
+
+Pronto, você configurou o valores dos inputs dos Conteúdos da Stack para o seu Contexto.
+
+:::warning Atenção!
+
+Repita o processo com os inputs dos outros Conteúdos, Plugins, Actions ou Workflows caso queira configurá-los como Contexto.
+
+:::
+
+
+Pronto, agora você tem Contextos configurados na sua Conta e pode partir para a [**criação de Workspaces**](home/workspace/create-workspace.mdx).
+
+
+## **Regras para preenchimento de inputs de Contexto** 
+
+- Você não pode definir um input vazio (sem valor) como mandatório.
+- **Input do tipo `list`**: se você definir esse input como mandatório, todos os itens da lista serão obrigatórios também. Você não poderá modificar nada em níveis abaixo da Conta, nem valores, nem a ordem dos itens. 
+- **Input do tipo `object`**: ao marcar o checkbox de "Mandatório", apenas os valores dos objetos que você preencher serão mandatórios. Os campos sem valor poderão ser modificados. 
+No fluxo de criação de Aplicação ou Infraestrutura, o usuário deve preencher os campos do objeto que não foram configurados anteriormente.
+
+- **Input do tipo `list` contendo `object`**: se você definir uma lista de objetos como mandatória, **a ordem da lista não pode ser alterada e não podem ser adicionados novos itens** no Workspace. No entanto, os campos dentro dos objetos podem ser alterados. Para defini-los como mandatórios, insira os valores dentro de cada campo. 
+Durante o processo de criação da Aplicação e Infraestrutura, o usuário não poderá adicionar ou remover itens da lista principal. No entanto, ele poderá preencher os campos ausentes dos objetos internos que ainda não foram configurados.
+
+- **Input do tipo `required-connection`**: em nível de **Conta**, não é possível definir Contexto, pois não é garantido que a Connection Interface esteja visível para toda a Conta. Porém, a **nível de Workspace**, você pode definir se a Connection Interface é mandatória ou não.
+
+## **Configurar valores de Contexto utilizando Variáveis da Conta**
+
+Você pode escolher [**utilizar uma Variável da Conta**](home/account/organization/variables/create-variables.mdx) para preencher o valor do input. Para isso:
+
+1. Clique no **botão "Usar variável"** ao lado do campo do input; 
+2. **Selecione uma das Variáveis** disponíveis que aparecem na lista.
+
+Caso o **valor não tenha sigo configurado como mandatório na hora da criação da Variável**, você pode **alterá-lo** e também configurá-lo como mandatório em nível de Contexto de Conta. 
+
+Confira o fluxo na imagem a seguir: 
+
+![Print Screen do Portal StackSpot EDP na tela de configuração de Plugins dentro do fluxo de configurar Contexto dentro de uma conta. A tela mostra a seção de Applications selecionada com o passo de Apply Plugins e o campo do input Database backup url selecionado com um dropdown aberto para baixo com uma lista de Variáveis aparecendo. ](/img/use-variables-via-portal-account.png)
+
+## **Atualizar valores de Contexto automaticamente**
+
+Para configurar Contextos, os valores de inputs dos Plugins e Actions **são configurados de acordo com a versão da Stack**. Cada versão pode ter valores de inputs diferentes.
+
+Então, se alguém publicar uma nova versão da Stack adicionada à sua conta, o **Contexto deve ser configurado novamente**. Você pode fazer isso de forma **automática**, apenas **importando os valores da versão** da Stack que você já tinha **configurado previamente**.
+
+:::warning Atenção  
+
+Só o campo **`name`** é importado entre as versões de Stack, já que ele é o único campo comum entre as versões. Ou seja, **você precisa configurar o Contexto dos novos inputs** como `user` e `port`, por exemplo. 
+
+:::
+
+### **Vantagens**
+
+Atualizar os valores do Contexto evita que você tenha que atualizar manualmente os valores e repeti-los. Se a Stack for grande e com muitos Plugins, esse trabalho seria extenso e repetitivo.
+
+Por exemplo:
+
+1. Você configurou o Contexto de uma Stack da versão 1.0.0 na sua Conta;  
+2. A pessoa desenvolvedora da Stack criou uma nova versão, 2.0.0;  
+3. Você recebe um aviso no dashboard que você pode importar os valores que você configurou na versão anterior;  
+4. Se você confirmar, a StackSpot irá importar os valores para a versão 2.0.0. Então os Plugins e Actions terão os mesmos valores que a versão anterior de forma automática.
+
+:::warning Atenção!
+
+Quando um Workflow é executado, o Contexto de Plugin não é considerado. Ou seja, o Contexto é sempre do Workflow principal, já que Contextos de Workflows filhos ou outros componentes executados dentro do Workflow principal são ignorados. 
+
+:::
+
+### **Como funciona**
+
+Ao adicionar uma nova versão da Stack na sua Conta, uma notificação aparece no Dashboard informando que você pode importar o Contexto de versões anteriores. Para importar, siga os passos a seguir:
+
+**Passo 1.** Acesse a sua Conta e clique em **'Stacks'** no menu principal;
+
+**Passo 2.** Na notificação do dashboard ou dentro do card da Stack, clique no botão **'Importar Configurações de Entrada'**;
+
+**Passo 3.** Selecione a versão da Stack que você quer importar o Contexto (os inputs configurados);
+
+![](/img/import-context-account-2.png)
+
+:::tip Dica!  
+
+É indicado selecionar a versão recomendada pela StackSpot.
+
+:::
+
+**Passo 4.** Clique no botão **'Importar'**.
+
+![](/img/import-context-account-3.png)
+
+Pronto, você importou o Contexto de uma versão anterior da Stack. Agora você pode configurar o que for necessário.
+
+## **Próximos passos**
+
+- [**Configurar Workflow**](home/account/guides/configure-workflow.mdx)

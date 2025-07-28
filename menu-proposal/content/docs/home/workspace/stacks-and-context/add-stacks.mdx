@@ -1,0 +1,106 @@
+---
+title: "Adicionar e Atualizar Stacks"
+sidebar_position: 1
+description: Como adicionar e atualizar Stacks, e configurar contexto no Workspace.
+---
+
+## Pré-requisito
+
+- [**Você precisa ter permissão de Account Holder ou Admin da Conta para continuar**](home/account/organization/access-management/roles.md ).
+
+## **Adicionar versão de Stack no Workspace**
+
+Siga os passos a seguir:
+
+**Passo 1.** [**Faça login na sua Conta**](https://app.stackspot.com/login) da StackSpot e acesse o **'Workspaces'**;
+
+**Passo 2.** Acesse o seu Workspace e, dentro dele, clique no botão  **'Stacks'**;
+
+**Passo 3.** Clique em **'Adicionar Stacks'** para adicionar a primeira Stack;
+
+**Passo 4.** Uma lista de Stacks já disponíveis na Conta aparece do lado direito. Selecione quais versões da Stack você quer adicionar ao seu Workspace.
+
+> Nesta lista, você pode procurar Stacks dentro da sua Conta filtrando por nome ou por Estúdios;
+
+
+:::danger Atenção!
+
+Se a Stack que você quer adicionar ao Workspace estiver em um Estúdio com visibilidade restrita, ela não será exibida no seu Workspace. Caso isso aconteça, fale com o responsável pelo Estúdio da Stack para checar se é possível alterar a visibilidade.
+
+:::
+
+**Passo 5.** Depois de selecionar a versão da Stack, clique no botão **'Adicionar Stacks'**.  
+
+:::tip Dica!  
+Se você ainda não tem Stack publicada, siga os passos para [**Criar uma Stack**](create-use/create-content/stack/create-stack.mdx).
+:::
+
+Confira todos os passos no GIF a seguir:
+
+![](/img/add_stack_to_workspace.gif)
+> O GIF está em inglês.
+
+## **Atualizar versão de Stack no Workspace**
+
+Você pode atualizar as Stacks do seu Workspace quando ao menos uma delas tiver uma **nova versão disponível**.
+
+Siga os passos a seguir:
+
+**Passo 1.** Faça [**login na sua Conta**](https://app.stackspot.com/login) da StackSpot e clique no botão **'Acessar Workspaces'**;
+
+**Passo 2.** Acesse o seu Workspace e, dentro dele, clique em  **'Stacks'** no menu principal;
+
+**Passo 3.** Uma janela aparecerá informando quais Stacks serão atualizadas e para quais versões. Clique em **'Atualizar versões'**.
+
+![](/img/update-stack.png)
+
+Pronto, você atualizou as versões da Stack no Workspace. 
+
+Para entender melhor:
+
+<details> 
+  <summary>Confira uma explicação detalhada sobre atualização na Stack</summary>
+
+Considere o seguinte cenário: "Como eu faço para atualizar um Plugin Java/Kootlin na Stack, da versão 1.x.x para a 2.x.x?"
+
+<br/>
+
+Primeiro, é importante que você [**confira as regras de versionamento da Stack**](create-use/create-content/stack/stack-version.mdx).
+
+<br/>
+
+Neste cenário em específico, a versão da Stack não vai influenciar seu projeto. Você precisa garantir que a Stack esteja atualizada no seu Workspace e, depois disso, vai conseguir atualizar a versão dos Plugins. 
+
+<br/>
+
+Ou seja, a versão da Stack no [**`stk.yaml`**](create-use/use-content/apply-plugin.md#stackspot-yaml-stkyaml) nunca vai ser alterada a partir versão inicial (de quando o projeto foi criado). A partir da atualização da Stack no Workspace, você poderá acessar os Plugins nas últimas versões publicadas. 
+
+Outra dica é aproveitar as Stacks para buscar o caminho completo do Plugin. Confira o passo a passo a seguir: 
+<br/>
+
+1. Acesse a Stack de Infra;
+2. Localize o Plugin que você quer atualizar;  
+3. Clique no botão **'Detalhes do plugin'**
+
+<br/>
+
+![](/img/plugin-detail.png)
+
+<br/>
+
+4. Abra o seu terminal e execute o comando **`stk update plugin`**;
+5. Selecione o Plugin que você quer atualizar e informe a versão mais recente do Plugin, como por exemplo:   
+**`qf4-infraestrutura/infraestrutura-aws-lambda@6.0.2`**.
+
+<br/>
+
+Pronto, você atualizou a versão de um Plugin em uma Stack. 
+
+<br/>
+
+</details>
+
+## **Próximo Passo**
+
+- [**Configurar Contexto**](home/workspace/stacks-and-context/setup-context.mdx);
+- [**Configurar Workflow**](home/workspace/configure-workflow.mdx).
