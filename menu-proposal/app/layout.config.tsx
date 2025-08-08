@@ -1,5 +1,7 @@
-import { BookIcon } from 'lucide-react';
+import { BookIcon, ListOrdered } from 'lucide-react';
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
+import StkLogo from "../components/StkLogo";
+
 
 /**
  * Shared layout configurations
@@ -12,8 +14,7 @@ export const baseOptions: BaseLayoutProps = {
   nav: {
     title: (
       <>
-      <link href='/img/logo-white.svg' />
-        StackSpot Docs
+      <StkLogo/>
       </>
               
     ),
@@ -33,6 +34,13 @@ export const baseOptions: BaseLayoutProps = {
       url: '/blog',
       // secondary items will be displayed differently on navbar
       secondary: true,
+    },
+    {
+      icon: <ListOrdered />,
+      text: 'Onboarding',
+      url: '/docs/onboarding',
+      // secondary items will be displayed differently on navbar
+      secondary: false,
     },
   ],
 };
