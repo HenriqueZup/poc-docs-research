@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
+  <title>Chat API StackSpot - Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body { font-family: Arial, sans-serif; background: #f7f7f7; margin: 0; padding: 0; }
+    .container { max-width: 500px; margin: 40px auto; background: #fff; border-radius: 8px; padding: 2em; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    h1 { text-align: center; color: #003366; margin-bottom: 2em; }
+    button { padding: 0.8em 1.5em; border: none; border-radius: 4px; background: #0055aa; color: #fff; cursor: pointer; font-size: 1em; }
+    button:disabled { background: #ccc; cursor: not-allowed; }
+    textarea { width: 100%; margin: 0.3em 0 1em 0; padding: 0.8em; font-size: 1em; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+    .result { margin-top: 1em; }
+    .success { background: #e6ffe6; border-left: 4px solid #44aa44; color: #006600; padding: 1em; border-radius: 4px; }
+    .error { background: #ffe6e6; border-left: 4px solid #ff4444; color: #cc0000; padding: 1em; border-radius: 4px; }
+    .loading { color: #0055aa; font-style: italic; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>StackSpot Chat API</h1>
+
+    <!-- Botão de Health -->
+    <button onclick="checkHealth()">Verificar Saúde da API</button>
+    <div id="healthResult" class="result"></div>
+
+    <form id="chatForm" onsubmit="return sendMessage(event)">
+      <label for="msg"><strong>Mensagem para o agente:</strong></label>
+      <textarea id="msg" name="msg" rows="3" required placeholder="Digite sua mensagem..."></textarea>
+      <button type="submit" id="sendBtn">Enviar</button>
+    </form>
+    <div id="chatResult" class="result"></div>
+  </div>
+  <script>
+    function checkHealth() {
+      const healthResult = document.getElementById('healthResult');
+      healthResult.innerHTML = '<div class="loading">Verificando saúde da API...</div>';
+      fetch('http://192.168.1.4:5000/api/health')
+        .then(resp => {
+          if (!resp.ok) throw new Error(`HTTP ${resp.status}: ${resp.statusText}`);
+          return resp.json();
+        })
+        .then(data => {
+          healthResult.innerHTML = `<div class="success"><strong>Saúde da API:</strong><br><pre>${JSON.stringify(data, null, 2)}</pre></div>`;
+        })
+        .catch(err => {
+          healthResult.innerHTML = `<div class="error">Erro ao verificar saúde: ${err.message}</div>`;
+        });
+    }
+
+    function sendMessage(event) {
+      event.preventDefault();
+      const msgInput = document.getElementById('msg');
+      const message = msgInput.value.trim();
+      const chatResult = document.getElementById('chatResult');
+      const sendBtn = document.getElementById('sendBtn');
+      if (!message) return false;
+      chatResult.innerHTML = '<div class="loading">Enviando mensagem...</div>';
+      sendBtn.disabled = true;
+      sendBtn.textContent = 'Enviando...';
+      fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ 'user_prompt': message })
+      })
+        .then(resp => {
+          if (!resp.ok) {
+            return resp.json().then(errorData => {
+              throw new Error(errorData.error || `HTTP ${resp.status}: ${resp.statusText}`);
+            });
+          }
+          return resp.json();
+        })
+        .then(data => {
+          if (data.message) {
+            chatResult.innerHTML = `<div class="success"><strong>Resposta do Agente:</strong><br>${escapeHtml(data.message).replace(/\n/g, '<br>')}</div>`;
+          } else {
+            chatResult.innerHTML = `<div class="error">Resposta inesperada da API.</div>`;
+          }
+        })
+        .catch(err => {
+          chatResult.innerHTML = `<div class="error">Erro: ${err.message}</div>`;
+        })
+        .finally(() => {
+          sendBtn.disabled = false;
+          sendBtn.textContent = 'Enviar';
+          msgInput.value = '';
+        });
+      return false;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>
