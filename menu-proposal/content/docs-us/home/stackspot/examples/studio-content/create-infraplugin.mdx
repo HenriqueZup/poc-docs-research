@@ -1,0 +1,524 @@
+---
+title: Create Infra Plugin 
+sidebar_position: 4
+description: Example of how to create an Infrastructure Plugin and a Stack.
+---
+
+> In this section, you will find an example of how to create Infrastructure Plugins on StackSpot.
+
+<br/>
+
+## **Introduction**
+
+- **Beginner level**
+
+This is just an example on how to create an Plugins, [**for more details for more details to create your Infra Plugin, see the Plugins page**](create-use/create-content/plugin/plugins.md).
+
+### **Before you begin**
+
+This example shows you how to create two Infrastructure Plugins with StackSpot:
+
+1. S3 Bucket Infra Plugin.
+2. CloudFront Infra Plugin.
+
+These Infra Plugins set up the infrastructure to deploy an Application created with the App Plugins from the [**previous example of creating an Application Plugin**](home/stackspot/examples/studio-content/create-app-plugins-stack.md).
+
+- [1. Create Infrastructure Plugins](#1-create-infra-plugins).
+- [2. Create Stack and add the Plugins](#2-create-a-stack-and-add-the-infra-plugins-to-it).
+
+### **Requirements**
+
+- [**Create a StackSpot account**](https://app.stackspot.com/login).
+- [**Ensure you have permission to create content**](home/account/organization/access-management/index.md).
+- [**Install STK CLI**](home/stk-cli/install.md).
+- Login to your account on the STK CLI. Execute the command:
+
+```bash
+stk login
+```
+
+In this example, you will use the contents from two repositories to edit the Plugins:
+
+- [**S3 Bucket Plugin repository**](https://github.com/stack-spot/docs-bucket-s3-plugin): This Plugin creates and configures a S3 bucket.
+- [**CloudFront Plugin repository**](https://github.com/stack-spot/docs-cloudfront-plugin): This Plugin creates and configures a CloudFront.
+
+These two Plugins help you create an application and deploy an Infrastructure.
+
+## **1. Create Infra Plugins**
+
+### **Step 1. Create an empty directory**
+
+Infra Plugins provisions resources to an Application.
+
+Create a project directory. In your terminal, execute:
+
+```bash
+mkdir plugin-demo
+```
+
+Access the directory in your preferred IDE, such as Visual Studio Code.
+
+### **Step 2. Create the S3 Bucket infra plugin**
+
+In your IDE, open a terminal and execute the command to create your Infra Plugin's structure:
+
+```bash
+stk create plugin bucket-s3-plugin
+```
+
+:::info
+
+"bucket-s3-plugin" is the Plugin's name. You can also run only **`stk create plugin`** and answer the following question with the Plugin's name.
+
+:::
+
+After you execute the command, answer the following questions in your terminal:
+
+```bash
+? Name your plugin: bucket-s3-plugin
+? Do you want to init a git repository? No
+? Plugin description: (Describe your plugin explaining its purpose): Create S3 bucket
+? Version: (0.0.1) → press enter 
+? Select the plugin type: Infra 
+? Do you want to add a Required Connection? No
+? Do you want to add a Generated Connection? Yes → The Plugin will need to generate a Connection Interface so the CloudFront Plugin can connect with it later to create an Infrastructure.
+? Generated Connections: aws-s3-conn
+? Alias for aws-s3-conn: bucket-s3-plugin-conn
+? Do you want to add another Generated Connection? No
+- Plugin bucket-s3-plugin successfully created!
+```
+
+### **Step 3. Edit the S3 Bucket Infra Plugin**
+
+You must edit the IaC code of your S3 bucket and the Plugin's structure to make it your Infra Plugin template.
+
+> Use the files from the [**S3 Bucket Plugin repository**](https://github.com/stack-spot/docs-bucket-s3-plugin) mentioned at the beginning of this guide.
+
+1. Clone the repository;
+
+2. Open the files from the repository in your IDE;
+
+3. Open the **`templates-deploy`** folder and **copy** the files;
+
+> You can delete the README file.
+
+These are Terraform files, and your S3 Bucket Plugin will be public.
+
+:::warning
+
+Access the **`plugin.yaml`** file **of your S3 Bucket Plugin** and check the values highlighted below:
+
+```yaml
+- label: Inform a connection for bucket_s3
+      name: bucket_s3
+      type: generated-connection
+      connection-interface-type: aws-s3-conn
+      outputs:
+// new-line      
+         - from: bucket-s3-plugin-conn-arn
+           to: arn
+// new-line           
+         - from: bucket-s3-plugin-conn-bucket_name
+           to: bucket_name
+```
+
+- Then, enter the **`outputs.tf`** file you just copied. It should have the values highlighted below:
+
+```hcl
+// new-line-start
+output "bucket-s3-plugin-conn-arn" {
+// new-line-end
+  value = aws_s3_bucket.b.arn
+}
+// new-line-start
+output "bucket-s3-plugin-conn-bucket_name" {
+// new-line-end
+  value = aws_s3_bucket.b.bucket
+}
+```
+
+- The values **`from`** in the **`plugin.yaml`** file must be the same as the *`output`** in the **`outputs.tf`** file.
+::: 
+
+5. You need to remove these inputs because the Infra Plugin won't use it.
+
+Go to the **`plugin.yaml`** file and delete the values under the **`inputs`**. They are highlighted below:
+
+```yaml
+schema-version: v3
+kind: plugin
+metadata:
+ name: bucket-s3-plugin
+ display-name: bucket-s3-plugin
+ description: Create bucket s3
+ version: 0.0.1
+ picture: plugin.png
+spec:
+ type: infra
+ compatibility:
+   - python
+ docs:
+   pt-br: docs/pt-br/docs.md
+   en-us: docs/en-us/docs.md
+ single-use: False
+ runtime:
+   environment:
+     - terraform-1-4
+     - aws-cli-2
+     - git-2
+ technologies: # Ref: https://docs.stackspot.com/create-use/create-content/yaml-files/plugin-yaml/#technologies-1
+   - Api
+ stk-projects-only: false
+ inputs:
+// old-start 
+    - label: Type name of your resource
+      name: resource
+      type: text
+      required: true
+      default: Client
+      pattern: '([A-Z][a-z]+)+'
+      help: 'Inform your resource name (e.g.: Client)'
+    - label: Digite o nome da connection do bucket_s3
+      name: bucket_s3
+      type: generated-connection
+      connection-interface-type: aws-s3-conn
+      outputs:
+        - from: bucket-s3-plugin-conn-arn
+          to: arn
+        - from: bucket-s3-plugin-conn-bucket_name
+          to: bucket_name  
+ - label: Choose http method of new endpoint
+   name: method
+   type: select
+   items:
+     - GET
+     - POST
+     - PUT
+     - DELETE
+     - PATCH
+   default: GET
+   required: true
+   help: 'Inform the method of the endpoint (e.g.: post or delete)'
+// old-end
+```
+
+6. Now, you must add the new inputs because they get the data (inputs) to use with the IaC code of the S3 Bucket template.
+Go to your cloned repository's  **`plugin.yaml`** file. Copy and paste the **`input`** content into your Plugin's file.
+
+After that, your  **`plugin.yaml`** file should look like this:
+
+```yaml
+schema-version: v3
+kind: plugin
+metadata:
+ name: bucket-s3-plugin
+ display-name: bucket-s3-plugin
+ description: Create bucket s3
+ version: 0.0.1
+ picture: plugin.png
+spec:
+ type: infra
+ compatibility:
+   - python
+ docs:
+   pt-br: docs/pt-br/docs.md
+   en-us: docs/en-us/docs.md
+ single-use: False
+ runtime:
+   environment:
+     - terraform-1-4
+     - aws-cli-2
+     - git-2
+ technologies: # Ref: https://docs.stackspot.com/create-use/create-content/yaml-files/plugin-yaml/#technologies-1
+   - Api
+ stk-projects-only: false
+ inputs:
+// new-line-start
+   - label: Type name of your bucket
+     name: bucket_name
+     type: text
+     required: true
+     help: 'Inform your bucket s3 name'
+   - label: Digite o nome da connection do bucket_s3
+      name: bucket_s3
+      type: generated-connection
+      connection-interface-type: aws-s3-conn
+      outputs:
+        - from: bucket-s3-plugin-conn-arn
+          to: arn
+        - from: bucket-s3-plugin-conn-bucket_name
+          to: bucket_name  
+// new-line-end
+```
+
+You've edited your Bucket S3 Plugin.
+
+### **Step 4. Test the S3 Bucket Infra Plugin locally**
+
+Test the Plugin you created locally using the **`stk apply plugin`** command.
+Add the **`--deploy`** flag to generate the terraform files locally.
+
+See below:
+
+```bash
+stk apply plugin /Users/username/plugin-demo/bucket-s3-plugin --deploy
+```
+
+To test it:  
+
+1. Create a new directory. Execute the command:
+
+```bash
+mkdir test-project
+```
+
+2. Access the directory and execute the command below.
+
+- Use the root path of the Plugin you've just created, see the example:
+
+```bash
+stk apply plugin /Users/username/plugin-demo/bucket-s3-plugin --deploy
+```
+
+The Plugin's files should appear inside your **`test-project`** directory.
+
+:::info
+
+You can't apply a Plugin locally if you are within a Workspace. To exit, execute the command below:
+
+```bash
+stk exit workspace 
+```
+
+:::
+
+### **Step 5. Publish the S3 Bucket Infra Plugin**
+
+:::warning
+**Requirements**
+
+- Choose the same Studio you used to publish the Plugins from the [**Create App Plugins example**](home/stackspot/examples/studio-content/create-app-plugins-stack.md)
+
+:::
+
+1. Go to the S3 Bucket Plugin root directory and execute:
+
+> You have two options [**execute the command and select the Studio**](home/stk-cli/commands/plugin-commands.md).
+> Or inform the **`--studio`** flag like the example below:
+
+```bash
+stk publish plugin --studio studio-slug-name
+```
+
+> In StackSpot, [**Slugs**](create-use/studio/slugs.md) are unique identifiers for Accounts, Studio, Stacks, and Plugins, and they are part of StackSpot URLs.
+
+You published the Plugin. Find it in your Studio.
+
+### **Step 6. Create the CloudFront Infra Plugin**
+
+In your IDE, open a terminal and execute the command below:
+
+```bash
+stk create plugin cloudfront-plugin
+```
+
+:::info
+"cloudfront-plugin" is the Plugin's name. You can also run only the **`stk create plugin`** command and answer the following question.
+::: 
+
+After you execute the command, answer the following questions in your terminal:
+
+```bash
+? Name your plugin: cloudfront-plugin
+? Do you want to init a git repository? No
+? Plugin description: (Describe your plugin explaining its purpose): Create and configure a CloudFront distribution
+? Version: (0.0.1) → Press enter
+? Select the plugin type: Infra
+? Do you want to add a Required Connection? Yes → In this case, the Plugin requires the same Connection Interface the s3 Bucket Plugin generated before
+? Required Connections: aws-s3-conn 
+? Alias for aws-s3-conn: bucket-s3-cloudfront-conn
+? Do you want to add another Required Connection? No
+? Do you want to add a Generated Connection? No
+
+Plugin cloudfront-plugin successfully created!
+```
+
+### **Step 7. Edit the CloudFront Infra Plugin**
+
+> Now, use the files from the [**Cloudfront Plugin repository**](https://github.com/lucas-almeida-zup/cloudfront-plugin).
+
+1. Clone the repository;
+
+2. Open the files in your IDE;
+
+3. Open the folder **`templates-deploy`** and **copy** the files;
+
+4. **Go back** to **your CloudFront Plugin directory** and **paste** the files you've copied inside its **`templates-deploy`** folder.
+
+> You can delete the README file.
+
+#### **About the files**
+
+These are Terraform files.
+
+- The `main.tf` file will configure the entire CloudFront distribution by pointing to a specific Connection Interface bucket. The highlighted line below is the reference to the Connection Interface:
+
+```hcl
+resource "aws_cloudfront_distribution" "s3_distribution" {
+  origin {
+// new-line-start
+domain_name = "{{connections['bucket-s3-cloudfront-conn'].bucket_name}}.s3.amazonaws.com"com"
+// new-line-end
+    origin_id   = local.s3_origin_id
+  }
+```
+
+This value **must be the same** as the value from the **`alias`** in your CloudFront **`plugin.yaml.`**. See below:
+
+```yaml
+ spec:
+  inputs:
+    - label: Connection interface for your bucket-s3-cloudfront-conn
+      name: bucket-s3-cloudfront-conn
+      type: required-connection
+      connection-interface-type: aws-s3-conn
+```
+
+> **It's important to check it.**
+
+5. Go to your CloudFront **`plugin.yaml`** file. Delete the whole **`input`** content, see highlighted below:
+
+```yaml
+schema-version: v3
+kind: plugin
+metadata:
+ name: cloudfront-plugin
+ display-name: cloudfront-plugin
+ description: Create and configure a CloudFront distribution
+ version: 0.0.1
+ picture: plugin.png
+spec:
+ type: infra
+ compatibility:
+   - python
+ docs:
+   pt-br: docs/pt-br/docs.md
+   en-us: docs/en-us/docs.md
+ single-use: False
+ runtime:
+   environment:
+     - terraform-1-4
+     - aws-cli-2
+     - git-2
+ technologies: # Ref: https://docs.stackspot.com/create-use/create-content/yaml-files/plugin-yaml/#technologies-1
+   - Api
+  inputs:
+    - label: Connection interface for your bucket-s3-cloudfront-conn
+      name: bucket-s3-cloudfront-conn
+      type: required-connection
+      connection-interface-type: aws-s3-conn
+ stk-projects-only: false
+// old-start 
+ inputs:
+ - label: Type name of your resource
+   name: resource
+   type: text
+   required: true
+   default: Client
+   pattern: '([A-Z][a-z]+)+'
+   help: 'Inform your resource name (e.g.: Client)'
+ - label: Choose http method of new endpoint
+   name: method
+   type: select
+   items:
+     - GET
+     - POST
+     - PUT
+     - DELETE
+     - PATCH
+   default: GET
+   required: true
+   help: 'Inform the method of the endpoint (e.g.: post or delete)'
+// old-end
+```
+
+After that, your **`plugin.yaml`** file should look like this:
+
+```yaml
+schema-version: v3
+kind: plugin
+metadata:
+ name: cloudfront-plugin
+ display-name: cloudfront-plugin
+ description: Create and configure a CloudFront distribution
+ version: 0.0.1
+ picture: plugin.png
+spec:
+ type: infra
+ compatibility:
+   - python
+ docs:
+   pt-br: docs/pt-br/docs.md
+   en-us: docs/en-us/docs.md
+ single-use: False
+ runtime:
+   environment:
+     - terraform-1-4
+     - aws-cli-2
+     - git-2
+ technologies: # Ref: https://docs.stackspot.com/create-use/create-content/yaml-files/plugin-yaml/#technologies-1
+   - Api
+  inputs:
+    - label: Connection interface for your bucket-s3-cloudfront-conn
+      name: bucket-s3-cloudfront-conn
+      type: required-connection
+      connection-interface-type: aws-s3-conn
+ stk-projects-only: false
+```
+
+You’ve edited your CloudFront infra Plugin.
+
+### **Step 8. Publish the CloudFront infra Plugin**
+
+:::warning
+
+**Requirements**
+
+- Choose the same Studio you used to publish the Plugins from the [**Create Application Plugins example**](home/stackspot/examples/studio-content/create-app-plugins-stack.md) and the S3 Bucket Plugin.
+:::
+
+1. Access the CloudFront Plugin root directory and execute:
+
+```bash
+stk publish plugin --studio studio-slug-name
+```
+
+> In StackSpot, [**Slugs**](create-use/studio/slugs.md) are unique identifiers for Accounts, Studio, Stacks, and Plugins, and they are part of StackSpot URLs.
+
+You've published the plugin. Find it in your Studio.
+
+## **2. Create a Stack and add the Infra Plugins to it**
+
+Create a Stack and add Bucket S3 and CloudFront Plugins to it.
+
+Follow the steps:
+
+1. Go to your Studio on the [**StackSpot Platform**](https://app.stackspot.com/login);
+2. Access your Studio and, on the left menu, click **‘Stacks’**;
+3. Click on the **'Create Stacks'** button;
+4. Provide information:
+    - Name your Stack as **"S3 CloudFront Stack"**;  
+    - Add a description.
+
+5. Click **‘Create’**.
+
+Now, add the Plugins:
+
+1. Access the Stack you just created.
+2. Click **‘Plugins’**, then **‘Infra’** on the left menu.
+3. Click on the **‘Add Infra Plugin’** button.
+4. Choose the Bucket S3 and CloudFront Plugins and click **‘Add Plugins’**.
+
+## **What can you do next?**
+
+- Now you can create and deploy an Application using the Infra Plugins from this example and App Plugins from the [**App Plugin example page**](home/stackspot/examples/studio-content/create-app-plugins-stack.md).

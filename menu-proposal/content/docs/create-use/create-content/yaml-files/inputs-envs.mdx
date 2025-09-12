@@ -1,0 +1,50 @@
+---
+title: Inputs-envs
+description: Detalhes para configurar os Inputs de Ambiente (inputs-envs) no YAML.
+---
+
+## **Sobre os inputs de ambiente**
+
+Os **`inputs-envs`** são **"inputs"** que permitem que você defina um valor diferente para o input do Plugin baseado nos ambientes disponíveis no seu Workspace. Diferente dos **inputs**, os **inputs-envs** são compatíveis apenas com os arquivos de configuração dos [**Plugins (`plugin.yaml`)**](create-use/create-content/yaml-files/plugin-yaml.mdx), no momento Actions e Starters não suportam inputs de ambiente.
+
+O uso de inputs de ambiente é o mesmo dos [**inputs**](create-use/create-content/yaml-files/inputs.mdx) de um Plugin. A diferença está na declaração dentro do seu arquivo **`plugin.yaml`** que passa a ser da seguinte maneira:
+
+1. Os inputs continuam sendo declarados dentro do campo **`spec`** do seu arquivo **`plugin.yaml`**;
+2. A declaração do objeto **`inputs`** muda para **`inputs-envs`** e toda a estrutura que compõe um input se mantém.
+
+Por exemplo:
+
+```yaml
+spec:
+  inputs-envs:
+    - label: SQS Arn
+      name: sqs_arn
+      type: text
+```
+
+Um input de ambiente ainda precisa conter [**os campos obrigatórios de um input**](create-use/create-content/yaml-files/inputs.mdx).
+
+## **Como os inputs de ambiente funcionam?**
+
+Eles permitem que você possa definir um valor diferente para o input baseado nos ambientes disponíveis no seu Workspace. Por exemplo, se sua conta possui 3 ambientes como um de **desenvolvimento**, **produção** e **homologação** ("dev", "hml" e "prd"), é possível com o mesmo input definir 3 valores diferentes. Dessa forma, o valor final na renderização do template, ou seja, durante o deploy da Aplicação ou Infraestrutura será o valor configurado no ambiente desejado do seu Workspace.
+
+Por exemplo, requisitar um nome de conexão para cada tipo de ambiente:
+
+```yaml
+spec:
+  inputs-envs:
+    - label: Informe o nome da sua conexão
+      name: connection_name
+      type: text  
+```
+
+No exemplo seria possível definir um valor para **`connection_name`** para cada ambiente disponível no seu Workspace, e o valor referente será usado durante o deploy para o ambiente selecionado.
+
+## **Utilizar as variáveis de ambiente no contexto do seu Workspace**
+
+Após configurar as variáveis de ambiente no seu Plugin, você deve seguir com o fluxo de publicação do seu Plugin:
+
+1. [**Publicar o seu Plugin**](create-use/create-content/plugin/publish-plugin.mdx);
+2. [**Adicionar Plugins na sua Stack**](create-use/create-content/stack/create-stack.mdx#adicionar-plugins-na-sua-stack)
+3. [**Configurar o seu Workspace**](home/workspace/configure-workspace.mdx)
+4. Por fim, as **variáveis de ambiente ficarão visíveis** durante a etapa de [**configuração do contexto em seu Workspace**](home/workspace/stacks-and-context/setup-context.mdx)

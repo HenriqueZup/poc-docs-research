@@ -1,0 +1,173 @@
+---
+title: StackSpot Native Content
+description: Section about the content produced by StackSpot and made available for
+  you to use.
+---
+
+To use StackSpot's platform, you must incorporate mandatory native content, Actions, and Workflows. This content is available through an official Studio that StackSpot manages to improve usability.  
+
+The content has been transferred from public repositories to the **stackspot-core** Studio. It is now private and will not be visible to users on the platform.
+
+## **Content migration**
+
+The content migration, cloning, and republishing repositories in your Studios are no longer required. You can now use Actions and Workflows directly with the STK CLI commands.  
+
+To execute an Action or Workflow, specify the Studio Qualifier **stackspot-core** along with the name of the desired content. Here are some examples:
+
+- **Action**: **`stk run action stackspot-core/name-slug-action`**;
+- **Workflow**: **`stk run workflow stackspot-core/name-slug-workflow`**;
+
+:::warning
+
+The 'stk run' workflow command is used exclusively for executing reusable Workflows. To run other types of workflows, utilize the specific commands that accept the --workflow parameter. For example, execute a deploy workflow using the **'stk deploy'** command.
+
+```bash
+stk deploy app --workflow stackspot-core/name-slug-workflow-deploy-app
+```
+
+:::
+
+### **StackSpot Actions**
+
+Actions from StackSpot have been migrated to the Studio.
+
+#### **Setup SCM integration**
+
+StackSpot Action that executes the creation of repositories and configures the Workflow in the [**SCM (Source Code Management), GitHub, GitLab, Azure, and Bitbucket**] services (home/account/organization/scm-integration/index.md) to integrate with the StackSpot AI platform:
+
+```bash
+stk run action stackspot-core/setup-scm@1.0.0
+```
+
+[**For Action details, see the setup-scm documentation**](create-use/use-content/native-content/action-setup-scm.md).
+<!--
+#### **Workflow Main Action**
+
+StackSpot Main Action that selects other Actions from the Self-Hosted Runtimes:
+
+```bash
+stk run action stackspot-core/workflow-main-action
+```
+
+### **GitHub Actions - StackSpot**
+
+GitHub Actions which were transformed into StackSpot Actions, are now available in the official Studio.
+
+#### **Runtime Manager Action**
+
+StackSpot Action to authenticate and consume the StackSpot Runtime API:
+
+```bash
+stk run action stackspot-core/runtime-manager-action
+```
+
+#### **Runtime Tasks Action**
+
+The StackSpot Action, integrated with the Runtime Manager Action, combines the IaC, Deploy, and Destroy tasks into a single execution. The Action performs the entire process in just one instance of your runner.
+
+Use this Action when you don't need to customize the deployment process:
+
+```bash
+stk run action stackspot-core/runtime-tasks-action
+```
+
+#### **Runtime IaC Action**
+
+StackSpot Action to run an IaC Runtime Worker:
+
+```bash
+stk run action stackspot-core/runtime-iac-action
+```
+
+#### **Runtime Rollback Action**
+
+StackSpot Action to authenticate and consume the Runtime API, allowing you to roll back a version or tag of an Application or Infrastructure via self-hosted.
+
+```bash
+stk run action stackspot-core/runtime-rollback-action
+```
+
+#### **Runtime Destroy Action**
+
+StackSpot Action that executes the **Worker Runtime Destroy** to destroy a resource:
+
+```bash
+stk run action stackspot-core/runtime-destroy-action
+```
+
+#### **Runtime Deploy Action**
+
+StackSpot Action to execute the **Worker Runtime Deploy** to deploy an Infrastructure resource:
+
+```bash
+stk run action stackspot-core/runtime-deploy-action
+```
+
+#### **Runtime Cancel Run Action**
+
+StackSpot Action that cancels any execution in the Runtime API:
+
+```bash
+stk run action stackspot-core/runtime-cancel-run-action
+```
+
+#### **CLI GitHub Action Run Command**
+
+StackSpot Action to authenticate and execute a command in the STK CLI:
+
+```bash
+stk run action stackspot-core/cli-github-action-run-command
+```
+
+#### **Workflow GitHub Action Publish Content**
+
+StackSpot Action to publish content on StackSpot, such as Actions, Plugins and Stacks:
+
+```bash
+stk run action stackspot-core/workflow-github-action-publish-content
+```
+
+#### **STK CLI Action**
+
+StackSpot Action to install STK CLI:
+
+```bash
+stk run action stackspot-core/stk-cli-action
+```
+
+#### **Publish Plugin Action**
+
+StackSpot Action to publish a Plugin:
+
+```bash
+stk run action stackspot-core/publish-plugin-action
+```
+
+#### **StackSpot Workflow**
+
+StackSpot Action to run StackSpot Workflow:
+
+```bash
+stk run action stackspot-core/stackspot-workflow
+```
+
+#### **StackSpot Workflow Report Status**
+
+StackSpot Action to run Workflow report status:
+
+```bash
+stk run action stackspot-core/stackspot-workflow-report-status
+```
+
+### **StackSpot Workflows**
+
+StackSpot's Workflows migrated to the Studio.
+
+#### **StackSpot Deploy Workflow**
+
+StackSpot Workflow to deploy applications:
+
+```bash
+stk deploy app --workflow stackspot-core/stackspot-deploy-workflow
+```
+-->

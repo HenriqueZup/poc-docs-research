@@ -1,0 +1,104 @@
+---
+title: starter.yaml
+description: Detalhes sobre o arquivo starter.yaml.
+---
+
+## **Exemplo de um arquivo `starter.yaml`**
+
+```yaml
+schema-version: v1 #required
+kind: starter #required
+metadata: #required
+  name: basic-starter #required
+  description: basic-starter #required
+spec: #required
+  type: app #required
+  docs: #required at least one language 
+    en-us: docs/en_us/docs.mdx
+    pt-br: docs/pt_br/docs.mdx
+  plugins: #required
+    required: #required
+      - name: example-studio/app-plugin-basic@0.0.1
+    optional:
+      - name: example-studio/app-plugin-basic-02@0.0.1
+```
+
+## **Atributos do Starter**
+
+### **`schema-version`** 
+
+Versão do schema do Manifesto. 
+
+```yaml 
+- schema-version: v1
+``` 
+
+### **`kind`** 
+
+Tipo do Manifesto.
+
+```yaml 
+- kind: starter
+``` 
+
+### **`metadata`** 
+
+É o que identifica o Starter. São do tipo **`string`**:
+
+#### **name**
+
+Nome do Starter que será exibido no Portal. Quando você não nomeia, o nome informado anteriormente será exibido. Utiliza kebab case. 
+
+```yaml 
+- name: starter-name-example.
+``` 
+
+#### **description** 
+
+Descrição do Starter. A descrição precisa ter, no mínimo, três caracteres e no máximo, 500.
+
+```yaml 
+- description: Starter example.
+``` 
+
+### **`spec`**
+
+É a especificação da Stack. São do tipo **`string`**:
+
+#### **type**
+
+É o tipo do Starter. Os tipos de Starters são **app** e **infra**.
+
+```yaml 
+- type: app # or infra
+``` 
+
+#### **docs**
+
+Markdown com a documentação do Starter.
+
+```yaml
+  docs:
+    pt-br: docs/pt-br/docs.mdx
+    en-us: docs/en-us/docs.mdx
+```
+
+#### **plugins**
+
+Lista de Plugins presentes em seu Starter. Organizados **required** e **optional**, devem ser adicionados com a sintaxe: **`- name: studio-slug/plugin-name@[semantic-version]`**. Onde:
+
+- **required:** Adicione os Plugins que são obrigatórios para a criação da Aplicação ao utilizar o Starter.
+- **optional:** Adicione os Plugins que serão utilizados para a criação da Aplicação, mas que não são essenciais para a sua criação ao utilizar o Starter.
+
+```yaml
+spec: 
+  type: app
+  docs:
+    en-us: docs/en_us/docs.mdx
+    pt-br: docs/pt_br/docs.mdx
+  plugins:
+    required:
+      - name: example-studio/app-plugin-basic@0.0.1
+    optional:
+      - name: example-studio/app-plugin-basic-02@0.0.1
+```

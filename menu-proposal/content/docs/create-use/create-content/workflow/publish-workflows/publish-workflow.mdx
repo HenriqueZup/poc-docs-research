@@ -1,0 +1,37 @@
+---
+title: Publicar Workflow
+description: Confira como publicar o seu Workflow em um Estúdio pelo STK CLI.
+---
+
+## **Pré-requisitos**
+
+- StackSpot CLI instalado e atualizado.  
+- Permissão e acessos de **`Content Creator`** para criar conteúdos para um Estúdio.
+
+## **Publicação**
+
+Para disponibilizar o Workflow no seu Estúdio, execute o comando a seguir:
+
+```bash title="Comando para publicar um Workflow em um Estúdio"
+stk publish workflow studio-name
+```
+
+Se você não informou o nome do Estúdio no comando, siga as instruções:  
+
+1. No terminal, selecione o nome do Estúdio disponível na sua Conta onde deseja publicar o Workflow.  
+2. Pressione '**Enter**' para confirmar.  O Workflow será publicado no Estúdio escolhido.
+
+O seu Workflow será publicado no Estúdio selecionado.
+
+:::warning Atenção!
+
+**Atenção ao Publicar Workflows**
+
+- Não é permitido publicar Workflows que referenciem mais de uma versão do mesmo Plugin de Infraestrutura.  
+- Essa regra evita conflitos de provisionamento, duplicidade de recursos e facilita a manutenção e atualização da sua Stack.  
+- Se o Workflow referenciar duas versões diferentes do mesmo Plugin de Infra, a publicação será bloqueada e uma mensagem de erro será exibida.  
+- Workflows já publicados precisarão ser atualizados para seguir essa regra, podendo causar mudanças incompatíveis (breaking changes).  
+
+::: 
+
+Para mais detalhes sobre o comando **stk publish workflow**, [**acesse a documentação dos comandos do Workflow**](create-use/create-content/workflow/reference/workflow-commands.mdx#stk-publish-workflow).

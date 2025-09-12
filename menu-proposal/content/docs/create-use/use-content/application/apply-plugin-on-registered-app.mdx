@@ -1,0 +1,118 @@
+---
+title: Aplicar um Plugin em uma Aplicação já registrada
+description: Como aplicar um plugin em uma Aplicação já registrada.
+---
+
+> Nesta seção, você encontra um guia de como aplicar um Plugin em uma Aplicação que já foi registrada.
+
+<br/>
+
+:::caution Cuidado!
+Se você ainda não criou uma Aplicação, confira primeiro o guia de [**Como criar uma Aplicação**](create-use/use-content/application/index.mdx).
+:::
+
+Mesmo depois de já ter registrado uma Aplicação no seu Workspace, você pode:
+
+- Aplicar um novo Plugin;
+- Aplicar o mesmo Plugin de novo.
+
+E você pode fazer isso de duas formas:
+
+1. Aplicar um plugin apenas **localmente** na sua Aplicação; e
+2. Aplicar um plugin e **fazer a atualização do registro** da sua Aplicação [**no Portal da StackSpot EDP**](https://app.stackspot.com/login). 
+
+:::danger Atenção!
+
+O arquivo **`stk.yaml`** de uma Aplicação ou Infraestrutura não deve ser editado manualmente. Você pode modificar os Plugins da sua Aplicação ou Infraestrutura, para isso, use comandos a seguir:
+
+- Para modificar a versão ou configurações de um Plugin:
+
+```bash
+stk update plugin
+```
+
+- Para remover um Plugin:
+
+```bash
+stk remove plugin
+```
+
+- Para adicionar novos recursos ao seu projeto:
+
+```bash
+stk apply plugin
+```
+
+::: 
+
+Para isso, siga os passos:
+
+## **Pré-requisitos**
+
+- Estar **logado** na sua conta da StackSpot no **STK CLI** ( [**`stk login`**](home/stk-cli/commands/general-commands.mdx#stk-login) );
+- Ter uma  [**Aplicação criada e registrada**](create-use/use-content/application/index.mdx) em um Workspace;
+- O **Plugin** que vai ser aplicado deve **pertencer a uma Stack do Workspace** onde você registrou a Aplicação.
+
+:::caution Cuidado!
+
+Ao aplicar Plugins de Infraestrutura são criados Connectors a partir das Connections Interfaces que o Plugin deve gerar. Você deve usar um alias para esses Connectors ao aplicar os Plugins de Infraestrutura e eles devem seguir as seguintes regras:
+
+- O alias não deve existir em seu arquivo yaml atual da Aplicação ou Infraestrutura;
+- O alias não deve ter o mesmo nome de um Connector que existe em sua conta;
+- O do alias deve respeitar a seguinte expressão regular, onde o tamanho mínimo é de 2 caracteres e o máximo é de 50 caracteres: `((^(?!^\d+$)[a-z\d]{2,})(-[a-z\d]+)*$)`.
+
+:::
+
+## **Como aplicar um Plugin na Aplicação já registrada**
+
+**Passo 1.** No seu terminal, acesse o Workspace da sua Aplicação. Execute o comando:
+
+```bash
+stk use workspace
+```
+
+**Passo 2.** Acesse o diretório da sua Aplicação na sua máquina local:
+
+```bash
+cd <nome-da-aplicação> 
+```
+
+**Passo 3.** [**No Portal da StackSpot EDP**](https://app.stackspot.com/login), confira as **Stacks e Plugins disponíveis** dentro do seu Workspace: 
+
+1. Depois de fazer login na Plataforma, acesse o Workspace que você está utilizando no STK CLI;
+
+2. No menu principal, clique em **'Stacks'**;
+
+3. Selecione a versão da Stack que você quer utilizar os Plugins e clique nela;
+
+4. Clique na aba **'Plugins'** e confira os Plugins disponíveis.
+
+**Passo 4.** Escolha o Plugin que você quer aplicar e clique no botão **'Detalhes do Plugin'**. Utilize o caminho que aparece logo no início da tela e execute o comando:
+
+```bash 
+stk apply plugin <conta>/<stack@versão>/<nome-do-plugin> 
+```
+
+Por exemplo:
+
+```bash 
+stk apply plugin growth/java-rest-api@3.1.2/feign-plugin
+```
+
+Responda às perguntas no STK CLI. Pronto, você aplicou um Plugin na sua Aplicação já registrada.
+
+**Repita o processo com qualquer outro Plugin que você queira aplicar.**
+
+## **Atualizar a Aplicação no Workspace**
+
+Caso você queira atualizar a sua Aplicação no Workspace com os novos Plugins, você deve fazer um novo [**deploy**](deployment/runtime-engine/app-deployment.mdx) novamente.
+
+Para isso, siga os passos:
+
+**Passo 1.** No seu terminal, depois de aplicar o Plugin nos passos anteriores, execute o comando de deploy:  
+
+```bash
+stk deploy app --version <version> --env <environment-id> -w
+```
+
+**Passo 2.** Se o deploy retornar com sucesso, você poderá ver o Plugin dentro da sua Aplicação no seu Workspace no Portal da StackSpot EDP.

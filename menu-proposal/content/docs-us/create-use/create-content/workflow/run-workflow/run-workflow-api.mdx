@@ -1,0 +1,214 @@
+---
+title: Run StackSpot Workflows via API
+description: Guide to run StackSpot Workflows via API using user or service credentials.
+---
+
+> In this section, you will find the requirements and step-by-step instructions to integrate Workflow execution into your requests.
+
+You can trigger StackSpot Workflows via API using your user credential (PAT) or a service credential. 
+
+## **Prerequisites**
+
+- If you choose to use a Service Credential, [**see how to create a Service Credential**](home/account/organization/service-credential.md);
+
+- If you prefer to use a Personal Access Token (PAT), [**see how to create a Personal Access Token**](home/account/profile/access-token.md);
+
+**Required permissions:**
+
+- The token you use (service or user) **must have the** **`workflow:dispatch`** **permission**.
+
+- Without this permission, the API returns **HTTP 403** with an insufficient permission message.
+
+## **Step 1. Generate the Access Token (JWT)**
+
+You need a **Personal Access Token (PAT)** or a **Service Credential**.
+
+**See an example request to obtain the JWT:**
+
+```bash
+curl --request POST \
+  --url https://iam-auth-ssr.stackspot.com/test/oidc/oauth/token \
+  --header 'Content-Type: application/x-www-form-urlencoded' \
+  --data 'client_id=<your_client_id>' \
+  --data 'client_secret=<your_client_key>' \
+  --data 'grant_type=client_credentials'
+```
+
+- Replace **`<your_client_id>`** and **`<your_client_key>`** with your PAT values.
+- The response will be a JSON containing the **`access_token`** field. Copy and save this value.
+
+## **Step 2. Trigger the Workflow**
+
+### **Request Body (`/v3/workflows/dispatch`)**
+
+```json
+{
+  "injectScmIntegration": false,           // (optional)
+  "workspace": {                           // (optional, but recommended)
+    "id": "workspace_id",                  // (required if workspace is provided)
+    "slug": "workspace_slug"               // (required if workspace is provided)
+  },
+  "workflow": {                            // (required)
+    "name": "studio-slug/workflow-slug@1.0.0", // (required)
+    "label": "Workflow description",        // (required)
+    "type": "starter",                     // (required) - Ex: starter, create, deploy, etc.
+    "inputs": {                            // (required, can be empty object)
+      "input1": "value1"
+    },
+    "targets": [],                         // (optional, depends on workflow type)
+    "env": {                               // (optional, depends on workflow)
+      "id": "env_id",                      // (required if env is provided)
+      "slug": "env_slug"                   // (required if env is provided)
+    },
+    "base_workflow_type": "starter"        // (optional)
+  },
+  "frontData": {                           // (optional)
+    "anything": {}
+  },
+  "requestBy": {                           // (optional, required if using service credential)
+    "userId": "user_id"
+  }
+}
+```
+
+### **Request field details**
+
+#### **1. `injectScmIntegration` (optional, boolean)**
+
+- **Description:** If **`true`**, injects SCM integration (GitHub, GitLab, etc.) configured in the Workspace.
+- **Default:** **`false`**
+- **When to use:** Set to **`true`** if your Workflow needs access to SCM repositories.
+
+#### **2. `workspace` (optional, object)**
+
+- **Description:** It identifies the Workspace where the Workflow will run.  
+- **Required fields:**  
+  - **`id`** (string): Workspace ID.  
+  - **`slug`** (string): Workspace slug.  
+- **When to use:** It is usually required, except for global Workflows.  
+
+#### **3. `workflow` (required, object)**
+
+- **Description:** It defines which Workflow will run and its parameters.  
+- **Required fields:**  
+  - **`name`** (string): Full Workflow name (e.g., **`"studio-slug/workflow-slug@1.0.0"`**).  
+  - **`label`** (string): A clear description of the Workflow intended for understanding.  
+  - **`type`** (string): Workflow type (**`starter`**, **`create`**, **`deploy`**, **`rollback`**, **`reusable`**, **`extension`**).  
+  - **`inputs`** (object): Workflow input parameters (can be empty **`{}`**).  
+- **Optional fields:**
+  - **`targets`** (array): Workflow targets (e.g., **`[{ "id": "...", "type": "app" }]`**). It is required for some Workflow types.  
+  - **`env`** (object): Execution environment. It is required for **deploy**, **rollback**, and similar Workflows.  
+    - **`id`** (string): Environment ID.  
+    - **`slug`** (string): Environment slug.
+  - **`base_workflow_type`** (string): The base type of the workflow is optional and typically corresponds to the **`type`** field.
+
+#### **4. `frontData` (optional, object)**
+
+- **Description:** Extra data for traceability or front-end usage.  
+- **When to use:** If you need to provide any additional information that is not utilized by the back-end.  
+
+#### **5. `requestBy` (optional, object)**
+
+- **Description:** It identifies the user responsible for the **`dispatch`**.  
+- **Fields:**  
+  - **`userId`** (string): user ID.   
+- **When to use:** **It is required** when using a service credential (PAT). **Do not include** if using a user credential.  
+
+| **Field**               | **Required** | **Notes**                                                         |
+|-------------------------|--------------|-------------------------------------------------------------------|
+| **`injectScmIntegration`** | No           | Default: false                                                    |
+| **`workspace`**            | No           | Recommended, required for most cases                              |
+| **`workflow`**             | Yes          | Always required                                                   |
+| **`frontData`**            | No           |                                                                   |
+| **`requestBy`**            | No           | Required if using service credential (PAT)                        |
+
+### **Response Examples**
+
+- **Success:** HTTP 200/201 with workflow execution details.
+- **Insufficient permission:** HTTP 403 with a clear message.
+
+### **2.1. Example with Service Credential**
+
+:::danger
+
+When using a service credential, you must include the **`requestBy`** field in the request body, indicating the responsible **`userId`**.
+
+:::
+
+```bash title="Run Workflow with Service Credential"
+curl --request POST \
+  --url https://workflow-workflow-api.stackspot.com/v3/workflows/dispatch \
+  --header 'Authorization: Bearer <your_jwt>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "injectScmIntegration": true,
+    "workspace": {
+      "id": "7N10882JBMX62368434Y65SZZ3",
+      "slug": "workspace-slug-name"
+    },
+    "workflow": {
+      "name": "studio-slug/workflow-slug@1.0.0",
+      "label": "A workflow which runs something",
+      "type": "starter",
+      "inputs": {
+        "additionalProp1": "string",
+        "additionalProp2": "string",
+        "additionalProp3": "string"
+      },
+      "targets": [],
+      "env": {
+        "id": "5NBF23P01S1HD2KWKNYWRGZN64",
+        "slug": "string"
+      }
+    },
+    "requestBy": {
+      "userId": "string"
+    }
+  }'
+```
+
+- Replace **`<your_jwt>`** with the token you obtained in the previous step.
+- Set the **`userId`** field to the ID of the responsible user.
+
+### **2.2. Example with User Credential**
+
+:::danger
+
+When using a user credential (PAT), **do NOT** include the **`requestBy`** field.
+
+:::
+
+```bash title="Run Workflow with User Credential (PAT)"
+curl --request POST \
+  --url https://workflow-workflow-api.stackspot.com/v3/workflows/dispatch \
+  --header 'Authorization: Bearer <your_jwt>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "injectScmIntegration": true,
+    "workspace": {
+      "id": "7N10882JBMX62368434Y65SZZ3",
+      "slug": "D6iptT6joDYpFL32pPx-48FJd8bMBzvDRvFb"
+    },
+    "workflow": {
+      "name": "studio-slug/workflow-slug@1.0.0",
+      "label": "A workflow which runs something",
+      "type": "starter",
+      "inputs": {
+        "additionalProp1": "string",
+        "additionalProp2": "string",
+        "additionalProp3": "string"
+      },
+      "targets": [],
+      "env": {
+        "id": "5NBF23P01S1HD2KWKNYWRGZN64",
+        "slug": "string"
+      }
+    }
+  }'
+```
+
+:::info
+
+- The system logs and audits who triggered the dispatch.
+
+:::

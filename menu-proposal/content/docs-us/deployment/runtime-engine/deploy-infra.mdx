@@ -1,0 +1,171 @@
+---
+title: Infrastructure Deployment
+description: Deploy a Shared Infra.
+---
+
+> In this section, you will find how to deploy your Infrastructure.
+
+<br/>
+
+:::caution 
+The Deploy configuration flow and addition of Cloud accounts in StackSpot in this way is only available for:
+
+- **Enterprise accounts created before 2024**.
+
+**Enterprise accounts created from January 2024 onwards** must deploy via [**Self-hosted Runtimes**](deployment/deploy/self-hosted-runtime.md).
+:::
+
+:::caution
+
+This deployment guide is exclusive to StackSpot [**Enterprise Accounts**](home/account/organization/index.md) because they use StackSpot's Deploy and [**Self-Hosted**](deployment/deploy/self-hosted-runtime.md) services.
+
+:::
+
+<br/>
+
+You can deploy an Infrastructure via STK CLI.
+
+## Deploy via STK CLI
+
+### Requirements
+
+- [**A Workspace in your account**](home/workspace/create-workspace.md).
+- [**A Stack in a Workspace**](create-use/create-content/stack/create-stack.md).
+- [**A connected Cloud Account for an environment in a Workspace**](home/workspace/config-cloud-account.md).
+- [**an Infrastructure**](create-use/use-content/infra/infrastructure.md).
+- [**STK CLI**](home/stk-cli/install.md).
+- The deployment user must have the following role: **`runtime:deploy_infra`**.
+- If you've created your infrastructure using the StackSpot Portal, you must clone the repository where it's located and access the folder using the command line interface (CLI)
+
+Follow the steps below:
+
+**Step 1.** In your terminal, select your Workspace:
+
+```bash
+stk use workspace <workspace-name>
+```
+
+**Step 2.** Deploy your Infrastructure, execute the command in your terminal:
+
+```bash
+stk deploy infra --env<environment-id> --version<version> -w
+```
+
+Example:
+
+```bash
+stk deploy infra -e prod -v v1 --watch
+```
+
+:::tip
+
+- **Version:** This is the Infrastructure tag on the StackSpot Portal if the deployment is successful.
+- **Environment:** This is the environment configured in the Workspace where the Infrastructure deploys. It must have a Cloud account already configured and associated with it.  
+- **Branch:** The name of your branch used with the repository you added in the Application manifest. It is an **optional** flag. If you need to check out the repository during deployment, add this flag, and Deploy will clone the repository in the branch. For more details, see the [**step-by-step**](deployment/runtime-engine/private-repos.md) to release access to private repositories.
+
+:::
+
+**Step 3.** Track your deployment with the following command:
+
+```bash
+stk deploy status <id>
+```
+
+> In this case, the `id` is an argument that shows up after you deploy a Shared Infra in your CLI.
+
+The status returned is:
+
+- **`Running`**: Running deployment.
+- **`Succeeded`**: Successful deployment.
+- **`User error`**: User error. It is usually related to executing the **`terraform apply`** command. The Plugin's IaC template was not generated as expected. It can also be a permission problem on the Cloud account.
+- **`Runtime error`**: Runtime error. It is an internal StackSpot error. The engineering team needs to evaluate.
+- **`Aborted`**: When a task running fails, the others pending are aborted.
+
+:::info
+You can debug the deployment and access the Terraform logs. Run the command below:
+
+```bash
+stk deploy status 01H8FCXE6ZEM79X9HJYSVN12C0 --report md
+```
+
+:::
+
+## **What can you do after the deployment?**
+
+See what you can do after you deploy an Infrastructure:
+
+## **1. Monitor an Infrastructure on the StackSpot Platform**
+
+You can track what is going on with your Shared Infra. For more details, visit the [**Activities section**](deployment/manage/activities.md).
+
+## **2. Rollback an Infrastructure**
+
+Rollback works like a deployment but with a specific ID. When executing a Rollback, state a version to deploy again with the same IaCs generated in the version.
+
+> The user who will rollback must have the following role: **`runtime:deploy_infra`**.
+
+Follow the steps to rollback:
+
+**Step 1.** In your terminal, enter your project folder and select your Workspace. Execute the command:
+
+```bash
+stk use workspace <workspace-name>
+```
+
+**Step 2.** Execute the command below:
+
+```bash
+stk rollback infra --version<version> --env<environment-id>
+```
+
+- **`version`**: The rollback will happen in the deployed version. In the rollback, you make a new deployment based on the version entered without creating a new tag.
+
+Track the status of the rollback by executing the following command:
+
+```bash
+stk rollback status
+```
+
+For more information about the rollback command, see the [**Commands page**](home/stk-cli/commands/infraestructure-commands.md).
+
+## **3. Destroy Infrastructure**
+
+:::warning  
+This feature is temporarily disabled. During this period, if you need to destroy an Infrastructure, please contact our [**support team**](https://zup.service-now.com/csm?id=sc_category&sys_id=4cb69d19c3921200b0449f2974d3ae69). 
+:::
+
+It represents the "destruction" of an Infrastructure. If you cannot delete a shared infra, you should destroy it first. 
+
+> The user who will destroy must have the following role: **`runtime:destroy_infra`**.
+
+To do it, run the command below in your terminal, and execute:
+
+```bash
+stk destroy infra --env<environment-slug> --watch
+```
+
+Example:
+
+```bash
+stk destroy infra -e sandbox -w
+```
+
+- To track the status of the destroy, run the command below on your terminal:
+
+```bash
+stk destroy infra --env<environment-slug> --watch
+```
+
+The other way to see the status is to use the destroy identifier (ID) in your CLI. Execute the command:
+
+```bash
+stk destroy infra status -id
+```
+
+Example:
+
+```bash
+stk destroy infra status 01H8FCXE6ZEM79X9HJYSVN12C0
+```
+
+For more information about the destroy command, see the [**Commands page**](home/stk-cli/commands/infraestructure-commands.md).

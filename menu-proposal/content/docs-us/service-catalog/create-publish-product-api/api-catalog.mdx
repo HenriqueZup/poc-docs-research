@@ -1,0 +1,75 @@
+---
+title: "Create and Publish API"
+sidebar_position: 2
+description: How to create and publish an API.
+---
+
+> In this section, you will learn how to create and publish an API.
+
+<br/>
+
+## Create API
+
+To register an API in the Catalog, access the Service Catalog and follow the steps below:
+
+**Step 1.** At the bottom of the screen, click on the **'Create'** button and then on **'API'**;  
+
+**Step 2.** On the **'Basic Information'** screen, fill out the **'Name'** and **'Description'** fields;
+
+**Step 3.** Under **'API Definition'**, you must:
+
+- Upload a file with the OpenAPI standard (**`.yaml`**, **`.yml`** or **`.json`** extension, in versions **2.x**, **3.0** and **3.1**), already with the API contracts.
+
+- Define one or more environments where you publish the API.
+
+- Include the Gateway URL in each of the defined environments.
+
+Then, click on **'Next'**.
+
+**Step 4.** Review the API information and, if everything is correct, click **'Create API'**;
+
+## Publish API
+
+**Step 5.** Go to the created API screen and check if the contracts are correct. Then, click on the **'Publish API'** button;  
+
+You have published an API in the Catalog.
+
+To remove a published API, click **'Revert'** and then **'Revert API'**.
+
+:::danger
+You cannot publish again once you remove an API from the Catalog. To post an API with the same content, you must create and publish it again.
+:::
+
+## Edit API
+
+See the rules to edit it:
+
+- **Name:** It cannot change.  
+- **Description:** It cannot change.  
+- **OpenAPi File:** It can change.  
+- **Connection Interface:** If you don’t inform in the API registration, it appears blank. In this case, you can edit and select a Connection Interface. You can't edit this field if you have already added a Connection Interface in the API registration.  
+- **Gateway URL:** It can change.  
+
+:::info
+If you select an environment while creating the API, this editing only works for that environment.
+::: 
+
+Follow the steps below:
+
+**Step 1:** Access the **'Settings'** section of your API;
+
+**Step 2.** Go to **'API Information'**, click on the edit icon;
+
+**Step 3:** If necessary, edit the fields below:
+
+- **OpenAPi File**  
+- **Connection Interface**  
+- **Gateway URL**  
+
+**Step 4:** Click **'Save'**.
+
+You've edited an API in a running Application.
+
+## **Next Step**
+
+- [**Add APIs from an Existing Application**](service-catalog/create-publish-product-api/create-api-app.md)

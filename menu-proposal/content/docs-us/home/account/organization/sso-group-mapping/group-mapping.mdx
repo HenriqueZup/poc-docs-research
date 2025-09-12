@@ -1,0 +1,124 @@
+---
+title: "Group Mapping"
+sidebar_position: 4
+description: Learn how to configure Group Mapping.
+--- 
+
+> In this section, you will find the steps to configure Group Mapping in your Account. 
+
+<br/>
+
+## **Overview** 
+
+Group mapping simplifies access management by associating permission groups from external Identity Providers with your system's internal groups within StackSpot. 
+
+Follow the steps to create and configure Group Mappings: 
+
+## **Requirements**
+
+- [**You must have Account Holder or Admin permission to proceed**](home/account/organization/access-management/roles.md);
+- [**You must have configured an SSO (Single Sign-On)**](home/account/organization/sso-group-mapping/sso-configuration.md).
+
+## **How to create a Group Mapping** 
+
+**Step 1.** [**Log in to the StackSpot Platform**](https://app.stackspot.com/login);
+
+**Step 2.** Click on your **profile avatar** and select the **'Organization'** option from the displayed menu;
+
+**Step 3.** In the Account's Portal main menu, click on **'Identity & Security'**, then click **'Single Sign-On (SSO)'** and **select the one** you want to create a Group Mapping; 
+
+**Step 4.** On the left side menu, click the **'Group Mapping'** tab; 
+
+**Step 5.** Click the **'Create Group Mapping** button; 
+
+**Step 6.** Name the Group Mapping and select its type: 
+
+- Attribute to a Group;
+- Default Group;
+- Default Role;
+- Dynamic Group. 
+
+See the **steps to configure each Group Mapping type**:
+
+### **Attribute to a Group** 
+
+:::warning
+
+This type of group mapping is available only to [**SSO configured via SAML V2.0**](home/account/organization/sso-group-mapping/sso-configuration.md). 
+
+::: 
+
+It associates a specific attribute from external authentication to an internal StackSpot EDP group. 
+
+Follow the steps to configure it: 
+
+**Step 1.** Fill in the fields: 
+
+- **Group mapping name**: You already named it; 
+- **Group mapping type**: Attribute to a Group; 
+- **Attribute name**: It's a value that corresponds to the Group within your external authentication system; 
+- **Attribute value**: It corresponds to the Group within the StackSpot EDP system; 
+- **List of groups in StackSpot**: 
+
+
+**Step 2.** Click **'Create Group Mapping'**. 
+
+You've configured a Group Mapping. 
+
+### **Default Group** 
+
+When you create a Group Mapping of the Default Group type, you establish a Default Group with specific characteristics that will automatically apply to every new user added to your Organization's account.
+
+Follow the steps to configure it: 
+
+**Step 1.** Fill in the fields: 
+
+- **Group mapping name**: You already named it; 
+- **Group mapping type**: Default Group; 
+- **List of Groups in StackSpot**: Choose a Group from StackSpot EDP. 
+
+**Step 2.** Click **'Create Group Mapping'**. 
+
+You've configured a Group Mapping. 
+
+### **Default Role**
+
+When you create a Group Mapping of the Default Role type, you establish a Default Role that will automatically apply to every new user added to your Organization's account.
+
+**Step 1.** Fill in the fields: 
+
+- **Group mapping name**: you already did it; 
+- **Group mapping type**: Default Group; 
+- **List of Roles in StackSpot**: choose a Role from StackSpot EDP. 
+
+**Step 2.** Click **'Create Group Mapping'**. 
+
+You've configured a Group Mapping. 
+
+### **Dynamic Group**
+
+:::warning
+
+This type of group mapping is available only to [**SSO configured via SAML V2.0**](home/account/organization/sso-group-mapping/sso-configuration.md). 
+
+::: 
+
+Links an attribute to the internal group using a regex-based rule. 
+
+Follow the steps to configure it: 
+
+**Step 1.** Fill in the fields: 
+
+- **Group mapping name**: You already named it; 
+- **Group mapping type**: Dynamic Group;
+- **Attribute name**; 
+- **Regular Expression**:  For example, **`(?i)([a-z0-9_-]{1,30})[_-]STACKSPOT[_-]([a-z0-9_]{1,30})`**. 
+
+**Step 2.** Click **'Create Group Mapping'**. 
+
+You've configured a Group Mapping. 
+
+
+### **Next Steps**: 
+
+- [**Activate SSO**](home/account/organization/sso-group-mapping/sso-configuration.md)

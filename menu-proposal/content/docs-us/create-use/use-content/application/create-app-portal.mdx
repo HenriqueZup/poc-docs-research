@@ -1,0 +1,151 @@
+---
+title: Create Application via Portal
+description: Learn how to create an Application using the Workflow in the StackSpot
+  EDP Portal.
+---
+
+## **Overview**
+
+In StackSpot, an Application is any source code that implements business rules or infrastructure as code (IaC), responsible for creating and managing cloud resources.
+
+ Applications are developed within **Workspaces** using tools such as **Plugins**, **Stacks**, **Starters**, or the available **Workflows**, which make solution development and delivery faster and simpler.
+
+For example, in a bank, an Application can be a system to manage checking accounts, with features such as balance inquiry, transfers, statement issuance, and bill payments. This approach ensures an efficient and complete experience for customers.
+
+In StackSpot, you can create Applications in two ways:
+
+- **STK CLI**  
+- **StackSpot EDP Portal**  
+
+To create an Application, you need to use a **Stack** and a **Starter** or a **Workflow**.
+
+Below, you will find the step-by-step guide to **create Applications in the Portal using Workflows**.
+
+## **Requirements**
+
+- Be **logged in** to a StackSpot account.  
+- Access a [**Studio**](create-use/studio/create-studio.md).
+- Have a [**Stack and a Starter**](create-use/create-content/stack/create-stack.md).  
+- Already have [**environments created**](home/account/organization/create-env.md).  
+- [**Deployment via Self-Hosted already configured to set up and connect environments in your Cloud Account**](deployment/deploy/overview.md).  
+- Have [**SCM configured**](home/account/organization/scm-integration.md). This configuration should be performed by the person responsible for **administering your account**.   
+- If your account is Enterprise and the administrator decides that users should **manage SCM access via PAT (Personal Access Token) individually**, you must configure it in [**'External Connections'**](home/account/profile/external-connections.md).
+
+<br/>
+
+:::caution 
+
+**If you do not meet any of the prerequisites listed above, pause this guide and access the link corresponding to the pending requirement to resolve it before continuing.**
+
+:::
+
+<br/>
+
+## **Create Application through the StackSpot Portal**
+
+Follow these steps:
+
+**Step 1.** Log in to the [**StackSpot EDP Portal**](https://app.stackspot.com/en/login);
+
+**Step 2.** Click the **'Create'** button and select the **'Application'** option;
+
+:::warning 
+
+- If the administrator of your Account **has not configured SCM**, you will not be able to continue. For more information, [**check the Configure SCM section**](home/account/organization/scm-integration.md).
+
+- If the administrator of your Account has decided that users must **manage SCM access via PAT (Personal Access Token) individually**, you must configure it in [**'External Connections'**](home/account/profile/external-connections.md).
+:::
+
+**Step 3.** Select the **Workspace** where you want to create the Application;
+
+**Step 4.** Now, follow the next steps:
+
+- Select a **Stack** to create the Application;
+- Select the **Stack version**; and
+- In **Select a Starter**: you can choose between Starters or Workflows. **To use a Workflow**, select the options that start with **Creating App with**. See an example in the image below:
+
+![](/img/create-app-choose-workflow.png)
+
+**Step 5.** On the **'Application Details'** screen, enter your Application data:
+
+- **Name:** the Application name limit is **60 characters**;
+- **Description:** describe what your Application is about;
+Click the **'Next'** button;
+
+**Step 6.** On the **'Configurations'** screen, fill in all the form inputs. **The inputs may vary depending on the Workflow**.
+
+Then, click the **'Next'** button;
+
+:::warning 
+
+- During the process of creating an Application using a Workflow, you **cannot add new Plugins** to the Application. However, **after creation**, you can add and apply new Plugins to the Application.
+
+- If you have questions while filling in the inputs, refer to the documentation associated with the Stack, Starter, or Workflow you used to create the Application.
+
+- If there are already configured contexts, some or all variables may be automatically filled. For variables marked as mandatory, **it will not be possible to edit them**.
+
+:::
+
+**Step 6.1. (optional)** If you have an Extension configured in your [**workflow.yaml**](create-use/create-content/yaml-files/workflow-yaml) and, during Application creation, you selected a Starter that has a create-type Workflow, you now need to fill in the fields with the data for the Extension you want to add to your Application.
+
+**Step 7.** Review your Application information. If necessary, click the **'Edit'** button to make adjustments;
+
+**Step 8.** Click the **'Run'** button to push the Application to the repository.
+
+Done! You have created an Application via the StackSpot EDP Portal.
+
+:::info 
+
+- When you create the Application through the Portal, **it is automatically registered in the Workspace**.
+
+- The **Infrastructure deployment** of the Application **is only performed at this moment** if your organization has [**configured deployment via Runtime Self-Hosted**](deployment/deploy/self-hosted-runtime.md).
+
+- You must **deploy the Application** using your pipeline and execute the **deployment registration in the StackSpot EDP Portal**. This allows you to monitor logs within the [**Activities**](deployment/manage/activities.md) screen. 
+
+For more details, see the process in the [**Application Deployment Registration section**](deployment/deploy/register-app-deployment.md).
+
+:::
+
+## **Track the Application Creation Workflow Execution**
+
+After clicking the **'Run'** button, you will be redirected to the Application creation Workflow tracking screen (**Create App**). On this screen, you can view and monitor all **jobs** and **steps** of the Workflow directly from the platform, as shown in the image below:
+
+![](/img/follow-create-app-workflow.png)
+
+- **Jobs** and **steps** are **interactive and clickable**.
+- To access the logs, click **"View log"** on the respective Workflow step.
+
+### **Workflow Step Approval**
+
+Some Workflows include **approval steps**, which must be accepted to allow the Application **deployment** to proceed. These steps are displayed on the Workflow tracking screen with the status **"Check Approval"** or **"Approval Response"**, as shown in the following image:
+
+![](/img/approval-create-app-workflow.png)
+
+#### **How to Approve**
+
+Approval must be performed by **a person with approval permission in the Workspace**. This person must access the Application Workflow tracking screen and accept the required **approval step(s)**.
+
+:::info 
+
+A Workflow may contain multiple **approval steps**, and each step must be individually accepted for the Workflow to proceed to the next stages.
+
+:::
+
+## **Execution Details**
+
+After creating the Application, you can visually track the execution of your Workflow steps. In addition to visual steps, a field called **Execution Details** displays detailed information about the steps executed in the Workflow.
+
+The steps are displayed as a list, for example:
+
+- Downloading CLI
+- Installing CLI
+- Logging into StackSpot
+- ...
+
+If any Workflow step is paused, it interrupts the display and resumes after approval, showing the details again. When the Application creation is finished, the **'Execution Details'** field closes automatically.
+
+## **Next Steps**
+
+- [**Register your Application deployment via pipeline**](deployment/deploy/register-app-deployment.md).
+- [**Manage and monitor your Application**](deployment/manage/activities.md).
+- To **destroy** your Application, [**check the Destroy section**](deployment/deploy/register-app-destroy.md).

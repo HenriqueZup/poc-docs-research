@@ -1,0 +1,170 @@
+---
+title: Create Workflow Calling a Starter Workflow
+description: Example of how to create a "Create" Workflow that calls a "Starter" Workflow.
+---
+
+> In this section, you will find a detailed example of how to create a **Create** type Workflow that calls a **Starter** type Workflow using the StackSpot STK CLI.
+
+## **Prerequisites**
+
+Before you start, make sure you have:
+
+- A **StackSpot account** with **Content Creator** permission.  
+- **STK CLI** [**installed and updated**](home/stk-cli/install.md). Ensure you have the latest version by running `stk --version`.  
+- **Access to a Studio** in StackSpot.  
+- A **Starter Workflow already [**created**](create-use/create-content/workflow/howto-guide/create-workflow.md) and [published](create-use/create-content/workflow/howto-guide/publish-workflow.md)** in your Studio.  
+- A **local directory** is needed to create the new Workflow.  
+
+## **Step 1. Create the `create` Workflow**
+
+### **1.1. Open your terminal**
+
+Navigate to the directory where you want to create the Workflow.
+
+```bash
+cd <your-directory>
+```
+
+### **1.2. Run the creation command**
+
+Run the following command:
+
+```bash
+stk create workflow
+```
+
+### **1.3. Answer the terminal prompts**
+
+- **Workflow Name:** Use clear names, without spaces, preferably in English and in kebab-case. For example: `workflow-with-multiple-sleeps-create`.  
+- **Description:** Briefly describe the purpose of the Workflow. Example: `Workflow with multiple sleeps`.  
+- **Workflow Type:** Type **`create`** to indicate that this Workflow will be used for creating resources/applications.
+
+### **1.4. Generated structure**
+
+The command above creates a directory with the Workflow name and files, such as:
+
+- `workflow.yaml` (main configuration)
+- `docs/` folder with documentation in English and Portuguese
+
+## **Step 2. Structure the workflow.yaml File**
+
+### **2.1. Open the workflow.yaml file**
+
+In your preferred editor (for example, VSCode), run:
+
+```bash
+cd workflow-with-multiple-sleeps-create
+code workflow.yaml
+```
+
+### **2.2. Structure the YAML to call the Starter Workflow**
+
+Replace or adjust the content as in the example below:
+
+```yaml
+schema-version: v1
+kind: workflow
+metadata:
+  name: example-multi-step-create
+  display-name: Example Multi-step Create
+  description: "Fictitious example of a workflow with multiple steps."
+  version: 0.1.0
+spec:
+  type: create
+  label: "Workflow Example"
+  targets:
+    - infra
+  docs:
+    en-us: docs/en_us/docs.md
+    pt-br: docs/pt_br/docs.md
+  inputs:
+    - label: "User Name"
+      type: string
+      name: user_name
+    - label: "User Age"
+      type: string
+      name: user_age
+    - label: "Access Token"
+      type: password
+      name: access_token
+  jobs:
+    - id: job_run_starter_workflow
+      label: "Run Starter Workflow"
+      steps:
+        - id: run_starter_workflow
+          type: workflow
+          name: fictitious-studio/example-starter-workflow@0.1.0
+          inputs:
+            user_name: "{{ user_name }}"
+            user_age: "{{ user_age }}"
+            access_token: "{{ access_token }}"
+```
+
+:::caution   
+- The **`name`** field in the step must follow the`studio-name/workflow-name@version` pattern.  
+- The **`inputs`** fields must have the same names and types used in the Starter Workflow.  
+- The step of type **`workflow`** allows you to chain Workflows, making the process modular and reusable.
+
+:::
+
+### **2.3. Validate the fields**
+
+- Check that all required fields are present.
+- Review the versions (e.g., `@1.0.0`) to ensure you are using the correct Starter Workflow.
+- If necessary, add or remove inputs according to the Starter Workflow interface.
+
+## **Step 3. Test the Workflow Locally**
+
+### **3.1. Run the Workflow in local mode**
+
+In the terminal, inside the Workflow folder:
+
+```bash
+stk run workflow
+```
+
+### **3.2. Fill in the requested inputs**
+
+The CLI will prompt you for the values defined in the YAML:
+
+```
+? Name: John
+? Age: 30
+? PAT: ***********
+```
+
+:::tip 
+
+- Use real values to simulate a scenario close to production.   
+- The **`PAT`** field is of type **`password`**: the value will not be shown as you type.
+
+:::
+
+### **3.3. Analyze the logs**
+
+Follow the execution and check the output in the terminal. Ensure there are no errors and that the Starter Workflow was correctly called.
+
+### **3.4. Debugging**
+
+If any error occurs:
+- Read the error message carefully.
+- Review the inputs and the name of the Starter Workflow.
+- Correct the YAML and repeat the test.
+
+## **Step 4. Publish the Workflow**
+
+### **4.1. Run the publish command**
+
+When local testing is correct, publish the Workflow to your Studio by running:
+
+```bash
+stk publish workflow --studio <your-studio-name>
+```
+
+**Example:** If your studio is named **`my-studio`**, use: **`stk publish workflow --studio my-studio`**. 
+
+### **4.2. Verify the publication**
+
+1. Access the StackSpot Portal;
+2. Confirm that the new Workflow is listed in your Studio;
+3. Share it with your team and set permissions if needed.

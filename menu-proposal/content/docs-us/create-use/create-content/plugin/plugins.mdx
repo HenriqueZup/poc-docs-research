@@ -1,0 +1,289 @@
+---
+title: Plugin
+description: Learn more about Plugins.
+---
+
+> In this section, you will find details of the Plugin and its types.
+
+<br/>
+
+A Plugin serves as an extension that enhances an application's capabilities. It adheres to established standards and best practices. In the context of StackSpot, a Plugin is always associated with a Studio. It's possible to have Plugins with the same name, but they must belong to different Studios.
+
+Each Plugin version remains immutable. If you wish to make modifications to a Plugin, you are required to publish a new version of it. These versions of a Plugin adhere to semantic versioning (SemVer) principles.
+
+There are two Plugin types:
+
+- **App:** Application Plugin;
+- **Infra**: Infrastructure Plugin that provides resources to an Application.
+
+## **Plugin Types**
+
+### **Application Plugin (App)**
+
+The App Plugin helps write an Application.
+
+See the YAML:
+
+### **YAML Structure**
+
+<Tabs>
+
+<TabItem value="v.3" label="v3 (current version)" default>
+
+```yaml
+schema-version: v3 #required
+kind: plugin #required
+metadata:
+  name: lambda-new-endpoint #required
+  display-name: Endpoint para Lambda  #required
+  description: Add new endpoint to an existing Lambda API. #required
+  version: 1.0.0 #required
+spec:
+  type: infra #required
+  compatibility:
+    - python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  single-use: False
+  technologies: # Ref: https://docs.stackspot.com/create-use/create-content/yaml-files/plugin-yaml/#technologies-1
+    - Api
+  runtime: #required
+    environment: #required
+      - terraform-1-4
+      - aws-cli-2
+      - git-2
+  inputs: #optional
+    - label: Select the Cloudfront
+      type: required-connection
+      name: my-cloudfront-connection
+      connection-interface-type: aws-cloud-front-conn    
+    - label: Select your API Gateway alias-2
+      type: generated-connection
+      name: alias-2
+      connection-interface-type: aws-api-gateway-conn
+      outputs:
+        - from: my_gateway_arn
+          to: arn
+        - from: my_gateway_id
+          to: gateway_id
+```
+
+</TabItem>
+
+ <TabItem value="v.2" label="v2">
+
+```yaml
+schema-version: v2 #required
+kind: plugin #required
+metadata:
+  name: lambda-new-endpoint #required
+  display-name: Endpoint para Lambda  #required
+  description: Add new endpoint to an existing Lambda API. #required
+  version: 1.0.0 #required
+spec:
+  type: app
+  compatibility:
+    - python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  single-use: False
+  technologies: # Ref: https://docs.stackspot.com/create-use/create-content/yaml-files/plugin-yaml/#technologies-1
+    - Api
+  stk-projects-only: false  
+  requires: 
+    connections:
+      - type: aws-api-gateway-conn
+        alias: alias-test
+      - type: aws-cloud-front-conn
+        alias: alias-test2
+      - type: aws-api-gateway-conn
+        alias: same-conn-alias-test1
+  inputs: #optional
+    - label: Type name of your resource
+      name: resource
+      type: text
+      required: true
+      default: Client
+      pattern: '([A-Z][a-z]+)+'
+      help: 'Inform your resource name (e.g.: Client)'
+    - label: Choose http method of new endpoint
+      name: method
+      type: select
+      items:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - PATCH
+      default: GET
+      required: true
+      help: 'Inform the method of the endpoint (e.g.: post or delete)'
+```
+
+</TabItem>
+  <TabItem value="v.1" label="v1">
+
+  ```yaml
+schema-version: v1 #optional #warning
+kind: plugin #required
+metadata: #required
+  name: lambda-new-endpoint #required
+  description: Add new endpoint to an existing Lambda API.  #required
+  display-name: Endpoint para Lambda  #required
+  version: 1.0.0  #required
+  release-notes: docs/release-notes-{{version}}.md #required
+  picture: plugin.png  #optional
+spec: #required
+  type: app   #required
+  compatibility: #optional
+    - python
+  about: docs/about.md  #optional #warning
+  usage: docs/usage.md  #optional #warning
+  implementation: docs/implementation.md  #optional #warning
+  requirements: docs/requirements.md   #optional  #warning
+  repository: https://github.com/stack-spot/environments-runtime-stack  #optional
+  technologies: #optional 
+    - Api
+```
+
+  </TabItem>
+</Tabs>
+
+### **Infrastructure Plugin (Infra-plugin)**
+
+It is a Plugin that provisions resources to an Application.
+
+See an example:
+
+- You want to create an Application with a database. The Infra Plugin creates and deploys a database structure for it.
+
+The Infra Plugin depends on the App Plugin because it supports the Application.
+
+### **YAML Structure**
+
+<Tabs>
+
+<TabItem value="v.3" label="v3 (current version)" default>
+
+```yaml
+schema-version: v3 #required
+kind: plugin #required
+metadata:
+  name: lambda-new-endpoint #required
+  display-name: Endpoint para Lambda  #required
+  description: Add new endpoint to an existing Lambda API. #required
+  version: 1.0.0 #required
+spec:
+  type: infra #required
+  compatibility:
+    - python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  single-use: False
+  technologies: # Ref: https://docs.stackspot.com/create-use/create-content/yaml-files/plugin-yaml/#technologies-1
+    - Api
+  runtime: #required
+    environment: #required
+      - terraform-1-4
+      - aws-cli-2
+      - git-2
+  inputs: #optional
+    - label: Select the Cloudfront
+      type: required-connection
+      name: my-cloudfront-connection
+      connection-interface-type: aws-cloud-front-conn    
+  generates: #required
+    connections: #required 
+      - type: aws-api-gateway-conn
+        alias: alias-2
+```
+</TabItem>
+
+ <TabItem value="v.2" label="v2">
+
+```yaml
+schema-version: v2 #required
+kind: plugin #required
+metadata:
+  name: lambda-new-endpoint #required
+  display-name: Endpoint para Lambda  #required
+  description: Add new endpoint to an existing Lambda API. #required
+  version: 1.0.0 #required
+  picture: plugin.png
+spec:
+  type: infra #required
+  compatibility:
+    - python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  single-use: False
+  technologies: # Ref: https://docs.stackspot.com/create-use/create-content/yaml-files/plugin-yaml/#technologies-1
+    - Api
+  runtime: #required
+    environment: #required
+      - terraform-1-4
+      - aws-cli-2
+      - git-2
+  requires: #required
+    connections: #required
+      - type: aws-cloud-front-conn
+        alias: alias-1
+  generates: #required
+    connections: #required 
+      - type: aws-api-gateway-conn
+        alias: alias-2
+```
+</TabItem>
+  <TabItem value="v.1" label="v1">
+
+```yaml
+schema-version: v1 #required
+kind: plugin #required
+metadata:
+  name: invalid-plugin-infra-with-warnings #required
+  description: This is a description #required
+  display-name: This is display name #optional
+  picture: plugin.png #optional
+  version: 2.0.3 #required
+spec:
+  type: infra #required
+  release-notes: docs/release-notes-2.0.3.md #optional
+  about: docs/about.md #optional
+  usage: docs/usage.md #optional
+  implementation: docs/implementation.md #optional
+  requirements: docs/requirements.md #optional
+  repository: https://github.com/stack-spot/environments-runtime-stack #optional
+  compatibility:
+    - python
+  technologies:
+    - Api
+  requires:
+    connection-interface:
+      - lambda-conn
+  generates:
+    connection-interface: lambda-conn
+```
+  </TabItem>
+</Tabs>
+
+## **Next Steps**
+
+For more information about Plugins, follow the guides below:
+
+<br/>
+
+import CustomDocCard from '@site/src/components/MdxComponents/CustomDocCard';
+import CustomDocCardList from '@site/src/components/MdxComponents/CustomDocCardList';
+
+<CustomDocCardList>
+  <CustomDocCard title="How to Create a Plugin" description="Steps to create your Plugin." link="/create-use/create-content/plugin/create-plugin.md" />
+  <CustomDocCard title="Learn How to Publish Your Plugin" description="Check out how to publish your Plugin." link="/create-use/create-content/plugin/publish-plugin.md" />
+  <CustomDocCard title="How to Migrate Plugin v1 to v2" description="Steps to migrate your Plugin schema version from v1 to v2." link="/create-use/create-content/plugin/v2-migration-guide.md" />
+  <CustomDocCard title="How to Use Jinja in StackSpot" description="Documentation on using Jinja in StackSpot." link="/create-use/create-content/yaml-files/jinja.md" />
+  <CustomDocCard title="How to Create a Plugin Locally" description="Steps to create and test your Plugin locally." link="/create-use/create-content/plugin/create-plugin-tutorial.md" />
+  <CustomDocCard title="How to Publish a Plugin via Pipeline" description="Steps to publish your Plugin through the pipeline using a StackSpot GitHub Action." link="/create-use/create-content/plugin/publish-workflow.md" />
+</CustomDocCardList>

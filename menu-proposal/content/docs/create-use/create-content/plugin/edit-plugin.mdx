@@ -1,0 +1,104 @@
+---
+title: Editar Inputs de Plugins já criados
+description: Como editar inputs de plugins já criados.
+---
+
+> Nesta seção, você encontra um guia de como editar inputs dos Plugins que já foram criados.
+
+<br/>
+
+Você pode alterar os valores de inputs de Plugins ou adicionar novos atributos a eles depois de criá-los.
+
+Confira as instruções:
+
+## **Pré-requisitos**
+
+- Ter um Plugin já criado. Se você ainda não criou, confira o guia [**Criar Plugin**](create-use/create-content/plugin/create-plugin.mdx) primeiro;
+- Ter **acesso ao código fonte** do Plugin.
+
+:::info Informação Adicional
+Caso você **não seja a pessoa criadora do Plugin**, procure quem o criou para ter acesso ao código fonte dele. Pode ser um repositório no GitHub, por exemplo.
+Faça o **`git clone`** e siga os passos.
+:::
+
+**Passo 1.** Na sua IDE de preferência, abra um terminal e acesse o diretório do Plugin na sua máquina local. 
+
+**Passo 2.** Abra o arquivo **'plugin.yaml'** e faça as alterações dos valores dos inputs que você precisa ou adicione os atributos que você quer, por exemplo, um Hook Declarativo.
+
+:::info Informação Adicional
+
+- Para ver todas as possibilidades de inputs, acesse os guias [**Inputs**](create-use/create-content/yaml-files/inputs.mdx) e [**Inputs Avançados**](create-use/create-content/yaml-files/advanced-inputs.mdx).
+
+- Para ver todas as possibilidades de hooks, acesse o guia [**Hooks declarativos**](create-use/create-content/declarative-hooks/index.mdx).
+
+:::
+
+**Passo 3.** Depois de fazer as alterações de inputs, não esqueça de alterar o número da versão do Plugin. Por exemplo:
+
+De:
+
+```yaml
+metadata:
+name: json-plugin
+display-name: dummy-json-plugin
+description: Plugin to integrate a data table into the HTML base
+ // old-start
+version: 1.0.0
+// old-end
+picture: plugin.png
+```
+
+Para:
+
+```yaml
+metadata:
+name: json-plugin
+display-name: dummy-json-plugin
+description: Plugin to integrate a data table into the HTML base
+ // new-line-start
+version: 2.0.0
+// new-line-end
+picture: plugin.png
+```
+
+ **Passo 4.** Salve o arquivo. Pronto, você editou localmente o Plugin. Caso você queira testar as alterações realizadas, utilize o comando para aplicar o Plugin:
+
+ ```bash
+ stk apply plugin CAMINHO_LOCAL_DO_PLUGIN
+ ```
+
+**Passo 5.** Caso queira publicar a nova versão no Estúdio da StackSpot, siga as instruções.
+
+## **Como publicar a nova versão com as edições**
+
+### Pré-requisitos
+
+- Ter permissão de publicação no Estúdio em que o Plugin foi criado.
+
+### Passo a passo
+
+**Passo 1.** No terminal da sua IDE, faça login na sua Conta StackSpot:
+
+```bash
+stk login
+```
+
+**Passo 2.** Ainda no diretório do Plugin, execute o comando:
+
+```bash
+stk publish plugin
+```
+
+> Você não precisa colocar o nome do Estúdio em seguida, pois o STK CLI irá identificá-lo.
+
+Pronto, você publicou a edição do Plugin.
+
+**Passo 3.** Verifique se a nova versão foi publicada no seu Estúdio no Portal da StackSpot EDP. Faça [**login**](https://app.stackspot.com/login) e clique em **'Acessar Estúdios'**.
+
+**Passo 4.** Procure pelo Estúdio do Plugin e clique nele.
+
+**Passo 5.** Dentro do Estúdio, no menu principal, clique em **'Plugins'**. Selecione o Plugin que você acabou de editar.
+
+**Passo 6.** Clique on botão **'Versão x.x.x'** logo do nome do Plugin. Ao lado direito da tela, deve aparecer todas as versões publicadas dele.
+
+Pronto, você editou o Plugin e publicou sua nova versão no Portal da StackSpot EDP.

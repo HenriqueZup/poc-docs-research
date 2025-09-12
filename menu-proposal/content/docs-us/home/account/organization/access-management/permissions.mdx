@@ -1,0 +1,142 @@
+---
+title: Permissions
+description: Learn all Roles and Permissions.
+---
+
+> In this section, you will find details about permissions in the StackSpot Account.
+
+<br/>
+
+Permissions are a set of **actions** defined for one or more **Resource Type** on the platform. Resource Type represent the objects users interact with, such as Accounts, Workspaces, plug-ins, Stacks, and Applications.
+
+The interactions with resources types are called **actions** and depend on their Resource Type. **Resource Type Owner** represents the entities from StackSpot where the resources came from. The entities are StackSpot Platform (as a whole), Account, Workspace, Studios, and Insights. 
+
+Based on that, check below some permission examples:
+
+- Permission to create a Workspace;
+- Permission to create a Plugin;
+- Permission to create a Stack;
+
+Check out the tables below to view the permissions according to Resource Type:
+
+## **Resource Type Owner: StackSpot Platform**
+
+The permissions from this Resource Type are for management roles. So that's why Accounts, Studios, and Workspaces are considered resources here.
+
+**Resource Type**| **Action**  | **Description** |
+------------ | -------------- | ------------- |
+**Account** | create, update, activate, deactivate | A role with permissions for this resource in this resource type can create, update, deactivate, or activate an Account. |
+**Studio** | create, update, delete, view, change visibility | A role with permissions for this resource in this resource type can create,delete, edit, and change the visibility of a Studio from a StackSpot Account. |  
+**Workspace** | create, update, delete, view | A role with permissions for this resource in this resource type can create, view, delete, and edit, a Workspace from a StackSpot Account.
+
+## **Resource Type Owner: Account**
+
+The permissions from this Resource Type concern StackSpot actions users can do with Account resources.
+
+**Resource Type**| **Action** | **Description** |
+------------ | -------------- | ------------- |
+**Partner** | create, update, delete | A role with permissions for this resource in this resource type can create, update, and delete a Partner Account. |
+**APIs**|  associate, disassociate, grant and view access, | Manage shared API resource and access control with the partner Account. |
+**Product**| associate, disassociate | Manage shared Product API resource with the partner. |
+**Group** | create, update, delete, associate, disassociate, view | A role with permissions for this resource, in this resource type, can manage groups. |
+**Role** | create, update, delete, associate, disassociate, view | These are permissions related to what can be done with Roles within the account. For example, creating a new Role, updating a Role or deleting a Role. |
+**Members** | associate, create, update, view | Users with these permissions can associate roles with members, create new members, update member information or view members. |
+**SCM** | create, view, update | A user with these permissions can setup SCM credentials at the account level; view SCM credentials at the account level and update SCM credentials at the account level. |
+**User SCM** | create, view, update | User can update SCM user credentials at the Account level. |
+**Invite** | create, update, view, delete | A user with these permissions can invite new members to the account; update pending invitations; view invitations; revoke pending invitations. |
+**Credentials** | view, create, update,delete, associate, disassociate | - |
+**Resource Type** | view | A user with this permission can view the resource types in the StackSpot Platform. |
+**Personal Access Token (PAT)** | view, create | A user with this permissions can view personal access token; and create Client Id/Client Secret Access Token |
+**Resource** | view | A user with this permission can view groups and roles resources. |
+**Permissions** | view | A user with this permissions can see groups and roles permissions within the StackSpot Platform. |
+**Knowledge source** (AI Platform resource) | create, update, delete | Management of Knowledge Sources in the Account context. Ability to create, update (change the name, description, and settings of the AI Stack) and delete a Knowledge Source in the StackSpot AI platform. |
+**Custom quick commands** (AI Platform resource) | create, update, delete | Management of Custom Quick Commands in the Account context. Ability to create, update (change the name, description, and settings of the AI Stack) and delete a Custom Quick Command in the StackSpot AI platform.|
+**Custom Cloud Account** (Cloud Services Platform Resource) | view | - |
+**Managed cloud Account** (Cloud Services Platform Resource) | view | - |
+**FinOps Reports** (Cloud Services Platform Resource) | view | 
+**FinOps Billing** (Cloud Services Platform Resource) |  download | - |
+**FinOps Saving Plans** (Cloud Services Platform Resource) | request, cancel | - |
+**FinOps Forecast** (Cloud Services Platform Resource) | view | - |
+**Support** (Cloud Services Platform Resource) |  view, open, close  | - |
+**Alerts** (Cloud Services Platform Resource)  | acknowledge | Acknowledge alerts in account | 
+**Baseline** | view, create, update | - |  
+**Cloud Platform** | view, create, update, delete, support | Allow to create, view, update, delete, support actions for Cloud Platform. |  
+
+## **Resource Type Owner: Studio**
+
+The permissions from this Resource Type are actions users can do with Studio resources.
+
+**Resource Type**| **Action** | **Description** |
+------------ | -------------- | -------------|
+**Plugins** | publish, unpublish, deprecate, download | Actions a person can do with a Plugin inside a Studio. For example, a user can create a Plugin in a Studio. |
+**Action** | publish, unpublish, deprecate, download | What users can do with an Action inside a Studio. For example, a user can create an Action in a Studio. |
+**Stacks** | create, update, delete, publish, unpublish, deprecate, setup |  Actions users can do with a Stack inside a Studio. For example, to create a Stack. |
+**Starters** |  create | Actions a user can do with a Starter inside a Studio. |
+**Stack AI**  (AI Platform resource) | create, update, delete | Management of Stack AI content in Studios. Ability to create, update (change the name, description, and settings of the AI Stack) and delete a Stack AI in the StackSpot AI platform. |
+**Custom Quick Commands**  (AI Platform resource) |  publish, unpublish | Management of Custom Quick Commands in Studios. |
+**Static Links** |  create, delete | Create and delete a static link on a Stack version. |
+
+## **Resource Type Owner: Workspace**
+
+The permissions from this Resource Type are actions users can do with Workspace resources.
+
+**Resource Type**| **Action** | **Description** |
+------------ | -------------- | -------------|
+**Stack** | associate, dissociate, view  |  Actions a user can do with a Stack in a Workspace. For example, a user can add a Stack to a Workspace.|
+**Plugins Setup** | Setup | Actions a user can do with a Plugin in a Workspace. For example, define context inputs when plugins will be used. | 
+**Actions Setup** |  Setup | An user can setup an Action in the Workspace.|
+**Dynamic Links** | create, update, delete | Actions a user can do with a Dynamic Link in a Workspace. For example, define whether the dynamic link configured in the plugin will be visible after creating the Application. |
+**Static Links** | create, update, delete, view |  Manage the creation of Static Links. For example, users can create/add Static Links to a Workspace, delete them later, or edit their URL. |
+**Applications** | create, delete, update, delete, update, deploy | Actions a user can do with an Application in a Workspace. For example, a user with this permission can create an Application in the Workspace. |
+**Infrastructure** | create, delete, update, view, delete |  Actions a user can do with Infrastructures in a Workspace. For example, a user with this permission can create an Infrastructure in the Workspace. |
+**Connection Interfaces (Manual)** | create, delete, update, view | Manage Connection Interfaces manual creation and visibility to share with others Workspaces.|
+**Connection Interfaces (Automatic)** | view | A user with this permission can manage Connection Interfaces visibility to share with others Workspaces. |
+**APIs** | create, update, publish, unpublish, view | Manage catalog api creation. A user with this permission can create an API in the Workspace. |
+**Products** | create, update, delete, view | Manage catalog API's products creation |  
+**Cloud Providers** | create, update | Configure cloud provider accounts per workspace environment. |  
+**Stack AI** | associate, disassociate | Management of Stack AI content in Workspaces. Ability to associate/disassociate a Stack AI to a Workspace in the StackSpot AI platform. |
+**Knowledge source**  (AI Platform resource) | associate, disassociate |Knowledge Sources management in Workspaces. Ability to associate/disassociate a Knowledge Source to a Workspace in the StackSpot AI platform. |
+**Custom quick commands**  (AI Platform resource) | associate, disassociate|  Custom Quick Commands management in Workspaces. Ability to associate/disassociate a Custom Quick Command to a Workspace in the StackSpot AI platform.|
+**Alerts** (Cloud Services Platform Resource)  | view, acknowledge | - |  
+**Guard Rails** (Cloud Services Platform Resource)  | view, activate, deactivate |- |
+**Custom Cloud Account** (Cloud Services Platform Resource)  | view, create, update, delete | - |
+**Managed Cloud Account** (Cloud Services Platform Resource)  | view, create, update, delete | - |
+**Cloud Resource** (Cloud Services Platform Resource) | view | - |
+**Workspace Context** | update, view | Configure and view context in a Workspace. |
+**Workspace Workflow** | view, update | Configure and view the Stack Workflow in the Workspace. |
+**Account Workflow** | view, update | Configure and view the Stack Workflow in the Account. |
+
+## **Resource Type Owner: Insights**
+
+The permissions from this Resource Type are actions users can do with Insights resources.
+
+**Resource Type**| **Action** | **Description** |
+------------ | -------------- | -------------|
+**Report** |  download_studio; download_account; | A user can download report data or a event history data from a Studio. |
+
+## **Resource Type Owner: Partner Account**
+
+The permissions for this Resource Type are actions related to what users can do with the partner Account.
+
+**Resource Type**| **Action**  | **Description** |
+------------ | -------------- | -------------|
+**Member** | view | User can view all members from a partner Account. |
+**Invite** | create, view | User can invite new members and view invitations. |
+**Client Application** | create, view | User can create and view the Client Application. |
+**API** | view | User view the API catalog. |
+
+
+## **Resource Type Owner: Cloud**
+
+The permissions for this Resource Type are actions related to what users can do with Cloud.
+
+**Resource Type**| **Action**  | **Description** |
+------------ | -------------- | -------------|
+**Runtime** | view | List the runtimes of the Portal. |
+**Deployment** | create, view | List the deployments of the Portal. |
+
+
+
+## **Next Steps**
+
+- [**Learn more about roles in StackSpot**](home/account/organization/access-management/roles.md)

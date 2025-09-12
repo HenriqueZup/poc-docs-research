@@ -1,0 +1,84 @@
+---
+title: Comandos
+description: Comandos do STK CLI.
+---
+
+> Nesta seção, você encontra todos os comandos disponíveis no STK CLI.
+
+<!-- 
+## **Comandos Gerais**
+
+Comando   | Descrição
+--------- | ------
+[**stk --help**](home/stk-cli/commands/general-commands.mdx#stk---help) | A flag **`--help`** mostra mais informações sobre os comandos e seus parâmetros.
+[**stk --version**](home/stk-cli/commands/general-commands.mdx#stk---version) | Mostra a versão atual instalada.
+[**stk configure connection**](home/stk-cli/commands/general-commands.mdx#stk-configure-connection) | Edita as configurações da Connection exigida ao aplicar um Plugin de **app** ou **infra**.
+[**stk deploy status**](home/stk-cli/commands/general-commands.mdx#stk-deploy-status) | Monitora o status do deploy atual em execução.
+[**stk destroy status**](home/stk-cli/commands/general-commands.mdx#stk-destroy-status) | Apresenta o status do destroy usando seu ID.
+[**stk init**](home/stk-cli/commands/general-commands.mdx#stk-init) | Inicialização e configuração da ferramenta **stk** CLI no seu ambiente.
+[**stk list env**](home/stk-cli/commands/general-commands.mdx#stk-list-env) | Lista todos os ambientes disponíveis dentro de um Workspace.  
+[**stk list stack**](home/stk-cli/commands/general-commands.mdx#stk-list-stack) | Lista todas as Stacks dentro de um Workspace.
+[**stk list starter**](home/stk-cli/commands/general-commands.mdx#stk-list-starter) | Lista todos os Starters dentro de um Workspace.
+[**stk login**](home/stk-cli/commands/general-commands.mdx#stk-login) | Realiza o login em uma conta StackSpot.
+[**stk logout**](home/stk-cli/commands/general-commands.mdx#stk-logout) | Realiza o logout da conta StackSpot.
+[**stk publish api**](home/stk-cli/commands/general-commands.mdx#stk-publish-api) | Publica sua API na StackSpot.
+[**stk rollback status**](home/stk-cli/commands/general-commands.mdx#stk-rollback-status) | Apresenta o status do rollback usando seu ID.
+[**stk update api-definition**](home/stk-cli/commands/general-commands.mdx#stk-update-api-definition) | Atualiza as definições de uma API.
+[**stk upgrade**](home/stk-cli/commands/general-commands.mdx#stk-upgrade) | Atualiza para uma nova versão da CLI.
+
+## **Comandos de Workspace**
+
+Comando   | Descrição
+--------- | ------
+[**stk exit workspace**](home/stk-cli/commands/workspace-commands.mdx#stk-exit-workspace) | Encerra o uso de um Workspace.
+[**stk use workspace**](home/stk-cli/commands/workspace-commands.mdx#stk-use-workspace) | Acessa em um Workspace.
+[**stk list workspace**](home/stk-cli/commands/workspace-commands.mdx#stk-list-workspace) | Lista todos os Workspaces disponíveis para a sua conta.
+
+## **Comandos de Plugin**
+
+Comando   | Descrição
+--------- | ------
+[**stk apply plugin**](home/stk-cli/commands/plugin-commands.mdx#stk-apply-plugin) | Aplica um Plugin que adiciona novas capacidades em uma aplicação.
+[**stk create plugin**](home/stk-cli/commands/plugin-commands.mdx#stk-create-plugin) | Permite criar novos Plugins para a StackSpot.
+[**stk list plugin**](home/stk-cli/commands/plugin-commands.mdx#stk-list-plugin) | Lista todos os Plugins dentro de um Workspace.
+[**stk publish plugin**](home/stk-cli/commands/plugin-commands.mdx#stk-publish-plugin) | Faz a publicação do seu Plugin na StackSpot.
+[**stk remove plugin**](home/stk-cli/commands/plugin-commands.mdx#stk-remove-plugin) | Remove os Plugins de Infraestrutura do manifesto da sua aplicação ou infraestrutura.
+[**stk validate plugin**](home/stk-cli/commands/plugin-commands.mdx#stk-validate-plugin) | Valida a estrutura do seu Plugin.
+
+## **Comandos de Action**
+
+Comando   | Descrição
+--------- | ------
+[**stk create action**](home/stk-cli/commands/action-commands.mdx#stk-create-action) | Cria a estrutura de uma Action.
+[**stk list action**](home/stk-cli/commands/action-commands.mdx#stk-list-action) | Lista todas as Actions dentro de um Workspace.
+[**stk publish action**](home/stk-cli/commands/action-commands.mdx#stk-publish-action) | Publica uma Action na StackSpot.
+[**stk run action**](home/stk-cli/commands/action-commands.mdx#stk-run-action) | Executa uma Action.
+[**stk validate action**](home/stk-cli/commands/action-commands.mdx#stk-validate-action) | Valida a estrutura de uma Action.
+
+## **Comandos de Aplicação**
+
+Comando   | Descrição
+--------- | ------
+[**stk create app**](home/stk-cli/commands/application-commands.mdx#stk-create-app) | Cria uma aplicação a partir de um ou mais Plugins.
+[**stk deploy app**](home/stk-cli/commands/application-commands.mdx#stk-deploy-app) | Executa o deploy da sua aplicação.
+[**stk destroy app**](home/stk-cli/commands/application-commands.mdx#stk-destroy-app) | Destrói a Aplicação de um ambiente.
+[**stk list app**](home/stk-cli/commands/application-commands.mdx#stk-list-app) | Lista todos os aplicativos registrados em um Workspace.
+[**stk register app**](home/stk-cli/commands/application-commands.mdx#stk-register-app) | Registra as informações de uma aplicação em um Workspace.  
+[**stk rollback app**](home/stk-cli/commands/application-commands.mdx#stk-rollback-app) | Executa o rollback da sua Aplicação.
+[**stk update app**](home/stk-cli/commands/application-commands.mdx#stk-update-app) | Atualiza o ID de uma aplicação.
+[**stk validate app**](home/stk-cli/commands/application-commands.mdx#stk-validate-app) | Valida a estrutura de uma aplicação.
+
+## **Comandos de Infraestrutura**
+
+Comando   | Descrição
+--------- | ------
+[**stk create infra**](home/stk-cli/commands/infraestructure-commands.mdx#stk-create-infra) | Cria uma Infraestrutura.
+[**stk deploy infra**](home/stk-cli/commands/infraestructure-commands.mdx#stk-deploy-infra) | Executa o deploy da sua Infraestrutura.
+[**stk destroy infra**](home/stk-cli/commands/infraestructure-commands.mdx#stk-destroy-infra) | Destrói a Infraestrutura de um ambiente.
+[**stk list infra**](home/stk-cli/commands/infraestructure-commands.mdx#stk-list-infra) | Lista as Infraestruturas registradas no seu Workspace.
+[**stk register infra**](home/stk-cli/commands/infraestructure-commands.mdx#stk-register-infra) | Registra as informações de uma Infraestrutura em um Workspace.
+[**stk rollback infra**](home/stk-cli/commands/infraestructure-commands.mdx#stk-rollback-infra) | Executa o rollback da sua Infraestrutura.
+[**stk update infra**](home/stk-cli/commands/infraestructure-commands.mdx#stk-update-infra) | Atualiza o ID de uma Infraestrutura.
+[**stk validate infra**](home/stk-cli/commands/infraestructure-commands.mdx#stk-validate-infra) | Valida a estrutura de uma Infraestrutura. -->
+
+<DocCardList /> 

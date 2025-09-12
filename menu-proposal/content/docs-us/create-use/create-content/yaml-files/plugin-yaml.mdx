@@ -1,0 +1,719 @@
+---
+title: plugin.yaml
+description: Learn more about plugin.yaml.
+---
+
+## **`plugin.yaml` example**
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+
+<Tabs>
+ <TabItem value="v.1" label="v1 (deprecated)">
+
+```yaml
+schema-version: v1 #optional #warning
+kind: plugin #required
+metadata: #required
+  name: lambda-new-endpoint #required
+  description: Add new endpoint to an existing Lambda API.  #required
+  display-name: Endpoint para Lambda  #required
+  version: 1.0.0  #required
+  picture: plugin.png  #optional
+spec: #required
+  type: app   #required #accepted values: app or infra
+  compatibility: #optional
+    - python
+  about: docs/about.md  #optional #warning
+  usage: docs/usage.md  #optional #warning
+  implementation: docs/implementation.md  #optional #warning
+  requirements: docs/requirements.md   #optional  #warning
+  repository: https://github.com/stack-spot/environments-runtime-stack  #optional
+  technologies: #optional 
+    - Api
+```
+</TabItem>
+  <TabItem value="v.2" label="v2">
+
+```yaml
+schema-version: v2 #required
+kind: plugin #required
+metadata:
+  name: ecs-service #required
+  description: Plugin to create an ECS server #required  
+  display-name: Esc Service  #optional
+  version: 1.0.0  #required
+  picture: plugin.png  #optional
+spec:
+  type: app/infra   #required #accepted values: app or infra
+  compatibility: #optional
+    - python
+  docs: #optional
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md  
+  runtime: #required if the plugin is type: infra
+    environment: # required for infra Plugins
+      - terraform-1-4
+      - aws-cli-2-2
+  single-use: false #optional #accepted values: true or false
+  justification: "Justification text" # required
+  requires: #optional
+    actions:
+      - my-studio-slug/my-action-or-plugin-slug 
+    plugins:
+      - my-studio/single-use-app-plugin
+      - my-studio/terraform-aws-elasticache-redis
+      - my-studio/sqs-create-plugin
+      - studio/plugin
+    connections:
+      - type: ecs-task-conn
+        alias: ecs-task-creator-placeholder
+      - type: ec2-alb-conn
+        alias: ec2-alb-creator-placeholder
+      - type: ec2-alb-conn
+        alias: ec2-alb
+  generates: #it only exists if the plugin is type: infra
+    connections:
+      - type: aws-iam-role-conn
+        alias: rds-access-iam-role
+        outputs:
+         - from: rds-access-iam-role-arn
+           to: arn
+      - type: aws-iam-role-conn
+        alias: sqs-access-iam-role
+        outputs:
+          - from: sqs-access-iam-role-arn
+            to: arn
+    links: #optional
+      - name: Link name
+        url: Link URL
+        type: static #static type
+        picture: icon.png       
+      - name: Link name
+        url: https://{{connections.rds.host}}.com.br/ #dynamic links use JINJA expressions
+        type: dynamic #dynamic type
+        picture: docs/grafana.png          
+  stk-projects-only: true #required #accepted values: true or false
+  app-allowed: false #it only exists if the plugin is type: infra #accepted values: true or false
+  inputs: #optional
+  - label: Input label
+    name: Input name
+    type: text
+    required: true
+    default: Input default value
+    pattern: '([A-Z][a-z]+)+'
+    help: 'Insert any text'         
+```
+  </TabItem>
+
+<TabItem value="v.3" label="v3 (atual)" default>
+
+```yaml
+schema-version: v3 #required
+kind: plugin #required
+metadata:
+  name: ecs-service #required
+  description: Plugin to create an ECS server #required  
+  display-name: Esc Service  #optional
+  version: 1.0.0  #required
+spec:
+  type: app/infra   #required #accepted values: app or infra
+  compatibility: #optional
+    - python
+  docs: #optional
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md  
+  runtime: #required if the plugin is type: infra
+    environment: # required for infra Plugins
+      - terraform-1-4
+      - aws-cli-2-2
+  single-use: false #optional #accepted values: true or false
+  justification: "Justification text" # required
+  requires: #optional
+    actions:
+      - my-studio-slug/my-action-or-plugin-slug 
+    plugins:
+      - my-studio/single-use-app-plugin
+      - my-studio/terraform-aws-elasticache-redis
+      - my-studio/sqs-create-plugin
+      - studio/plugin
+  generates: #it only exists if the plugin is type: infra
+    links: #optional
+      - name: Link name
+        url: Link URL
+        type: static #static type
+        picture: icon.png       
+      - name: Link name
+        url: https://{{connections.rds.host}}.com.br/ #dynamic links use JINJA expressions
+        type: dynamic #dynamic type
+        picture: docs/grafana.png          
+  stk-projects-only: true #required #accepted values: true or false
+  app-allowed: false #it only exists if the plugin is type: infra #accepted values: true or false
+  inputs: #optional
+    - label: Select the connection for your ecs-task-creator-placeholder
+      type: required-connection
+      name: ecs-task-creator-placeholder
+      connection-interface-type: ecs-task-conn
+    - label: Select the connection for your ec2-alb-creator-placeholder
+      type: required-connection
+      name: ec2-alb-creator-placeholder
+      connection-interface-type: ec2-alb-conn
+    - label: Select the connection for your ec2-alb-creator-placeholder2
+      type: required-connection
+      name: ec2-alb-creator-placeholder2
+      connection-interface-type: ec2-alb-conn    
+    - label: Inform the connection for bucket_s3
+      name: bucket_s3
+      type: generated-connection
+      connection-interface-type: aws-s3-conn
+      outputs:
+         - from: aws-s3-alias-arn
+           to: arn
+         - from: aws-s3-alias-bucket_name
+           to: bucket_name  
+    - label: Input label
+      name: Input name
+      type: text
+      required: true
+      default: Input default value
+      pattern: '([A-Z][a-z]+)+'
+      help: 'Insert any text'             
+```
+</TabItem>
+
+</Tabs>
+
+## **Mandatory Attributes**
+
+### **`schema-version`**
+
+Manifest schema version.
+
+```yaml 
+- schema-version: v3
+``` 
+
+### **`kind`**
+
+Manifest kind.
+
+```yaml
+- kind: plugin
+``` 
+
+### **`metadata`**
+
+This identifies the Plugin. They are **`string`** type:
+
+#### **name**
+
+Plugin name that is displayed on the StackSpot Platform. When you don't name it, the previously entered name shows up. It uses kebab case.
+
+```yaml 
+- name: lambda-new-endpoint
+```
+
+#### **description**
+
+Plugin Description. The description needs to be a least 3 characters and a largest of 500. 
+
+```yaml
+- description: Add new endpoint to an existing Lambda API.
+```
+
+#### **version**
+
+Plugin Versioning. It follows the Semantic Versioning (SemVer). 
+
+```yaml
+- version: 1.0.1
+```
+
+### **`spec`**
+
+That's the Plugin specification.
+
+
+#### **repository**
+
+Link to the Plugin's source code.
+
+```yaml 
+- repository:  {{repository}}
+  {% endif %}
+``` 
+
+#### **type**
+
+It is the Plugin type. It can be **`app`** or **`infra`**.  
+
+```yaml
+- type: app
+```
+
+## **Optional Attributes**
+
+### **`metadata`**
+
+This is what identifies the Plugin. They are **`string`** type:
+
+#### **display-name**
+
+Plugin name that shows up on the StackSpot Platform. When you don't name it, the previously name added shows up.
+
+```yaml 
+- display-name: Endpoint for Lambda.
+``` 
+
+#### **picture**
+
+Plugin icon. It shows up on the StackSpot Platform.
+
+```yaml 
+- picture: plugin.png 
+``` 
+
+### **`spec`**
+
+This is the Plugin specification. They are **`string`** type:
+
+#### **single-use**  
+
+If this attribute is **true**, it indicates that the Plugin can only be applied **once** to an Application or Infrastructure.
+
+```yaml
+- single-use: true
+```
+
+#### **stk-projects-only**
+
+If this attribute is **true**, it indicates that a Plugin can only be used in projects already created in StackSpot. It is not allowed to convert external projects into StackSpot projects.
+
+```yaml
+- stk-projects-only: true
+```
+
+#### **app-allowed**
+
+The attribute **`app-allowed`** is only found in Plugins of the `infra` type. If the value of this attribute is **`true`**, it means that the Infrastructure Plugin can be applied to an Application. On the other hand, if the value is **`false`**, the Plugin can only be applied to Infrastructures.
+
+#### **requires**
+
+Determines whether another will require a Plugin or Action. If one or more required Plugins and Actions were not applied, the STK CLI will inform you that you must apply them. You have to [**apply**](home/stk-cli/commands/plugin-commands/#stk-apply-plugin.md) them manually on th before proceeding.
+
+```yaml
+requires:
+  plugins:
+    - studio/plugin
+```
+
+#### **compatibility**
+
+Plugin's compatibility list.
+
+```yaml
+-  compatibility: 
+    - python
+```
+
+#### **docs**  
+
+Markdown with the Plugin documentation.
+
+```yaml
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+```
+
+#### **single-use**
+
+Defines whether the Plugin can be applied once or applied multiple times in the same Application or Infrastructure. The accepted values are:
+
+- **`true`**: The Plugin will be applied once in a Shared Infrastructure or Application;
+- **`false`**: The Plugin can be applied multiple times in the same Application or Infrastructure.
+
+When creating a Plugin, by default, the option **`single-use`** is set to **`false`**.
+
+```yaml
+spec:
+  single-use: true
+  ...
+```
+
+#### **technologies**
+
+[**List of technologies**](#technologies-1) related to the Plugin.
+
+```yaml
+-   technologies: 
+     - Api
+     - Node
+     - npm
+     - Cypress
+```
+
+#### **spec.generates.links[n]**
+
+It allows you to define static or dynamic links in your Plugin. These links redirect to environments outside of StackSpot. For example, a link to external Plugin documentation or an Amazon Cloud Watch monitoring service.
+
+Example of a static link:
+
+```yaml
+spec:
+   generates:
+     links:
+       - name: Plugin Name
+         url: URL link
+         type: static
+         picture: link icon
+```
+
+Example of a dynamic link:
+
+```yaml
+spec:
+   generates:
+     links:
+       - name: Link name
+         url: https://{{connections.rds.host}}.com.br/ #dynamic links use JINJA expressions
+         type: dynamic #dynamic type
+         picture: docs/grafana.png
+```
+
+To learn more about links, [**access how to add dynamic and static links to the Plugin**](create-use/studio/links.md).
+
+#### **spec.runtime.environment**
+
+Allows you to set the limited configuration to be used during a run, as defined in the Environment Configuration Run.
+
+This field is only used in **infra** type plugins:
+
+```yaml 
+runtime:
+  environment:
+    - terraform-1-4
+    - aws-cli-2
+    - git-2
+```
+
+:::tip  
+The versions supported for terraform in Infra Plugins are:
+
+- 1.3 (1.3.10)  
+- 1.4 (1.4.7)  
+- 1.5 (1.5.7)  
+
+:::
+
+#### **spec.requires.actions**
+
+The option **`actions`** defines in the Plugin, a list of Actions that must exist in the Studio and Stack informed for the Plugin to be applied. The Actions will be executed during the Plugin application.
+
+The Action must be informed as follows:
+
+```bash
+<studio-slug>/<action-slug>
+```
+
+Example:
+
+Consider the code snippet below:
+
+```yaml
+requires:
+     actions:
+       - my-studio-slug/my-action-slug
+```
+
+:::warning
+
+The Actions listed in the **requires** field must be published in the Studio.
+
+:::
+
+<!--
+:::tip
+
+If you only enter the Stack slug without the semantic version, the Action executed will be the latest version of the Stack's published Action.
+
+:::
+-->
+
+#### **spec.requires.plugins**
+
+The **`plugins`** option defines a list of Plugins that must previously exist in an Application or Infrastructure for your Plugin to be applied. This allows you to require a list of Plugins before applying your Plugin.
+
+Consider the following code snippet:
+
+```yaml
+requires:
+  plugins:
+    - studio-slug/plugin-slug
+```
+
+:::warning
+
+The Plugins listed in the **requires** field must be published in the Studio.
+
+:::
+
+<!--
+The Plugin is defined in the list by Studio and Plugin Name. You can choose the Plugin version required by the Application or Infrastructure. The version is defined using `@` followed by the desired semantic version number.
+
+You can define the range of versions that should be used. To do this, use the following operators:
+
+- **`=` (equal)**: The Application or Infrastructure must have exactly the same version as specified. E.g: `- cli-studio/single-use-app-plugin@=0.0.1`.
+- **`>` (higher)**: The Application or Infrastructure must have a version higher than the specified version. E.g: `- cli-studio/terraform-aws-elasticache-redis@>0.0.2`.
+- **`<` (minor)**: The Application or Infrastructure must have a version lower than the specified version. E.g: `- cli-studio/terraform-aws-buckets3@<1.0.2`.
+- **`>=` (greater or equal)**: The Application or Infrastructure must have a version greater than or equal to the specified version. E.g: `- cli-studio/terraform-aws-elasticache-redis@>=0.9.2`.
+- **`<=` (less than or equal)**: The Application or Infrastructure must have a version less than or equal to the specified version. E.g: `- cli-studio/sqs-create-plugin@<=2.4.1`.
+- **`,` (betweeen versions)**: The Application or Infrastructure must be between the specified version ranges. E.g: `- cli-studio/sqs-create-plugin@>0.1.0,<0.3.0`. -->
+
+#### **spec.justification**
+
+The **`stk create plugin`** and **`stk create action`** commands automatically include this option. Enter a text justifying the application of the Plugin or execution of the Action in this option.
+The Studio with the governance option enabled will receive this text as a response. Studios with active governance require justification for applying or executing a feature.
+
+If you do not fill in the justification, you can provide it when publishing the Plugin or Action using the **`--justification`** flag.
+
+Example:
+
+```bash
+stk publish plugin --studio my-studio-name --justification "my justification text"
+```
+
+#### **inputs**
+
+It gets relevant information to the Plugin's scope. STK CLI requests the input information for users through commands.
+
+- Check the inputs types, [**on the Inputs section**](create-use/create-content/yaml-files/inputs.md).
+
+- For more details, see the [**Advanced Inputs**](create-use/create-content/yaml-files/advanced-inputs.md).
+
+- **inputs-envs**: **`inputs-envs`** are like the **inputs**. It collects relevant information for the Plugin scope according to the available environments in your Account or Workspace.
+
+STK CLI reads the **`inputs-envs`** during the command execution and asks for information from the user. When you fill out the  **`inputs-envs`**, you can inform different values for each environment or even the same value for every environment when applying/using the Plugin.
+
+See an example below:
+
+```yaml 
+schema-version: v3
+kind: plugin
+metadata:
+  name: plugin-env-input
+  display-name: plugin-env-input
+  description: Describe your plugin explaining its purpose
+  version: 1.0.0
+spec:
+  type: app
+  compatibility:
+    - python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  single-use: False
+  runtime:
+    environment:
+      - terraform-1-4
+      - aws-cli-2
+      - git-2
+  technologies: # Ref: https://docs.stackspot.com/create-use/create-content/yaml-files/plugin-yaml/#technologies-1
+    - Api
+  stk-projects-only: false      
+  inputs:
+    - label: Select the connection for your ecs-task-creator-placeholder
+      name: ecs-task-creator-placeholder
+      type: required-connection
+      connection-interface-type: ecs-task-conn
+    - label: Select a language
+      name: language
+      type: select
+      items:
+        - Java
+        - Kotlin
+    - label: Inform your project name
+      name: project_name
+      type: text
+      default: My Project
+// new-line-start    
+  inputs-envs:
+    - label: Connection Pool
+      type: text
+      name: connection_pool
+    - label: Https
+      type: bool
+      name: http
+// new-line-end   
+```
+
+#### **computed.inputs**
+
+Creates inputs based on other inputs. See more about Computed Inputs in [**Advanced Inputs**](create-use/create-content/yaml-files/advanced-inputs.md).
+
+```yaml
+- computed.inputs: 
+```
+
+### **`technologies`**
+
+String list of technologies related to the **Plugin**.
+
+The technologies allowed for use are:  
+
+- Allure
+- Angular
+- Apache Spark
+- API
+- AWS API Gateway
+- AWS Athena
+- AWS Batch
+- AWS CloudFront
+- AWS CloudWatch
+- AWS Cognito
+- AWS Data Pipeline
+- AWS DynamoDB
+- AWS EC2
+- AWS ECS/Fargate
+- AWS EKS
+- AWS Elastic Beanstalk
+- AWS ELB
+- AWS EMR
+- AWS EventBridge
+- AWS Glue
+- AWS IAM
+- AWS Kafka
+- AWS Kinesis
+- AWS Lake Formation
+- AWS Lambda
+- AWS PrivateLink
+- AWS QuickSight
+- AWS RDS
+- AWS Resource Access Manager
+- AWS Route 53
+- AWS S3
+- AWS SageMaker
+- AWS Secret Manager
+- AWS SNS
+- AWS SQS
+- AWS Step Functions
+- AWS Systems Manager
+- AWS Transit Gateway
+- Azure
+- Azure Active Directory
+- Azure App Service
+- Azure Bastion
+- Azure Blob Storage
+- Azure Cognitive Services
+- Azure Cosmos DB
+- Azure DevOps
+- Azure Functions
+- Azure Kubernetes Service
+- Azure Logic Apps
+- Azure Machine Learning
+- Azure Monitor
+- Azure Search
+- Azure SQL Database
+- Azure Synapse Analytics
+- Azure Virtual Machines
+- C#
+- Cassandra
+- Citric
+- CocoaPods
+- Couchbase
+- Cucumber
+- Cypress
+- Dart
+- Deno
+- Django
+- Docker
+- ElasticSearch
+- Elixir
+- FastAPI
+- Firebase
+- Flask
+- Flink
+- Go
+- Google BigQuery
+- Google Cloud Functions
+- Google Cloud Pub/Sub
+- Google Cloud Run
+- Google Cloud SQL
+- Google Cloud Storage
+- Google Kubernetes Engine
+- Gradle
+- GraphQL
+- Hadoop
+- IBM Cloud Functions
+- IBM Db2
+- Jaeger
+- Java
+- JavaScript
+- Jenkins
+- Junit
+- Kakfa
+- Kotlin
+- Kubernetes
+- Maven
+- Microfrontend
+- MongoDB
+- MySql
+- NestJs
+- .NET
+- NextJS
+- Node
+- npm
+- Observability
+- OCI
+- OpenAPI
+- OpenTelemetry
+- Oracle
+- Oracle APEX
+- Oracle Autonomous Database
+- Oracle Cloud Infrastructure
+- Oracle Database
+- Oracle GoldenGate
+- Oracle Identity Cloud
+- Parquet
+- PHP
+- PostgreSql
+- Prometheus
+- Puppet
+- Python
+- Queue
+- RabbitMQ
+- React
+- Redis
+- Rest
+- Rest Assured
+- Robot Framework
+- Ruby
+- Ruby on Rails
+- Rust
+- SAP HANA
+- Scala
+- Secrets
+- Serenity BDD
+- Splunk
+- Springboot
+- SQLite
+- Svelte
+- Swift
+- Tauri
+- Terraform
+- Typescript
+- Vercel
+- Vue.js
+- Web
+
+## **Next step**  
+
+<br/>
+
+import CustomDocCard from '@site/src/components/MdxComponents/CustomDocCard';
+import CustomDocCardList from '@site/src/components/MdxComponents/CustomDocCardList';
+
+<CustomDocCardList>
+  <CustomDocCard title="Using Inputs" description="Learn more about using inputs." link="/create-use/create-content/yaml-files/inputs.md" />
+</CustomDocCardList>

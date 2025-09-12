@@ -1,0 +1,207 @@
+---
+title: Application Infrastructure Deployment
+description: How the Application Infrastructure deployment works for provisioning
+  Cloud resources in the Application.
+---
+
+> In this section, you will find how to deploy your Application infrastructure.
+
+<br/>
+
+:::caution
+The Deploy configuration flow and addition of Cloud accounts in StackSpot in this way is only available for:
+
+- **Enterprise accounts created before 2024**.
+
+**Enterprise accounts created from January 2024 onwards** must deploy via [**Self-hosted Runtimes**](deployment/deploy/self-hosted-runtime.md).
+:::
+
+:::warning
+
+This deployment guide is exclusive to StackSpot [**Enterprise Accounts**](home/account/organization/index.md) because they use StackSpot's Deploy and [**Self-Hosted**](deployment/deploy/self-hosted-runtime.md) services.
+
+:::
+
+<br/>
+
+In a Deployment flow with StackSpot, the Deploy Engine is responsible for provisioning infrastructure and cloud resources for Applications and Infrastructures.
+
+At StackSpot, it is possible to Deploy the Infrastructure of two types of Plugins:
+
+- **App Type**: Done using the  [**`stk deploy app`**](home/stk-cli/commands/application-commands.md#stk-deploy-app) command, it will deploy the Application Infrastructure pieces that the Plugin generates;
+- **Infra Type**: Done by the command **`stk deploy infra`**, it will deploy the Infrastructure parts of the [**Infrastructure**](home/stk-cli/commands/infraestructure-commands.md#stk-deploy-infra) that the Plugin generates.
+
+Deploys execute within an Environment connected to an **Account in your Cloud service** and associated with a Workspace.
+
+:::info
+A StackSpot Account can consist of one **Cloud Service Account** for each Workspace and Environment association.
+:::
+
+## **Requirements**
+
+- [**Workspace created and configured in Account**](home/workspace/create-workspace.md)
+
+- [**A Stack in a Workspace**](create-use/create-content/stack/create-stack.md).
+
+- [**Infra Plugin configured and available in the account and Workspace**](create-use/create-content/plugin/create-plugin.md).
+
+- [**A connected Cloud Account for an environment in a Workspace**](home/workspace/config-cloud-account.md).
+
+- [**Application**](create-use/use-content/application/index.md).
+
+- [**A registered Application in the Workspace**](home/stk-cli/commands/workspace-commands.md#stk-use-workspace).
+
+- The deployment user must have the following role: **`runtime:deploy_app`**.
+
+## **How to start a deployment via STK CLI**  
+
+**Step 1.** In your terminal, log in to your StackSpot Account and select your Workspace. Execute the command below:
+
+```bash
+stk use workspace <NAME-WORKSPACE>
+```
+
+> For information about this command, go to the[**Workspace Commands page**](home/stk-cli/commands/workspace-commands.md#stk-use-workspace).
+
+**Step 2.** Go to your Application project folder:
+
+```bash
+cd <application-name> 
+```
+
+**Step 3.** In your Application project, execute the command below:
+
+```bash
+stk deploy app --version<version> --env<environment-id> -w
+```
+
+:::tip
+
+- **Version:** The Application tag appears on the StackSpot Platform if the deployment is successful.
+- **Environment:** Configured in the Workspace where the Applications deploy.
+- **Branch:** You can add the flag **`--branch<branch-name>`**. The name of your branch used with the repository you added in the Application manifest. It is an **optional** flag. If you need to check out the repository during deployment, add this flag, and Deploy will clone the repository in the branch. Check the [**step-by-step**](deployment/runtime-engine/private-repos.md) to release access to private repositories.
+
+:::
+
+**Step 4.** To track the **Deployment status**, execute the command:
+
+```bash
+stk deploy status <application id> --watch
+```
+> In this case, the `id` is an argument in your STK CLI after you deploy.
+
+The output status can be:  
+
+- **`Running`**: Running deployment.
+- **`Succeeded`**: Successful deployment.
+- **`User error`**: User error. It is usually related to executing the **`terraform apply`** command. The Plugin's IaC template was not generated as expected. It can also be a permission problem on the Cloud account.
+- **`Runtime error`**: Runtime error. It is an internal StackSpot error. The engineering team needs to evaluate.
+
+When the deployment is complete, an Activity screen appears on the website. You can review all the deployment history and the Environment's versions.
+
+:::info
+To debug the deployment and access the Terraform logs, run the command below:
+
+```bash
+stk deploy status 01H8FCXE6ZEM79X9HJYSVN12C0 --report md
+```
+
+:::
+
+
+<!---
+ **`stk deploy app <VERSION> --env <ENV>`**
+- **Para Deploy de Infra**: **`stk deploy infra <VERSION> --env <ENV>`**
+
+Durante a execução de um dos comandos de Deploy acima, os arquivos de IAC serão:
+
+1. Gerados baseados nos Plugins de Infra aplicados na Aplicação;
+2. Enviados para a Runtime Engine, que provisionará os recursos na conta de Cloud associada ao Workspace e ao environment, onde ocorre o deploy da Aplicação.
+
+```
+stk deploy status [APP-OR-INFRA_ID]
+```
+
+-->
+---
+
+## **What can you do after the deployment?**
+
+### **1. Monitor your Application on the StackSpot Platform**
+
+Learn to monitor your Application on the [**Activities section**](deployment/manage/activities.md). 
+
+### **2. Rollback an Application**
+
+Rollback works like a deployment but with a specific ID. When executing a Rollback, state a version to deploy again with the same IaCs generated in the version.
+
+> The user who will rollback must have the following role: **`runtime:deploy_app`**.
+
+Follow the steps to rollback:
+
+**Step 1**: In your terminal, access your project folder. Select your Workspace running the command:
+
+```bash
+stk use workspace <NOME-WORKSPACE>
+```
+
+**Step 2**: Run the command below:
+
+```bash
+stk rollback app --version=<version> --env=<environment-id>
+``` 
+
+- `version`: is the deployed version chosen for the rollback. In the rollback, a new deployment is made based on the version entered without creating a new tag.
+
+To monitor the rollback status, run the command:
+
+```bash
+stk rollback status <run-id>
+```
+
+> In this case, **`run-id`** is an argument.
+
+## **3. Destroy an Application**  
+
+:::warning  
+This feature is temporarily disabled. During this period, if you need to destroy an Application Infrastructure, please contact our [**support team**](https://stackspot.zendesk.com/hc/en-us/requests/new). 
+:::
+
+After you deploy an Application Infrastructure, if you want to delete it, you need to "destroy" it.
+
+> The user who will destroy must have the following role: **`runtime:destroy_app`**.
+:::info
+
+When you execute the command **`stk destroy app`**, you only destroy the application's infrastructure.  
+
+Its registration continues to exist in your Workspace. To delete it, you must follow the steps in the section [**How to delete your Application in the StackSpot Portal**](create-use/use-content/application/delete-app-portal.md).
+
+:::
+
+To destroy your Application, follow the steps below:
+
+**Step 1.** In your terminal, access the directory of the Application project you want to destroy:
+
+```bash
+cd <application-name> 
+```
+
+**Step 2.** Then, execute the command below to destroy the Application:
+
+```bash
+stk destroy app --env=<environment-id>
+```
+
+For example: 
+
+```bash 
+stk destroy app --env=sandbox
+```
+
+**Step 3.** In the STK CLI, answer the question and confirm that you want to destroy the Application;
+
+**Step 4.** To watch the status of the destroy, run the command below:
+
+```bash
+stk destroy app  --env<environment-id> --watch
+```

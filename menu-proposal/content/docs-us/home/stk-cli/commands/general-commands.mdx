@@ -1,0 +1,697 @@
+---
+title: General Commands
+sidebar_position: 1
+description: List of commonly used STK CLI commands.
+---
+
+> In this section, you will learn more about the general STK CLI commands.
+
+<br/>
+
+Command   | Description
+--------- | ------
+[**stk --help**](#stk---help) | The **`--help`** flag shows more information about the commands and their parameters.
+[**stk --version**](#stk---version) | Shows the current installed version.
+[**stk ai**](#stk-ai) | Starts StackSpot Artificial Intelligence Assistant.
+[**stk configure connection**](#stk-configure-connection) | Edits the required connection settings when applying an **app** or **infra** Plugin.
+[**stk config locale**](#stk-config-locale) | It configures the STK CLI language.
+[**stk create extension**](#stk-create-extension) | Creates an Extension for StackSpot EDP.
+[**stk deploy plan**](#stk-deploy-plan) | Generates a manifest file used to plan a deployment of an Application or Infrastructure.
+[**stk deploy status**](#stk-deploy-status) | Monitors the status of the current deploy running.
+[**stk destroy status**](#stk-destroy-status) | Displays the status of the destroy using its ID.
+[**stk diff state**](#stk-diff-state)  | Displays a diff of deploying an Application or Infrastructure between two environments.
+[**stk init**](#stk-init) | Launches and configures the **STK CLI** tool in your environment.
+[**stk list env**](#stk-list-env) | Lists all environments available within a Workspace.  
+[**stk list studio**](#stk-list-studio)  |  Lists all Studios available in your StackSpot account.
+[**stk login**](#stk-login) | Log in to a StackSpot account.
+[**stk logout**](#stk-logout) | Logs out of the StackSpot account.
+[**stk notify**](#stk-notify) | Command to send a Deploy notification to StackSpot.
+[**stk publish api**](#stk-publish-api) | Publishes your API on StackSpot.
+[**stk publish extension**](#stk-publish-extension) | Publish your Extension on StackSpot EDP.
+[**stk rollback status**](#stk-rollback-status) | Displays the status of the rollback using its ID.
+[**stk show me**](#stk-show-me) | Displays your StackSpot account user information on the terminal.
+[**stk update api-definition**](#stk-update-api-definition) | Updates an API's definitions.
+[**stk update doc**](#stk-update-doc) | Update the documentation of an Action, Plugin or Stack.
+[**stk upgrade**](#stk-upgrade) | Updates to a new version of the CLI.
+
+### **stk --help**
+
+The **`--help`**  option shows more information about the commands and their parameters. 
+
+To use this option, simply type the command you want to learn more about, followed by the **`--help`** flag. 
+
+#### **Usage**
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs>
+<TabItem value="Tab0" label="Syntax" default>
+
+```bash
+<stk command> --help
+```
+
+</TabItem>
+<TabItem value="Tab1" label="stk init help">
+
+```bash
+stk init --help
+```
+
+</TabItem>
+<TabItem value="Tab2" label="stk create help">
+
+```bash
+stk create --help
+```
+
+</TabItem>
+<TabItem value="Tab3" label="stk list help">
+
+```bash
+stk list --help
+```
+
+</TabItem>  
+</Tabs>
+
+___
+
+### **stk --version**
+
+The **`stk --version`** command displays the current version of the STK CLI that is installed in the terminal.
+
+#### **Usage**
+
+```bash
+stk --version
+```
+
+#### **Parameters**
+
+| **Option** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `--version` or `-v` | Displays the current version of the STK CLI installed on your machine. | <pre>stk --version</pre> or <pre>stk -v</pre> |
+___
+
+### **stk ai**
+
+The **`stk ai`** command starts [**StackSpot Artificial Intelligence Assistant**](https://www.stackspot.com/en/ai) in your terminal.
+
+#### **Usage**
+
+Run the command below to initialize the assistant:
+
+```bash
+stk ai
+```
+
+Then, start prompt with the assistant.
+
+- To access the code analysis tool. Input '`code`' in your prompt and paste the source code to review;
+- Insert '`exit`' or 'Ctrl+c' to end your session.
+
+#### **Parameters**
+
+| **Option** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-oc`, `--only-code` | Use this option to generate only the code without explanations from the agent. | <pre>stk ai code [your prompt here] --only-code</pre>
+| `-o`, `--output` | Defines a file to write the prompt exit code. | <pre>stk ai code [your prompt here] --output file.txt</pre> | 
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk ai --help</pre>|
+___
+
+### **stk configure connection**
+
+:::warning
+The **`stk configure connection-interface`** command is deprecated and will no longer be used. It has been updated to **`stk configure connection`** .
+::: 
+
+The **`stk configure connection`** command allows you to edit the connection settings required when applying an **app** or **infra** Plugin.
+
+- The required connection must already be registered.
+
+#### **Usage**
+
+**Syntax**
+
+```bash
+stk configure connection [OPÇÕES] [CONNECTION-ALIAS]
+```
+
+> You can configure the connections that appear in the StackSpot Portal list.
+
+<br/>
+
+**Example**
+
+```bash
+stk configure connection-interface <connection-alias> --plugin <studio>/<stack>/<plugin>@<version> --new-value <connection-to-select>
+```
+
+#### **Parameters**
+
+| **Option** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-a, --alias` | The plugin alias to be configured. | <pre>stk configure connection my-conn-alias --alias my-plugin-alias</pre> |
+| `-nv, --new-value` | The name of the new connection. | <pre>stk configure connection my-conn-alias --plugin my-studio/my-stack/my-lambda-plugin@1.0.0 --new-value my-new-conn-alias</pre> |
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk configure connection --help</pre>|
+___
+
+### **stk config locale**
+
+The **`stk config locale`** command allows you to edit the language of the STK CLI between en_US and pt_BR. 
+
+#### **Usage**
+
+**Syntax**
+
+```bash
+stk config locale [OPTIONS]
+```
+
+**Example**
+
+```bash
+stk config locale
+```
+
+In the terminal, select between **Portuguese** or **English**.
+
+#### **Parameters**
+
+| **Option** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-h`, `--help` | It displays the command help and exits. | <pre>stk config locale --help</pre>|
+___
+
+### **stk create extension**
+
+The **`stk create extension`** command sets up a customizable Extension for StackSpot EDP using the STK CLI. You need to add your Extension code to this structure.
+
+#### **Usage**
+
+To create an extension, you need to run the **`stk create extension`** command and provide the data for your Extension:
+
+- Name of the Extension;
+- Description for the Extension;
+- Level at which your Extension will be visible. The available options are the **Organization** or **Workspace** levels;
+- Path to the folder where you will add your extension code.
+
+**Syntax**
+
+```bash
+stk create extension [OPTIONS] [NAME]
+```
+
+**Example**
+
+```bash
+stk create extension dashboard-extension --level workspace
+```
+
+#### **Parameters**
+
+| **Options** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-r`, `--remote GIT-REMOTE-URL` | URL of a Git repository as the source of an Extension's repository. When the `NAME` value is not provided in the Extension, in which case the `NAME` value will be set to the name of the Git repository provided. | <pre>stk create extension --remote https://github.com/my-gh-organization/my-extension-repository</pre>|
+| `-sgi`, `--skip-git-init` | Do not start a Git repository in the Extension's folder. | <pre>stk create extension my-extension-name --skip-git-init</pre>|
+| `-d`, `--description` | Description that explains the purpose and use of your Extension. | <pre>stk create extension my-extension-name --description "Creating my first StackSpot EDP Extension."</pre>|
+| `-l`, `--level` | Sets the levels at which the Extension will be available. Accepted levels are: `organization` or `workspace`. | <pre>stk create extension my-extension-name --description "Creating my first StackSpot EDP Extension." --level workspace</pre>|
+| `-p`, `--path` | Relative path to the distribution folder. The distribution folder (`list`) is the folder that contains the optimized and ready-to-use code of your Extension for production use. The project build process generates the distribution folder. | <pre>stk create extension my-extension-name --description "Creating my first StackSpot EDP Extension." --level workspace --path /project/dist</pre>|
+| `-q`, `--non-interactive` | Does not prompt the user for input parameters and returns an error if any required parameter is not provided. | <pre>stk create extension my-extension-name --description "Creating my first StackSpot EDP Extension." --level workspace --non-interactive</pre>|
+| `-h`, `--help` | Displays command help and exits. | <pre>stk create extension --help</pre>|
+___
+
+### **stk deploy status**
+
+The **`stk deploy status`** command monitors and displays the **deploy status** of your running Application or Infrastructure.
+
+Before running the command, you must:
+
+1. Log in to your Account with the [**stk login**](#stk-login) command. 
+2. If you do not have an active Workspace, access a Workspace with the [**stk use workspace**](home/stk-cli/commands/workspace-commands.md#stk-use-workspace) command.
+
+#### **Usage**
+
+```bash
+stk deploy status [APP-OR-INFRA_ID]
+```
+
+:::info
+The deployment ID is located in the **`stk.yaml`** file of the application or infrastructure, in the **`spec`** field, in the **`app-id`** or **`infra-id`** attributes.
+:::
+
+#### **Parameters**
+
+| **Option** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-w`, `--watch`  | Automatically monitors and displays the deployment status in the terminal. | <pre>stk deploy status STATUS_ID --watch</pre> |
+| `-r, --report` | Generates a status report with the specified file type. Supported file types are:  **`json`** or **`md`**. | <pre>stk deploy status STATUS_ID --watch --report json</pre> ou <pre>stk deploy status STATUS_ID --watch --report md</pre>| 
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk deploy status --help</pre> |
+___
+
+### **stk deploy plan**
+
+The **`stk deploy plan`** command generates a manifest file (`manifest.yaml`) used to plan an Application or Infrastructure deployment.
+
+Before executing the command, you must:
+
+1. Log in to your Account with the [**stk login**](#stk-login) command.
+2. If you have an active Workspace, access a Workspace with the [**stk use workspace**](home/stk-cli/commands/workspace-commands.md#stk-use-workspace) command.
+
+#### **Use**
+
+```bash
+stk deploy plan --env env_name
+```
+
+#### **Parameters**
+
+| **Options** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-e`, `--env`| It defines the name of the Environment that will be used to deploy the Application. See the Environments available in your Workspace using the [**stk list env**](#stk-list-env) command. | <pre>stk deploy plan --env qa</pre> |
+| `-o`, `--target` | Path where the manifest.yaml file will be generated. By default, it will be generated in the current folder. | <pre>stk deploy plan --env qa --target /home/user/app</pre> |
+| `-v`, `--version` | It defines the version of the deploy tag. You need to use the semantic versioning pattern. Example: "1.0.0" | <pre>stk deploy plan --version 1.0.0</pre> |
+| `-b`, `--branch` | Name of the Git branch that will be used in the deployment. **Optional**.| <pre>stk deploy plan --branch app2-last-release</pre> |
+| `-r`, `--repo` | The repository URL must be validated with the repository registered in the Application/Infrastructure manifest.  | <pre>stk deploy plan --env development --repo https://github.com/my-org-name/org-repo-name</pre> |
+| `--open-api-path` | Path to the Open API file relative to the Git repository root. **Optional**. | <pre>stk deploy plan --open-api-path API/my-app-folder</pre> |
+| `-h`, `--help` | Displays command help and exits. | <pre>stk deploy plan --help</pre> |
+
+___
+
+### **stk destroy status**
+
+The **`stk destroy status`** command displays an Application or Infrastructure **destruction status**. You must use the ID returned by the [**stk destroy app**](#stk-destroy-app) and [**stk destroy infra**](#stk-destroy-infra) commands.
+
+#### **Usage**
+
+**Syntax**
+
+```bash
+stk destroy status <DESTROY_ID>
+```
+
+**Example**
+
+```bash
+stk destroy status DESTROY_ID --watch --report
+```
+
+#### **Parameters**
+
+| **Option** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-w, --watch` | Monitors the shredding status automatically. | <pre>stk destroy status DESTROY_ID --watch</pre>|
+| `-r, --report` | Generates a status report with the specified file type. Supported file types are: `json` or `md`. | <pre>stk destroy status DESTROY_ID --watch --report json</pre> ou <pre>stk destroy status DESTROY_ID --watch --report md</pre>| 
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk destroy status --help</pre>|
+
+___
+
+### **stk diff state**
+
+The **`stk diff state`** command compares an Application or Infrastructure's deployment status between a target environment and a source environment, displaying the differences in the terminal.
+
+#### **Usage**
+
+1. Activate a Workspace with the [**stk use workspace**](home/stk-cli/commands/workspace-commands.md#stk-use-workspace) command.
+2. Run the command inside the Application or Infrastructure folder, then specify the name(s) of the environment(s) you want to check.
+3. When you turn off the text highlight of the diff displayed in the terminal, the following symbols appear below the changed lines:
+
+- **---**: Represents a removed section.
+- **+++**: Represents an added section.
+- **^^^**: Represents a modified section.
+
+**Syntax**
+
+By default, the command compares the differences between the Application or Infrastructure specified in **`TARGET_ENV`** and your local environment:
+
+```bash
+stk diff state [TARGET_ENV]
+```
+
+Use the **`--origin-env`** option to specify the source environment you want.
+
+```bash
+stk diff state [TARGET_ENV] --origin-env [ORIGIN_ENV]
+```
+
+**Example**
+
+Compare the state of a local Application with the Application in the **`production`** environment:
+
+```bash
+stk diff state production
+```
+
+Compare the state of an Application in the **`development`** environment with the Application in the **`production`** environment:
+
+```bash
+stk diff state production --origin-env development
+```
+
+To turn off the highlight displayed in the terminal, use the **`--highlight-disable`** option:
+
+```bash
+stk diff state development --highlight-disable
+```
+
+#### **Parameters**
+
+| **Options** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-o, --origin-env` | Specifies the environment used in deploying the Application or Infrastructure. You must provide the desired environment name. The default value is **‘local’**, which compares the Application or Infrastructure in the current local folder. | <pre>stk diff state development --origin-env production</pre>|
+| `--hd, --highlight-disable` | Turn off the highlight of the diff displayed in the terminal. | <pre>stk diff state development --highlight-disable</pre>| 
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk diff state --help</pre>|
+
+___
+
+### **stk init**
+
+The **`stk  init`** command initializes and configures the STK CLI tool in your environment. It shows a list of all available parameters, and allows you to configure the proxy and disable certificates.
+
+Users with the private VPN must configure the parameters manually.
+
+#### **Parameters**
+
+The following options are available:
+
+| **Option** | **Description** | **Example** |
+| :--- | :--- | --- |
+| `-k ou --disable-ssl-verify` | Disables verification of SSL certificates. This is useful when the proxy in private VPN environments returns invalid certificates to GitHub.| <pre>stk init --disable-ssl-verify</pre> |
+| `-p ou --proxy <host>:<port>` | Configures a proxy to make HTTP connections. | <pre>stk init --proxy proxy.mycorp:8080</pre> |
+| `-c ou --clean` | Clears previously made settings. This is useful to remove default settings. | <pre>stk init --clean</pre> |
+| `-e ou --proxy-exclusions <url-proxy1>,<url-proxy-2>` | Defines a list of URLs, separated by a comma, which must not connect via the configured proxy. | <pre>stk init --proxy-exclusions proxy.mycorp1.com, proxy2.mycorp.com, proxyn.mycorp.com</pre>|
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk init --help</pre>|
+___
+
+### **stk list env**
+
+The **`stk list env`** command lists all environments available to your account.
+
+Environments must be configured in the [**StackSpot Platform**](https://app.stackspot.com/login).  
+To learn how to set up an environment, see the guide to [**setting up your Workspace**](home/workspace/about-workspace.md).
+
+Before running this command, you must:
+
+1. Log in to your account with the [**stk login**](#stk-login) command.
+2. If you do not have an active workspace, access a workspace with the [**stk use workspace**](home/stk-cli/commands/workspace-commands.md#stk-use-workspace) command.
+
+#### **Usage**
+
+```bash
+stk list env
+```
+
+#### **Parameters**
+
+| **Option** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk list env --help</pre> |
+___
+
+### **stk list studio**
+
+The **`stk list studio`** command lists the Studios available in your StackSpot account in the terminal.
+
+#### **Use**
+
+```bash
+stk list studio
+```
+
+#### **Parameters**
+
+| **Options** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-h`, `--help` | Displays command help and exits. | <pre>stk list studio --help</pre> |
+
+___
+
+### **stk login**
+
+The **`stk login`** command logs you into a StackSpot account. You need to enter your StackSpot account email address. The command then opens your browser and asks you to fill in your data and confirm access to generate a session.
+
+#### **Usage**
+
+```bash
+stk login [EMAIL]
+```
+
+#### **Parameters**
+
+|**Option** | **Description** | **Example** |
+| --- | --- | --- |
+| `EMAIL` | The email address of your StackSpot account. | <pre>stk login mystackspot-account@email.com</pre>|
+| `-id`, `--client-id` | The customer ID generated on the StackSpot platform | <pre>stk login mystackspot-account@email.com -id [ID value] -key [Client Key value]</pre> |
+| `-key`, `--client-key` | The customer key generated on the StackSpot platform. | <pre>stk login mystackspot-account@email.com -id [ID value] -key [Client Key value]</pre> |
+| `-r`, `--realm` | The customer's StackSpot organization domain. | <pre>stk login mystackspot-account@email.com -id [ID value] -key [Client Key value] -r [Client realm name]</pre> |
+| `-a`, `--account-type` | Defines the account type for the login. The available options are: `enterprise` or `personal`. | <pre>stk login mystackspot-account@email.com --account-type personal</pre> |
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk login --help</pre> |
+
+___
+
+### **stk logout**
+
+The **`stk logout`** command logs out a logged-in StackSpot account. It terminates the session created by the [**`stk login`**](#stk-login) command.
+
+#### **Usage**
+
+```bash
+stk logout
+```
+
+___
+
+### **stk notify**
+
+The **`stk notify`** command must be executed after using **deploy** commands, such as [**application deployment**](home/stk-cli/commands/application-commands. md#stk-deploy-app) or [**infrastructure deployment**](home/stk-cli/commands/infraestructure-commands.md#stk-deploy-infra), when the deployment is not executed by [**StackSpot Deploy**](deployment/runtime-engine/intro-runtime-engine.md).
+
+The command will notify StackSpot that a deployment has been performed.
+
+#### **Usage**
+
+```bash
+stk notify
+```
+
+___
+
+### **stk publish api**
+
+The **`stk publish api`** command updates your API in StackSpot from the "draft" state to "published". This makes your API visible for use.
+
+#### **Usage**
+
+**Syntax**
+
+```bash
+stk publish api [API_ID]
+```
+
+**Example**
+
+```bash
+stk publish api AJDt2A5pe2T
+```
+
+#### **Parameters**
+
+| **Option** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-e, --env` | The name of the environment that will be updated. | <pre>stk publish api AJDt2A5pe2T --env prod</pre>|
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk publish api --help</pre> |
+
+___
+
+
+### **stk publish extension**
+
+The **`stk publish extension`** command publishes a StackSpot EDP Extension.
+
+#### **Usage**
+
+The command is recommended for publishing EDP Extensions through pipelines.
+
+**Syntax**
+
+```bash
+stk publish extension [OPTIONS]
+```
+
+**Example**
+
+```bash
+stk publish extension --activate my-studio
+```
+
+#### **Parameters**
+
+| **Options** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-a, --activate` | Name of the Studio linked to the Extension. | <pre>stk publish extension --activate studio-slug-name</pre>|
+| `-q, --skip-confirmation` | Skips the Extension activation warning. | <pre>stk publish extension --activate studio-slug-name --skip-confirmation</pre>|
+| `-h`, `--help` | Displays command help and exits. | <pre>stk publish extension --help</pre> |
+
+___
+
+### **stk rollback status**
+
+The **`stk rollback status`** command displays the rollback status of an application or Infrastructure. You must use the ID returned by the [**stk rollback app**](home/stk-cli/commands/application-commands.md#stk-rollback-app) and [**stk rollback infra**](home/stk-cli/commands/infraestructure-commands.md#stk-rollback-infra) commands.
+
+#### **Usage**
+
+**Syntax**
+
+```bash
+stk rollback status <ROLLBACK_ID> --watch --report <report-format>
+```
+
+**Example**
+
+```bash
+stk rollback status ROLLBACK_ID --watch --report json
+```
+
+#### **Parameters**
+
+| **Option** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-w, --watch` | Monitors the rollback status automatically. | <pre>stk rollback status ROLLBACK_ID --watch</pre>|
+| `-r, --report` | Generates a status report with the specified file type. Supported file types are: **`json`** or **`md`**. | <pre>stk rollback status ROLLBACK_ID --watch --report json</pre> ou <pre>stk rollback status ROLLBACK_ID --watch --report md</pre>| 
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk rollback status --help</pre>|
+
+___
+
+### **stk show me**
+
+The **`stk show me`** command displays your active StackSpot account user details in the STK CLI.
+
+#### **Use**
+
+
+**Syntax**
+
+
+```bash
+stk show me
+```
+
+**Example**
+
+After the [**login**](#stk-login), run the command to obtain the following data from your account:
+
+```bash
+stk show me
+```
+
+See the following example:
+
+- **Name:** registered username. Example: `John Doe`.
+- **Username:** registered username and/or email. Example: `john.doe@github.com`.
+- **Email:** account email address. Example: `john.doe@github.com`.
+- **Account:** your StackSpot account name. Example: `John Doe`.
+- **Account Slug:** your account slug. Example `john-doe`.
+- **Account Type:** your account type. Example: `enterprise`.
+- **Realm:** domain of your StackSpot account. Example: `github`.
+- **Start session:** start date of your session. Example: `2024-01-18 10:24:40`.
+- **Expiration session:** session expiration date. Example: `2024-01-18 11:24:40`.
+- **Expiration refresh:** session renewal date. Example: `2024-01-18 19:24:40`.
+
+#### **Parameters**
+
+| **Options** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-h`, `--help` | Displays command help and exits. | <pre>stk show me --help</pre>|
+
+___
+
+### **stk update api-definition**
+
+The **`stk update api-definition`** command updates the OpenAPI specification of your published API on StackSpot.
+
+#### **Usage**
+
+**Syntax**
+
+```bash
+stk update api-definition [API_ID]
+```
+
+**Example**
+
+```bash
+stk update api-definition AJDt2A5pe2T
+```
+
+#### **Parameters**
+
+| **Option** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-e, --env` | The name of the API environment that will be updated. | <pre>stk update api-definition AJDt2A5pe2T --env prod</pre>|
+| `-c, --contract` | The path to the OpenAPI specification file. | <pre>stk update api-definition AJDt2A5pe2T --contract home/user/my-apis/openapi-specs/api-spec.yaml</pre>|
+| `-g, --gateway-url` | The API base URL. | <pre>stk update api-definition AJDt2A5pe2T --env hom --gateway-url</pre>|
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk update api-definition --help</pre>|
+
+___
+
+### **stk update doc**
+
+The **`stk update doc`** command updates the documentation of an Action, Plugin or Stack.
+
+#### **Usage**
+
+**Syntax**
+
+```bash
+stk update doc [STUDIO-SLUG]
+```
+
+Inside your Stack, Plugin, or Action folder, run the command below:
+
+**Example**
+
+```bash
+stk update doc
+```
+
+#### **Parameters**
+
+| **Option** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-s, --studio` | The name of the Studio for which documentation will be updated. | <pre>stk update doc --studio my-studio-slug</pre>|
+| `-v, --verbose` | Show update doc command with more details.| <pre>stk update doc --verbose</pre>|
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk update doc --help</pre>|
+___
+
+### **stk upgrade**
+
+The **`stk upgrade`** command upgrades the STK CLI to the latest version when a new one is available.
+
+#### **Usage**
+
+To upgrade the STK CLI, run the following command in the terminal:
+
+```bash
+stk upgrade
+```
+
+If there is a new version available, the following message will be displayed:
+
+```bash
+Your STK CLI version 4.0.0 is outdated. The new version 4.1.0 is available.
+To upgrade run the command: 'stk upgrade'.
+```
+
+#### **Parameters**
+
+| **Option** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `--force` | Forces the STK CLI to upgrade to a new major version, even if it is incompatible with the current version. | <pre>stk upgrade --force</pre> |
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk upgrade --help</pre>|
+
+A new **major** release brings changes from the previous release. These changes cause incompatibility between versions and make it impossible to go back to the previous version.
+
+If a **major** version is available, the STK CLI will display an incompatibility warning when you try to upgrade. You can use the `--force` option to override the warning and upgrade to the new version.
+
+___

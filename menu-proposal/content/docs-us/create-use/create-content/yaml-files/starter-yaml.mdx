@@ -1,0 +1,104 @@
+---
+title: starter.yaml
+description: Details about the starter.yaml file.
+---
+
+## **Example of a `starter.yaml` file**
+
+```yaml
+schema-version: v1 #required
+kind: starter #required
+metadata: #required
+   name: basic-starter #required
+   description: basic-starter #required
+spec: #required
+   type: app #required
+   docs: #required at least one language
+     en-us: docs/en_us/docs.md
+     pt-br: docs/pt_br/docs.md
+   plugins: #required
+     required: #required
+       - name: example-studio/app-plugin-basic@0.0.1
+     optional:
+       - name: example-studio/app-plugin-basic-02@0.0.1
+```
+
+## **Starter Attributes**
+
+### **`schema-version`**
+
+Manifest schema version.
+
+```yaml
+- schema-version: v1
+```
+
+### **`kind`**
+
+Manifest Type.
+
+```yaml
+- kind: starter
+```
+
+### **`metadata`**
+
+This is what identifies the Starter. They are of type **`string`**:
+
+#### **name**
+
+Name of the Starter that will be displayed on the Portal. When you do not name, the previously entered name will be displayed. Use a kebab case.
+
+```yaml
+- name: starter-name-example.
+```
+
+#### **description**
+
+Starter Description. The description must have a minimum of three characters and a maximum of 500.
+
+```yaml
+- description: Starter example.
+```
+
+### **`spec`**
+
+It's the Stack specification. They are of type **`string`**:
+
+#### **type**
+
+It's the Starter type. The available types are **app** and **infra**.
+
+```yaml
+- type: app # or infra
+```
+
+#### **docs**
+
+Markdown with Starter documentation.
+
+```yaml
+   docs:
+     pt-br: docs/pt-br/docs.md
+     en-us: docs/en-us/docs.md
+```
+
+#### **plugins**
+
+List of Plugins present in your Starter. Organized **required** and **optional**, they must be added with the syntax: **`- name: studio-slug/plugin-name@[semantic-version]`**. Where:
+
+- **required:** Add the mandatory Plugins for creating the Application when using Starter.  
+- **optional:** Add the Plugins that will be used to create the Application but that are not essential for its creation when using Starter.
+
+```yaml
+spec:
+   type: app
+   docs:
+     en-us: docs/en_us/docs.md
+     pt-br: docs/pt_br/docs.md
+   plugins:
+     required:
+       - name: example-studio/app-plugin-basic@0.0.1
+     optional:
+       - name: example-studio/app-plugin-basic-02@0.0.1
+```

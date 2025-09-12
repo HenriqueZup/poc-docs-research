@@ -1,0 +1,412 @@
+---
+title: Create Action
+description: How to create Actions.
+---
+
+> In this section, you will find a guide on how to create Actions on STK CLI.
+
+<br/>
+
+At StackSpot, Actions is a structure that gives intelligence to scripts to execute automation locally on your machine. It is possible to use inputs and files that interact with your script to automate a process, or even facilitate bureaucratic processes in your organization.
+
+In addition to creating your Actions, you can publish and distribute them in your organization so that everyone follows the same type of automation process that the Action executes.
+
+Actions are executed only by the STK CLI, and can contain, for example, scripts that execute:
+
+1. Seamlessly connect with other systems via StackSpot integration;
+2. Carry out developer-related tasks, such as generating a GitHub repository.
+
+## **Requirements**  
+
+- Having the [**STK CLI**](home/stk-cli/install.md) installed.
+- Having permission to create and publish in the Studio.
+
+:::warning
+
+- The Action file must be a maximum of **14MB**.
+- The Action name limit is **60 characters**.
+:::
+
+## **Step 1. Create an Action**
+
+You can create Actions via the [**StackSpot CLI (STK CLI)**](home/stk-cli/index.md). **By default, every Action has a local scope**, and you can only execute them via STK CLI. You can also configure the Action in your Account and execute it remotely.
+
+#### See the steps
+
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<ThemedImage alt="Criar uma aplicação via o Portal da StackSpot." width="auto" sources={{ light: useBaseUrl('/img/diagrams/CREATEACTION-EN-light.png'), dark: useBaseUrl('img/diagrams/CREATEACTION-EN-dark.png'), }} />
+
+To create the initial structure of your Action, execute the [**`stk create action`**](home/stk-cli/commands/action-commands.md#stk-create-action) command and answer the questions below on the terminal:
+
+```bash
+stk create action
+```
+
+**- Name your Action:** Enter a name for your Action;
+
+**- Add repository:** Enter Yes (Y) or No (N). If you already have a repository, add the URL of the remote repository. If not, the Action is created in the current directory;
+
+**- Action Description:** Add a description for the Action;
+
+**- Version:** Enter a version for your Action, the version must follow the semantic versioning format (e.g. 1.0.0 or 3.1.0);
+
+**- Select the Action type:** Choose between `Python` or `Shell`;
+
+**- Connection required:** Enter Yes (Y) or No (N). To add a Connection, check the [**List of Connections**](create-use/connections/connection-interface.md);
+
+## **Check the generated files**
+
+Navigate to the Action folder you created and inspect the generated files:
+
+<Tabs groupId="action-folders">
+<TabItem value="python" label="Python Actions" default>
+
+```bash title="/my-python-action"
+/docs #required
+/templates # optional
+action.yaml #required
+script.py # required
+```
+
+</TabItem>
+<TabItem value="shell" label="Shell Actions" >
+
+```bash title="/my-shell-action"
+/docs #required
+/templates # optional
+action.yaml #required
+```
+
+</TabItem>
+</Tabs>
+
+- In the **`/templates`** folder, add any files or scripts that can be executed or complement the type of your Action. Remember to create the **`/templates`** folder.  
+
+<br/>
+
+- In the **`/docs`** folder are the Markdown files for you to fill in the documentation for your Action;
+
+- The file **`action.yaml`** is what constitutes your Action. It contains all the Action information and settings you need to add.
+
+- The **`script.py`** file is generated for Python Actions. It's an example script for you to edit or replace with your scripts.
+
+After creating your Plugin, you'll have one of the examples below:
+
+<Tabs groupId="create-action">
+<TabItem value="python" label="Python Actions" default>
+
+```yaml
+schema-version: v3
+kind: action
+metadata:
+  name: my-python-action
+  display-name: my-python-action
+  description: Describe your action explaining its purpose
+  version: 1.0.0
+spec:
+  type: python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  inputs:
+    - label: Who are you?
+      name: user_name
+      type: text
+      required: false
+      pattern: '([A-Z][a-z]+)+'
+      help: 'Inform your name'
+// new-line-start      
+  python:
+    workdir: .
+    script: script.py
+// new-line-end    
+```
+
+- **python.workdir**: Folder where the Action should be executed. 
+- **python.script**: Path to the Python script that will be executed.
+
+</TabItem>
+<TabItem value="shell" label="Shell Actions">
+
+```yaml
+schema-version: v3
+kind: action
+metadata:
+  name: my-shell-action
+  display-name: my-shell-action
+  description: Describe your action explaining its purpose
+  version: 1.0.0
+spec:
+  type: shell
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  inputs:
+    - label: Type some label
+      name: random-name
+      type: text
+      required: false
+      pattern: '([A-Z][a-z]+)+'
+      help: 'Inform your resource name (e.g.: Client)'
+// new-line-start      
+  shell:
+    workdir: .
+    requirements-check:
+      - check-command:
+          linux: |
+            echo "Hello World!"
+          mac: |
+            echo "Hello World!"
+          windows: |
+            echo "Hello World!"
+        info: "Failed saying hello to world."
+    script:
+      linux: |
+        echo "Hello World!"
+      mac: |
+        echo "Hello World!"
+      windows: |
+        echo "Hello World!"
+// new-line-end       
+```
+
+- **shell.workdir**: Folder where the Action should be executed.
+- **shell.requirements-check**: Dependency check to map if all the requirements to execute the Action are present.
+  - **check-command**: Attribute present in each check. Defines and executes the command that checks the dependency.
+  - **info**: Error message displayed if the command executed fails the dependency check.
+- **shell.script**: Defines the commands executed in the operating system shell. Different commands can be defined for each supported operating system. The supported systems are **Linux**, **macOS**, and **Windows**.
+
+</TabItem>
+</Tabs>
+
+## **Step 2. Edit your Action**
+
+After creating the Action, your Action may differ from the examples shown above. The generated **`action.yaml`** files contain only the basics for an Action and some example fields. Edit some of the contents of the **`spec:`** field to start using your Action. See the main changes you can make below.
+
+### **Using Inputs**
+
+You can use inputs in your Action to create your Action's interactions with the developer via the terminal. Inputs can direct choices or obtain values conditionally.
+
+Their use is optional, see the [**documentation of all types and use of Inputs**](create-use/create-content/yaml-files/inputs.md).
+
+### **Advanced inputs**
+
+In addition to interacting with the developer via the terminal, advanced inputs can also interact with inputs from other Plugins.
+
+You can use the values obtained from a Plugin in other Plugins or access data from other Plugins in your Action. Check out the [**advanced inputs documentation**](create-use/create-content/yaml-files/advanced-inputs.md)
+
+### **Action metadata**
+
+Metadata is an object created during the execution of a **Plugin** and **Actions**. It contains various values that help you run other processes or automation. See more [**examples in the Metadata documentation**](create-use/create-content/yaml-files/metadata.md).
+
+### **Using Jinja**
+
+Jinja is a template language that the StackSpot engine uses to give more power and flexibility to its Plugins and Actions. Like most template languages, it allows you to define expressions interpolated by the engine to render the final result.
+
+You can use Jinja in various Action parts, especially in the code added to the  **`/templates`** folder. Access the [**Jinja usage documentation in StackSpot**](create-use/create-content/yaml-files/jinja.md).
+
+#### **Use examples in python with Actions**
+
+```yaml
+from templateframework.metadata import Metadata
+
+def run(metadata: Metadata = None):
+  print('# list your project name', metadata.inputs['var']['STK_PROJECT_NAME'])
+  print('# list your Stack name', metadata.inputs['var']['STK_STACK'])
+  print('# list your Studio name', metadata.inputs['var']['STK_STUDIO'])
+  print('# list your Workspace name', metadata.inputs['var']['STK_WORKSPACE'])
+```
+
+### **Using Connections Interfaces**
+
+:::warning
+
+The input **`connections`** is essential if you want to **add an Action to an infra Plugin**.
+The Action has to **require at least one Connection Interface that the Infra Plugin generates** so that you can add it with it.
+
+See the [**Add Action to an Infra Plugin**](create-use/create-content/action/action-infra-plugin.md) guide for more information.
+
+:::
+
+StackSpot has Connections Interfaces to establish all the data a cloud resource needs to be connectable. The Connections Interfaces are separated by cloud resource types where each type [**generates a Connection**](create-use/connections/connection-interface.md).
+
+During the execution of an Action, it can depend on a **`connection`**. The following example highlights the dependency on a **`connection`** in the Action body:
+
+#### **`action.yaml` file example of a type Python Action**
+
+```yaml
+schema-version: v3
+kind: action
+metadata:
+  name: some-kebab-case-name
+  description: some description
+  display-name: Some display name
+  version: 1.0.1
+  picture: images/plugin.png
+spec:
+  type: python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+// new-line-start 
+  inputs:
+    - label: Connection label for connection name
+      name: Name of your connection
+      type: required-connection
+      connection-interface-type: connection_type
+// new-line-end  
+  python:
+    workdir: another/random/path
+    script: random_name/a_cool_name.py
+```
+
+#### **Example of the `script.py` file**
+
+```python
+def run(metadata):
+    print(f"Arn: {metadata.inputs.get('some-type__alias__arn')}")
+    print(f"Name: {metadata.inputs.get('some-type__alias2__name')}"
+```
+
+### **Use template in the Action (Optional)**
+
+Before executing an Action, you can use predefined values and scripts for its execution. To do this, you must create the **templates** folder within your Action and place the desired files to compose the Action.
+
+See the following example of an Action of type **`shell`** using the contents of the **templates** folder:
+
+#### **Action's content**
+
+```bash title="user/project-actions/my-shell-action"
+➜  my-shell-action
+.
+├── action.yaml
+├── docs
+│   ├── pt-br: docs/pt-br/docs.md
+│   ├── en-us: docs/en-us/docs.md
+# new-line-start
+└── templates
+    └── name-value.txt
+# new-line-end    
+```
+
+:::info
+
+You must create the **templates** folder inside the Action. Add any files or scripts that can be executed or complement the type of your Action.
+
+:::
+
+## **Templates content and Action metadata**
+
+<Tabs>
+  <TabItem value="templates" label="File from the templates folder" default>
+
+ Text file **`name-value.txt`** contains the values that will be used by the Action before it is executed.
+
+  ```bash title="my-shell-action/templates/name-value.txt"
+  Hello {{full_name}} !
+  ```
+
+  </TabItem>
+  <TabItem value="yaml" label="Actions metadata">
+
+  ```yaml title="my-shell-action/action.yaml"
+  schema-version: v3
+  kind: action
+  metadata:
+    name: my-shell-action
+    display-name: my-shell-action
+    description: Shell Action type with template files.
+    version: 1.0.0
+  spec:
+    type: shell
+    docs:
+     pt-br: docs/pt-br/docs.md
+     en-us: docs/en-us/docs.md
+    inputs:
+      - type: text
+        name: name
+        label: Name
+      - type: text
+        name: last_name
+        label: Last Name
+    computed-inputs:
+      full_name: "{{name}} {{last_name}}"
+    shell:
+      script:
+      // new-line
+        linux: cat {{component_path}}/name-value.txt
+  ```
+
+  </TabItem>
+</Tabs>  
+
+The file **`action.yaml`** contains the inputs that will collect the values that will be interpolated in the file **`name-value.txt`** to be used in the Action.
+
+In **`action.yaml`**, you must use the folder [**component_path**](create-use/create-content/yaml-files/metadata.md#metadatacomponent_path-plugin-origin-path-is-the-place-where-the-plugin-is-stored) to be able to render the interpolated content of your files or scripts from the **templates** folder alongside the contents of the Action.
+
+The syntax used for **component_path** is:
+
+```yaml
+{{component_path}}/[file_path]
+```
+
+:::info
+
+- **Number of files in the templates folder:** Use as many files as you like.
+- **Component_path examples:** See examples and learn more at [**Metadata**](create-use/create-content/yaml-files/metadata.md).
+- **Advanced Inputs:** Learn more about **computed-inputs** and others in [**advanced-inputs**](create-use/create-content/yaml-files/advanced-inputs.md).
+- **Interpolate values:** Learn more about interpolating values with [**Jinja in StackSpot**](create-use/create-content/yaml-files/jinja.md).
+
+:::
+
+## **Step 3. Run an Action (local test)**
+
+When you execute an Action, all the actions defined in it will be managed locally on your machine. However, there are a few caveats before executing these Actions locally, see below:
+
+### **Run unpublished Action**
+
+Actions that have not been published can be run locally on your machine to test the functions that the Action performs. To do this, run the command giving the path of the Action folder:
+
+Run the [**stk run action**](home/stk-cli/commands/action-commands.md#stk-run-action) command.
+
+Example:
+
+```bash
+stk run action /Users/user.name/my-action-name
+```
+
+:::tip
+
+When you run Actions to a pipeline workflow, the Action do not use the interactive mode (input queries via the terminal). To inform the input values, you need to inform the input and the value as a parameter. [**For more information, check out how to inform input values ​​as parameters**](create-use/create-content/yaml-files/inputs.md#informing-the-value-of-an-input-as-a-parameter).
+
+:::
+
+## **Step 4. Validate the Action**
+
+**Step 1.** Run the [**stk validate action**](home/stk-cli/commands/action-commands) command in the Action folder.
+
+```bash title="Within the Action folder: '/Users/user.name/my-action-name' "
+stk validate action
+```
+
+**Step 2.** If the validation runs successfully, follow the instructions below to publish your Action.
+
+:::warning
+
+If any errors are returned, you must correct them and rerun the validation.
+
+:::
+
+## **Next steps**
+
+import CustomDocCard from '@site/src/components/MdxComponents/CustomDocCard';
+import CustomDocCardList from '@site/src/components/MdxComponents/CustomDocCardList';
+
+<CustomDocCardList>
+  <CustomDocCard title="Publish your Action in a Studio" description="Check out how to publish your Action in a Studio." link="/create-use/create-content/action/publish-action.md" />
+  <CustomDocCard title="Publish an Action with STK CLI" description="Check out the commands to publish an action via STK CLI." link="/home/stk-cli/commands/action-commands.md" />
+  <CustomDocCard title="Associate Actions with Infrastructure Plugins" description="Check out how to associate Actions with Infrastructure Plugins." link="/create-use/create-content/action/action-infra-plugin.md" />
+  <CustomDocCard title="Connection Interfaces" description="Check out more details about Connections Interfaces." link="/create-use/connections/connection-interface.md" />
+</CustomDocCardList>

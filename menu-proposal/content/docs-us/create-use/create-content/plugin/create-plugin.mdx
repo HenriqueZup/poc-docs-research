@@ -1,0 +1,627 @@
+---
+title: Create Plugin
+description: How to create, validate Plugins, and edit plugin.yaml file.
+---
+
+> In this section, you will find a guide on how to create, validate Plugins, and edit plugin.yaml file.
+
+<br/>
+
+## **Requirements**
+
+- [**STK CLI**](home/stk-cli/install.md).  
+- Permission to create and publish Studios.
+
+:::danger
+- The Plugin will be packaged and compressed, and the compressed package must be a maximum of **14MB**.
+- The Plugin name has a **60-character** limit.
+:::
+
+You can create **'Application'(app)** or **'Infrastructure' (infra) Plugins**; learn how to create and edit them below.
+
+:::tip
+
+1. A [**Plugin**](home/stackspot/main-concepts.md#plugin) adds new capabilities to an Application. You can create and apply Plugins to different sections of the StackSpot Portal.
+2. A [**Starter**](home/stackspot/main-concepts.md#starter) is useful for Stack creators to define common combinations of Plugins within the Stack itself.
+
+:::
+
+## Create App Plugin
+
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<ThemedImage alt="Steps to create an application plugin." width="auto" sources={{ light: useBaseUrl('/img/diagrams/CREATEAPP-EN-light.png'), dark: useBaseUrl('img/digrams/Createapp-plugin-EN-dark.png'), }} />
+
+## Create Infra Plugin
+
+<ThemedImage alt="Steps to create an infrastructure plugin." width="auto" sources={{ light: useBaseUrl('/img/diagrams/CREATE-INFRAPLUGIN-EN-light.png'), dark: useBaseUrl('img/diagrams/CREATE-INFRAPLUGIN-EN-dark.png'), }} />
+
+See more details below:
+
+### **Step 1. Create the Plugin**
+
+Execute the following command:
+
+```bash
+stk create plugin 
+```
+
+Answer the questions in your terminal:
+
+**- Name your Plugin:** Add a single name for your Plugin;
+
+**- Add a repository:** Enter Yes (Y) or No (N) to add a local repository.
+
+**- Add remote**: Enter Yes (Y) or No (N). If yes, enter the URL of the remote repository.
+
+**- Plugin description:** Write a description for your Plugin;
+
+**- Version:** Inform a version for your Plugin. The version must follow the semantic versioning (E.g., 0.0.1);
+
+**- Plugin type:** Choose App or Infra;
+
+**- Connection required:** Inform Yes (Y) or No (N). To add a Connection, see the [**list of Connections**](create-use/connections/connection-interface.md).
+
+**- Connection generated: (Only 'Infra' Plugins)** Inform Yes (Y) or No (N). To add a Connection, see the [**list of Connections**](create-use/connections/connection-interface.md).
+
+> You can add all options below through the command line using the command flags. See all the available options for  [**`stk create app`**](home/stk-cli/commands/plugin-commands.md#stk-create-plugin).
+
+### **Step 2. See the generated files**
+
+Go to the Plugin's folder you created and check the files generated:
+
+<Tabs groupId="plugin-folders">
+<TabItem value="app" label="Application Plugin" default>
+
+```bash title="/application-plugin-type"
+/docs #required
+/templates #required
+/templates/README.md #optional
+plugin.yaml #required
+```
+
+</TabItem>
+<TabItem value="infra" label="Infrastructure Plugin" >
+
+```bash title="/application-infraestructure-type"
+/docs #required
+/templates #required
+/templates/README.md #optional
+/templates-deploy #required
+/templates-deploy/README-deploy.md #optional
+plugin.yaml #required
+```
+
+</TabItem>
+</Tabs>
+
+- In the **`docs`** file you can fill in the documentation for your Plugin;
+
+```bash  
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+```
+
+:::tip
+
+Check a [**Markdown guide**](create-use/studio/documentation.md) with a template on how to document your Plugin. This content is available on the StackSpot Portal when you publish your Plugin or Action.
+
+:::
+
+- The **`/templates`** folder is the files you want to generate when applying your Plugin;
+- The **`/templates-deploy` (Only for 'Infra' Plugins)** is similar to the **templates** folder. Add IaC (Terraform) files you want to generate when applying your Plugin.
+- The **`README.md`** and **`README-deploy.md`** files are optional. It must summarize what you need to find in your Plugin.
+- The **`Plugin.yaml`** file makes your Plugin; you can find all its information. You must add configuration to it.
+
+After creating your Plugin, you will have one of the following examples:
+
+<Tabs groupId="plugin-folders">
+<TabItem value="app" label="App Plugin" default>
+
+```yaml
+schema-version: v3
+kind: plugin
+metadata:
+  name: my-app-plugin-name
+  display-name: my-app-plugin-name
+  description: Describe your plugin explaining its purpose
+  version: 0.0.1
+spec:
+  type: app
+  compatibility:
+    - python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  single-use: False
+  technologies: # Ref: https://docs.stackspot.com/content-creator/studio/yaml-files/plugin-yaml/#technologies
+    - Api
+  stk-projects-only: false
+  inputs:
+    - label: Type name of your resource
+      name: resource
+      type: text
+      required: true
+      default: Client
+      pattern: '([A-Z][a-z]+)+'
+      help: 'Inform your resource name (e.g.: Client)'
+    - label: Choose http method of new endpoint
+      name: method
+      type: select
+      items:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - PATCH
+      default: GET
+      required: true
+      help: 'Inform the method of the endpoint (e.g.: post or delete)'
+```
+
+</TabItem>
+<TabItem value="infra" label="Infra Plugin">
+
+```yaml
+schema-version: v3
+kind: plugin
+metadata:
+  name: my-infra-plugin-name
+  display-name: my-infra-plugin-name
+  description: Describe your plugin explaining its purpose
+  version: 0.0.1
+spec:
+  type: infra
+  compatibility:
+    - python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  single-use: False
+  runtime:
+    environment:
+      - terraform-1-4
+      - aws-cli-2
+      - git-2
+  technologies: # Ref: https://docs.stackspot.com/content-creator/studio/yaml-files/plugin-yaml/#technologies
+    - Api
+  stk-projects-only: false
+  inputs:
+    - label: Type name of your resource
+      name: resource
+      type: text
+      required: true 
+      default: Client
+      pattern: '([A-Z][a-z]+)+'
+      help: 'Inform your resource name (e.g.: Client)'
+    - label: Choose http method of new endpoint
+      name: method
+      type: select
+      items:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - PATCH
+      default: GET
+      required: true
+      help: 'Inform the method of the endpoint (e.g.: post or delete)'
+```
+
+</TabItem>
+</Tabs>
+
+## **Edit your Plugin**
+
+After creating your Plugin, depending on what you choose, it will be different from the example above. The plugin file has some example fields that are for a Plugin. You must edit some content in it, like the spec field, to start using the Plugin. See below the main changes you can make.
+
+### **Use Inputs**
+
+You can use inputs in your Plugin to create interactions with the developer via the terminal. The inputs help guide the choices or get conditional values.
+
+It is optional; for more details, see the [**Inputs types and usage section**](create-use/create-content/yaml-files/inputs.md).
+
+#### **Advanced Inputs**
+
+The advanced inputs can interact with the developer or other Plugin inputs.
+
+You can use the values from a Plugin in another one. Or you can access other Plugins' data. For more information, see the [**advanced inputs page**](create-use/create-content/yaml-files/advanced-inputs.md).
+
+### **Use Jinja**
+
+Jinja is a template language that the StackSpot engine uses to give more flexibility when using your Plugins. It allows specific marks in a text and expression definition that the engine will interpolate and render to get to the final result.
+
+You can use Jinja in different parts of your Plugin. It can be in the code you add to the **`/template`**  folder, IaC code (Terraform) on the **`/templates-deploy`** folder, Plugin inputs, and others. For more information, access the [**Jinja on StackSpot page**](create-use/create-content/yaml-files/jinja.md).
+
+### **Use Declarative Hooks**
+
+Use **Declarative Hooks** to define actions you want your Plugin to execute at a specific moment.
+
+Applying a Plugin has two phases:
+
+**Phase 1.** Ask the user for the input parameter.
+**Phase 2.** Interpolate the Jinja templates using the values the user informed to generate the files.
+
+You can execute the Declarative Hooks actions at the following moments:
+
+- Before inserting the input parameters.
+- Before interpolating the Jinja templates to generate files.
+- After generating the files.
+
+There are several Declarative Hooks with specific actions. See more details and learn about [**each type on the Hooks page**](create-use/create-content/declarative-hooks/index.md).
+
+### **Use context variables as inputs**
+
+StackSpot uses [**the Runtime engine**](deployment/runtime-engine/intro-runtime-engine.md) to generate the Application and Infrastructure Plugins code.
+You can manipulate the field values rendered in your Applications or Infrastructure code. You can do this using [**inputs or Declarative Hooks**](create-use/create-content/yaml-files/intro-yaml.md) using [**JINJA expressions**](create-use/create-content/yaml-files/jinja.md) in StackSpot's environment variables.
+
+When creating an Infrastructure or Application Plugin, JINJA expressions allow you to make the Plugin access variables that contain data from the environment where the Plugin is being **deployed**.
+
+These variables are:
+
+- **`{{ var.STK_ENV }}`**: retrieves the environment name.
+- **`{{ var.STK_ENV_ID }}`**: retrieves the environment ID.
+
+When you need it and do not know the information about the environment, you can provide this data to a Terraform file or input from a Declarative Hook or Plugin that requires the name or ID of an environment.
+
+You can use other variables available outside of deployment. There are two types:
+
+1. The **Official StackSpot Variables**;
+2. The context variables created by your organization.
+For more information, [**access the 'How to create Accounts Variables' page**](home/account/organization/variables/create-variables.md) page.
+
+<br/>
+
+Check the **Official StackSpot Variables** below
+
+- **`{{ var.STK_PROJECT_NAME }}`**: Retrieves the project's name;
+- **`{{ var.STK_STACK }}`**: Retrieves the Stack's name;
+- **`{{ var.STK_STUDIO }}`**: Retrieves the Studio's name;
+- **`{{ var.STK_WORKSPACE }}`**: Retrieves the used Workspace's name;
+- **`{{ var.STK_MANIFEST_TYPE }}`**: Retrieves the manifest type (app or infra);
+- **`{{ var.STK_PLUGIN_TYPE }}`**: Retrieves the Plugin type (app or infra);
+- **`{{ var.STK_PLUGIN_NAME }}`**: Retrieves the name of the Plugin;
+- **`{{ var.STK_PLUGIN_VERSION }}`**: Retrieves the used version of the Plugin;
+- **`{{ var.STK_PLUGIN_QUALIFIER }}`**: Retrieves the Plugin qualifier (`studio/stack@semantic-version/plugin@semantic-version`);
+- **`{{ var.STK_ACCOUNT_NAME }}`**: Retrieves the name of the account used.
+- **`{{ var.STK_USERNAME }}`**: Retrieves the username of the current user.
+- **`{{ var.STK_EMAIL }}`**: Retrieves the user email.
+
+Use these variables with Jinja expressions in your Plugins to get values for your Plugin or any other code. You must insert it as a Jinja expression. 
+
+#### **Use example inside JINJA templates**
+
+```yaml
+- {{ var.STK_PROJECT_NAME }} # list your project name
+- {{ var.STK_STACK }} # list your Stack name
+- {{ var.STK_STUDIO }} # list your Studio name
+- {{ var.STK_WORKSPACE }} # list your Workspace name
+```
+
+#### **How to Use Context Variables Created by Your Organization**
+
+To use the Variables created by your Organization, declare the variables created in the Workspace in your **Plugin and Action Jinja templates** using the following expression:
+
+````yaml
+{{ var.VARIABLE_NAME_CREATED }}
+````
+
+For more information about Variables, [**visit the How to Create Accounts Variables.**](home/account/organization/variables/create-variables.md)
+#### **Use example in python using Hooks**
+
+```yaml
+from templateframework.metadata import Metadata
+
+def run(metadata: Metadata = None):
+  print('# list your project name', metadata.inputs['var']['STK_PROJECT_NAME'])
+  print('# list your Stack name', metadata.inputs['var']['STK_STACK'])
+  print('# list your Studio name', metadata.inputs['var']['STK_STUDIO'])
+  print('# list your Workspace name', metadata.inputs['var']['STK_WORKSPACE'])
+```
+
+### **Use Connections Interfaces**
+
+StackSpot has Connections Interfaces to establish the data that a cloud resource needs to connect to. Cloud resource types divide the Connections Interfaces where each type generates a Connection.
+
+Connections have fields that are filled in when creating a cloud resource during the deployment of the infrastructure generated by the Plugins. These fields can vary depending on the type of the Connection.
+
+You must use Connections in two moments when creating your Plugins:
+
+#### **1. Require Connections**
+
+**'Application' (app)** and **'Infrastructure' (infra) Plugins** can require a Connection. What does this mean? When you apply the Plugin, it must use the Connection of the same type the Infrastructure Plugin generated.
+
+```yaml title="Example of a Plugin that requires a Connection-Interface"
+inputs:
+  - label: Select the connection for my-ecs-task
+    type: required-connection
+    name: my-ecs-task
+    connection-interface-type: ecs-task-conn
+```
+
+#### **2. Generate Connections**
+
+When you use an Infra Plugin that generates a Connection, it generates a Connection with the necessary fields to create a cloud resource of the type Connection.
+Only **'Infrastructure' (infra)** Plugin types can generate Connections.
+
+```yaml title="Example of a Plugin that generates a Connection-Interface"
+inputs:
+  - label: Inform your aws-access-iam-role Connection
+    type: generated-connection
+    name: aws-access-iam-role
+    connection-interface-type: aws-iam-role-conn
+    outputs:
+      - from: input_aws_iam_arn
+        to: arn
+      - from: role_name
+        to: name
+```
+
+### **Mapping the IaC outputs**
+
+- **Mapping the IaC (Terraform) outputs**
+
+The Infrastructure (infra) Plugin is designed to facilitate the generation of Connections and Connection Interfaces in your Infrastructure-as-Code (IaC) projects.
+
+When creating a **'Infrastructure' (infra)** Plugin that generates Connections, it creates a Connection with the necessary field to generate a Connection Interface cloud resource type. To develop a Connection, create your IaC code with data that brings a resource or use a code block. After that, you map the outputs of your Terraform files to the outputs equivalent to the Connection Interfaces.
+
+Once the Connection is defined, map Terraform outputs to the Connection Interfaces using the **`outputs`** field. This field has two options:
+
+- **from (`spec.generates.connections[n].outputs[n].from`)**: In the **`from`** field, add the identifier of the Terraform output;
+
+- **to (`spec.generates.connections[n].outputs[n].to`)**: The attribute of the Terraform output provided must fill the attribute of the Connection. 
+
+```yaml title="'From' and 'to' options of Connection output"
+#...
+inputs:
+#...
+  - label: <connection interface text label>
+    type: generated-connection 
+    name: <your-connection-name-alias>
+    connection-interface-type: <type of connection interface>
+    outputs:
+    // new-line-start
+      - from: <terraform-output-name>
+        to: <connection-attribute>
+    // new-line-end    
+```
+
+:::warning
+
+For each Terraform output, you must fill out the **`from`** and **`to`** fields for each Connection.
+
+:::
+
+#### **Identify the Terraform output**
+
+The attributes of each output are declared using an "output" block:
+
+```hcl title="outputs.tf"
+output "instance_ip_addr" {
+  value = aws_instance.server.private_ip
+}
+```
+
+- The field after the **`output`** is the name/identifier. 
+- The **`value`** argument has an expression that returns the result to the user.
+
+The example above refers to a **`private_ip`** attribute. It exposes an **`aws_instance`** resource and is defined in the same Terraform module. The value that needs to be mapped to the **`from`** field of the Connection should be the name/identifier of the output. And it is the **`instance_ip_addr`**.
+
+Other optional arguments include **`description`**, **`sensitive`**, and others.
+
+#### **Output example**
+
+The following example shows a Terraform file to generate an AWS bucket S3 being mapped in the Connection of  **aws-s3-conn** type. To map all the necessary attributes of the **to** of the Connection field, [**see the Connections' outputs**](create-use/connections/connection-interface.md).
+
+```hcl title="outputs.tf"
+// old-line
+output "aws-s3-bucket-name" {
+  value = aws_s3_bucket.{{ name }}.id
+}
+// old-line
+output "aws-s3-arn" {
+  value = aws_s3_bucket.{{ name }}.arn
+}
+```
+
+```yaml title="/infra-plugins/my-s3-infra-plugin/plugin.yaml"
+inputs:
+  - label: Inform your aws-s3-conn-alias270920231735 connection
+    type: generated-connection
+    name: aws-s3-conn-alias270920231735
+    connection-interface-type: aws-s3-conn
+    outputs:
+// new-line
+      - from: aws-s3-arn
+        to: arn
+// new-line        
+      - from: aws-s3-bucket-name
+        to: bucket_name
+```
+
+### **Use Links on Plugins**
+
+Add links to your **Application** or **Infrastructure** Plugins. Links redirect to external tools, such as documentation for your Plugins or another type of service.
+
+You can also use variables to compose a dynamic link with the resource data generated by your Plugin to inform resources to external services.
+
+For more details, see the [**dynamic and static links page**](create-use/create-content/plugin/dynamic-links.md).
+
+#### **Static Links**
+
+In the **`spec.generates`** field of your Plugin, add the **`links`** field. Each link must contain the following parameters:
+
+- `name`: The Plugin's name;
+- `url`: URL of the link;
+- `type`: Use the `static` type. 
+- `picture`: logo for the link.
+
+Example
+
+```yaml
+spec:
+  generates:
+    links: 
+      - name: "AWS Cloud Watch monitoring"
+        url: "https://console.aws.amazon.com/cloudwatch/home"
+        type: static
+        picture: "/logos/aws-ico.png"
+```
+
+#### **Dynamic Links**
+
+In the **`spec.generates`** field of your Plugin, add the **`links`** field. Each link must contain the following parameters:
+
+- `name`: The Plugin's name;
+- `url`: URL of the link with [**Jinja expressions**](create-use/create-content/yaml-files/jinja.md) variables;
+- `type`: Use the `dynamic` type;
+- `picture` (Optional): logo for the link.
+
+```yaml
+spec:
+  generates:
+    links: 
+      - name: "Database Management Status"
+        url: "url: https://{{connections.test-alias-dynamo-conn.arn}}/{{inputs.resource}}/{{inputs.method}}/{{var.STK_ENV}}/status"
+        type: dynamic
+        picture: "imgs/db_status_ico.png"
+```
+
+## **Step 4. Add your files in the templates folder**
+
+- The **`/templates`** folder is for you to add all the files you want to generate when applying your Plugin;
+- The **`/templates-deploy` (Only for 'Infra' Plugins)** is similar to the **templates** folder. You must add the IaC (Terraform) files you want to generate when applying your Plugin.
+
+## **Step 5. Validate a Plugin**
+
+Confirm the data you added in the **`.yaml`**.
+The command shows errors and warns you which fields you need to correct or if you have to add new information.
+
+To validate your **`.yaml`**, execute the command within your Plugin's folder:
+
+```bash
+stk validate plugin
+```
+
+:::caution
+StackSpot does not support **Markdown** files. Errors can occur during the validation of a Plugin due to some characters used in Markdown. These errors happen because of differences in operating systems' **encoders** (for example, UTF-8). If you find a mistake on Markdown, identify and replace the character.
+:::
+
+Before you proceed, you must fix all errors the command informs you.
+
+## **Step 6. Apply the Plugin**
+
+This is a local test for Application Plugins. Apply your Plugin with the following command:
+
+```bash
+stk apply plugin your-plugin-directory-path
+```
+
+In the folder where you executed the command to apply the Plugin, the files from the **templates** folder will be rendered.
+
+:::tip
+
+When applying Plugins to a pipeline workflow, the commands do not use the interactive (input queries via the terminal). To inform the input values, you need to inform the input and the value as a parameter. [**For more information, check out how to inform input values ​​as parameters**](create-use/create-content/yaml-files/inputs.md#informing-the-value-of-an-input-as-a-parameter).
+
+:::
+
+### **Step 6.1. Apply Infrastructure Plugin**
+
+This is a local test for Infrastructure Plugins. Apply your Plugin by following the steps below:
+
+1. Access your Workspace:
+
+```bash
+stk use workspace your-workspace-name
+```
+
+2. Run the command to apply the Plugin with the **`--deploy --stk_env`** flag:
+
+```bash
+stk apply plugin your-infra-plugin-directory-path --deploy --stk_env environment-name
+```
+
+The STK CLI will retrieve the Connection Interfaces data from your Workspace to render the Infrastructure files (Terraform files) locally. The files from the **templates-deploy** folder will be generated in the directory where you executed the command to apply the Plugin.
+
+#### **Simulate Connection Interface Data with the `--deploy` Parameter**
+
+You can simulate the data of a Connection Interface that doesn't exist in your Workspace to test an Infrastructure Plugin using the **`--deploy --stk_env`** parameter. Follow the steps below to simulate the data:
+
+1. In the directory where you intend to apply the Plugin, create a JSON file named **`stk-local-context.json`**;  
+2. In this file, add a list of objects named **`connectors`** as shown in the example below:
+
+```json title="Example JSON file for 'stk-local-context.json' configuration"
+{
+  // Root object
+  "connectors": [
+    // List of Connection Interfaces
+    {
+      "connector": "my-sns",
+      "type": "aws-sns-conn",
+      "pluginName": "studio-test/stack-test/plugin-test@1.0.0",
+      // Object with the outputs of the Connection Interface
+      "attributes": {
+        "topic_name": "topic-123",
+        "arn": "arn-123"
+      }
+    },
+    {
+      "connector": "my-s3",
+      "type": "aws-s3-conn",
+      "pluginName": "studio-test/stack-test/plugin-test@1.0.0",
+      // Object with the outputs of the Connection Interface
+      "attributes": {
+        "arn": "arn-1232",
+        "bucket_name": "bucket-test"
+      }
+    }
+  ]
+}
+```
+
+- **Root Object:** The JSON must start with the root object containing the key `"connectors"`. The value of `"connectors"` is a list of objects, where each object represents a Connection Interface.
+
+```json
+{
+  "connectors": [...]
+}
+```
+
+- **List of Connection Interfaces:** Each item in the list is an object with the following properties:  
+  
+  - **`"connector"`**: The name assigned to a Connection Interface.  
+  - **`"type"`**: The type of the Connection Interface.  
+  - **`"pluginName"`**: Simulates the Plugin that generates the Connection. The syntax is: `studio-slug-name/stack-name/plugin-name@plugin-version`.  
+  - **`"attributes"`**: A JSON object where each property simulates an output of the generated Connection Interface:  
+  
+     - **`"output_name1"`**: "output_value1"  
+     - **`"output_name2"`**: "output_value2"  
+     - **`"output_nameN"`**: "output_valueN"  
+  
+[**For more information about Connection Interfaces, check the available types and their outputs in StackSpot**](create-use/connections/connection-interface-type.md).  
+
+## **Step 7. Publish Plugin**
+
+If you already have a Studio, [**publish your Plugin on the StackSpot Portal**](
+create-use/create-content/plugin/publish-plugin.md).
+
+[**Publish your Plugin**](create-use/create-content/plugin/publish-plugin.md)
+
+## **Step 8. Create/Access the Stack and add your Plugin**
+
+[**Create a Stack**](create-use/create-content/stack/create-stack.md) and add your Plugins to it.
+
+Your Plugin is ready!
+
+## **Next Steps**
+
+import CustomDocCard from '@site/src/components/MdxComponents/CustomDocCard';
+import CustomDocCardList from '@site/src/components/MdxComponents/CustomDocCardList';
+
+<CustomDocCardList>
+  <CustomDocCard title="Create and run Plugin tests" description="Check out the Plugin Testing section." link="/create-use/create-content/plugin/test-plugin.md" />
+  <CustomDocCard title="Create Studio" description="If you don't have a Studio, check out how to create a Studio to publish your content." link="/create-use/studio/create-studio.md" />
+  <CustomDocCard title="Edit a Plugin" description="Check out more details on how to edit your Plugins." link="/create-use/create-content/plugin/edit-plugin.md" />
+</CustomDocCardList>

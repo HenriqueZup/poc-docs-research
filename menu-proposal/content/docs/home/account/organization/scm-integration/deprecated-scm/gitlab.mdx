@@ -1,0 +1,372 @@
+---
+title: "(Descontinuado) GitLab"
+sidebar_position: 5
+description: Integrar o SCM com o provedor GitLab.
+sidebar_custom_props: 
+  icon: Gitlab
+--- 
+
+:::danger Atenção!
+
+Este conteúdo está sendo descontinuado, [**conheça a nova configuração com o Workflow da StackSpot**](home/account/organization/scm-integration/index.mdx).
+
+:::
+
+> Nesta seção, você encontra como integrar o SCM com o provedor GitLab.
+
+<br/>
+
+A integração do seu <Tooltip text="Source code management (SCM) rastreia alterações em um repositório de código, mantendo um registro de modificações e auxiliando na gestão de conflitos que surgem ao integrar atualizações de diferentes colaboradores.">SCM</Tooltip>  com a StackSpot traz alguns benefícios para as equipes e podem ser executados remotamente via pipeline de CI/CD. Atualmente a StackSpot possuí 4 fluxos possíveis de serem executados:
+
+1. Criação de Aplicação;
+2. Criação de Infraestrutura;
+3. Aplicação de Plugins;
+4. Execução de Actions.
+
+## **Pré-Requisito**
+
+### **1. Criar grupo e projeto GitLab**
+
+Para integrar o SCM com a StackSpot, o primeiro passo é **ter um repositório próprio da sua organização para as pipelines**. Desta forma quando definidas, você poderá acioná-las remotamente via API informando os dados de entrada para cada fluxo.
+
+> Você pode utilizar um **repositório já existente**, ou **criar um novo**.
+
+Se sua organização não possui um **Grupo** ou **Projeto** no GitLab, acesse os guias a seguir para criá-los:
+
+- [**Criar um Projeto no GitLab**](https://docs.gitlab.com/ee/user/project/);
+- [**Criar um Grupo no GitLab**](https://docs.gitlab.com/ee/user/group/#create-a-group).
+
+### **2. Gerar o Personal Access Token no GitLab**
+
+1. Acesse a sua conta do [**GitLab**](https://gitlab.com/users/sign_in) e faça o login;
+2. No menu principal, selecione seu **avatar**.
+3. Selecione **Edit profile**.
+4. No menu principal, selecione **Access Tokens**.
+
+![Imagem mostra print do portal do Gitlab dentro do menu de Edit Profile com o item Access Tokes evidenciado por um quadrado vermelho](/img/gitlab-scm-1-access_token.png)
+
+5. Selecione **Add new token**.
+
+![Imagem mostra print do portal do Gitlab dentro da seção de Access Token com o botão Add New Token evidenciado por um quadrado vermelho](/img/gitlab-scm-2-create_token.png)
+
+6. Insira um nome e uma data de validade para o token. Se você não inserir uma data de vencimento, a data de vencimento será automaticamente definida para 365 dias depois da data atual.
+
+![Imagem mostra print do portal do Gitlab mostra o formulário de criação de Personal token com os campos Name, Expiration date e Select Scopes](/img/gitlab-scm-3-name_token.png)
+
+7. Selecione os escopos:
+
+- `write_repository`;
+- `create_runner`;
+- `api`;
+
+![Imagem mostra print do portal do Gitlab mostra o formulário de criação de Personal token na parte de Select Scopes com os escopos write_repository, create_runner e api selecionados e realçados por quadrados vermelhos](/img/gitlab-scm-4-permissions_token.png)
+
+:::info
+Os escopos podem depender das atividades que sua empresa precisa executar. Por isso, selecione todos os que são necessários para você.
+Acesse a [**lista completa de escopos do GitLab**](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#personal-access-token-scopes).
+:::
+
+8. Selecione **Create personal access token**. 
+
+![Imagem mostra print do portal do Gitlab mostra o formulário de criação de Personal token no final da parte de Select Scopes com o botão Create Personal Access Token realçado](/img/gitlab-scm-5-button_create_token.png)
+
+9. O código gerado será exibido temporariamente, **copie e salve o código gerado**.
+
+![Imagem mostra print do portal do Gitlab dentro da página do Personal Access Token criado, com o botão de copiar e colar ao lado do campo do token realçado por um quadrado vermelho. O mouse está em cima do botão de copiar com um popup escrito Copy personal access Token](/img/gitlab-scm-5-copy_token.png)
+
+## **Configurar as pipelines automaticamente (Recomendado)**
+
+<br/>
+
+> Os passos a seguir são feitos via [**STK CLI**](home/stk-cli/install.mdx);
+
+<br/>
+
+**Passo 1.** Execute o comando a seguir:
+
+```bash
+stk run action stackspot-core/setup-scm@1
+```
+
+**Passo 2.** O terminal pergunta qual é o seu provedor SCM. Selecione a opção **GitLab**.
+
+**Passo 3.** Responda as seguintes perguntas:
+
+- **Personal Access Token**: informe o Personal Access Token gerado no GitLab.
+- **Project name:** informe o nome do seu Projeto do GitLab.
+- **Group Name:** informe o nome do seu Grupo do GitLab.
+- **Is on premise?** informe Y (sim) para usar o GitLab On Premise ou N (não), para usar o GitLab na nuvem.
+- **GitLab api domain:** disponível apenas para o GitLab On Premise. Informe a URL do domínio da sua organização no GitLab. Exemplo: `techwriters.gitlab.com`.
+
+:::info Informação Adicional
+
+Se o repositório informado existir e nele também existir a branch **`main`**, um **Pull Request** será criado para a **`main`**.
+Se o repositório não existir, a Action cria o repositório e a branch **`main`**.
+
+:::
+
+:::warning Atenção!
+
+O **usuário do token** e o próprio **Personal Access Token** precisam ter permissão de escrita no repositório da organização. Caso o repositório não exista,você deve adicionar a permissão para criar repositórios.
+
+:::
+
+Para mais informações, [**siga a documentação do GitLab**](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#create-a-personal-access-token).
+
+> Não é o Personal Access Token do Portal.
+
+Pronto, a Action foi executada.
+
+> Se a configuração foi executada com sucesso, o próximo passo é fazer a [**integração do GitLab com a sua conta da StackSpot**](#integrar-o-gitlab-com-a-stackspot).  
+> Se não foi possível concluir a configuração de forma automática, siga os passos a seguir para realizar toda a configuração manualmente:
+
+## **Criar o repositório e pipelines manualmente**
+
+**Passo 1.** No terminal [**STK CLI**](home/stk-cli/install.mdx). Execute os comandos:
+
+```bash
+mkdir <repo-name>
+cd <repo-name>
+```
+
+Exemplo:
+
+```bash
+mkdir repo-runner-actions
+cd repo-runner-actions
+```
+
+**Passo 2.** Crie o arquivo ".gitlab-ci.yml" dentro da pasta gerada anteriormente com o seguinte conteúdo:
+
+```yaml title="repo-name/.gitlab-ci.yml"
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      when: never
+    - when: always
+
+image: ubuntu:latest
+
+stages:          
+  - run
+
+variables:
+  workflow_name: ""
+  api_inputs: "{}"
+
+default:
+  before_script:
+    - echo "Installing some necessary tools";
+    - apt-get -qq update;
+    - apt-get install -y jq curl git;
+
+run:
+  stage: run
+  script:    
+    - | 
+      execution_id=$(echo $api_inputs | jq -cr '.execution_id')
+      secret_stk_login=$(echo $api_inputs | jq -cr '.secret_stk_login')
+
+      http_code=$(curl -s -o script.sh -w '%{http_code}' https://workflow-api.v1.stackspot.com/workflows/$execution_id --header "Authorization: Bearer $secret_stk_login";)
+      if [[ "$http_code" -ne "200" ]]; then
+          echo "------------------------------------------------------------------------------------------"
+          echo "---------------------------------------- Debug Starting ----------------------------------"
+          echo "------------------------------------------------------------------------------------------"
+
+          echo "HTTP_CODE:" $http_code
+          echo "RESPONSE_CONTENT:"
+          cat script.sh
+          exit $http_code
+
+          echo "------------------------------------------------------------------------------------------"
+          echo "---------------------------------------- Debug Ending ------------------------------------"
+          echo "------------------------------------------------------------------------------------------"
+      else
+          chmod +x script.sh
+
+          echo "------------------------------------------------------------------------------------------"
+          echo "---------------------------------------- Starting ----------------------------------------"
+          echo "------------------------------------------------------------------------------------------"
+
+          bash script.sh
+
+          echo "------------------------------------------------------------------------------------------"
+          echo "----------------------------------------  Ending  ----------------------------------------"
+          echo "------------------------------------------------------------------------------------------"
+
+      fi
+```
+
+**Passo 3.** Faça o commit das alterações utilizando os comandos:
+
+```bash
+git init
+git remote add origin https://gitlab.com/<gitlab-groupname>/<project-name>.git
+git add .
+git commit -m "Setup Runner"
+git push
+```
+
+Exemplo:
+
+```bash
+git init
+git remote add origin https://gitlab.com/my-group/repo-runner-actions.git
+git add .
+git commit -m "Setup Runner"
+git push
+```
+
+:::tip Dica!
+Em alguns SCMs o **Project Name** e **Repository Name** podem significar a mesma coisa. Confira a seguir como identificar esses campos na URL:  
+
+`https://gitlab.com/[GITLAB-GROUP]/[PROJECT-NAME]`
+
+Exemplo:  
+`https://gitlab.com/stack-spot/stackspot-workflows-action`
+:::
+
+**Passo 4.** Acesse o seu projeto GitLab e siga os passos:
+
+1. Acesse **Settings** e em seguida **CI/CD**;
+2. Clique no botão **Expand** da opção **Pipeline trigger tokens**;
+3. Preencha o campo **Description** em seguida clique no botão **Create pipeline trigger token**.
+
+Exemplo:
+
+<img src="/img/gitlab-create-trigger-token.gif" alt="GitLab Pipeline Trigger Token" title="GitLab" width="500" /> <br/><br/>
+
+> Se a configuração foi executada com sucesso, o próximo passo é fazer a [**integração do GitLab com a sua conta da StackSpot**](#integrar-o-gitlab-com-a-stackspot).  
+
+## **Integrar o GitLab com a StackSpot**
+
+> Os passos a seguir são feitos no [**Portal da Conta StackSpot**](http://myaccount.stackspot.com).
+
+### **Integrar o GitLab (nuvem) com a StackSpot**
+
+#### **Configuração via GitLab PAT (Personal Access Token)**
+
+**Passo 1.** Acesse diretamente link do [**Portal da Conta**](http://myaccount.stackspot.com); ou após fazer [**login no Portal StackSpot**](https://app.stackspot.com/), clique no **seu avatar de perfil**;
+
+**Passo 2.** Selecione a opção **'Organização'** no menu exibido; 
+
+**Passo 3.** No menu principal do Portal da Conta, selecione o produto StackSpot EDP e clique em **’SCM’**. Em seguida, clique no botão **Configurar Integração SCM’**;
+
+**Passo 4.** No campo **Select a provider**, selecione **GitLab**;
+
+**Passo 5.** Em **Método de autenticação**, selecione a opção **PAT (Personal Access Token)** e preencha os seguintes campos:
+
+- **Usuário:** O nome do seu usuário no GitLab;
+- **Token:** Utilize o seu Personal Access Token que [**você gerou anteriormente**](#2-gerar-o-personal-access-token-no-gitlab).
+
+**Passo 6.** Em **Configuração de Workflow**, escolha como a organização deseja gerenciar o acesso ao SCM, para isso, habilite ou desabilite a opção **'A organização vai gerenciar o acesso ao SCM via User PAT?'**:
+
+- **Habilitado:** O usuário irá gerenciar o acesso ao GitLab via PAT (Personal Access Token).
+- **Desabilitado:** A empresa irá gerenciar o acesso ao GitLab.
+
+:::info Informação Adicional
+
+Ao habilitar este botão, os membros da sua conta terão que configurar o [**Acesso de SCM**](home/account/profile/external-connections.mdx) individual deles. 
+
+:::
+
+**Passo 7.** No campo **URL do Workflow**, insira a URL do repositório criado com as pipelines para a StackSpot identificar onde o seu workflow está configurado. Você vai precisar das seguintes informações para preencher a URL:
+
+```bash
+https://gitlab.com/<group_name>/<repository_name>?project_id=<project_id>&trigger_id=<trigger_id>
+```
+
+Para obter o as informações para preencher a URL do Workflow, acesse a sua conta do GitLab e siga as instruções para cada item a seguir.
+
+- **project id**: Acesse a página principal do seu projeto Gitlab. Depois clique no botão **'More actions'**, você encontrará o **project id**.
+
+<img src="/img/gitlab-get-project-id.gif" alt="Página inicial do Gitlab, o cursor do mouse navega até o menu lateral e clica na opção Projects, depois clica no projeto desejado levando para a página principal deste projeto, clica no botão 'More actions' exibindo o número do project id " title="Gitlab project id" width="500" /> <br/><br/>
+
+- **trigger id**: Acesse o seu projeto GitLab e siga os passos:
+
+1. Acesse **Settings** e em seguida **CI/CD**;
+2. Clique sobre o texto **Pipeline trigger tokens**;
+3. No menu de tokens disponíveis ao lado do novo token, clique com o botão direito do mouse  sobre botão **'Revoke trigger'** para abrir as opções do seu navegador;
+4. Em seguida, clique na opção **'Copy Link Address'**.
+5. Abra qualquer editor de texto e cole o endereço do link que você acabou de copiar.
+
+Você vai encontrar no final da Url copiada o valor do **'trigger id'**:
+
+Exemplo:
+
+```bash
+# https://gitlab.com/<group_name>/<project_name>/-/triggers/<trigger_id>
+https://gitlab.com/techwriters/documentation/-/triggers/1622887
+```
+
+<img src="/img/gitlab-get-trigger-id.gif" alt="Gitlab trigger id" title="Gitlab" width="500" /> <br/><br/>
+
+Retorne para o portal da StackSpot e continue a configuração:
+
+**Passo 8.** Você será redirecionado para a tela de **Review**. Confira seus dados e clique em **'Integrar com StackSpot'**.
+
+### **Integrar o GitLab (On Premise) com a StackSpot**
+
+#### **Configuração via GitLab PAT (Personal Access Token)**
+
+**Passo 1.** Acesse diretamente link do [**Portal da Conta**](http://myaccount.stackspot.com); ou após fazer [**login no Portal StackSpot**](https://app.stackspot.com/), clique no **seu avatar de perfil**;
+
+**Passo 2.** Selecione a opção **'Organização'** no menu exibido; 
+
+**Passo 3.** No menu principal do Portal da Conta, selecione o produto StackSpot EDP e clique em **’SCM’**. Em seguida, clique no botão **Configurar Integração SCM’**;
+
+**Passo 4.** No campo **Select a provider**, selecione **GitLab**;
+
+**Passo 5.** Em **Método de autenticação**, selecione a opção **PAT (Personal Access Token)** e preencha os seguintes campos:
+
+- **URL do provider:** A URL da sua organização no GitLab. Informe sempre a URL com o protocolo **`https://`**.
+- **Usuário:** O nome do seu usuário no GitLab;
+- **Token:** Utilize o seu Personal Access Token que [**você gerou anteriormente**](#2-gerar-o-personal-access-token-no-gitlab).
+
+**Passo 6.** Em **Configuração de Workflow**, escolha como a organização deseja gerenciar o acesso ao SCM, para isso, habilite ou desabilite a opção **'A organização vai gerenciar o acesso ao SCM via User PAT?'**:
+
+- **Habilitado:** O usuário irá gerenciar o acesso ao GitLab via PAT (Personal Access Token).
+- **Desabilitado:** A empresa irá gerenciar o acesso ao GitLab.
+
+:::info Informação Adicional
+
+Ao habilitar este botão, os membros da sua conta terão que configurar o [**Acesso de SCM**](home/account/profile/external-connections.mdx) individual deles.
+
+:::
+
+**Passo 7.** No campo **URL do Workflow**, insira a URL do repositório criado com as pipelines para a StackSpot identificar onde o seu workflow está configurado. Você vai precisar das seguintes informações para preencher a URL:
+
+```bash
+https://gitlab.com/<group_name>/<repository_name>?project_id=<project_id>&trigger_id=<trigger_id>
+```
+
+Para obter o as informações para preencher a URL do Workflow, acesse a sua conta do GitLab e siga as instruções para cada item a seguir.
+
+- **project id**: Acesse a página principal do seu projeto Gitlab. Depois clique no botão **'More actions'**, você encontrará o **project id**.
+
+<img src="/img/gitlab-get-project-id.gif" alt="Página inicial do Gitlab, o cursor do mouse navega até o menu lateral e clica na opção Projects, depois clica no projeto desejado levando para a página principal deste projeto, clica no botão 'More actions' exibindo o número do project id " title="Gitlab project id" width="500" /> <br/><br/>
+
+- **trigger id**: Acesse o seu projeto GitLab e siga os passos:
+
+1. Acesse **Settings** e em seguida **CI/CD**;
+2. Clique sobre o texto **Pipeline trigger tokens**;
+3. No menu de tokens disponíveis ao lado do novo token, clique com o botão direito do mouse  sobre botão **'Revoke trigger'** para abrir as opções do seu navegador;
+4. Em seguida, clique na opção **'Copy Link Address'**.
+5. Abra qualquer editor de texto e cole o endereço do link que você acabou de copiar.
+
+Você vai encontrar no final da Url copiada o valor do **'trigger id'**:
+
+Exemplo:
+
+```bash
+# https://gitlab.com/<group_name>/<project_name>/-/triggers/<trigger_id>
+https://gitlab.com/techwriters/documentation/-/triggers/1622887
+```
+
+<img src="/img/gitlab-get-trigger-id.gif" alt="Gilab trigger id" title="Gitlab" width="500" /> <br/><br/>
+
+Retorne para o portal da StackSpot e continue a configuração:
+
+**Passo 8.** Você será redirecionado para a tela de **Review**. Confira seus dados e clique em **'Integrar com StackSpot'**.
+
+Pronto, sua configuração está completa.

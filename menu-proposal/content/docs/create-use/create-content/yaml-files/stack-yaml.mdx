@@ -1,0 +1,202 @@
+---
+title: stack.yaml
+description: Detalhes sobre o arquivo stack.yaml.
+---
+
+## **Exemplo de um arquivo `stack.yaml`**
+
+```yaml
+schema-version: v1 #required
+kind: stack #required
+metadata: #required
+  name: Stack sample #required
+  display-name: stack-sample #required
+  description: Stack description. #required
+  version: 1.0.0 #required
+  tags: #optional
+    - example-tag-one
+    - example-tag-two
+    - example-tag-three
+spec: #required
+  docs: #required
+    en-us: docs/en_us/docs.mdx #required at least one language
+    pt-br: docs/pt_br/docs.mdx
+  links: #optional
+    - name: Example Repository
+      url: https://github.com/example/myorganization
+      picture: https://image-png.com
+    - name: Example Repository02
+      url: https://github.com/example/myorganization
+      picture: https://image-png.com
+  plugins: #required at least one Application or Infrastructure Plugin
+    app:
+      - name: example-studio/app-plugin-basic@0.0.1
+      - name: example-studio/run-action-hook-plugin@0.0.2
+    infra:
+      - name: example-studio/infra-generates-sns@0.0.1
+        actions:
+          - name: example-studio/requires-sns-action@0.0.1
+      - name: example-studio/infra-plugin-basic@0.0.1
+      - name: example-studio/plugin-infra2108@0.0.3
+  actions: #optional
+    - name: example-studio/action-basic@0.0.1
+    - name: example-studio/action-with-connection@0.0.1
+    - name: example-studio/requires-sns-action@0.0.1
+  starters: #required
+    - path: starters/basic-starter
+```
+
+## **Atributos da Stack**
+
+### **`schema-version`** 
+
+Versão do schema do Manifesto. 
+
+```yaml 
+- schema-version: v1
+``` 
+
+### **`kind`** 
+
+Tipo do Manifesto.
+
+```yaml 
+- kind: stack
+``` 
+
+### **`metadata`** 
+
+É o que identifica a Stack. São do tipo **`string`**:
+
+#### **name**
+
+Nome da Stack que será exibido no Portal. Quando você não nomeia, o nome informado anteriormente será exibido. Utiliza kebab case. 
+
+```yaml 
+- name: stack-name-example.
+``` 
+
+#### **display-name**
+
+Nome da Stack que será exibida no Portal. Quando você não nomeia, o nome informado anteriormente será exibido. 
+
+```yaml 
+- display-name: stack-display-name-example.
+``` 
+
+#### **description** 
+
+Descrição da Stack. A descrição precisa ter, no mínimo, três caracteres e no máximo, 500.
+
+```yaml 
+- description: Stack example.
+```
+
+#### **version**
+
+Versão da Stack. Segue o Versionamento Semântico (SemVer).
+
+```yaml
+- version: 1.0.0
+```
+
+#### **tags**
+
+Lista de Tags que podem ser adicionadas em sua Stack. As Tags ficam visíveis nas Stacks publicadas na StackSpot.
+
+```yaml
+- tags:
+  - tag1
+  - tag2
+  - tag3
+```
+
+### **`spec`**
+
+É a especificação da Stack. São do tipo **`string`**:
+
+#### **docs**
+
+Markdown com a documentação da Stack. Pelo menos um dos idiomas deve ser adicionado.
+
+```yaml
+  docs:
+    pt-br: docs/pt-br/docs.mdx
+    en-us: docs/en-us/docs.mdx
+```
+
+#### **links**
+
+Lista de links estáticos e dinâmicos. Os links ficam visíveis nas Stacks publicadas na StackSpot. 
+Os links são semelhantes aos adicionados nos Plugins, [**para mais detalhes consulte como adicionar links em Plugins.**](create-use/studio/links.mdx)
+
+```yaml
+spec: 
+  docs:
+    en-us: docs/en_us/docs.mdx
+    pt-br: docs/pt_br/docs.mdx
+  links:
+    - name: Example Repository
+      url: https://github.com/example/myorganization
+      picture: https://image-png.com
+    - name: Example Repository02
+      url: https://github.com/example/myorganization
+      picture: https://image-png.com
+```
+
+#### **plugins**
+
+Lista de Plugins presentes em sua Stack. Separados por tipos **app** e **infra**, devem ser adicionados com a sintaxe: **`- name: studio-slug/plugin-name@[semantic-version]`**.
+
+Para associar Actions em Plugins de infra, use a sintaxe: **`- name: studio-slug/action-name@[semantic-version]`**. [**Para saber mais, consulte como associar Actions em Plugins de infra.**](create-use/create-content/action/action-infra-plugin.mdx)
+
+:::warning Atenção!
+
+Plugins são propriedades requeridas nas Stacks, ao menos um Plugin do tipo app ou infra deve ser adicionado.
+
+:::
+
+```yaml
+spec:
+  docs:
+    en-us: docs/en_us/docs.mdx
+    pt-br: docs/pt_br/docs.mdx
+  plugins: #required at least one Application or Infrastructure Plugin
+    app:
+      - name: example-studio/app-plugin-basic@0.0.1
+      - name: example-studio/run-action-hook-plugin@0.0.2
+    infra:
+      - name: example-studio/infra-generates-sns@0.0.1
+        actions:
+          - name: example-studio/requires-sns-action@0.0.1
+      - name: example-studio/infra-plugin-basic@0.0.1
+      - name: example-studio/plugin-infra2108@0.0.3
+```
+
+#### **actions**
+
+Lista de Actions presentes em sua Stack. Devem ser adicionados com a sintaxe: **`- name: studio-slug/action-name@[semantic-version]`**.
+
+```yaml
+spec:
+  docs:
+    en-us: docs/en_us/docs.mdx 
+    pt-br: docs/pt_br/docs.mdx
+  actions: 
+    - name: example-studio/action-basic@0.0.1
+    - name: example-studio/action-with-connection@0.0.1
+    - name: example-studio/requires-sns-action@0.0.1
+```
+
+#### **starters**
+
+Starter presente em sua Stack. Você deve informar o caminho do arquivo **`starter.yaml`**. [**Para mais detalhes do Starter, consulte a seção do arquivo starter.yaml**](create-use/create-content/yaml-files/starter-yaml.mdx) ou [**como criar o Starter**](create-use/create-content/stack/create-starter.mdx).
+
+```yaml
+spec: 
+  docs: 
+    en-us: docs/en_us/docs.mdx 
+    pt-br: docs/pt_br/docs.mdx
+  starters: 
+    - path: starters/basic-starter
+```

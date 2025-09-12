@@ -1,0 +1,851 @@
+---
+title: Java
+description: Construções com suporte aos operadores de transformação para Java.
+---
+
+## **Hook para transformar código Java**
+
+```yaml
+schema-version: v3
+kind: plugin
+metadata:
+  name: code-transformation-plugin
+  display-name: code-transformation-plugin
+  description: Exemplo de transformação de código Java.
+  version: 1.0.0
+spec:
+  hooks:
+    - type: code-transformation
+      engine-version: 0.2.0-beta
+      trigger: after-render
+      language: java
+      trans-pattern-path: trans-patterns/pattern.java
+      source-path: src/code.java
+```
+
+## **Construções Suportadas no Java**
+
+### **importDeclaration**
+
+As declarações de import têm **suporte aos operadores de inserção, remoção e reticências**. Isso significa que, em qualquer local que seja válido a existência de uma declaração de import, é possível utilizar qualquer um dos operadores suportados.
+
+O exemplo a seguir insere uma declaração de import a **`java.util.ArrayList;`** no lugar da declaração de import a **`java.util.LinkedList;`**, independente do que vier antes ou depois de **`import java.util.LinkedList;`**. O padrão tem **escopo de arquivo**.
+
+<Tabs> 
+<TabItem value="original" label="Código Original"> 
+
+```java showLineNumbers
+import java.util.List; 
+import java.util.LinkedList;
+```
+
+</TabItem>
+
+<TabItem value="pattern" label="Padrão de Transformação" default> 
+
+```java showLineNumbers
+<<<< pattern-name: change-import-arraylist-to-linked-list; pattern-scope: file-scope; >>>>
+
+<...>
+-<import java.util.LinkedList;>-
++<import java.util.ArrayList;>+ 
+<...>
+```
+
+</TabItem>
+
+<TabItem value="transformed" label="Código Transformado"> 
+
+```java showLineNumbers
+import java.util.List; 
+import java.util.ArrayList; 
+```
+
+</TabItem>
+</Tabs>
+
+### **typeDeclaration**
+
+Declarações de tipo permitem as seguintes construções em Java:
+
+- Declaração de Classe
+- Declaração de Interface
+- Declaração de Enum
+- Declaração de Annotation
+- Declaração de Record
+
+As declarações de tipo têm **suporte aos operadores de inserção, remoção e reticências**. Isso significa que, em qualquer local que seja válido a existência de uma declaração de tipo, é possível utilizar qualquer um dos operadores suportados.
+
+O exemplo a seguir insere uma declaração de **`enum`** antes da declaração de uma classe cujo nome é **`MyClass`**, independente do que vier antes da classe e do corpo da classe em si. O padrão tem **escopo de arquivo**.
+
+<Tabs> 
+<TabItem value="original" label="Código Original"> 
+
+```java showLineNumbers
+public class MyClass {
+    private String stringField;
+    private int intField;
+
+    public MyClass(String stringField, int intField) {
+        this.stringField = stringField;
+        this.intField = intField;
+    }
+
+    public void setStringField(String stringField) {
+        this.stringField = stringField;
+    }
+
+    public String getStringField() {
+        return this.stringField;
+    }
+
+    public void setIntField(int intField) {
+        this.intField = intField;
+    }
+
+    public int getIntField() {
+        return this.intField;
+    }
+}
+```
+
+</TabItem>
+
+<TabItem value="pattern" label="Padrão de Transformação" default> 
+
+```java showLineNumbers
+<<<< pattern-name: modify-java-code; pattern-scope: file-scope; >>>>
+
+<...>
+
++<public enum MyEnum {
+    ITEM_1,
+    ITEM_2,
+    ITEM_3,
+}>+
+
+public class MyClass {
+    <...>
+}
+
+<...>
+```
+
+</TabItem>
+
+<TabItem value="transformed" label="Código Transformado"> 
+
+```java showLineNumbers
+public enum MyEnum {
+    ITEM_1,
+    ITEM_2,
+    ITEM_3,
+}
+
+public class MyClass {
+    private String stringField;
+    private int intField;
+
+    public MyClass(String stringField, int intField) {
+        this.stringField = stringField;
+        this.intField = intField;
+    }
+
+    public void setStringField(String stringField) {
+        this.stringField = stringField;
+    }
+
+    public String getStringField() {
+        return this.stringField;
+    }
+
+    public void setIntField(int intField) {
+        this.intField = intField;
+    }
+
+    public int getIntField() {
+        return this.intField;
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+### **classBodyDeclaration**
+
+Declarações no corpo de classes permitem as seguintes construções em Java:
+
+- Declaração de Método
+- Declaração de Atributo
+- Declaração de Construtor
+- Declaração de Bloco Estático
+- Declaração de Classe Interna
+- Declaração de Enum Interno
+- Declaração de Record Interno
+- Declaração de Interface Interna
+- Declaração de Annotation Interna
+
+As declarações no corpo de classes têm **suporte aos operadores de inserção, remoção e reticências**. Isso significa que, em qualquer local que seja válido a existência de uma declaração no corpo de classes, é possível utilizar qualquer um dos operadores suportados.
+
+O exemplo a seguir insere a declaração de atributo **`private int age;`** no início do corpo de uma classe cujo nome é **`Person`** e também insere os métodos **`getAge`** e **`setAge`** no fim do corpo da mesma classe, independente do que há no corpo da classe. O padrão tem **escopo de arquivo**.
+
+<Tabs> 
+<TabItem value="original" label="Código Original"> 
+
+```java showLineNumbers
+public class Person {
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+```
+
+</TabItem>
+
+<TabItem value="pattern" label="Padrão de Transformação" default> 
+
+```java showLineNumbers
+<<<< pattern-name: modify-person-class; pattern-scope: file-scope; >>>>
+
+<...>
+public class Person {
+    +<private int age;>+
+
+    <...>
+
+    +<public int getAge() {
+        return age;
+    }>+
+
+    +<public void setAge(int age) {
+        this.age = age;
+    }>+
+}
+<...>
+```
+
+</TabItem>
+
+<TabItem value="transformed" label="Código Transformado"> 
+
+```java showLineNumbers
+public class Person {
+    private int age;
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+### **interfaceBodyDeclaration**
+
+Declarações no corpo de interfaces permitem declarar as seguintes construções em Java:
+
+- Declaração de Método
+- Declaração de Constante
+- Declaração de Classe Interna
+- Declaração de Enum Interno
+- Declaração de Record Interno
+- Declaração de Interface Interna
+- Declaração de Annotation Interna
+
+As declarações no corpo de interfaces têm **suporte aos operadores de inserção, remoção e reticências**. Isso significa que, em qualquer local que seja válido a existência de uma declaração no corpo de interfaces, é possível utilizar qualquer um dos operadores suportados.
+
+O exemplo a seguir remove a declaração do método **`executeService`** do corpo de uma interface cujo nome é **`Service`** e insere no lugar o método **`execute`** independente do que há no corpo da interface. O padrão tem **escopo de arquivo**.
+
+<Tabs> 
+<TabItem value="original" label="Código Original"> 
+
+```java showLineNumbers
+public interface Service {
+    public void executeService();
+}
+```
+
+</TabItem>
+
+<TabItem value="pattern" label="Padrão de Transformação" default> 
+
+```java showLineNumbers
+<<<< pattern-name: modify-person-class; pattern-scope: file-scope; >>>>
+
+<...>
+public interface Service {
+    <...>
+    -<public void executeService();>-
+    +<public void execute();>+
+    <...>
+}
+<...>
+```
+
+</TabItem>
+
+<TabItem value="transformed" label="Código Transformado"> 
+
+```java showLineNumbers
+public interface Service {
+    public void execute();
+}
+```
+
+</TabItem>
+</Tabs>
+
+### **identifier**
+
+Identificadores representam nomes de variáveis, funções, métodos, classes, pacotes, etc. Os identificadores têm **suporte aos operadores de ID match, inserção e remoção**. Isso significa que no lugar de um identificador é possível utilizar qualquer um dos operadores suportados.  
+
+:::warning Atenção!
+
+Os operadores de inserção e remoção **devem sempre ser utilizados em pares** quando aplicados no contexto de um identificador. Isso significa que, sempre que um identificador for removido, outro deve ser inserido em seu lugar. Caso contrário, elementos como classes, métodos ou declarações de variáveis podem acabar sem nome ou com múltiplos nomes, o que pode causar inconsistências no código.
+
+:::
+
+O exemplo a seguir insere um comando de log **`LOGGER.debug("Starting repo method");`** no início de todos os métodos **`public`** com retorno **`void`** ou **`Entity`** de uma classe com qualquer nome (identificador), além de inserir um atributo com o objeto de logger e os **`import`** necessários. Para isso usamos três padrões de transformação, o primeiro com **escopo de arquivo** e os outros dois com **escopo de snippet**.
+
+<Tabs> 
+<TabItem value="original" label="Código Original"> 
+
+```java showLineNumbers
+public class MyRepo {
+    public void createEntity(Entity obj){
+        // creates the entity
+    }
+
+    public Entity retrieveEntity(long id){
+        // retrieves the entity by id
+    }
+
+    public void updateEntity(Entity obj){
+        // updates the entity
+    }
+
+    public void deleteEntity(Entity obj){
+        // deletes the entity
+    }
+}
+```
+
+</TabItem>
+
+<TabItem value="pattern" label="Padrão de Transformação" default> 
+
+```java showLineNumbers
+<<<< pattern-name: insert-log-support; pattern-scope: file-scope; >>>>
+
++<import org.apache.log4j.Logger;>+
++<import org.apache.logging.log4j.LogManager;>+
+
+<...>
+
+public class *<.*>* { // id match operator as an identifier to match with a classe with any name
+    +<private static final Logger LOGGER = LogManager.getLogger(this.getClass());>+
+    <...>
+}
+
+<...>
+
+<<<< pattern-name: insert-log-void-methods; pattern-scope: snippet-scope; >>>>
+
+public void *<.*>*(<...>) { // matches a method with any name
+    +<LOGGER.debug("Starting repo method");>+
+    <...>
+}
+
+<<<< pattern-name: insert-log-entity-return-methods; pattern-scope: snippet-scope; >>>>
+
+public Entity *<.*>*(<...>) { // matches a method with any name
+    +<LOGGER.debug("Starting repo method");>+
+    <...>
+}
+```
+
+</TabItem>
+
+<TabItem value="transformed" label="Código Transformado"> 
+
+```java showLineNumbers
+import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class MyRepo {
+    private static final Logger LOGGER = LogManager.getLogger(this.getClass());
+
+    public void createEntity(Entity obj){
+        LOGGER.debug("Starting repo method");
+        // creates the entity
+    }
+
+    public Entity retrieveEntity(long id){
+        LOGGER.debug("Starting repo method");
+        // retrieves the entity by id
+    }
+
+    public void updateEntity(Entity obj){
+        LOGGER.debug("Starting repo method");
+        // updates the entity
+    }
+
+    public void deleteEntity(Entity obj){
+        LOGGER.debug("Starting repo method");
+        // deletes the entity
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+### **stringLiteral**
+
+Literais de string têm **suporte aos operadores de String match, inserção e remoção**. Isso significa que, no lugar de uma literal de string, é possível utilizar qualquer um dos operadores suportados.  
+
+:::warning Atenção!
+
+Note que **o operador de inserção e remoção devem sempre ocorrer em par** quando estiverem no contexto de um literal de string, ou seja, sempre que houver uma remoção deve haver uma inserção de literal de string.
+
+:::
+
+O exemplo a seguir altera a mensagem de log em todas as chamadas a **`LOGGER.debug()`** independente da string que for passada como parâmetro. O padrão tem **escopo de snippet**.
+
+<Tabs> 
+<TabItem value="original" label="Código Original"> 
+
+```java showLineNumbers
+import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class MyRepo {
+    private static final Logger LOGGER = LogManager.getLogger(this.getClass());
+
+    public void createEntity(Entity obj){
+        LOGGER.debug("Starting repo method");
+        // creates the entity
+    }
+
+    public Entity retrieveEntity(long id){
+        LOGGER.debug("Starting repo method");
+        // retrieves the entity by id
+    }
+
+    public void updateEntity(Entity obj){
+        LOGGER.debug("Starting repo method");
+        // updates the entity
+    }
+
+    public void deleteEntity(Entity obj){
+        LOGGER.debug("Starting repo method");
+        // deletes the entity
+    }
+}
+```
+
+</TabItem>
+
+<TabItem value="pattern" label="Padrão de Transformação" default> 
+
+```java showLineNumbers
+<<<< pattern-name: change-log-message; pattern-scope: snippet-scope; >>>>
+
+LOGGER.debug(-<*<".*">*>- +<"My new debug message">+); // matches with any string
+```
+
+</TabItem>
+
+<TabItem value="transformed" label="Código Transformado"> 
+
+```java showLineNumbers
+import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class MyRepo {
+    private static final Logger LOGGER = LogManager.getLogger(this.getClass());
+
+    public void createEntity(Entity obj){
+        LOGGER.debug("My new debug message");
+        // creates the entity
+    }
+
+    public Entity retrieveEntity(long id){
+        LOGGER.debug("My new debug message");
+        // retrieves the entity by id
+    }
+
+    public void updateEntity(Entity obj){
+        LOGGER.debug("My new debug message");
+        // updates the entity
+    }
+
+    public void deleteEntity(Entity obj){
+        LOGGER.debug("My new debug message");
+        // deletes the entity
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+### **parameters** and **arguments**
+
+Os parâmetros ocorrem nas declarações e or argumentos nas chamadas, de método, por exemplo. Os parâmetros e argumentos têm **suporte aos operadores de inserção, remoção e reticências**. Isso significa que, em qualquer local que seja válido a existência de parâmetros ou argumentos, é possível utilizar qualquer um dos operadores suportados.
+
+:::warning Atenção!
+
+Parâmetros e argumentos são **construções separadas por vírgula**. Para utilizar os operadores nesse tipo de construção é recomendado consultar a seção sobre [**Uso de operadores em construções separadas por vírgula**](create-use/create-content/declarative-hooks/code-transformation/about-code-transformation.mdx#uso-de-operadores-em-construções-separadas-por-vírgula).
+
+:::
+
+O exemplo a seguir troca o parâmetro **`id`** no construtor de uma classe de **`int`** para **`long`**, além de fazer as demais alterações necessárias no atributo **`id`** em si e nos métodos **`get`** e **`set`**. Para isso usamos quatro padrões de transformação, todos com **escopo de snippet**.
+
+<Tabs> 
+<TabItem value="original" label="Código Original"> 
+
+```java showLineNumbers
+public class MyEntity {
+
+    private Integer id;
+    // other fields
+
+    public MyEntity(int id /* other parameters */){
+        // constructor implementation
+    }
+
+    public void setId(int id){
+        this.id = id;
+    }
+
+    public int getId(){
+        return this.id;
+    }
+
+    // other getters and setters
+}
+```
+
+</TabItem>
+
+<TabItem value="pattern" label="Padrão de Transformação" default> 
+
+```java showLineNumbers
+<<<< pattern-name: change-construtor-param; pattern-scope: snippet-scope; >>>>
+
+public *<.*>*(-<int id>- +<long id>+ <...>){ // using operators in parameters
+    <...>
+}
+
+<<<< pattern-name: change-get-method; pattern-scope: snippet-scope; >>>>
+
+-<public int getId(){
+    return this.id;
+}>-
+
++<public long getId(){
+    return this.id;
+}>+
+
+<<<< pattern-name: change-set-method; pattern-scope: snippet-scope; >>>>
+
+-<public void setId(int id){
+    this.id = id;
+}>-
+
++<public void setId(long id){
+    this.id = id;
+}>+
+
+<<<< pattern-name: change-field; pattern-scope: snippet-scope; >>>>
+
+-<private Integer id;>-
+-<private Long id;>-
+```
+
+</TabItem>
+
+<TabItem value="transformed" label="Código Transformado"> 
+
+```java showLineNumbers
+public class MyEntity {
+
+    private Long id;
+    // other fields
+
+    public MyEntity(long id /* other parameters */){
+        // constructor implementation
+    }
+
+    public void setId(long id){
+        this.id = id;
+    }
+
+    public long getId(){
+        return this.id;
+    }
+
+    // other getters and setters
+}
+```
+
+</TabItem>
+</Tabs>
+
+O exemplo a seguir insere um novo parâmetro no fim da lista de parâmetros da declaração de um método e também insere um movo argumento em todas as chamadas a esse método. Para isso usamos dois padrões de transformação, todos com **escopo de snippet**.
+
+<Tabs> 
+<TabItem value="original" label="Código Original"> 
+
+```java showLineNumbers
+public class MyClass {
+    public static void myMethod(String param){
+        // do something
+    }
+
+    public static void main(String[] args) {
+        myMethod("message");
+    }
+}
+```
+
+</TabItem>
+
+<TabItem value="pattern" label="Padrão de Transformação" default> 
+
+```java showLineNumbers
+<<<< pattern-name: insert-param-method-declaration; pattern-scope: snippet-scope; >>>>
+
+public static void myMethod(<...> +<int param2>+){
+    <...>
+}
+
+<<<< pattern-name: insert-arg-method-call; pattern-scope: snippet-scope; >>>>
+
+myMethod(<...> +<1000>+);
+```
+
+</TabItem>
+
+<TabItem value="transformed" label="Código Transformado"> 
+
+```java showLineNumbers
+public class MyClass {
+    public static void myMethod(String param, int param2){
+        // do something
+    }
+
+    public static void main(String[] args) {
+        myMethod("message", 1000);
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+### **annotation**
+
+As annotations têm **suporte aos operadores de inserção, remoção e reticências**. Isso significa que, em qualquer local que seja válido a existência de annotations, é possível utilizar qualquer um dos operadores suportados.
+
+O exemplo a seguir migra as annotations **`@Test`** do JUnit 4, que admitem parâmetros, para as do JUnit 5, que não admitem parâmetros. Para isso usamos dois padrões de transformação, um com **escopo de arquivo** e outro com **escopo de snippet**.
+
+<Tabs> 
+<TabItem value="original" label="Código Original"> 
+
+```java showLineNumbers
+import org.junit.Test;
+
+public class MyTestClass {
+
+    @Test(expected = ArithmeticException.class)
+    public void testDivisionByZero() {
+        int result = 10 / 0; // This will throw an ArithmeticException
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidArgument() {
+        throw new IllegalArgumentException("Invalid argument");
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testNullPointer() {
+        String str = null;
+        str.length(); // This will throw a NullPointerException
+    }
+
+    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    public void testArrayIndexOutOfBounds() {
+        int[] arr = new int[2];
+        int result = arr[5]; // This will throw an ArrayIndexOutOfBoundsException
+    }
+
+    @Test(expected = NumberFormatException.class)
+    public void testNumberFormatException() {
+        Integer.parseInt("abc"); // This will throw a NumberFormatException
+    }
+}
+```
+
+</TabItem>
+
+<TabItem value="pattern" label="Padrão de Transformação" default> 
+
+```java showLineNumbers
+<<<< pattern-name: migrate-import-test-annotation-junit-4-to-5; pattern-scope: file-scope; >>>>
+
+<...>
+-<import org.junit.Test;>-
++<import org.junit.jupiter.api.Test;>+
+<...>
+
+<<<< pattern-name: migrate-test-annotation-junit-4-to-5; pattern-scope: snippet-scope; >>>>
+
+-<@Test(<...>)>-
++<@Test>+
+```
+
+</TabItem>
+
+<TabItem value="transformed" label="Código Transformado"> 
+
+```java showLineNumbers
+import org.junit.jupiter.api.Test;
+
+public class MyTestClass {
+
+    @Test
+    public void testDivisionByZero() {
+        int result = 10 / 0; // This will throw an ArithmeticException
+    }
+
+    @Test
+    public void testInvalidArgument() {
+        throw new IllegalArgumentException("Invalid argument");
+    }
+
+    @Test
+    public void testNullPointer() {
+        String str = null;
+        str.length(); // This will throw a NullPointerException
+    }
+
+    @Test
+    public void testArrayIndexOutOfBounds() {
+        int[] arr = new int[2];
+        int result = arr[5]; // This will throw an ArrayIndexOutOfBoundsException
+    }
+
+    @Test
+    public void testNumberFormatException() {
+        Integer.parseInt("abc"); // This will throw a NumberFormatException
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+### **statement**
+
+Um statement é um comando da linguagem que produz um efeito colateral e não se reduz a um valor. Esse é o tipo de construção mais comum em Java. A seguir alguns exemplos de statements:
+
+- Comandos de decisão (**`if`** e **`switch`**)
+- Comandos de iteração (**`for`**, **`while`** e **`do-while`**)
+- Comando **`try-catch-finally`**
+- Comando **`synchronized`**
+- Comandos **`return`**, **`yield`**, **`break`** e **`continue`**
+- Atribuição de variável
+- Chamada de método
+
+As statements têm **suporte aos operadores de inserção, remoção e reticências**. Isso significa que, em qualquer local que seja válido a existência de statements, é possível utilizar qualquer um dos operadores suportados.
+
+O exemplo a seguir insere um comando **`if`** que checa se o parâmetro dos métodos que iniciam com o nome **`print`** e possuem um parâmetro **`message`** do tipo **`String`** é **`null`** e lança uma exceção, caso positivo. Para isso usamos um padrão de transformação com **escopo de snippet**.
+
+<Tabs> 
+<TabItem value="original" label="Código Original"> 
+
+```java showLineNumbers
+public class ConsolePrinter {
+    public void printInfo(String message){
+        System.out.print("[INFO] " + message)
+    }
+
+    public void printWarning(String message){
+        System.out.print("[WARNING] " + message)
+    }
+
+    public void printError(String message){
+        System.out.print("[ERROR] " + message)
+    }
+}
+```
+
+</TabItem>
+
+<TabItem value="pattern" label="Padrão de Transformação" default> 
+
+```java showLineNumbers
+<<<< pattern-name: check-null-parameter; pattern-scope: snippet-scope; >>>>
+
+public void *<print.*>*(String message){
+    +<if(message == null){
+        throw new IllegalArgumentException("The message cannot be null.");
+    }>+
+    <...>
+}
+```
+
+</TabItem>
+
+<TabItem value="transformed" label="Código Transformado"> 
+
+```java showLineNumbers
+public class ConsolePrinter {
+    public void printInfo(String message){
+        if(message == null){
+            throw new IllegalArgumentException("The message cannot be null.");
+        }
+        System.out.print("[INFO] " + message)
+    }
+
+    public void printWarning(String message){
+        if(message == null){
+            throw new IllegalArgumentException("The message cannot be null.");
+        }
+        System.out.print("[WARNING] " + message)
+    }
+
+    public void printError(String message){
+        if(message == null){
+            throw new IllegalArgumentException("The message cannot be null.");
+        }
+        System.out.print("[ERROR] " + message)
+    }
+}
+```
+
+</TabItem>
+</Tabs>

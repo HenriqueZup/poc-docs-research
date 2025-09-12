@@ -1,0 +1,41 @@
+---
+title: Junho 25
+description: Release Notes
+---
+
+> Nesta seção, você encontra: Referência das novas features da StackSpot & alterações relevantes na documentação.
+
+## **Features** 
+
+### **Novo "Retry" de Jobs do Workflow**
+
+StackSpot EDP adicionou um novo botão **"Re-run jobs"** nas execuções de Workflows que tiveram falha em algum Job. Agora você pode executar apenas os Jobs que falharam ou executar novamente todos os Jobs de um Workflow. Para mais detalhes, confira [**o tutorial para repetir a execução de Jobs**](create-use/create-content/workflow/tutorials/re-run-jobs).
+
+### **Habilitação de Contexto para Workflow**
+ 
+Assim como outros Conteúdos na StackSpot, agora é possível configurar o contexto de Workflow, permitindo definir valores padrão para os Inputs das Actions do Workflow, tanto a nível de [**Conta**](home/account/organization/configure-context-account) quanto de [**Workspace**](home/workspace/stacks-and-context/setup-context). 
+
+### **Workflow Customizado**  
+
+Nesta atualização, a StackSpot EDP traz a possibilidade de customizar Workflows, permitindo fluxos personalizados para criação e manutenção de Aplicações e Infraestruturas. Agora, é possível adaptar Workflows existentes, inserindo novos passos conforme as necessidades de cada Stack ou tecnologia.
+
+Para mais detalhes sobre como criar, configurar e customizar Workflows, acesse a [**documentação de Workflows da StackSpot EDP**](create-use/create-content/workflow/customized-workflow).
+
+## **Melhorias** 
+
+## **Configurar SCM com Workflow**
+
+Para acompanhar a evolução dos conteúdos da StackSpot, o Workflow recebeu atualizações para suportar a configuração de SCMs para integrar a StackSpot com o seu provedor Cloud. [**Para mais informações, acesse o tutorial**](home/account/organization/scm-integration/index).  
+
+
+### **Skip de execução de IaC**
+
+Agora, tanto no Deploy via Self-Hosted Runtime no GitHub quanto no Workflow, é possível pular a execução do IaC/Terraform quando não há mudança em uma ou mais Infraestruturas. 
+
+Se o endpoint **`SKIPPED`** for definido como **`true`**, ele verifica se houve alguma mudança no Manifesto. Caso ele não tenha sido alterado, o deploy será definido como **`SKIPPED`** e não aplicará os Plugins de Infraestrutura na nuvem.
+
+Confira mais detalhes nas páginas a seguir:
+
+- [**Deploy de Aplicação e Infraestrutura no Workflow**](deployment/deploy/use-self-hosted/self-hosted-deploy)
+
+- [**Usar o Runtimes Self-Hosted GitHub**](deployment/deploy/use-self-hosted/use-self-hosted-github)

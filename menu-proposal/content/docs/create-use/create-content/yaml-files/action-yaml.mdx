@@ -1,0 +1,281 @@
+---
+title: action.yaml
+description: Detalhes sobre o action.yaml.
+---
+
+## **Exemplo de um `action.yaml`**
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem'; 
+
+<Tabs groupId="actions">
+  <TabItem value="python" label="Python Action">
+
+```yaml
+schema-version: v3 #required
+kind: action #required
+metadata: #required
+  name: action-basic-structure #required
+  display-name: action-basic-structure #required
+  description: Action example #required
+  version: 1.0.0 #required
+spec:
+  type: python #required #accepted values: python or shell
+  docs: #optional
+    pt-br: docs/pt-br/docs.mdx
+    en-us: docs/en-us/docs.mdx
+  inputs: #optional
+    - label:  Connection interface for your aws-dynamo-alias-action
+      type: required-connection
+      name: aws-dynamo-alias-action
+      connection-interface-type: aws-dynamo-conn
+  inputs: #optional 
+    - label: What is your name?
+      name: user_name
+      type: text
+      required: false
+      pattern: '^[A-Za-z]+(?:\s[A-Za-z]+)*$'
+      help: 'Inform your name'
+  python: #required
+    workdir: .
+    script: script.py
+```
+
+  </TabItem>
+  <TabItem value="shell" label="Shell Action">
+
+```yaml
+schema-version: v3 #required
+kind: action #required
+metadata: #required
+  name: action-basic-structure #required
+  display-name: action-basic-structure #required
+  description: Action example #required
+  version: 1.0.0 #required
+spec:
+  type: python #required #accepted values: python or shell
+  docs: #optional
+    pt-br: docs/pt-br/docs.mdx
+    en-us: docs/en-us/docs.mdx
+  inputs: #optional
+    - label: Connection interface for your aws-dynamo-alias-action
+      type: required-connection
+      name: aws-dynamo-alias-action
+      connection-interface-type: aws-dynamo-conn
+  inputs: #optional 
+    - label: Who are you?
+      name: user_name
+      type: text
+      required: false
+      pattern: '([A-Z][a-z]+)+'
+      help: 'Inform your name'
+  shell: #required
+    workdir: .
+    requirements-check:
+      - check-command:
+           linux: |
+            git --version
+          mac: |
+            git --version
+          windows: |
+            git --version
+        info: "Git is not installed!"
+    script:
+      linux: |
+        echo "Hello {{inputs.user_name}}!"
+      mac: |
+        echo "Hello {{inputs.user_name}}!"
+      windows: |
+        echo "Hello {{inputs.user_name}}!"
+```
+
+  </TabItem>
+
+<TabItem value="v3" label="Action v3 (atual)" default>
+
+```yaml title="Exemplo de Action do tipo Shell na versão v3."
+schema-version: v3 #required
+kind: action #required
+metadata: #required
+  name: action-basic-structure #required
+  display-name: action-basic-structure #required
+  description: Actiom example #required
+  version: 1.0.0 #required
+spec:
+  type: python #required #accepted values: python or shell
+  docs: #optional
+    pt-br: docs/pt-br/docs.mdx
+    en-us: docs/en-us/docs.mdx
+  inputs: #optional 
+    - label: Select the connection for your aws-dynamo-alias-action
+      name: aws-dynamo-alias-action
+      type: required-connection
+      connection-interface-type: aws-dynamo-conn
+    - label: Who are you?
+      name: user_name
+      type: text
+      required: false
+      pattern: '([A-Z][a-z]+)+'
+      help: 'Inform your name'
+  shell: #required
+    workdir: .
+    requirements-check:
+      - check-command:
+           linux: |
+            git --version
+          mac: |
+            git --version
+          windows: |
+            git --version
+        info: "Git is not installed!"
+    script:
+      linux: |
+        echo "Hello {{inputs.user_name}}!"
+      mac: |
+        echo "Hello {{inputs.user_name}}!"
+      windows: |
+        echo "Hello {{inputs.user_name}}!"
+```
+
+</TabItem>
+
+</Tabs>
+
+## **Atributos da Action**
+
+### **`schema-version`** 
+
+Versão do schema do Manifesto. 
+
+```yaml 
+- schema-version: v3
+``` 
+
+### **`kind`** 
+
+Tipo do Manifesto.
+
+```yaml 
+- kind: action
+``` 
+
+### **`metadata`** 
+
+É o que identifica a Action. São do tipo **`string`**:
+
+#### **name**
+
+Nome da Action que será exibido no Portal. Quando você não nomeia, o nome informado anteriormente será exibido. Utiliza kebab case. 
+
+```yaml 
+- name: action-basic-structure.
+``` 
+
+#### **display-name**
+
+Nome da Action que será exibida no Portal. Quando você não nomeia, o nome informado anteriormente será exibido. 
+
+```yaml 
+- display-name: action-basic-structure.
+``` 
+
+#### **description** 
+
+Descrição da Action. A descrição precisa ter, no mínimo, três caracteres e no máximo, 500.
+
+```yaml 
+- description: Action example.
+``` 
+
+#### **version**
+
+Versão da Action. Segue o Versionamento Semântico (SemVer).
+
+```yaml 
+- version: 1.0.0
+``` 
+
+### **`spec`**
+
+É a especificação da Action. São do tipo **`string`**:
+
+#### **type**
+
+É o tipo da Action. Pode ser **`python`** ou **`shell`**.
+
+```yaml 
+- type: python
+``` 
+
+#### **docs**
+
+Markdown com a documentação da Action.
+
+```yaml
+  docs:
+    pt-br: docs/pt-br/docs.mdx
+    en-us: docs/en-us/docs.mdx
+```
+
+#### **inputs**
+
+Coletam informações relevantes para o escopo da Action. Os inputs são interpretados pelo STK CLI durante a execução dos comandos para pedir essas informações para os usuários.
+
+Para ver todos os inputs possíveis, confira a seção [**Inputs**](create-use/create-content/yaml-files/inputs.mdx).
+
+<Tabs groupId="actions">
+  <TabItem value="python" label="Python">
+
+#### **python**
+
+Campo para definir o caminho dos scripts Python que a Action deve usar.
+
+- **workdir:** caminho relativo a pasta da Action onde estão os scripts Python.
+- **script:** nome completo do arquivo do script que você deseja que a Action execute.
+
+Exemplo:
+
+```python
+spec:
+#.
+#.
+#.
+  python: 
+    def run(metadata):
+    print(f"Hello {metadata.inputs.get('user_name')}!")
+```
+
+</TabItem>
+  <TabItem value="shell" label="Shell">
+
+Campo para definir o caminho dos scripts Shell que a Action deve usar.
+
+- **workdir:** caminho relativo a pasta da Action onde estão os scripts Python;
+- **requirements-check:** em caso de falha ao executar o script Shell, exibirá no terminal a mensagem definida na opção **'info'**;
+- **script:** script Shell que você deseja que a Action execute. Você deve informar os scripts compatíveis para cada Sistema Operacional, eles são **linux, mac e windows**.
+
+Exemplo:
+
+```yaml
+shell:
+    workdir: .
+    requirements-check:
+      - check-command:
+           linux: |
+            git --version
+          mac: |
+            git --version
+          windows: |
+            git --version
+        info: "Git is not installed!"
+    script:
+      linux: |
+        echo "Hello {{inputs.user_name}}!"
+      mac: |
+        echo "Hello {{inputs.user_name}}!"
+      windows: |
+        echo "Hello {{inputs.user_name}}!"
+```
+
+  </TabItem>
+</Tabs>  

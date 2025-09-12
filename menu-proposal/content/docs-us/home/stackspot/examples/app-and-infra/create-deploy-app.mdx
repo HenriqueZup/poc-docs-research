@@ -1,0 +1,269 @@
+---
+title: Create and deploy an App
+sidebar_position: 4
+description: Example of how to create and deploy an Application.
+---
+
+> In this section, you will find how to use app and infrastructures plugins to create an Application and deploy it.
+
+<br/>
+
+## **Introduction**
+
+- **Beginner level**
+
+This is an example on how to create an Application, [**for more details to create your Application, see the Applications page**](create-use/use-content/application/index.md).
+
+## **Before you begin**
+
+This example assists you in creating and deploying an Application with StackSpot STK CLI. 
+
+The **HTML Stack** from the [**App Plugin example page**](home/stackspot/examples/studio-content/create-app-plugins-stack.md) and the **S3 CloudFront Stack** in the [**Infra Plugin example page**](home/stackspot/examples/studio-content/create-infraplugin.md) is necessary to create an **Application** and the **infrastructure** for its deployment.
+
+- The HTML Stack encompasses **App Plugins** that generate an HTML page featuring embedded tables;
+- The S3 CloudFront Stack includes  **Infra plugins** designed to construct the infrastructure required for deployment and accessibility of the HTML content.
+
+Now, proceed with the instructions below to accomplish this.
+
+- To follow this example, first, you will need to:
+
+1. Generate two App Plugins to create an HTML page with embedded tables. Refer to the [**App Plugin example page**](home/stackspot/examples/studio-content/create-app-plugins-stack.md);
+
+2. Create a Stack and a Starter featuring the App Plugins from the same [**example**](home/stackspot/examples/studio-content/create-app-plugins-stack.md);
+
+3. Create two Infra Plugins to generate the infrastructure for deploying the HTML page. Use the [**Create Infra Plugins example**](home/stackspot/examples/studio-content/create-infraplugin.md).
+
+4. Create a Stack incorporating the Infra Plugins from the [**Infra Plugins example**](home/stackspot/examples/studio-content/create-infraplugin.md#2-create-a-stack-and-add-the-infra-plugins-to-it);
+
+5. You **must add the Stacks to a Workspace** to create, register, and deploy the Application with StackSpot.
+
+## **Requirements**
+
+- Create a StackSpot **account**;
+- [**Ensure you have permission to use the content**](home/account/organization/access-management/roles.md);
+- [**Install STK CLI**](home/stk-cli/install.md);
+- **Login** to your account on the **STK CLI**. Execute the command:
+
+```bash
+stk login
+```
+
+### **Step 1. Create an empty directory**
+
+Generate a project directory. Execute the following command in your terminal:
+
+```bash
+mkdir demo-html
+```
+
+**Access this directory** in your preferred **IDE**, such as Visual Studio Code.
+
+### **Step 2. Create the Application**
+
+1. **Access the Workspace** where you incorporated the steps and added the **Stacks mentioned at the beginning of the guide**.
+
+You will use it to create and register the Application. In your terminal, execute the command:
+
+```bash
+stk use workspace
+```
+
+Then, select the appropriate Workspace.
+
+:::warning
+Application registration and deployment are only possible using Plugins within a Workspace.
+:::
+
+To create the Application, **initiate the process by utilizing the App Plugins** from the Starter in the HTML Stack. Execute the command:
+
+
+```bash
+stk create app name-of-the-app studio-name/stack-name@stack-version/starter-name
+```
+
+It should look like the **example below**:
+
+```bash
+stk create app demo-html studio-name/demo-html@0.0.2/demo-html-starter
+```
+
+
+:::info
+If your Workspace contains only one Stack and one Starter, they will be selected automatically.
+::: 
+
+
+Then, answer the question in the STK CLI:
+
+```bash 
+? Name your Application: demo-html
+? Do you want to init a git repository? No
+? App description: Application web base
+? Select the Studio: > Select the studio where you published the Stacks 
+? Select the Stack:  html-stack 
+? Select the version of the Stack: 1.0.0
+? Select the Starter: html-starter
+? Title of the HTML page (Training - StackSpot) Demo - App
+
+> Applying plugin main-studio/dummy-json-plugin@0.0.1
+
+? Name of the table that will be generated  (product-list)
+? Table columns separated by ';'  (ID;TITLE;DESCRIPTION)
+? Table attributes separated by ';' (respectively of the inserted columns)  (id;title;description)
+```
+
+You successfully created the App ‘demo-html’!
+
+### **Step 3. Access your project’s directory and register your application**
+
+Register your application in a Workspace to make them available on StackSpot. Follow the instructions:
+
+1. Enter your project’s directory by running the command:
+
+```bash
+cd demo-html
+```
+
+2. Access your Workspace. Execute the same command from before:
+
+```bash
+stk use workspace
+```
+
+Then, select the appropriate Workspace.
+
+2. Register your Application:
+
+```bash
+stk register app
+```
+
+Answer the following questions:
+
+```bash
+? Repository URL: add your repository 
+? Base branch: main
+```
+
+**The application registered successfully.**
+
+:::info
+Check if your application was added to the Workspace:
+
+1. Access the [**StackSpot EDP Portal**](https://app.stackspot.com/login);
+2. Go to your Workspace;
+3. Click **‘Application’**;
+4. Confirm if your application is there.
+
+:::
+
+### **Step 4. Add Infra Plugins to your Application**
+
+To deploy your Application, ensure that it includes the necessary Infrastructure Plugins. This guide assumes you will use the Plugins created in the [**Create Infra Plugins Guide**](home/stackspot/examples/studio-content/create-infraplugin.md).
+
+1. Execute the command:
+
+```bash
+stk list plugin
+```
+
+2. Copy the **path to the s3-cloudfront Stack** to apply the Plugins.
+
+- Apply the **S3 Plugin first** to generate the Connection Interface that CloudFront Plugin will use. Execute:
+
+```bash
+stk apply plugin infra-demo/s3-cloudfront-stack@0.0.1/bucket-s3-plugin
+```
+
+> The command syntax is:
+
+```bash
+stk apply plugin studio-name/stack-name@stack-version/infra-plugin-name
+```
+
+- Answer the questions on your terminal:
+
+<br/> 
+
+> When the question `? Name the usage of the plugin` appears, just press enter.
+
+<br/>
+
+```
+? Name the connector for 'bucket-s3-plugin-conn (aws-s3-conn)': demo-app-s3-conn
+? Type the name of your bucket: demo-app-s3-example
+```
+
+- Now, apply the CloudFront Plugin:
+
+```bash
+stk apply plugin studio-name/s3-cloudfront-stack@0.0.1/cloudfront-plugin
+```
+
+- Answer the questions on your terminal:
+
+<br/>
+
+> When the question `? Name the usage of the plugin` appears, just press enter. 
+
+<br/>
+
+> In this scenario, the CloudFront Plugin recognizes that a preceding Plugin generated a required connection interface. Select:
+
+<br/>
+
+```bash
+? Choose a connector for 'aws-s3-conn (bucket-s3-cloudfront-conn)': demo-app-s3-conn (local)
+? Type name of your resource  (Client)
+? Choose http method of new endpoint GET
+```
+
+> When you have multiple options for this question, it implies that you can use the Connection Interface available in the Workspace to create the infrastructure related to that specific connector.
+
+:::info
+When you apply a Plugin in an Infrastructure project, the **stk.yaml file** will register the Plugins.
+:::
+
+### **Step 5. Deploy your Application’s infrastructure**
+
+:::caution 
+You will only be able to deploy if you:
+
+- [**Configured AWS Cloud account**](home/workspace/config-cloud-account.md) or [**Configured Azure Cloud account**](home/workspace/config-cloud-account-azure.md);
+- [**Have access to a Cloud account**](home/account/organization/access-management/roles.md);
+- [**Created environments in your account StackSpot.**](home/account/organization/create-env.md).
+
+:::
+
+To deploy your application’s infrastructure, run the following command:
+
+```bash
+stk deploy app -v app-version -e environment-name -w 
+```
+> `-v` indicates the application's version;
+> `-e` indicates the environment you want to deploy;
+> `-w` indicates that you want to watch the deployment.
+
+- StackSpot registers the deployment in the Application’s page on the StackSpot EDP Portal.
+
+### **Step 6. Check your Application’s project**
+
+> This step is on your cloud Account. The example here is on AWS.
+
+- StackSpot generates the resource. Go to your AWS account. Check if you created a bucket and the resources.
+- There are no objects (files, folders) in your project yet.
+- Access the CloudFront. The primary object is to open web pages. You will see the resources registered there.
+
+There is no content yet. StackSpot only provisions the infrastructure for you. You need to sync the files from the demo-html project into your newly created bucket or your pipeline. See an example using the AWS command:
+
+```bash
+aws s3 sync . s3://demo-app-s3 --delete --acl public-read
+```
+
+- Get the URL in your AWS’s bucket to see the following page:
+
+![The image shows a table with the title Create and Deploy an Application.](/img/html-page-use-tutorial-eng.png)
+
+Check your application’s infrastructure deployment information on the StackSpot Portal.
+
+You created an Application and deployed it infrastructure with StackSpot.

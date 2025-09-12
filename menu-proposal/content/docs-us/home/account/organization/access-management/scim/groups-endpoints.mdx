@@ -1,0 +1,303 @@
+---
+title: Group Endpoints
+description: Learn details about Grupo Endpoints.
+---
+
+Este recurso possui endpoints relacionados à atividades que você pode fazer de [**gerenciamento de Grupos**](home/account/organization/access-management/groups.md) dentro da Plataforma StackSpot EDP. 
+
+| Method | Endpoint      | Description     | Parameters                         | Responses     |
+|--------|---------------|---------------|-------------------------------------|---------------|
+| GET    | /scim/Groups  | Get All Groups | X-Tenant-Id: string (header)        | 200: OK       |
+| POST   | /scim/Groups  | Create Group  | X-Tenant-Id: string (header), body: Create Group | 201: Created |
+| GET    | /scim/Groups   | Get All Groups      | X-Tenant-Id: string (header)                                                                 | 200: OK      |
+| POST   | /scim/Groups   | Create a new group | X-Tenant-Id: string (header), body: Create Group (body, required, schema: domain.CreateGroup) | 201: Created |
+| GET    | /scim/Groups/\{id} | Get group by id    | X-Tenant-Id: string (header)                                                                 | 200: OK      |
+| PUT    | /scim/Groups/\{id} | Update Groups      | X-Tenant-Id: string (header), body: Update Group (body, required, schema: domain.UpdateGroup) | 200: OK      |
+| DELETE | /scim/Groups/\{id} | Delete Group       | X-Tenant-Id: string (header)                                                                 | 204: No Content |
+| PATCH  | /scim/Groups/\{id} | Patch Operation Group | X-Tenant-Id: string (header), body: Update Group (body, required, schema: domain.GroupPatchOperation) | 200: OK      |
+
+
+## Response Definitions
+
+### domain.CreateGroup
+
+| Field       | Type    | Required |
+|-------------|---------|-------------|
+| displayName | string  | Yes         |
+
+
+### domain.GroupAttributes
+| Field       | Type    | Required |
+|-------------|---------|-------------|
+| displayName | string  | Yes         |
+| members     | array   | Yes         |
+
+### domain.GroupDomain
+| Field       | Type    | Required |
+|-------------|---------|-------------|
+| attributes  | object  | Yes         |
+| externalID  | object  | No         |
+| id          | string  | Yes         |
+| meta        | object  | Yes         |
+| schemas     | array   | Yes         |
+
+### domain.GroupPageDomain
+| Field        | Type    | Required |
+|--------------|---------|-------------|
+| resources    | array   | Yes         |
+| totalResults | integer | Yes         |
+
+### domain.GroupPatchOperation
+| Field     | Type    | Required |
+|-----------|---------|-------------|
+| Operations| array   | Yes         |
+| schemas   | string  | Yes         |
+
+### domain.Meta
+| Field         | Type    | Required |
+|---------------|---------|-------------|
+| created       | string  | No         |
+| lastModified  | string  | No         |
+| location      | string  | No         |
+| resourceType  | string  | Yes         |
+| version       | string  | No         |
+
+### domain.PatchGroup
+| Field    | Type    | Required |
+|----------|---------|-------------|
+| members  | array   | Yes         |
+
+
+### domain.UpdateGroup
+| Field       | Type   | Required |
+|-------------|--------|-------------|
+| displayName | string | No         |
+
+
+## **Example Response** 
+
+### **`GET /tenant-id/scim/Groups Get all Groups`**
+
+Here you find an example of the API response for the endpoint **`GET /tenant-id/scim/Groups Get all Groups`**
+
+### Request: 
+
+```
+GET /tenant-id/scim/Groups Get all Groups
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 200: {
+	Resources: [
+{
+            "DisplayName": "Group Example Scim",
+            "description": 1,
+            "id": "37772f1a-6f5f-4004-b1ed-56a87d628d04",
+            "members": [
+                {
+                    "value": "5126b021-050a-4320-9aa8-59c964e2797d",
+                    "$ref": "/scim/Users/5126b021-050a-4320-9aa8-59c964e2797d",
+                    "type": "User",
+                    "display": "user.examples@stackspot.com"
+                }
+            ],
+            "meta": {
+                "resourceType": "Group",
+                "location": "Groups/37772f1a-6f5f-4004-b1ed-56a87d628d04"
+            },
+            "schemas": [
+                "urn:ietf:params:scim:schemas:core:2.0:Group",
+                "urn:ietf:params:scim:schemas:extension:custom:2.0:Role:GroupRole",
+               "urn:ietf:params:scim:schemas:extension:custom:2.0:Resource:GroupResource"
+            ],
+            "slug": "group-example-scim"
+        }
+],
+"itemsPerPage": 100,
+    "schemas": [
+        "urn:ietf:params:scim:api:messages:2.0:ListResponse"
+    ],
+    "startIndex": 1,
+    "totalResults": 50
+}
+````
+
+### **`POST /tenant-id/scim/Groups Create Group`**
+
+Here you find an example of the API response for the endpoint **`POST /tenant-id/scim/Groups Create Group`**
+
+### Request: 
+
+```
+POST /tenant-id/scim/Groups Create Group
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 200: {
+    "attributes": [],
+    "description": "Group Description",
+    "id": "5b26ee15-c6d6-4a5a-95f5-5e5d9cf10204",
+    "members": [],
+    "meta": {
+        "resourceType": "Group",
+        "created": "2024-05-31T12:52:28Z",
+        "lastModified": "2024-05-31T12:52:28Z",
+        "location": "Groups/5b26ee15-c6d6-4a5a-95f5-5e5d9cf10204"
+    },
+    "name": "Group Scim",
+    "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:Group",
+        "urn:ietf:params:scim:schemas:extension:custom:2.0:Role:GroupRole",
+        "urn:ietf:params:scim:schemas:extension:custom:2.0:Resource:GroupResource"
+    ],
+    "slug": "example-slug-name",
+    "total": 0
+}
+````
+
+### **`GET /tenant-id/scim/Groups/\{id} Get Group By Id`**
+
+Here you find an example of the API response for the endpoint **`GET /tenant-id/scim/Groups/\{id} Get Group By Id`**.
+
+### Request: 
+
+```
+GET /tenant-id/scim/Groups/\{id} Get Group By Id
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 200: {
+    "attributes": [],
+    "description": "Group description",
+    "id": "5b26ee15-c6d6-4a5a-95f5-5e5d9cf10204",
+    "members": [],
+    "meta": {
+        "resourceType": "Group",
+        "created": "2024-05-31T12:52:28Z",
+        "lastModified": "2024-05-31T12:52:28Z",
+        "location": "Groups/5b26ee15-c6d6-4a5a-95f5-5e5d9cf10204"
+    },
+    "name": "Group Example Scim",
+    "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:Group",
+        "urn:ietf:params:scim:schemas:extension:custom:2.0:Role:GroupRole",
+        "urn:ietf:params:scim:schemas:extension:custom:2.0:Resource:GroupResource"
+    ],
+    "slug": "example-slug-name",
+    "total": 0
+}
+````
+
+### **`PUT /tenant-id/scim/Groups/\{id} Update Group`**
+
+Here you find an example of the API response for the endpoint **`PUT /tenant-id/scim/Groups/\{id} Update Group`**.
+
+### Request: 
+
+```
+PUT /tenant-id/scim/Groups/\{id} Update Group
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 200: {
+    "attributes": [],
+    "description": "Test-description",
+    "id": "37772f1a-6f5f-4004-b1ed-56a87d628d04",
+    "members": [
+        {
+            "value": "5126b021-050a-4320-9aa8-59c964e2797d",
+            "$ref": "/scim/Users/5126b021-050a-4320-9aa8-59c964e2797d",
+            "type": "User",
+            "display": "example.user@stackspot.com"
+        }
+    ],
+    "meta": {
+        "resourceType": "Group",
+        "created": "2024-04-24T17:59:32Z",
+        "lastModified": "2024-05-31T12:57:00Z",
+        "location": "Groups/37772f1a-6f5f-4004-b1ed-56a87d628d04"
+    },
+    "name": "Group name",
+    "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:Group",
+        "urn:ietf:params:scim:schemas:extension:custom:2.0:Role:GroupRole",
+        "urn:ietf:params:scim:schemas:extension:custom:2.0:Resource:GroupResource"
+    ],
+    "slug": "group-example-scim",
+    "total": 1
+}
+````
+
+### **`DELETE /tenant-id/scim/Groups/\{id} Remove Group`**
+
+Here you find an example of the API response for the endpoint **`DELETE /tenant-id/scim/Groups/\{id} Remove Group`**.
+
+### Request: 
+
+```
+DELETE /tenant-id/scim/Groups/\{id} Remove Group
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 204: NO BODY RESPONSE
+````
+
+### **`PATCH /tenant-id/scim/Groups/\{id} Update Action With Patch operation`**
+
+Here you find an example of the API response for the endpoint **`PATCH /tenant-id/scim/Groups/\{id} Update Action With Patch operation`**.
+
+### Request: 
+
+```
+PATCH /tenant-id/scim/Groups/\{id} Update Action With Patch operation
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 200:{
+  "Operations": [
+    {
+      "op": "string",
+      "path": {
+        "attributePath": {
+          "attributeName": "string",
+          "subAttribute": "string",
+          "uriprefix": "string"
+        },
+        "subAttribute": "string",
+        "valueExpression": "string"
+      },
+      "value": {
+        "client_id": "string",
+        "description": "string",
+        "name": "string"
+      }
+    }
+  ],
+  "schemas": "string"
+}
+````
+

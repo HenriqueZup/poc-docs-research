@@ -1,0 +1,91 @@
+---
+title: How to Version, Deprecate or Delete a Plugin in Studio
+description: How to Version, Deprecate or Delete a Plugin version in Studio.
+---
+
+> In this section, you will learn how to version, deprecate, or delete the version of a Plugin in the Studio.
+
+<br/>
+
+- Ensure that no two Plugins in your Studio share the same version and name.
+
+- Retroactive versions of a Plugin can be published by following the steps in [**Publish Plugin**](create-use/create-content/plugin/publish-plugin.md).
+
+## **Versioning a Plugin**  
+
+To version a Plugin, [**create**](home/stk-cli/commands/plugin-commands.md) and [**publish**](create-content/yaml-files/inputs.md) it in the Studio via the STK CLI.
+
+### **Deprecating a Plugin version**  
+
+You can deprecate a version of a Plugin already published in a Studio. When you publish a new version, no flag will indicate that the Plugin is deprecated.
+
+When a Plugin version is deprecated, users will receive an email notifying them of the deprecation.
+
+To deprecate a version, you need to follow the rules below:
+
+**1.** You need a profile with content deprecation permission;
+
+**2.** You must belong to the Studio where the Plugin version will be deprecated. The exception to this rule is a user with the **Account Holder** role.
+
+To deprecate the version of a Plugin in a Studio, log in to the [**StackSpot Platform**](https://app.stackspot.com/login) and follow the steps below:
+
+:::warning
+
+Deprecating a version of a piece of content cannot be rolled back.
+
+:::
+
+**Step 1.** In the Studio where the Plugin is, click the Plugin section and select the Plugin you want to deprecate;
+
+**Step 2.** In the Plugin Description, click on the button indicating the current version of the Plugin;
+
+**Step 3.** You will see **'Version History'** on the left-hand side of the screen. Click on the **'... three-dot button'** next to the version of the Plugin you want to deprecate and then on **'Deprecate Version'**;
+
+**Step 4**: Provide the following information:
+
+- The **reason** for depreciation:  
+    - Lack of maintenance;
+    - Security issue;  
+    - Bugs;  
+    - Other
+
+- The **slug** and **version** of the Plugin you want to remove.
+
+To continue, click **'Deprecate Plugin'**.
+
+You have deprecated a version of the Plugin.
+
+## Delete a Plugin version
+
+:::tip
+
+Deleting the **only version** of a Plugin also **deletes the Plugin** entirely. To delete a Plugin, remove all its published versions.
+
+:::
+
+To delete a Plugin, ensure that:
+
+1. The Plugin version is not in use or associated with any Stack.
+2. You have a profile with permission to remove content.
+
+:::warning  
+
+Deleting a Plugin version is irreversible. If you need the content again, create the same version or generate a new one.
+
+:::
+
+To delete the version of a Plugin in a Studio, log in to the [**StackSpot Platform**](https://app.stackspot.com/login) and follow the steps below:
+
+**Step 1**: Go to the Plugins section in your Studio and access the Plugin to delete;
+
+**Step 2.** In the left side of the Plugins screen, click on the button indicating the current version of the Plugin;
+
+**Step 3.** You will see **'Version History'**. Click on the **'More Options'** button next to the **version of the Plugin** you want to delete;
+
+**Step 4**: Click on the button **'Delete Plugin'** and fill in the following field:  
+
+- The **slug** and the **version** of the Plugin you want to delete.
+
+To continue, click on the button **'Delete Plugin'**.
+
+You've deleted a version of the Plugin.

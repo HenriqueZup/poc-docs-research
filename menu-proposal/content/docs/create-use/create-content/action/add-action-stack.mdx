@@ -1,0 +1,116 @@
+---
+title: Action na Stack
+description: Como adicionar, depreciar ou deletar Actions na Stack.
+---
+
+> Nesta seção, você encontra um guia de como adicionar, depreciar ou deletar uma Action em uma Stack.
+
+<br/>
+
+## **Adicionar Actions na Stack**
+
+Para adicionar uma ou mais Actions na sua Stack, siga os passos:
+
+
+**Passo 1.** Dentro da sua Stack, clique na seção **'Actions'**. Em seguida, clique no botão **'Adicionar Action'**;
+
+**Passo 2.** Na tela que será exibida no lado direto, você pode adicionar as Actions que estão com o filtro **'Disponível no Estúdio'** e **'Explore'**;
+
+:::info Informação Adicional
+Contas do tipo Personal podem adicionar Actions disponíveis no **'Insert Qualifier'**, ou seja, Actions que podem ser encontradas e adicionadas através de uma URL.
+:::
+
+> Dentro da aba **'Explore'**, você pode agrupar as Actions por Estúdio e selecionar qual **versão** da Action você quer. 
+
+A StackSpot segue o [**padrão semântico (SemVer)**](https://devhints.io/semver). Na padronização do SemVer, é possível escolher um dos tipos:
+
+- **Versão específica**: representa uma só versão da Action, como `1.0.0`, por exemplo.   
+- **Range**: na sequência ~1.x.y ou ^1.x.y ou 1.x.y-1.y.x, por exemplo, o range ~1.2.3 representa qualquer versão maior ou igual a >=1.2.3 e menor que \<1.3.0.
+
+> Só é possível alterar o **PATCH** e **MINOR** de um range. A **MAJOR** do range é imutável. 
+
+**Passo 3.** Depois de selecionar as Actions, clique no botão **'Adicionar Action'**.
+
+Pronto, você adicionou Actions na sua Stack.
+
+Confira no GIF à seguir todos os passos feitos acima: 
+
+![GIF mostrando os passos para adicionar uma Action a uma Stack dentro do Portal da StackSpot EDP. O usuário acessa o Estúdio, clica na Stack desejada, navega até a seção 'Actions', clica em 'Adicionar Actions', escolhe a Action desejada e a adiciona à Stack.](/img/add-action-stack.gif)
+
+> GIF está em inglês.  
+
+
+## **Alterar a versão de uma Action em uma Stack**  
+
+Você pode alterar a versão de uma Action adicionada na Stack enquanto ela ainda está em **`Draft`**, ou seja, enquanto a Stack ainda não foi publicada. 
+
+Confira o passo a passo:
+
+**Passo 1.** Acesse a Stack em que a Action está publicada;
+
+**Passo 2.** Na seção de Actions, clique no botão que indica a versão atual ou range da Action que você quer alterar;
+
+**Passo 3.** Na aba **'Actions'**, clique na caixa de versões e, em seguida, clique na versão que você quer alterar; 
+
+**Passo 4.** Clique no botão **'Adicionar Action'**.
+
+Pronto, você alterou a versão de uma Action em uma Stack.
+
+---
+
+## **Depreciar a versão de uma Action em uma Stack**
+
+Para depreciar ou deletar a versão de uma Action, é preciso seguir as regras:
+
+1. Ter permissão de depreciar um conteúdo;  
+
+2. O usuário deve pertencer à Stack em que a versão da Action será depreciada ou removida.  
+
+Ao depreciar a versão de uma Action, dentro de uma Stack que usa range, todas as versões da Action serão depreciadas. Por exemplo:
+
+Em uma Stack com a Action X adicionada nela e usando o range `~1.2.3`, ou seja, qualquer versão maior ou igual a >=1.2.3 e menor que \<1.3.0. Nesse sentido, a Action tem as seguintes versões publicadas `1.0.0, 1.2.3, 1.2.4, 1.2.5, 1.2.6, 1.3.1.`. 
+
+Ao depreciar a Action X na Stack, ela exibe uma tag de conteúdo depreciado. Esse comportamento continua mesmo que uma nova versão da Action X seja publicada na Stack. 
+
+Para **depreciar a versão** de uma Action, siga os passos:
+
+**Passo 1.** Dentro da Stack, clique no Dashboard da Action;
+
+**Passo 2.** Clique no botão de versão da Action que você quer depreciar, no lado esquerdo da tela. Clique no botão **'Depreciar Action'**.
+
+**Passo 3.** Preencha os seguintes campos:
+
+- O **motivo** da depreciação:
+    - Falta de manutenção;  
+    - Problema de segurança;  
+    - Bugs;  
+    - Outros
+
+- O **slug** e a [**versão do range**](https://devhints.io/semver) da Action que você quer remover.
+
+Para continuar, clique no botão **'Depreciar Action'**.
+
+Pronto, você depreciou a versão de uma Action em uma Stack.  
+
+---
+
+## **Deletar a versão de uma Action em uma Stack**
+
+Para **deletar a versão** de uma Action em uma Stack, siga os passos:  
+
+**Passo 1.** Dentro da Stack, clique no Dashboard da Action;
+
+**Passo 2.** Clique no botão de versão da Action que você quer deletar, no lado esquerdo da tela. Depois, clique no botão **'Deletar Action'**. Em seguida, clique no botão **'Confirmar deleção'**.
+
+
+Pronto, você deletou a versão de uma Action em uma Stack.
+
+![GIF mostrando os passos para deletar a versão de uma Action de uma Stack dentro do Portal da StackSpot EDP. O usuário navega até o Dashboard da Action, clica no botão de versão da Action que deseja deletar, seleciona a opção "Deletar Action" e confirma a deleção.](/img/delete-action-stack.gif)
+
+> O GIF está em inglês. 
+
+
+## **Próximos Passos**
+
+- Confira como [**associar Actions à Plugins de Infra**](create-use/create-content/action/action-infra-plugin.mdx). 
+- Confira como [**criar Aplicações**](create-use/use-content/application/index.mdx).

@@ -1,0 +1,649 @@
+---
+title: Html
+description: Construções com suporte aos operadores de transformação para HTML.
+---
+
+## **Hook para transformar código em Html**
+
+```yaml
+schema-version: v3
+kind: plugin
+metadata:
+  name: code-transformation-plugin
+  display-name: code-transformation-plugin
+  description: Code transformation example.
+  version: 1.0.0
+spec:
+  hooks:
+    - type: code-transformation
+      engine-version: 0.2.0-beta
+      trigger: after-render
+      language: html
+      trans-pattern-path: trans-patterns/pattern.html
+      source-path: src/code.html
+```
+
+## **Construções suportadas no HTML**
+
+### **tag** 
+
+As tags têm **suporte aos operadores de inserção, remoção e reticências**. Isso significa que em qualquer local que seja válido a existência de uma tag, é possível utilizar qualquer um dos operadores suportados.
+
+O exemplo a seguir insere uma tag **`div`** como primeiro elemento dentro da tag **`body`**. O padrão tem **escopo de arquivo**.
+
+<Tabs>
+<TabItem value="original" label="Código Original">
+
+```html showLineNumbers
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="content">
+        <p>This is a paragraph.</p>
+        <p>This is another paragraph.</p>
+    </div>
+    <div id="footer">
+        <p>Contact us at contact@example.com</p>
+    </div>
+</body>
+</html>
+```
+
+</TabItem>
+<TabItem value="pattern" label="Padrão de transformação" default>
+
+```html showLineNumbers
+<<<< pattern-name: my_pattern; pattern-scope: file-scope; >>>>
+
+<...>
+<body>
+    +<<div id="header">
+        <h1>Welcome to My Website</h1>
+    </div>>+
+    <...>
+</body>
+<...>
+```
+
+</TabItem>
+<TabItem value="transformed" label="Código Transformado">
+
+```html showLineNumbers
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="header">
+        <h1>Welcome to My Website</h1>
+    </div>
+        <span><p>This is a paragraph.</p></span>
+        <p>This is another paragraph.</p>
+    <div id="footer">
+        <p>Contact us at contact@example.com</p>
+    </div>
+</body>
+</html>
+```
+
+</TabItem>
+</Tabs>
+
+O exemplo a seguir remove todas as tag `div`, desde que não possuam nenhum atributo, independente do conteúdo interno delas. O padrão tem **escopo de snippet**.
+
+<Tabs>
+<TabItem value="original" label="Código Original">
+
+```html showLineNumbers
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <div>
+        <h1>Welcome to My Website</h1>
+    </div>
+    <div>
+        <p>This is a paragraph.</p>
+        <p>This is another paragraph.</p>
+    </div>
+    <div>
+        <p>Contact us at contact@example.com</p>
+    </div>
+</body>
+</html>
+```
+
+</TabItem>
+<TabItem value="pattern" label="Padrão de transformação" default>
+
+```html showLineNumbers
+<<<< pattern-name: my_pattern; pattern-scope: snippet-scope; >>>>
+
+-<<div> 
+    <...> 
+</div>>-
+
+```
+
+</TabItem>
+<TabItem value="transformed" label="Código Transformado">
+
+```html showLineNumbers
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+</body>
+</html>
+```
+
+</TabItem>
+</Tabs>
+
+### **tagName** 
+
+Os nomes de tag têm **suporte aos operadores de ID match, inserção e remoção**. Isso significa que no lugar do nome de uma tag, é possível utilizar qualquer um dos operadores suportados. 
+
+:::warning Atenção!
+
+Note que **o operador de inserção e remoção devem sempre ocorrer em par** quando estiverem no contexto de uma tag name, ou seja, sempre que houver uma remoção deve haver uma inserção de tag name. Do contrário uma tag poderia ficar sem nome ou com mais de um nome. 
+
+:::
+
+:::warning Atenção!
+
+Quando utilizar os operadores de inserção e remoção no contexto de uma tag name, **lembre-se de também utilizá-los no fechamento da tag**, do contrário a abertura e o fechamento ficarão com nomes diferentes.
+
+:::
+
+O exemplo a seguir remove todas as tags cujo o nome iniciam com `app`, desde que não possuam nenhum atributo, independente do conteúdo interno delas. O padrão tem **escopo de snippet**.
+
+<Tabs>
+<TabItem value="original" label="Código Original">
+
+```html showLineNumbers
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <app-header>
+        Welcome to My Website
+    </app-header>
+    <div id="content">
+        <p>This is a paragraph.</p>
+        <p>This is another paragraph.</p>
+    </div>
+    <app-footer id="footer">
+        <p>Contact us at contact@example.com</p>
+    </app-footer>
+</body>
+</html>
+```
+
+</TabItem>
+<TabItem value="pattern" label="Padrão de transformação" default>
+
+```html showLineNumbers
+<<<< pattern-name: my_pattern; pattern-scope: snippet-scope; >>>>
+
+-<*<<app.+>*> 
+    <...>
+<*<app.+>*>>-
+```
+</TabItem>
+
+<TabItem value="transformed" label="Código transformado">
+```html showLineNumbers
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+    <div id="content">
+        <p>This is a paragraph.</p>
+        <p>This is another paragraph.</p>
+    </div>
+
+</body>
+</html>
+```
+
+</TabItem>
+</Tabs>
+
+O exemplo a seguir troca o nome de todas as tags de **`my-tag`** para **`my-new-tag`**, desde que não possuam nenhum atributo, independente do conteúdo interno delas. O padrão tem **escopo de snippet**.
+
+<Tabs>
+<TabItem value="original" label="Código Original">
+
+```html showLineNumbers
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <my-tag> Content 1 </my-tag>
+    <my-tag> Content 2 </my-tag>
+    <my-tag> Content 3 </my-tag>
+    <my-tag attribute="attr"> Content 4 </my-tag>
+</body>
+</html>
+```
+
+</TabItem>
+<TabItem value="pattern" label="Padrão de transformação" default>
+
+```html showLineNumbers
+<<<< pattern-name: my_pattern; pattern-scope: snippet-scope; >>>>
+
+<-<my-tag>- +<my-new-tag>+>
+    <...>
+</-<my-tag>- +<my-new-tag>+>
+```
+
+</TabItem>
+<TabItem value="transformed" label="Código transformado">
+
+```html showLineNumbers
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <my-new-tag> Content 1 </my-new-tag>
+    <my-new-tag> Content 2 </my-new-tag>
+    <my-new-tag> Content 3 </my-new-tag>
+    <my-tag attribute="attr"> Content 4 </my-tag>
+</body>
+</html>
+```
+
+</TabItem>
+</Tabs>
+
+### **tagContent** 
+
+O conteúdo das tags têm **suporte aos operadores de inserção, remoção e reticências**. Isso significa é possível utilizar qualquer um dos operadores suportados aninhados no conteúdo de uma tag.
+
+O exemplo a seguir insere uma tag **`br`** aninhada à todas as tags **`div`**, desde que não possuam nenhum atributo, independente do conteúdo interno delas. O padrão tem **escopo de snippet**.
+
+<Tabs>
+<TabItem value="original" label="Código Original">
+
+```html showLineNumbers
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <div id="header">
+        <h1>Welcome to My Website</h1>
+    </div>
+    <div id="content">
+        <p>This is a paragraph.</p>
+        <p>This is another paragraph.</p>
+    </div>
+    <div id="footer">
+        <p>Contact us at contact@example.com</p>
+    </div>
+</body>
+</html>
+```
+
+</TabItem>
+<TabItem value="pattern" label="Padrão de transformação" default>
+
+```html showLineNumbers
+<<<< pattern-name: my_pattern; pattern-scope: snippet-scope; >>>>
+
+<div>
+    <...>
+    +<<br/>>+
+</div>
+```
+</TabItem>
+<TabItem value="transformed" label="Código Transformado">
+```html showLineNumbers
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <div id="header">
+        <h1>Welcome to My Website</h1>
+        <br/>
+    </div>
+    <div id="content">
+        <p>This is a paragraph.</p>
+        <p>This is another paragraph.</p>
+        <br/>
+    </div>
+    <div id="footer">
+        <p>Contact us at contact@example.com</p>
+        <br/>
+    </div>
+</body>
+</html>
+```
+
+</TabItem>
+</Tabs>
+
+### **attribute** 
+
+Os atributos de tags têm **suporte aos operadores de inserção, remoção e reticências**. Isso significa que em qualquer local que seja válido a existência de um atributo de tag, é possível utilizar qualquer um dos operadores suportados.
+
+O exemplo a seguir insere o atributo **`class="text-align: center;"`** em todas as tags **`div`**, independente do conteúdo interno da tag ou dos demais atributos que a tag possa ter. O padrão tem **escopo de snippet**.
+
+<Tabs>
+<TabItem value="original" label="Código Original">
+
+```html showLineNumbers
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <div id="header">
+        <h1>Welcome to My Website</h1>
+    </div>
+    <div id="content">
+        <p>This is a paragraph.</p>
+        <p>This is another paragraph.</p>
+    </div>
+    <div id="footer">
+        <p>Contact us at contact@example.com</p>
+    </div>
+</body>
+</html>
+```
+
+</TabItem>
+<TabItem value="pattern" label="Padrão de transformação" default>
+
+```html showLineNumbers
+<<<< pattern-name: my_pattern; pattern-scope: snippet-scope; >>>>
+
+<div +<class="text-align: center;">+ <...>>
+    <...>
+</div>
+```
+
+</TabItem>
+<TabItem value="transformed" label="Código Transformado">
+
+```html showLineNumbers
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <div class="text-align: center;" id="header">
+        <h1>Welcome to My Website</h1>
+    </div>
+    <div class="text-align: center;" id="content">
+        <p>This is a paragraph.</p>
+        <p>This is another paragraph.</p>
+    </div>
+    <div class="text-align: center;" id="footer">
+        <p>Contact us at contact@example.com</p>
+    </div>
+</body>
+</html>
+```
+
+</TabItem>
+</Tabs>
+
+### **attributeValue** 
+
+Os valores dos atributos têm **suporte aos operadores de String match, inserção e remoção**. Isso significa que em qualquer local que seja válido a existência de um valor de atributo, é possível utilizar qualquer um dos operadores suportados.
+
+:::warning Atenção!
+
+Note que **o operador de inserção e remoção devem sempre ocorrer em par** quando estiverem no contexto de um attribute value, ou seja, sempre que houver uma remoção deve haver uma inserção de attribute value. Do contrário um atributo poderia ficar sem valor ou com mais de um valor. 
+
+:::
+
+O exemplo a seguir remove o atributo **`id`** em todas as tags **`div`**, independente do valor original do atributo (operador de string match com regex **`.*`**), do conteúdo interno da tag ou dos demais atributos que a tag possa ter. O padrão tem **escopo de snippet**.
+
+<Tabs>
+<TabItem value="original" label="Código Original">
+
+```html showLineNumbers
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <div id="header">
+        <h1>Welcome to My Website</h1>
+    </div>
+    <div id="content">
+        <p>This is a paragraph.</p>
+        <p>This is another paragraph.</p>
+    </div>
+    <div id="footer">
+        <p>Contact us at contact@example.com</p>
+    </div>
+</body>
+</html>
+```
+
+</TabItem>
+<TabItem value="pattern" label="Padrão de transformação" default>
+
+```html showLineNumbers
+<<<< pattern-name: my_pattern; pattern-scope: snippet-scope; >>>>
+
+<div <...> -<id=*<".*">*>- <...>>
+    <...>
+</div>
+```
+
+</TabItem>
+<TabItem value="transformed" label="Código Transformado">
+
+```html showLineNumbers
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <div>
+        <h1>Welcome to My Website</h1>
+    </div>
+    <div>
+        <p>This is a paragraph.</p>
+        <p>This is another paragraph.</p>
+    </div>
+    <div>
+        <p>Contact us at contact@example.com</p>
+    </div>
+</body>
+</html>
+```
+
+</TabItem>
+</Tabs>
+
+O exemplo a seguir substitui o valor do atributo **`href`** do primero **`li`** por **`"#main"`**, independente do valor do atributo (operador de string match com regex **`.*`**), do conteúdo interno da tag ou dos demais atributos que a tag possa ter. O padrão tem **escopo de arquivo**.
+
+<Tabs>
+<TabItem value="original" label="Código Original">
+
+```html showLineNumbers
+<html>
+    <head>
+        <h1>Welcome to My Website</h1>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </head>
+    <body>
+        <h1> My Sample Page</h1>
+    </body>
+</html>
+```
+
+</TabItem>
+<TabItem value="pattern" label="Padrão de transformação" default>
+
+```html showLineNumbers
+<<<< pattern-name: my_pattern; pattern-scope: file-scope; >>>>
+
+<html>
+    <...>
+    <head>
+        <...>
+        <nav>
+            <...>
+            <ul>
+                <li><a href=-<*<".*">*>- +<"#main">+> <...> </a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <...>
+        </nav>
+        <...>
+    </head>
+    <...>
+</html>
+```
+
+</TabItem>
+<TabItem value="transformed" label="Código Transformado">
+
+```html showLineNumbers
+<html>
+    <head>
+        <h1>Welcome to My Website</h1>
+        <nav>
+            <ul>
+                <li><a href="#main">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </head>
+    <body>
+        <h1> My Sample Page</h1>
+    </body>
+</html>
+```
+
+</TabItem>
+</Tabs>
+
+### **attributeName** 
+
+Os nomes dos atributos têm **suporte aos operadores de ID match, inserção e remoção**. Isso significa que em qualquer local que seja válido a existência do nome de um atributo, é possível utilizar qualquer um dos operadores suportados.
+
+:::warning Atenção!
+
+Note que **o operador de inserção e remoção devem sempre ocorrer em par** quando estiverem no contexto de um attribute name, ou seja, sempre que houver uma remoção deve haver uma inserção de attribute name. Do contrário uma atributo poderia ficar sem nome ou com mais de um nome. 
+
+:::
+
+O exemplo a seguir substitui o nome do atributo **`id`**  por **`class`** em todas as tags **`section`**, independente do valor do atributo (operador de string match com regex **`.*`**), do conteúdo interno da tag ou dos demais atributos que a tag possa ter. O padrão tem **escopo de snippet**.
+
+<Tabs>
+<TabItem value="original" label="Código Original">
+
+```html showLineNumbers
+<main>
+    <section id="home">
+        <h2>Home</h2>
+        <p>This is the home section. Here you can find the latest updates and news.</p>
+    </section>
+
+    <section id="about">
+        <h2>About</h2>
+        <p>This section provides information about our company and our mission.</p>
+        <img src="about.jpg" alt="About Us">
+    </section>
+
+    <section id="services">
+        <h2>Services</h2>
+        <p>We offer a wide range of services to meet your needs.</p>
+        <ul>
+            <li>Service 1</li>
+            <li>Service 2</li>
+            <li>Service 3</li>
+        </ul>
+    </section>
+
+    <section id="contact">
+        <h2>Contact</h2>
+        <p>If you have any questions, feel free to reach out to us.</p>
+        <form action="/submit-form" method="post">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+            <br>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <br>
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" required></textarea>
+            <br>
+            <button type="submit">Submit</button>
+        </form>
+    </section>
+</main>
+```
+
+</TabItem>
+<TabItem value="pattern" label="Padrão de transformação" default>
+
+```html showLineNumbers
+<<<< pattern-name: my_pattern; pattern-scope: snippet-scope; >>>>
+
+<section <...> -<id>- +<class>+ = *<".*">* <...>>
+    <...>
+</section>
+
+```
+
+</TabItem>
+<TabItem value="transformed" label="Código Transformado">
+
+```html showLineNumbers
+<main>
+    <section class="home">
+        <h2>Home</h2>
+        <p>This is the home section. Here you can find the latest updates and news.</p>
+    </section>
+
+    <section class="about">
+        <h2>About</h2>
+        <p>This section provides information about our company and our mission.</p>
+        <img src="about.jpg" alt="About Us">
+    </section>
+
+    <section class="services">
+        <h2>Services</h2>
+        <p>We offer a wide range of services to meet your needs.</p>
+        <ul>
+            <li>Service 1</li>
+            <li>Service 2</li>
+            <li>Service 3</li>
+        </ul>
+    </section>
+
+    <section class="contact">
+        <h2>Contact</h2>
+        <p>If you have any questions, feel free to reach out to us.</p>
+        <form action="/submit-form" method="post">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+            <br>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <br>
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" required></textarea>
+            <br>
+            <button type="submit">Submit</button>
+        </form>
+    </section>
+</main>
+```
+
+</TabItem>
+</Tabs>

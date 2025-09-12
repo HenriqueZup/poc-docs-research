@@ -1,0 +1,70 @@
+---
+title: Desinstalar o STK CLI
+description: Passos para desinstalar.
+---
+
+> Nesta seção, você encontra como desinstalar o STK CLI.
+
+<br/> 
+
+<Tabs>
+<TabItem value="Tab1" label="Windows" default>
+
+## **Windows**
+
+Siga os passos:
+
+**Passo 1.** Acessar o **Painel de controle** do seu computador;
+
+**Passo 2.** Clicar em **'Programas'** e logo depois **'Desinstalar um programa'**;
+
+**Passo 3.** Selecione **stkcli** e faça o processo para desinstalar.
+
+</TabItem>
+<TabItem value="Tab2" label="Linux">
+
+## **Linux**
+
+**Passo 1.** Entrar no terminal
+
+**Passo 2** Caso você tenha feito a instalação usando o pacote **`.deb`**, execute o comando:
+
+```
+sudo dpkg -r stkcli 
+```
+
+Ou o comando:
+
+```
+sudo apt-get remove stkcli
+```
+
+Caso você tenha instalado usando o pacote **`.rpm`**, execute o comando:
+
+```
+rpm -e stkcli
+```
+
+Em ambos os casos, uma mensagem aparecerá para confirmar a desinstalação antes que ela se inicie.
+
+Se você instalou via  **`.rpm`**, remova o binário da pasta **/usr/local/bin** no root da sua máquina.
+
+</TabItem>
+<TabItem value="Tab3" label="MacOS">
+
+## **MacOS**
+
+**Passo 1.** Entrar no terminal
+
+**Passo 2.** Executar o comando:
+
+```
+sh ~/.stk/bin/uninstall.sh
+```
+
+Uma mensagem aparece para confirmar a desinstalação antes que ela se inicie.
+
+</TabItem>
+</Tabs>
+
+- Depois de desinstalar a versão do CLI, confira se as pastas **`.os`** ou **`.stk`** ainda estão na suam **`$HOME`**. Caso sim, apague essa pasta para finalizar a desinstalação.

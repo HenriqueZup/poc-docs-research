@@ -1,0 +1,486 @@
+---
+title: Typescript
+description: Construções com suporte aos operadores de transformação para Typescript.
+---
+
+## **Hook para transformar código em Typescript**
+
+```yaml title="plugin.yaml"
+schema-version: v3
+kind: plugin
+metadata:
+  name: code-transformation-plugin
+  display-name: code-transformation-plugin
+  description: Code transformation example.
+  version: 1.0.0
+spec:
+  hooks:
+    - type: code-transformation
+      engine-version: 0.2.0-beta
+      trigger: after-render
+      language: typescript
+      trans-pattern-path: trans-patterns/pattern.ts
+      source-path: src/code.ts
+```
+
+## **Statement**
+
+Statements são construções suportadas pela engine de transformação. Um statement é um comando da linguagem que produz um efeito colateral e não se reduz a um valor. Esse é o tipo de construção mais comum em TypeScript. A seguir alguns exemplos de statements:
+
+- comando de import
+- comando de export
+- declaração de variável
+- declaração de função
+- declaração de função arrow
+- declaração de generator
+- declaração de classe
+- declaração de enum
+- declaração de interface
+- declaração de namespace
+- chamada de função
+- chamada de método
+- atribuição de variável
+- comandos de decisão (if e switch)
+- comandos de iteração (for, while e do-while)
+- comandos return, yield, break e continue
+- comando with
+- comando try
+
+Em qualquer trecho válido da linguagem que um desses statements possam ocorrer, é possível utilizar os operadores de transformação no padrão de transformação que você esteja criando. Exemplo:
+
+```ts title="Padrão de transformação utilizando operadores somente em construções statement" showLineNumbers
+<<<< patter-name: my-pattern-name; pattern-scope: file-scope; >>>>
+
+<...>
+import MyClass from './Myclass';
++<import MyClass2 from 'MyClass2';>+
+
+<...>
+
+function print_message(message:string):void{
+  +<if (message === null || message === undefined) {
+    throw new Error("The string is null or undefined");
+  }>+
+  console.log('MESSAGE: ' + message);
+}
+
+let message: string = 'My Message';
+print_message(message);
+
+<...>
+
+-<message = 'My Message 2';>-
+-<print_message(message);>-
+
+<...>
+
+const myClassInstance = new MyClass();
++<const myClass2Instance = new MyClass2();>+
+
++<class MyClass3 {
+
+    myMethod(): string {
+        return "My Method";
+    }
+}>+
+
++<const myClass3Instance = new MyClass3();>+
++<print_message(myClass3Instance.myMethod());>+
+<...>
+```
+
+No exemplo de padrão de transformação anterior, é possível conferir vários operadores de reticências sendo utilizados em partes do código em substituição à statements. 
+
+- Na **linha 3** há um operador que insere um statement de import. 
+- Da **linha 8** à **linha 10** há um operador que insere um statement de **`if`** no corpo de uma função. 
+- As **linhas 19 e 20**, cada, tem um operador que remove um statement de atribuição e um statement de chamada de função, respectivamente. 
+- Na **linha 25** há um operador que insere um statement de declaração de variável. 
+- Da **linha 27 à 32** há um operador que insere uma declaração de classe. 
+- Na **linha 34** há um operador que insere uma declaração de variável. 
+- E por fim, na **linha 35** há um operador que insere uma chamada de função.
+
+## **Class element**
+
+Class elements são construções suportadas pelo engine de transformação. Um class element é uma declaração dentro do corpo de uma classe. A seguir alguns exemplos de class element:
+
+- declaração de método
+- declaração de propriedade
+- declaração de construtor
+
+Em qualquer trecho válido da linguagem que um desses **class elements** possam ocorrer, é possível utilizar os operadores de transformação no padrão de transformação que você esteja criando. Exemplo:
+
+```ts title="Padrão de transformação utilizando operadores somente em construções class element" showLineNumbers
+<<<< patter-name: my-pattern-name; pattern-scope: file-scope; >>>>
+
+<...>
+class MyClass {
+    +<myprop:string = "";>+
+
+    <...>
+
+    myMethod1(): string {
+        <...>
+    }
+
+    <...>
+    
+    +<myMethod2(): string {
+        return "Executed myMethod2";
+    }>+
+}
+<...>
+```
+
+No exemplo de padrão de transformação anterior, você pode observar vários operadores de reticências sendo utilizados em partes do código em substituição à **class elements**. 
+
+- Na **linha 3** há um operador que insere um class element de propriedade como primeiro elemento da classe **`MyClass`**.   
+- Da **linha 13 à linha 15** há um operador que insere um class element de declaração de método como último elemento da classe **`MyClass`**.  
+
+<!-- ### **identifier**
+
+Usar operador de ID match
+
+fazer exemplo de uso do operador com nome de variavel
+fazer exemplo de uso do operador com nome de função
+fazer exmeplo de uso do operador com nome de classe
+fazer exmeplo de uso do operador com nome de parametro de declaração de função
+fazer exmeplo de uso do operador com nome de argumento de chamada de função
+
+### **stringLiteral**
+
+Usar operador de String match stringLiteral ` / -<console.info(*<".*">*);>-)`
+
+
+ TODO CONSTRUÇÕES SUPORTADAS
+OK - statement (checar todos os casos)
+OK - classElement (checar todos os casos)
+typeMember (COMMA - membros de um objeto)
+parameter (COMMA - lista de parametros - checar todos os casos)
+enumMember (COMMA - membros de um enum)
+decorator (checar todos os casos)
+multipleImportStatementIdentifierName (COMMA - checar todos os casos)
+variableDeclaration (COMMA - checar todos os casos)
+formalParameterArg (COMMA - checar todos os casos)
+arrayElement (COMMA - checar todos os casos)
+propertyAssignment (COMMA - checar todos os casos)
+argument (COMMA - checar todos os casos)
+-->
+
+## **Exemplos de padrões de transformação avançados**
+
+:::tip Dica!
+
+Para facilitar a construção do seu script com os padrões de transformação, faça uma cópia do arquivo original que você deseja transformar e edite-o com os padrões como você quiser.
+
+:::
+
+Confira os exemplos a seguir de como você pode criar padrões de transformação complexos para transformar código fonte original. Os exemplos demonstram os arquivos no seu estado original, o padrão de transformação e o arquivo original transformado, respectivamente:
+
+### **1. Exemplo dos operadores de reticências e inserção**
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs>
+<TabItem value="original" label="Código Original" default>
+
+```ts showLineNumbers
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [AppComponent],
+  imports: [BrowserModule],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule {}
+```
+
+</TabItem>
+<TabItem value="pattern" label="Padrão de Transformação">
+
+```ts showLineNumbers
+<<<< patter-name: my-pattern-name; pattern-scope: file-scope; >>>>
+
++<import { CommonModule } from '@angular/common';>+
++<import { FormsModule } from '@angular/forms';>+
++<import { MyComponent } from './my-component.component';>+
++<import { MyService } from './my-service.service';>+
+
+<...>
+
+@NgModule({
+  <...>
+  declarations: [+<MyComponent>+ <...>],
+  imports: [+<CommonModule>+ +<FormsModule>+ <...>],
+  providers: [+<MyService>+ <...>]
+  <...>
+})
+export class AppModule {}
+<...>
+```
+
+</TabItem>
+<TabItem value="transformed" label="Código Transformado">
+
+```ts showLineNumbers
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms'; 
+import { MyComponent } from './my-component.component'; 
+import { MyService } from './my-service.service'; 
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [MyComponent, AppComponent],
+  imports: [CommonModule, FormsModule, BrowserModule],
+  providers: [MyService],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+
+</TabItem>
+</Tabs>
+
+### **2. Exemplo dos operadores de reticências e remoção**
+
+<Tabs>
+<TabItem value="original" label="Código Original" default>
+
+```ts showLineNumbers
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-my-component',
+  templateUrl: './my-component.component.html',
+  styleUrls: ['./my-component.component.css']
+})
+export class MyComponent implements OnInit {
+
+  public greeting: string = 'Hello World!';
+  public counter: number = 0;
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+  public incrementCounter(): void {
+    this.counter++;
+  }
+}
+```
+
+</TabItem>
+<TabItem value="pattern" label="Padrão de Transformação">
+
+```ts showLineNumbers
+<<<< patter-name: my-pattern-name; pattern-scope: file-scope; >>>>
+
+<...>
+
+@Component({<...>})
+export class MyComponent implements OnInit {
+
+  <...>
+
+  -<public counter: number = 0;>-
+
+  <...>
+
+  -<public incrementCounter(): void {
+    this.counter++;
+  }>-
+}
+
+<...>
+```
+
+</TabItem>
+<TabItem value="transformed" label="Código Transformado">
+
+```ts showLineNumbers
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-my-component',
+  templateUrl: './my-component.component.html',
+  styleUrls: ['./my-component.component.css']
+})
+export class MyComponent implements OnInit {
+
+  public greeting: string = 'Hello World!';
+  
+  constructor() {}
+
+  ngOnInit(): void {}
+
+}
+```
+
+</TabItem>
+</Tabs>
+
+### **3. Exemplo com todos os operadores reticências, inserção e remoção**
+
+
+<Tabs>
+<TabItem value="original" label="Código Original" default>
+
+```ts showLineNumbers
+import { Component, OnInit } from '@angular/core';
+import { DataService } from './data.service';
+
+@Component({
+  selector: 'app-example',
+  template: '<div>{{ data }}</div>',
+  styleUrls: ['./example.component.css']
+})
+export class ExampleComponent implements OnInit {
+  data: string;
+
+  constructor(private dataService: DataService) { }
+
+  ngOnInit(): void {
+    this.data = this.dataService.getData();
+  }
+}
+```
+
+</TabItem>
+<TabItem value="pattern" label="Padrão de Transformação">
+
+```ts showLineNumbers
+<<<< patter-name: my-pattern-name; pattern-scope: file-scope; >>>>
+
+<...>
+export class ExampleComponent implements OnInit {
+  <...>
+
+  data: string;
+  <...>
+
+  constructor(private dataService: DataService) {<...>}
+  <...>
+
+  ngOnInit(): void {
+    <...>
+
+    +<this.dataService.getDataAsync().subscribe(
+      (result: string) => {
+        this.data = result;
+      },
+      (error: any) => {
+        console.error('Error fetching data:', error);
+      }
+    );>+
+    
+    -<this.data = this.dataService.getData();>-
+    
+    <...>
+  }
+
+  <...>
+}
+<...>
+```
+
+</TabItem>
+<TabItem value="transformed" label="Código Transformado">
+
+```ts showLineNumbers
+import { Component, OnInit } from '@angular/core';
+import { DataService } from './data.service';
+
+@Component({
+  selector: 'app-example',
+  template: '<div>{{ data }}</div>',
+  styleUrls: ['./example.component.css']
+})
+export class ExampleComponent implements OnInit {
+  data: string;
+
+  constructor(private dataService: DataService) { }
+
+  ngOnInit(): void {
+    this.dataService.getDataAsync().subscribe(
+      (result: string) => {
+        this.data = result;
+      },
+      (error: any) => {
+        console.error('Error fetching data:', error);
+      }
+    );
+  }
+}
+```
+
+</TabItem>
+</Tabs>
+
+### **4. Exemplo com o operador de ID match e String match**
+
+<Tabs>
+<TabItem value="original" label="Código Original" default>
+
+```ts title="app.module.ts"
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { AppComponent } from './app.component';
+import { MyComponentA } from './my-component-a/my-component-a.component';
+import { MyComponentB } from './my-component-b/my-component-b.component';
+import { MyComponentC } from './my-component-c/my-component-c.component';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    MyComponentA,
+    MyComponentB,
+    MyComponentC
+  ],
+  imports: [
+    BrowserModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+
+</TabItem>
+<TabItem value="pattern" label="Padrão de Transformação">
+
+```ts title="Padrão de transformação no escopo de snippet"
+<<<<  pattern-name: remove-components; pattern-scope: snippet-scope  >>>>
+
+-<import { *<MyComponent.*>* } from *<" '.*' ">*;>-
+<...>
+-<*<MyComponent.*?,?>*>-
+```
+
+</TabItem>
+<TabItem value="transformed" label="Código Transformado">
+
+```ts
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+  ],
+  imports: [
+    BrowserModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+
+</TabItem>
+</Tabs>

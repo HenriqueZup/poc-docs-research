@@ -1,0 +1,312 @@
+---
+title: Specification file
+description: Details about the specification file to create Applications, Infrastructures
+  and apply Plugins.
+---
+
+## **About Specification file (spec file)**
+
+Specific information is essential for creating Applications and Infrastructure, and a YAML file containing all the necessary specifications can conveniently provide this information. 
+
+The specification file addresses the primary fields required for both Applications and Infrastructure. However, a Starter is still necessary to create them.
+
+## **Specification file Structure**
+
+The specification file must have a **.yaml file extension**. The only difference between the Application and Infrastructure specification files is the **kind** attribute.
+
+You need to manually create the specification file, following the rules below:
+
+- The specification file must be a **YAML file**  
+- When you create the **`.yaml`** specification file, you can use whatever name you want. Example:  
+  - For Applications: **`app-spec.yaml`**;  
+  - For Infrastructure: **`infra-spec.yaml`**;  
+  - Or for Plugins: **`apply-plugin-spec.yaml`**;
+- You must still use a Starter to create your Applications or Infrastructures.
+
+### **Specification file attributes**
+
+Depending on the Plugins you use, the resource should include the name, inputs, input environments, and connections. Please fill in each field as required:
+
+#### **kind:**
+
+Fill with `application`, `shared-infrastructure` or `spec-apply-plugin`.
+
+#### **metadata:**
+
+Here, fill in the metadata for your Application or Infrastructure.
+
+- **description:** Describe the Application or Infrastructure.  
+- **name:** Enter the name of the Application or Infrastructure.  
+
+:::danger
+
+A **Plugin** specification file does not use the **`metadata`** field and the **`description`** parameter. But it does use the **`name`** parameter, where **`name`** which represents the full name of the Plugin following the specified syntax:
+
+```yaml
+name: studio-name/stack-name/plugin-name
+```
+
+Example:
+
+```yaml
+name: developers-studio/infra-stack/infra-dev-plugin
+```
+
+:::
+
+#### **schema-version:**
+
+The current version is `v1`.
+
+Example:
+
+```yaml
+kind: application # or shared-infrastructure
+metadata:
+  description: "Application description"
+  name: app-name # or infrastructure name
+schema-version: v1
+```
+
+#### **spec:**
+
+Add all the attributes of the Plugins and the remote repository of your Application or Infrastructure project.
+
+##### **applied-plugins:**
+
+:::danger
+
+Do not use the **`applied-plugins`** field in the Plugins specification file. Instead, use each following parameter as normal.
+
+:::
+
+- **alias:** The alias name for the Plugin usage.
+<!-- - **connections:** List of connections to your Plugin. You can add the **generates** and **requires** connections list. -->
+
+:::warning
+
+Version 3 of the Plugin manifests now uses Required and Generated Connections Interfaces as Inputs. [**Visit the Inputs page for the new `required-connection` input type**](create-use/create-content/yaml-files/inputs.md#input-of-type-required-connectionn) and [**`generated-connection`**](create-use/create-content/yaml-files/inputs.md#input-do-tipo-generated-connection). 
+
+:::
+
+- **inputs:** Input object with the input and value. Use the syntax: **`input-name: input-value`**.
+- **inputs-envs:** Environment input object with the input and value. Use the syntax: **`input-name: input-value`**.
+- **name:** The name of the Plugin that qualifies for all related specifications. Use the syntax: **`name: your-studio-slug/the-stack-ofyour-plugins@semantic-version/app-plugin-name`**.  
+
+Example:
+
+```yaml
+spec:
+  applied-plugins:
+    - alias: plugin-app-alias-01-1711972020803
+      inputs:
+        input1: value1
+      inputs-envs: {}
+      name: your-studio-slug/the-stack-ofyour-plugins@1.0.0/app-plugin-name
+```
+
+##### **repository:** 
+
+The remote repository URL of your project.  
+##### **stack-qualifier:** 
+
+The Stack to apply the specification for all Plugins of the Stack. 
+Use the syntax:   
+**`stack-qualifier: your-studio-slug/your-stack@semantic-version-number`**. 
+
+Example: **`tw-studio/documentation-infra-stack@1.0.0`**
+
+### **Application specification file example**
+
+Example of an Application Specification file for use with the **stk create app** command:
+
+```yaml title="app-spec.yaml"
+kind: application
+metadata:
+  description: "Application description"
+  name: app-test-d4b28b91
+schema-version: v1
+spec:
+  applied-plugins:
+    - alias: plugin-app-alias-01-1711972020803
+      inputs:
+        input1: value1
+      inputs-envs: {}
+      name: tw-studio/documentation-stack@1.2.0/static-site-plugin
+    - alias: alias01
+      inputs:
+        topic1_name: test-sns-1
+        topic2_name: test-sns-2
+        input_generated-sns1: sns-generate-alias-1
+          outputs:
+            - arn: arn_value
+            - topic_name: sns-topic-name
+        input_generated-sns2: sns-generate-alias-2
+          outputs:
+            - arn: arn_value
+            - topic_name: sns-topic-name 
+      inputs-envs: {}
+      name: tw-studio/documentation-infra-stack@1.0.0/database-infra-plugin
+    - alias: alias02
+      inputs:
+        method: GET
+        resource: Client
+        sns-require-alias-1: conn1-d9c3ca69
+        sns-require-alias-2: conn2-6011ee20
+      inputs-envs: {}
+      name: tw-studio/documentation-infra-stack@1.0.0/plugin-infra-requires-two-sns
+  repository: https://github.com/techwriter-team/tw-team-tests
+```
+
+### **Infrastructure specification file example**
+
+Example of an Infrastructure Specification File for use with the **stk create infra** command.
+
+```yaml  title="infra-spec.yaml"
+kind: shared-infrastructure
+metadata:
+  description: "Infrastructure description"
+  name: infra-test
+schema-version: v1
+spec:
+  applied-plugins:
+    - alias: alias01
+      inputs:
+        topic1_name: test-sns-1
+        topic2_name: test-sns-2
+        input_generated-sns1: sns-generate-alias-1
+          outputs:
+            - arn: arn_value
+            - topic_name: sns-topic-name
+        input_generated-sns2: sns-generate-alias-2
+          outputs:
+            - arn: arn_value
+            - topic_name: sns-topic-name 
+      inputs-envs: {}
+      name: tw-studio/documentation-infra-stack@1.0.0/plugin-infra-requires-two-sns
+    - alias: alias02
+      inputs:
+        sns-require-alias-1: conn1-5fd6a946
+        sns-require-alias-2: conn2-5fd6a946
+        method: GET
+        resource: Client
+      inputs-envs: {}
+      name: tw-studio/documentation-infra-stack@1.0.0/plugin-infra-requires-two-sns
+  repository: https://github.com/techwriter-team/tw-team-tests
+  stack-qualifier: tw-studio/documentation-infra-stack@1.0.0
+```
+
+### **Example of a specification file with inputs of type `list` and `object`**
+
+```yaml
+kind: application
+metadata:
+  description: "Application description"
+  name: new-inputs-app
+schema-version: v1
+spec:
+  applied-plugins:
+    - alias: plugin-app-alias-01-1711972020803
+      inputs:
+        input1: value1
+      inputs-envs: {}
+      name: tw-studio/documentation-stack@1.2.0/static-site-plugin
+    - alias: alias01
+      inputs:
+        topic1_name: test-sns-1
+        topic2_name: test-sns-2
+        input_generated-sns1: sns-generate-alias-1
+          outputs:
+            - arn: arn_value
+            - topic_name: sns-topic-name
+        input_generated-sns2: sns-generate-alias-2
+          outputs:
+            - arn: arn_value
+            - topic_name: sns-topic-name
+      inputs-envs: {}
+      name: tw-studio/documentation-infra-stack@1.0.0/database-infra-plugin
+    - alias: alias02
+      inputs:
+        method: GET
+        resource: Client
+        sns-require-alias-1: conn1-d9c3ca69
+        sns-require-alias-2: conn2-6011ee20
+        // new-line
+        my_input_obj:
+          input_one: "abc123"
+          input_two: "dea456"
+        // new-line  
+        my_input_list_of_string:
+          - "abc123"
+          - "dea567" 
+        // new-line   
+        my_input_list_of_obj:
+          - input_one: "abc123"
+            input_two: "dea456"
+          - input_one: "aaaa123"
+            input_two: "bbbbb456"  
+      inputs-envs: {}
+      name: tw-studio/documentation-infra-stack@1.0.0/plugin-infra-requires-two-sns
+  repository: https://github.com/techwriter-team/tw-team-tests
+```
+
+### **Example of a Plugin specification file**
+
+```yaml
+schema-version: v1
+kind: spec-apply-plugin
+spec:
+  name: dev-studio/dev-stack/plugin-v3-inputs-v3
+  alias: plugin-dev-1001
+  inputs:
+    input_text: Test
+    input_int: 20
+    input_bool: true
+    input_select: Option 1
+    input_multiselect:
+      - Option 2
+      - Option 3
+    input_required_connection_s3: dev-s3-selected
+    input_generated_connection_lambda: new-lambda
+    obj_list:
+      - text_value: Dev
+        int_value: 30
+        object_internal:
+          text_value_internal: Developer test
+          int_value_internal: 50
+    input_list_text:
+      - Text 1
+      - Text 2
+      - Text 3
+    object_password:
+      test_pass: "success"
+  inputs-envs:
+    my_env:
+      dev:
+        use_keda: NONE
+        ha: false
+      prd:
+        use_keda: aws-sqs-queue
+        queueName: "queue name"
+        minReplicas: 20
+```
+
+## **Specification file usage**
+
+For both commands, **stk create app**, **stk create infra** and **stk apply plugin** add the **`--spec`** flag option and the **absolute path** of the YAML specification file:
+
+Examples:
+
+> Fields such as the Application/Infrastructure/Plugin name and description are not required when running the command with the specification file.
+
+```bash title="java-app-specs.yaml absolute path example"
+stk create app --spec home/user/documents/my-spec-files/java-app-specs.yaml --starter my-studio/my-stack/starter-name
+```
+
+```bash title="java-infra-specs.yaml absolute path example"
+stk create infra --spec home/user/documents/my-spec-files/java-infra-specs.yaml --starter my-studio/my-stack/starter-name
+```
+
+```bash title="java-plugin-specs.yaml absolute path example"
+stk apply plugin --spec home/user/documents/my-spec-files/java-plugin-specs.yaml
+```

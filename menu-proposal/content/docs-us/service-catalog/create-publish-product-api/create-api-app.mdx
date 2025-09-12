@@ -1,0 +1,51 @@
+---
+title: "Add APIs from an Existing Application"
+sidebar_position: 3
+description: Information about Applications.
+sidebar_custom_props: 
+  hidden: true
+---
+
+> In this section, you will learn how to add APIs from an existing application.
+
+<br/>
+
+You can add an API to a running Application. When you add an API, you make new features and functionalities available to the application users.
+
+Check the rules to change an Application:
+
+- **Name:** It cannot change to avoid modifications in production environments.
+- **Description:** It cannot change.  
+- **OpenAPi File:** It can change.  
+- **Connection Interface:** If you don’t inform in the API registration, it appears blank. In this case, you can edit and select a Connection Interface.
+You can't edit this field if you have already added a Connection Interface in the API registration.
+- **Gateway URL:** It can change.
+
+:::info  
+If you select an environment while creating the Application:
+This editing only works for that environment.
+:::
+
+Follow the steps below to add APIs to your application:  
+
+**Step 1.** Go to the **'Settings'** section of the Application.
+
+**Step 2.** Go to Settings. In **'API Settings'**, click on the edit icon;
+
+**Step 3:** Upload the OpenAPI file. The extensions alowed are: **`.yaml`**, **`.yml`** and **`.json`**.
+
+After that, insert the **URL of the Gateway**. Include the **Connection Interface** you want to connect.
+
+> In this step, include only a Gateway URL. The application is already in a specific environment.
+
+**Step 4:** Click on **'Save'**.
+
+You added an API to a running Application.
+
+**Step 3.** Click **'Save'**.  
+
+You've added an API to a running Application.
+
+## **Next Step**
+
+- [**Create a Product and bundle APIs**](service-catalog/create-publish-product-api/create-product.md)

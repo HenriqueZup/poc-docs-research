@@ -1,0 +1,76 @@
+---
+title: Uninstall
+sidebar_position: 20
+description: Uninstalling STK CLI. 
+sidebar_custom_props: 
+  icon: Trash
+---
+
+> In this section, you will find how to uninstall STK CLI.
+
+<br/>
+
+
+<Tabs>
+<TabItem value="Tab1" label="Windows" default>
+
+## **Windows**
+
+Follow the steps below:
+
+**Step 1.** Access the **Control Panel** of your computer;
+
+**Step 2.** Click on **'Programs'** and then click on **'Uninstall a program'**;
+
+**Step 3.** Select **stkcli** and go through the uninstall process.
+
+</TabItem>
+<TabItem value="Tab2" label="Linux">
+
+## **Linux**
+
+**Step 1.** Log in to the terminal;
+
+**Step 2.** If you installed using a **`.deb`** package, execute the command:
+
+```
+sudo dpkg -r stkcli 
+```
+
+Or the command:
+
+```
+sudo apt-get remove stkcli
+```
+
+If you installed using  **`.rpm`** package, execute the command:  
+
+```
+rpm -e stkcli
+```
+
+In both cases, a message appears to confirm if you want to uninstall before the process begins.
+
+If you installed via **`.rpm `**, remove the binary from the **/usr/local/bin** folder on your machine's root.
+
+</TabItem>
+<TabItem value="Tab3" label="MacOS">
+
+## **MacOS**
+
+**Step 1.** Access the terminal;
+
+**Step 2.** Execute the command:
+
+```
+sh ~/.stk/bin/uninstall.sh
+```
+
+A message appears to confirm if you want to uninstall before the process begins.
+
+</TabItem>
+</Tabs>
+
+:::warning
+After uninstalling the STK CLI version, check if the **`.os`** or **`.stk`** folders are still in your **`$HOME`** folder. If so, delete this folder to finish the process.
+:::

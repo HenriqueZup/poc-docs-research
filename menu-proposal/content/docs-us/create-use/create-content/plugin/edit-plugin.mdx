@@ -1,0 +1,105 @@
+---
+title: Edit Inputs from Plugins already created
+description: Edit plugins that have already been created.
+---
+
+> In this section, you'll find a guide on how to edit your Plugin's inputs.
+
+<br/>
+
+After creating your Plugin, you can modify its inputs or add new attributes.
+
+See the instructions below:
+
+## **Requirements**
+
+- You must have a Plugin. If you haven't created one yet, see the [**Create Plugin**](create-use/create-content/plugin/create-plugin.md) guide;
+- You must have **access to the source code** of the Plugin.
+
+:::info
+If you **didn't create** the Plugin, seek the creator to obtain access to its source code. It might be available in a GitHub repository.
+Run **`git clone`** and follow the steps below:
+::: 
+
+**Step 1.** Open a terminal in your preferred IDE and navigate to the Plugin directory on your local machine;
+
+**Step 2.** Open the **' Plugin.yaml'** file and adjust input values as needed or add desired attributes, such as a Declarative Hook;
+
+:::info
+
+- To explore all the possibilities for inputs, go to the [**Inputs**](create-use/create-content/yaml-files/inputs.md) and [**Advanced Inputs**](create-use/create-content/yaml-files/advanced-inputs.md) guides.
+
+- For a comprehensive understanding of hooks, go to the [**Declarative Hooks**](create-use/create-content/declarative-hooks/index.md) guide.
+
+:::
+
+**Step 3.** After editing the Plugin, update its version. For example:
+
+From:
+
+```yaml
+metadata:
+name: json-plugin
+display-name: dummy-json-plugin
+description: Plugin to integrate a data table into the HTML base
+ // old-start
+version: 1.0.0
+// old-end
+picture: plugin.png
+```
+
+To:
+
+```yaml
+metadata:
+name: json-plugin
+display-name: dummy-json-plugin
+description: Plugin to integrate a data table into the HTML base
+ // new-line-start
+version: 2.0.0
+// new-line-end
+picture: plugin.png
+```
+
+**Step 4.** Save the file. 
+You have locally edited the Plugin. To test the changes, run the following command to apply the Plugin:
+
+```bash 
+stk apply Plugin PLUGIN_LOCAL_PATH
+```
+
+**Step 5.** To publish the Plugin's new version in the Studio on the StackSpot Platform, follow the instructions below:
+
+## **How to publish the newly edited version**
+
+### Requirements
+
+- Permission to publish in the Studio where you created the Plugin.
+
+Follow the steps below:
+
+**Step 1.** On your IDE's terminal, login to your Account on StackSpot. Execute the command: 
+
+```bash
+stk login
+```
+
+**Step 2.** In the Plugin directory, execute the command below:
+
+```bash
+stk publish Plugin
+```
+
+> You don't need to enter the name of the Studio after the command, as the STK CLI will identify it.
+
+<br/>
+
+**Step 3.** Verify if you published the new version in your Studio on the StackSpot Platform. [**Log in**](https://app.stackspot.com/login) and access the **'Studios'**;
+
+**Step 4.** Access the Plugin's Studio;
+
+**Step 5.** Within the Studio, in the left side menu, click **'Plugins'**. Select the Plugin you have just edited;
+
+**Step 6.** Click on the **'Version x.x.x'** button below the Plugin's name. On the right side of the screen, you will see all the published versions of the Plugin.
+
+You've edited the Plugin and published its new version on the StackSpot Platform.

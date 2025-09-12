@@ -1,0 +1,132 @@
+---
+title: Principais Conceitos
+description: Conceitos da StackSpot.
+---
+
+> Nesta seção, você encontra os principais conceitos da StackSpot.
+
+<br/>
+
+## **Conta (Account)**
+
+Atualmente, existe um tipo de conta na StackSpot:
+
+1. [**Enterprise**](home/account/organization/index.mdx): É a conta empresarial da StackSpot. É onde as funcionalidades da StackSpot estão disponíveis e o "espaço" em que **organização faz a configuração da conta**. Os usuários individuais, sem permissão de gerenciamento, podem fazer algumas configurações específicas de personalização. 
+
+As Contas na StackSpot conectam duas áreas:
+
+1. **Estúdio**: onde se **cria conteúdo**. Os conteúdos Stacks, Starters, Plugins, Actions, Links, etc estão associados a uma Conta por meio de um Estúdio.
+
+2. **Workspace**: onde se **usa o conteúdo** que foi criado. Você pode criar Aplicações, Infraestrutura, e fazer o deploy.  Você utiliza o Workspace por meio da Conta da sua organização.
+
+## **Action**
+
+Uma Action é uma forma de executar automações de maneira remota ou local. Ela facilita a automação de fluxos de trabalho. Ao criar uma Action, você pode:
+
+- Integrá-la com outros sistemas através da StackSpot.
+- Facilitar a execução de tarefas para desenvolvedores, como criar um repositório no GitHub.
+
+## **Conteúdo**
+
+**Conteúdo refere-se ao que você pode criar com a StackSpot: Stacks, Starters, Plugins, Actions e Links.** O conteúdo pode ser reutilizado no seu Workspace e nos Estúdios.
+
+## **Connection Interface**
+
+É um **contrato com parâmetros/inputs, variáveis ou lista de atributos** que um conjunto de recursos de Cloud precisa ter para ser conectável, ou compatível entre si. E com isso, estrutura como as peças da StackSpot vão se conectar.
+
+Você cria uma **Connection Interface** usando um **Plugin de Infraestrutura** que implementa um **Connection Interface Type** ao gerar peças de Cloud. Dessa forma, é possível que qualquer Aplicação compatível com o contrato da Connection Interface use o mesmo conjunto de recursos, pois seguem a mesma interface.
+
+- Para mais informações, acesse a [**seção de Connection Interface**](create-use/connections/connection-interface.mdx)
+
+## **Connection Interface Type**
+
+A Connection Interface Type estabelece um contrato de atributos para as peças de Cloud. Esse contrato garante a compatibilidade e interoperabilidade entre essas peças. Dessa maneira, quando um Plugin de infraestrutura cria uma peça de Cloud, o conjunto de atributos estabelecidos no contrato para essas peças é criado, constituindo um Connection Interface que implementa a interface do Connection Interface Type.
+A ideia é estruturar como as peças da StackSpot vão se conectar.
+
+## **Contexto**
+
+Contexto são valores que você pode usar para definir configurações de conteúdo na StackSpot.
+E estão divididos hierarquicamente em três níveis:
+
+1. Conta
+2. Workspace
+3. Stack
+
+Os valores definidos no nível da sua conta sobrescrevem valores definidos no Workspace, e assim ele sobrescreve valores definidos em Stacks.
+
+## **Environment**
+
+Entidade que representa um ambiente onde aplicações e peças de Cloud são instanciadas.
+Essa informação é utilizada para agrupar todas essas aplicações e peças de Cloud, que estão entre várias contas Cloud e Provedor, portanto estabelecendo um jeito de identificar e organizar esses ambientes. Uma prática comum é ter um ambiente para Desenvolvimento, Homologação e Produção.
+
+## **Plugin**
+
+Um Plugin **adiciona novas capacidades** a uma Aplicação. Você pode criar e aplicar Plugins em diferentes seções do Portal da StackSpot. Um Plugin também pode ser versionado e associado a um Estúdio e uma Stack.
+
+Existem **dois tipos de Plugins**:
+
+1. [**Aplicação (App)**](create-use/create-content/plugin/create-plugin.mdx): ajuda na escrita de uma Aplicação.
+2. [**Infraestrutura (Infra)**](create-use/create-content/plugin/create-plugin.mdx): auxilia a prover recursos para uma Aplicação.
+
+**Exemplos:**
+
+- Um pedaço de código simples que adiciona uma função ou biblioteca a uma aplicação.
+- Um código para criar uma resource de Cloud.
+
+## **StackSpot Cloud Services**
+
+É o gerenciamento e operação de um provedor de Cloud Computing. A StackSpot Cloud Services oferece **componentes prontos de Cloud Computing** para uso em aplicações de negócio, assim como a gestão e operação dos recursos.
+
+## **StackSpot Deploy Engine**
+
+Possibilita o deploy das Aplicações e criação dos recursos de Infra, garantindo configurações do contexto de cada usuário. O Deploy Engine **interpreta a intenção do Plugin de infraestrutura** e gera a peça de Cloud que foi requisitada.
+
+## **Stack**
+
+É um agrupamento de Plugins. A Stack provê recursos adequados que uma pessoa desenvolvedora precisa para criar uma aplicação. Stacks podem conter ou não [**Starters**](#starter).
+
+## **Starter**
+
+São um conjunto de Plugins predefinidos de uma Stack, que serão aplicados no comando **`stk create app`**. Ao utilizar um Starter, o usuário pode criar um app e aplicar um pacote de Plugins em um único comando do STK CLI.
+Os Starters são úteis para que os criadores de Stack definam dentro da própria Stack combinações comuns de Plugins, e definam "receitas prontas" para as combinações mais comuns dentro da Stack.
+Os usuários podem definir seus próprios Starters para agilizar o processo de criação de projetos que usem um pacote predefinido de Plugins.
+
+## **Estúdio**
+
+Possibilita a criação e distribuição de peças de software (Plugins de aplicação e de infraestrutura) de maneira padronizada e centralizada. É onde o seu conteúdo é criado na StackSpot.
+
+## **Workspace**
+
+Os Workspaces são espaços de trabalho onde **são organizados os conteúdos criados dentro dos Estúdios** (Plugins, Stacks, Starters, Connections Interfaces, Actions, etc.)  de acordo com **contextos**, (por exemplo, de projeto) para facilitar a criação e o deploy de Aplicações de forma padronizada.
+
+Funciona assim:
+
+- O criador do Workspace adiciona Stacks aos Workspaces;
+- O criador do Workspace deixa pré-configurado os valores de inputs dos Plugins e qualquer outro conteúdo da Stack, como Actions;
+- A pessoa desenvolvedora que faz parte desse Workspace utiliza as Stacks já configuradas previamente para criar Aplicações;
+- A pessoa SRE que faz parte desse Workspace utiliza as Stacks com Plugins de Infraestrutura para criar Infraestruturas.
+
+**A organização e criação dos Workspaces é livre e fica a cargo da empresa ou pessoa responsável pela Conta, dependendo do contexto de cada um.**
+
+Por exemplo:
+
+- Em uma **Conta Enterprise**:  Workspaces podem ser criados de acordo com projeto, produto, Squads etc.
+
+Para saber mais, acesse [**Sobre Workspace**](home/workspace/about-workspace.mdx).
+
+## **Aplicação**
+
+Aplicação (Application) é um projeto de código, instanciado em um ambiente através da StackSpot. Essa aplicação pode ter sido criada a partir de um Starter de uma Stack ou ter somente um Plugin da StackSpot aplicado.
+
+## **Infraestrutura (Infrastructure)**
+
+É uma aplicação dedicada à Infraestrutura ou permanente, ou seja, que não depende da existência de uma aplicação de negócio, e que normalmente necessita de uma infraestrutura.
+Por exemplo, um cluster pode abrigar mais de uma aplicação. Ao criá-lo como uma Infraestrutura, é possível compartilhar os recursos com mais de uma aplicação que precisa de um container com um cluster.
+
+## **URLs Amigáveis (Slugs)**
+
+Na StackSpot, os Slugs são identificadores únicos para as Contas, Estúdios, Stacks e Plugins, e compõem as suas URLs. Quando você configura Slugs, as URLs dos recursos recebem um 'nome' que identifica cada Conta, Estúdio, Stack e Plugin. A URL é usada para compartilhar recursos em todos os canais da StackSpot.
+
+## **Tech Products**
+
+Possibilita a abstração do processamento em nuvem com recomendações de segurança, resiliência, qualidade e custo.

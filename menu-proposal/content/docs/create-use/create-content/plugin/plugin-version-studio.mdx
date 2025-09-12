@@ -1,0 +1,85 @@
+---
+title: Plugin no Estúdio
+description: Versionar, Depreciar ou Deletar versão do Plugin no Estúdio.
+---
+
+> Nesta seção você encontra como versionar, depreciar ou deletar a versão de um Plugin no Estúdio.
+
+<br/>
+
+- Não é possível ter um Plugin no seu Estúdio com a mesma versão e o mesmo nome de um outro Plugin.
+
+- Você consegue publicar versões retroativas de um Plugin, seguindo o mesmo passo a passo da [**Publicação de Plugin**](create-use/create-content/plugin/publish-plugin.mdx).
+
+## **Versionar um Plugin**
+
+Para versionar um Plugin, você precisa [**criá-lo**](home/stk-cli/commands/plugin-commands.mdx) e [**publicá-lo**](home/stk-cli/commands/plugin-commands.mdx) no Estúdio através do STK CLI. 
+
+## **Depreciar a versão de um Plugin**
+
+Você pode depreciar a versão de um Plugin já publicado em um Estúdio.
+
+- Quando uma nova versão for publicada não haverá uma flag indicando que a versão do Plugin está depreciada.
+- Quando a versão de um Plugin for depreciada, as pessoas que utilizam a versão dele receberão um e-mail avisando sobre a depreciação.
+
+Para depreciar uma versão, é preciso seguir as regras:
+
+**1.** Ter perfil com permissão de depreciação de conteúdo;
+**2.** O usuário deve pertencer ao Estúdio em que a versão do Plugin será depreciada. A exceção desta regra é o usuário que tem a role do tipo **Account Holder**.
+
+Para depreciar a versão de um Plugin em um Estúdio, [**entre no Portal da StackSpot EDP**](https://app.stackspot.com/login) e siga os passos:
+
+:::warning Atenção!  
+A depreciação da versão de um conteúdo **não tem rollback**.
+:::
+
+**Passo 1.** No Estúdio em que o Plugin está, clique na seção de Plugin e selecione o Plugin que você quer depreciar;
+
+**Passo 2.** Na Descrição do Plugin, clique no botão que indica a atual versão do Plugin;
+
+**Passo 3.** Você verá no lado esquerdo da tela o **'Histórico de Versões'**. Clique no botão **Mais Opções** ao lado da versão do Plugin que você quer depreciar e, em seguida, em **'Depreciar Versão'**;
+
+**Passo 4.** Preencha os seguintes campos:
+
+- O **motivo** da depreciação:
+    - Falta de manutenção;  
+    - Problemas de segurança;  
+    - Bugs;  
+    - Outros
+
+- O **slug** e a **versão** do Plugin que você quer remover.
+
+Para continuar, clique no botão **'Depreciar Plugin'**.
+
+Pronto, você depreciou uma versão do Plugin.
+
+## **Deletar a versão de um Plugin**
+
+:::tip Dica!
+Quando há somente **uma versão** de um Plugin publicada e ela é deletada, o Plugin **também é deletado**. Ou seja, se você quiser deletar totalmente um Plugin, você precisa deletar todas as versões publicadas dele.
+:::
+
+Para fazer a deleção, é preciso seguir as regras:  
+
+1. A versão do Plugin não pode estar sendo usada ou associada em nenhuma Stack;
+2. Ter um perfil com permissão de remoção de conteúdo.
+
+:::caution Cuidado!
+A deleção da versão de um conteúdo **não tem rollback**. Mas caso você queira o conteúdo novamente, é possível criar a mesma versão deletada ou continuar gerando uma nova versão dele.
+:::
+
+Para deletar a versão de um Plugin em um Estúdio, entre no Portal da StackSpot EDP e siga os passos:
+
+**Passo 1.** Dentro do seu Estúdio, clique na seção de Plugin e acesse o Plugin que você quer deletar;
+
+**Passo 2.** No lado esquerdo da tela do Plugin, clique no botão que indica a versão atual do Plugin;
+
+**Passo 3.** Você verá o **'Histórico de Versões'** . Clique no botão **Mais Opções** ao lado da **versão do Plugin** que você quer deletar.
+
+**Passo 4.** Clique no botão **'Deletar Plugin'** e preencha o seguinte campo:  
+
+- O **slug** e a **versão** da Stack que você quer deletar.
+
+Para continuar, clique no botão **'Deletar Plugin'**.
+
+Pronto, você deletou uma versão do Plugin.

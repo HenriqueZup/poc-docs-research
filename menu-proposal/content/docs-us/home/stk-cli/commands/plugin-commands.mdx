@@ -1,0 +1,477 @@
+---
+title: Plugin Commands
+sidebar_position: 3
+description: List of commands to manage Plugins.
+---
+
+> In this section, you will learn more about the Plugin's commands.
+
+<br/>
+
+>Command | Description
+>--------- | ------
+>[**stk add plugin**](#stk-add-plugin) | Add a Plugin to a Stack or Starter.
+>[**stk apply plugin**](#stk-apply-plugin) | Applies a Plugin that adds new capabilities to an application.
+>[**stk create plugin**](#stk-create-plugin) | Allows you to create new Plugins for StackSpot.
+>[**stk list plugin**](#stk-list-plugin) | Lists all Plugins within a Workspace.
+>[**stk publish plugin**](#stk-publish-plugin) | Publish your Plugin on StackSpot.
+>[**stk remove plugin**](#stk-remove-plugin) | Removes Infrastructure Plugins from your application or infrastructure manifest.
+>[**stk show plugin**](#stk-show-plugin) | It displays the details of a specific version of the Plugin or the latest version.
+>[**stk test plugin**](#stk-test-plugin) | Executes the Plugin's test cases.
+>[**stk update plugin**](#stk-update-plugin) | Updates Infrastructure Plugins applied to Applications and Infrastructures in your Workspace.
+>[**stk fork plugin**](#stk-fork-plugin) | Makes a Terraform copy of a specific Infrastructure Plugin.
+>[**stk unfork plugin**](#stk-unfork-plugin) | Reverts the fork of a Plugin.
+>[**stk validate plugin**](#stk-validate-plugin) | Validates the structure of your Plugin.
+
+### **stk add plugin**
+
+The **`stk add plugin`** command adds a Plugin to a Stack or Starter.
+
+#### **Usage**
+
+Run the command inside a Stack or Starter folder:
+
+```bash
+stk add plugin [STUDIO-SLUG]/[STACK-NAME-AND-VERSION]/[PLUGIN-NAME]
+```
+
+Example:
+
+```bash
+stk add plugin techwriter-studio/documentation-stack@1.0.0/react-page-plugin
+```
+
+#### **Parameters**
+
+| **Options** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-o`, `--target` | The `-o`, `--target` option defines the path of the Stack or Starter directory where the Plugin will be added. Otherwise, the command must be executed within the Stack or Starter folder.  |  <pre>stk add plugin my-studio/my-stack@1.0.0/my-plugin --target home/user/Applications/my-other-stack </pre> |
+| `-op`, `--optional TEXT`| Fill in to indicate whether the Plugin will be optional or mandatory in the Starter. Use 'true' for optional and 'false' for mandatory. | <pre>stk add plugin my-studio/my-stack@1.0.0/my-plugin --optional false</pre> |
+| `-q`,`--non-interactive` | Does not ask the user for input parameters, returning an error if any mandatory parameter has not been provided. | <pre>stk add plugin studio/stack/plugin --non-interactive</pre> |
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk add plugin --help</pre> |
+
+___
+
+### **stk apply plugin**
+
+The **`stk apply plugin`** command applies a Plugin that adds new capabilities to an Application or new resources to an Infrastructure.
+
+#### **Usage**
+
+```bash
+stk apply plugin [NAME_OR_PATH]
+```
+
+#### **Parameters**
+
+| **Options** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `NAME_OR_PATH` | The name or path of the Plugin folder that will be applied. The Plugin name must follow the following formats:<br/>1. `<studio>/<plugin-name>[@plugin-version]:` Applies a Plugin without using a context. This format can only be used when there is no active Workspace.<br/>2. `<studio>/<stack>[@stack-version]/<plugin-name>`: Apply a Plugin using a context defined for the Plugin in your Stack. This format uses an active Workspace.| Plugin path: <pre>stk apply plugin '/Users/my-username/plugins-folder/my-plugin'</pre><br/>Without Workspace: <pre>stk apply plugin studio/plugin@1.0.0</pre><br/>With Workspace active: <pre>stk apply plugin studio/stack@1.0.0/plugin-name</pre> |
+| `--deploy -stk_env` | **Option to apply an Infrastructure Plugin locally**. When specifying the local path of the Infrastructure Plugin, use the `--deploy -stk_env` option and the environment name to obtain the Connections Interfaces data from your Workspace to render the Plugin files. You need to have an active Workspace. [**For more information, see how to apply an Infrastructure Plugin**](create-use/create-content/plugin/create-plugin.md#step-61-apply-infrastructure-plugin)| <pre>stk apply plugin path-to-my-plugin-folder --deploy --stk_env environment-name</pre>|
+| `-s or --skip-warning` | Disables the warning displayed when the Plugin is applied outside of an application created with StackSpot. | <pre>stk apply plugin account/studio/plugin@1.0.0 --skip-warning</pre> |
+| `-ar`, `--automatic-apply-requirements` | Ignores the warning about applying required Plugins and continues with the automatic application of Plugins. | <pre>stk apply plugin account/studio/plugin@1.0.0 --automatic-apply-requirements</pre> |
+| `-i, --inputs-json` | Input parameters in JSON format. Inputs need to be passed in standard JSON between single quotes. | <pre>stk apply plugin studio/stack/plugin --inputs-json '\{"input1_name": "Input 1 value", "input2_name": "Input 2 value"}'</pre> |
+| `-q`,`--non-interactive` | Does not ask the user for input parameters, returning an error if any required parameter has not been provided. | <pre>stk apply plugin studio/stack/plugin --non-interactive</pre> In this case, if some input or necessary item like Connection Interface is not informed the user is informed of an error and no questions will be asked.|
+|`-a`, `--alias` | Alternative name for the Plugin. The alias must start and end with lowercase letters or numbers. It can only have lowercase letters, numbers, and the special hyphen character `-`. Example: valid-name123 | <pre>stk apply plugin account/studio/plugin@1.0.0 --alias my-plugin3-alias</pre> |
+| `-c`, `--connections` | Inform the required and generated Connections. Connections must follow the pattern: `[{"alias": "<conn-alias>", "selected": "<selected-conn>"}]` | <pre>stk apply plugin studio/stack/plugin --connections '[\{"alias": "conn-alias", "selected": "selected-conn"}, \{"alias": "another-conn-alias" , "selected": "another-selected-conn"}]'</pre> |
+| `-sp`, `--spec PATH` | Path to the specification file containing the input data and connections for the Plugin to be applied.      |  <pre>stk apply plugin --spec Documents/spec-apply-plugin.yaml</pre> [**For more information, see the spec files documentation**](create-use/create-content/yaml-files/spec-file.md).  |
+| `-f`, `--fork` | When using Forked Plugins, specify the name of the Plugin (alias) that will be used. | <pre>stk apply plugin studio/stack@1.0.0/plugin-name --deploy --stk_env development --fork plugin-forked-name-alias123</pre> |
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk apply plugin --help</pre> |
+
+___
+
+### **stk create plugin**
+
+The **`stk create plugin`** command allows you to create new Plugins for StackSpot.
+
+When you run the command in the terminal, you choose the type of plugin you want to create, and a folder is generated with the structure to create the Plugin. The user must edit the **`plugin.yaml`** file and configure the Plugin's input parameters.
+
+:::tip
+
+The `-o`, `--target` option allows you to define a different folder name to create the Plugin content. If the folder does not exist, it will be created.
+
+If you do not use the `-o` or `--target` option, the Plugin content folder name will be the same as the one you gave when creating your Plugin.
+
+::: 
+
+#### **Usage**
+
+```bash
+stk create plugin [NAME]
+```
+
+#### **Parameters**
+
+| **Options** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-d`, `--description` | Text describing the Plugin and its purpose. Write the text in quotes to use spaces in the description. | <pre>stk create plugin my-plugin --description "Plugin description"</pre> |
+| `-v`, `--version` | Adds the Plugin version. It is one of the requirements to publish the Plugin | <pre>stk create plugin my-plugin --version 1.0.0</pre> |
+| `-t`, `--type` | Type of Plugin that will be created. Possible values are **app** or **infra**. | <pre>stk create plugin my-plugin --type app</pre> |
+| `-j`, `--justification` | Text with the justification for publishing Plugins in accounts with governance enabled. | <pre>stk create plugin my-plugin --type app --justification "Text with publishing justification of Plugin"</pre> |
+| `-r`, `--remote` | The Git URL to set as the source of the plugin repository. Required when NAME is not provided, in which case NAME will be set to the name of the Git repository. | <pre>stk create plugin --remote my-url-git-repository</pre> |
+| `-sgi`, `--skip-git-init` | Use to not launch a Git repository in the Plugin folder. | <pre>stk create plugin my-plugin-name --skip-git-init</pre> |
+| `-q`, `--non-interactive` | The command does not ask for missing inputs. Returning an error when required inputs are not provided. | <pre>stk create plugin my-plugin --non-interactive</pre> |  
+| `-st`, `source-type TEXT` | File format used to automatically generate Infrastructure Plugins. Accepted formats: `terraform`. | <pre>stk create plugin plugin-infra-legacy --type infra --source-type terraform --source-path localUser/Documents/infra-iac</pre> |
+| `-sp`, `source-path TEXT` | Path to folder with Terraform files. | <pre>stk create plugin plugin-infra-legacy --type infra --source-type terraform --source-path localUser/Documents/infra-iac</pre> |
+| `-o`, `--target` | The `-o`, `--target` option allows you to define a different folder name to create the Plugin content. If the folder does not exist, it will be created. If you do not use the `-o` or `--target` option, the Plugin content folder name will be the same as the one you gave when creating your Plugin. | <pre>stk create plugin my-plugin --type app --target home/user/Dev-Plugins/my-plugin </pre>|
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk create plugin --help</pre> |
+___
+
+### **stk list plugin**
+
+The **`stk list plugin`** command lists the Plugins. You have two options:
+
+1. List Plugins from a Workspace. In this case, you must be inside a Workspace. To do this, execute the command [**stk use workspace**](home/stk-cli/commands/workspace-commands.md#stk-use-workspace) before listing the Plugins.
+
+2. List Plugins outside of a Workspace. You need to specify the Studio here, but it does not show the Stacks.
+
+> You can access the Plugin's name, type, description, and version. It also notifies you if there is a Plugin deprecated with the `'deprecated'` tag.
+
+#### **Usage**
+
+```bash
+stk list plugin
+```
+
+#### **Parameters**
+
+| **Options** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-stu`, `--studio` | Filters and displays the list of Plugins by Studio | <pre>stk list plugin --studio studio-name</pre> |
+| `-sta`, `--stack` | Filter and display the list of Plugins by Stack | <pre>stk list plugin --stack stack-name</pre>|
+| `-t`, `--type` | Type of Plugin that will be displayed. Possible values are **app** or **infra**. | <pre>stk list plugin --type app` or `stk list plugin --type infra</pre> |
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk list plugin --help</pre> |
+___
+
+### **stk publish plugin**
+
+The **`stk publish`** command publishes your Plugin on StackSpot.
+
+:::warning
+
+[Files listed in **`.stkignore`** **will not be published to StackSpot**](create-use/create-content/yaml-files/stkignore.md), but will be added by Git commits as normal. They are not ignored in **`.gitignore`**.
+
+:::
+
+#### **Usage**
+
+```bash
+stk publish plugin --studio [TEXT]
+```
+
+#### **Parameters**
+
+| **Options** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-s`, `--studio` | Name of the Studio where you want to publish the Plugin. | <pre>stk publish plugin --studio my-studio-name</pre> |
+| `-v`, `--verbose` | Displays publishing steps in detail. | <pre>stk publish plugin --verbose</pre> |
+| `--justification` | Insert the text justifying the use of the Plugin for Studios that have governance enabled. | <pre>stk publish plugin --studio my-studio-name --justification "my justification text"</pre> |
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk publish plugin --help</pre> |
+___
+
+### **stk remove plugin**
+
+The **`stk remove plugin`** command removes **infra** Plugins type from the manifest of the Application or Infrastructure. It can be interactive or not.
+
+Before running the command, you must:
+
+1. Log in to your account using the [**stk login**](home/stk-cli/commands/general-commands.md#stk-login) command.
+2. Run the command inside your **app** or **infra** Plugin folder.
+
+#### **Usage**
+
+**Syntax**
+
+```bash
+stk remove plugin [PLUGIN-ALIAS]
+```
+
+**Example**
+
+```bash
+stk remove plugin my-plugin-alias
+```
+
+:::danger
+
+- The Plugin alias **is not mandatory** to be added to the command.
+- If you do not specify the name of the Plugin, the CLI will search the manifest for existing Plugins and show all available options for removal.
+- **The Plugin being removed may have dependencies, but no other Plugin may depend on it**.
+
+:::
+
+#### **Parameters**
+
+| **Options** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-q`, `--non-interactive` | Does not ask for input parameters if you do not provide any. | <pre>stk remove plugin my-plugin-alias --non-interactive</pre> |
+| `-s`, `--skip-warning` | Disables the warning displayed when the Plugin is removed from the application manifest. | <pre>stk remove plugin my-plugin-alias --skip-warning</pre> |
+| `-a`, `--all` | Remove all applied **infra** Plugins type from a Application or Infrastructure. | <pre>stk remove plugin --all</pre> |
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk remove plugin --help</pre> |
+___
+
+### **stk show plugin**
+
+The **`stk show plugin`** displays the details of a specific version of the Plugin or the latest version.
+It is not mandatory to use parameters; when executing the command, it already asks for the Studio, Plugin, and version, regardless of whether you are in a Workspace or not.
+
+To view Plugin data as:
+
+- Plugin details (Studio, type, version, description, compatibility, technologies, repository, etc).
+- Inputs
+- Inputs-envs
+- Generated Connections
+- Required Connections
+- Required Plugins
+- Required Actions
+
+#### **Usage**
+
+**Syntax**
+
+- Example without parameters:
+
+```bash
+stk show plugin
+? Select a studio: example
+? Select a plugin: plugin-test
+? Select a plugin version: 1.0.0
+> Searching plugin details.
+```
+
+- Example with parameters:
+
+```bash
+stk show plugin [studio-slug]/[plugin-name][@version-number]
+```
+
+**Example**
+
+```bash
+stk show plugin my-studio/plugin-example@2.3.0
+```
+
+Or the latest version the Plugin:
+
+```bash
+stk show plugin my-studio/plugin-example
+```
+
+#### **Parameters**
+
+| **Options** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-ot`, `--output-type` | Specify the output type of Plugin data - list, tree, or all (both options). | <pre>stk show plugin my-studio/plugin-example -ot list</pre> |
+| `-otm`, `--output-table-mode` | Specify the table size of Plugin data - expanded or compact. | <pre>stk show plugin my-studio/plugin-example -otm expanded</pre> |
+| `-h`, `--help` | It displays the command help and exits. | <pre>stk show plugin --help</pre> |
+___
+
+### **stk test plugin**
+
+The **`stk test plugin`** command runs a Plugin's test cases. The command does not validate the Plugin structure.
+
+#### **Use**
+
+Inside your Plugin folder, run the command:
+
+```bash
+stk test plugin [test-case-name]
+```
+
+#### **Parameters**
+
+| **Options** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-m,`, `--mode` | Filter test cases by execution mode. Accepted values are `apply` and `deploy`. | Filter infrastructure plugin tests (deploy mode): <pre>stk test plugin --deploy mode</pre> |
+| `-v`, `--verbose` | Displays more details on test execution in the terminal. | <pre>stk test plugin my-test-001 -v</pre> |
+| `-h`, `--help` | Displays command help and exits. | <pre>stk test plugin --help</pre> |
+___
+
+### **stk update plugin**
+
+The **`stk update plugin`** command updates the Infrastructure Plugins applied to Applications and Infrastructures of a Workspace.
+
+#### **Use**
+
+Before updating a Plugin, access a Workspace running the  [**stk use workspace**](home/stk-cli/commands/workspace-commands.md) command.
+
+To update the Infrastructure Plugins of an Application or Infrastructure, enter the name of the Plugin and the new version of the Stack with the updated Plugin:
+
+```bash
+stk update plugin [PLUGIN_ALIAS] --to [STUDIO-SLUG]/[STACK-SLUG]@[SEMANTIC-VERSION]/[PLUGIN_ALIAS]
+```
+
+Example:
+
+Consider a 1.0.0 Stack version with the Infrastructure Plugin **`aws-sqs-plugin`** in the 2.0.0 version. A new version of this Plugin was published in a new Stack, resulting in the Plugin **`aws-sqs-plugin`** in version 2.0.1 and the Stack in version 1.0.1.
+
+To update the Infrastructure Plugin that an Application or Infrastructure in your Workspace uses, execute the command:
+
+```bash
+stk update plugin aws-sqs-plugin --to my-studio-slug/my-stack-slug@v1.0.1/aws-sqs-plugin
+```
+
+This way, the Application or Infrastructure will have the Infrastructure Plugin **`aws-sqs-plugin`** updated to the new version.
+
+:::tip
+
+- You can update the version of the Plugins from the current version used to any other major or minor version;
+- The Plugins update contains the context used in your Workspace, so the values defined in your Workspace will be filled in the updated Plugins;
+- You must fill in all required and generated inputs, inputs-envs, and connections if the values do not come from the Workspace context;
+- The Plugin's inputs, inputs-envs, and connections will be filled with the previous values, you can change them if you wish.
+
+:::
+
+#### **Parameters**
+
+| **Options** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-t`, `--to` | New version of the Infrastructure Plugin that will be updated in the Application or Infrastructure that uses it. | <pre>stk update plugin my-plugin-name --to my-studio-slug/my-stack-slug@1.1.0/my-plugin-name</pre> |
+| `-h`, `--help` | Displays command help and exits. | <pre>stk update plugin --help</pre> |
+___
+
+### **stk fork plugin**
+
+The **`stk fork plugin`** command makes a copy of an Infrastructure Plugin available for **Fork**. You can check the available Plugins using the command [**`stk show plugin`**](#stk-show-plugin) and have the autonomy to edit the Terraform files in the **templates-deploy** folder.
+
+Run the command on an Application or Infrastructure created with StackSpot. To unfork a Plugin, use the command [**`stk unfork plugin`**](#stk-unfork-plugin)
+
+#### **Usage**
+
+**Syntax**
+
+```bash
+stk fork plugin [OPTIONS]
+```
+
+**Example**
+
+To check the Plugins available for **Fork**, [**run the following command**](#stk-show-plugin):
+
+```bash
+stk show plugin
+```
+
+Run the command inside the folder of an Infrastructure created with StackSpot:
+
+```bash
+stk fork plugin
+```
+
+Or inform the parameter **`target`** to specify the folder where an Infrastructure created with StackSpot exists:
+
+```bash
+stk fork plugin --target user/home/Documents/sqs-app
+```
+
+:::danger
+
+When you fork an Infrastructure Plugin, your copy of the Terraform code loses the support related to the original published Plugin. You assume responsibility for any edits to the Terraform code from the fork.
+
+:::
+
+> To edit the Plugin and the Terraform code, access the following path: `{PATH_APP_OR_INFRA}/.stk/FORKED_PLUGINS/{plugin_alias}`
+
+Example:
+
+**`user/home/my-infrastructure/.stk/FORKED_PLUGINS/my-bucket-s3-logs-plugin`**
+
+> After making the changes, you must save and commit the changes to your project repository.
+
+#### **Parameters**
+
+| **Options** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-o`, `--target [TEXT]` | Path to the manifest of an Application or Infrastructure created in StackSpot, which has the Infrastructure Plugins you want to fork. If you do not provide the manifest path, the command will assume the manifest path is the current folder. | <pre>stk fork plugin --target user/home/Documents/sqs-app</pre>|
+| `-s`, `--skip_confirmation` | Confirms the fork without displaying the fork confirmation step message. | <pre>stk fork plugin --target user/home/Documents/sqs-app --skip_confirmation</pre>|
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk fork plugin --help</pre>|
+___
+
+### **stk unfork plugin**
+
+The **`stk unfork plugin`** command reverts the changes made by the [**`stk fork plugin`**](#stk-fork-plugin) command. A warning is displayed about deleting the fork folder of the Plugin that was selected to unfork.
+
+#### **Usage**
+
+**Syntax**
+
+```bash
+stk unfork plugin [OPTIONS]
+```
+
+**Example**
+
+Run the command to unfork a Plugin:
+
+```bash
+stk unfork plugin
+```
+
+A list will display all the Plugins that you have forked. You must select the desired Plugin and confirm the message for the **stk unfork** command to undo the changes and delete the fork folder of the selected Plugin.
+
+Or, enter the **`target`** parameter to specify the folder where the Infrastructure created with StackSpot exists:
+
+```bash
+stk unfork plugin --target user/home/Documents/sqs-app
+```
+
+> To confirm that the fork was reverted, check the folder where the Plugins are forked: `{PATH_APP_OR_INFRA}/.stk/FORKED_PLUGINS/{plugin_alias}`
+
+Example:
+
+**`user/home/my-infrastructure/.stk/FORKED_PLUGINS/my-bucket-s3-logs-plugin`**
+
+> After making the changes, you must save and commit the changes to your project repository. The project will return to using the original Plugins published on StackSpot.
+
+#### **Parameters**
+
+| **Options** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-o`, `--target [TEXT]` | Path to the manifest of an Application or Infrastructure created in StackSpot, which has the Infrastructure Plugins that you want to unfork. If you do not provide the manifest path, the command will list all the Plugins that were copied by the **stk fork plugin** command. | <pre>stk unfork plugin --target user/home/Documents/sqs-app</pre>|
+| `-s`, `--skip_confirmation` | Reverts the fork without displaying the fork deletion confirmation step message.| <pre>stk unfork plugin --target user/home/Documents/sqs-app --skip_confirmation</pre>|
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk unfork plugin --help</pre>|
+___
+
+### **stk validate plugin**
+
+To validate your Plugin, go to the Plugin folder and run the command. At the end of the command execution, it will display a message with the inconsistencies and the validation result.
+
+The command:
+
+- Validates the structure of your Plugin;
+- Remove empty folders;
+- Ignores files and folders that you don't want when you finish developing your Plugin;
+- Ignored files in your **`.gitignore`** file will not be validated.
+
+#### **Usage**
+
+```bash
+stk validate plugin --verbose --studio my_studio_slug
+```
+
+#### **Parameters**
+
+| **Options** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-v`, `--verbose` | Displays the details of all analyzed, validated, and ignored items of your Plugin. | <pre>stk validate plugin --verbose</pre> |
+| `-stu`, `--studio` STUDIO_SLUG | Studio slug used to validate Plugin information based on the Plugin version published in the Studio. [**See more details in breaking changes**](#breaking-changes-warning) | <pre>stk validate plugin --studio my_studio_slug</pre> |
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk validate plugin --help</pre> |
+
+#### **Breaking Changes warning**
+
+In StackSpot, a breaking change in Plugins or Actions is a modification that can break compatibility with previous versions. This means that after the update, Plugins or Actions that worked before may no longer function the same way or may require adjustments to operate correctly.
+
+Breaking changes are detected by the validation command when using the **`--studio`** parameter. In this case, you provide the Studio slug so that the validation compares the version of the Plugin you want to publish with the already published version. If any changes cause a compatibility break, a warning will be displayed in the terminal informing that the changes will result in a breaking change.
+
+The modification of the following parameters in the **`plugin.yaml`** file will cause a breaking change in your Plugin:
+
+- **SchemaVersion**: Changing the schema version;  
+- **Requires changes**: Changes in the items within the **`requires`** field;  
+- **Connections changes**: Changes in the Connection Interfaces;  
+- **Input change size**: Changes in the input size (text length, adding options, etc.);  
+- **Input type change**: Changing the input type;  
+- **Input condition change**: Changing the value of the conditional variable used in the **`condition`** option of an input;  
+- **Input sub-input change**: Any changes in inputs that are nested within other inputs, such as inputs that are items within a list or object.  
+- **AppAllowed change**: Changing the value of the **`AppAllowed`** option.  
+
+___

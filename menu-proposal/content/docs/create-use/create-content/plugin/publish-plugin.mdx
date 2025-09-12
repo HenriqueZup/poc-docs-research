@@ -1,0 +1,77 @@
+---
+title: Publicar Plugin
+description: Publicar e versionar Plugin na Plataforma.
+---
+
+> Nesta seção, você encontra um guia de como publicar um Plugin usando o STK CLI.
+
+<br/>
+
+Publicar na StackSpot significa armazenar e disponibilizar os conteúdos das Stacks, Plugins e Actions na plataforma da StackSpot para que outras pessoas desenvolvedoras possam usá-los. Você gerencia quem pode acessar o que você publica através das configurações de visibilidade do seu Estúdio.
+
+## **Publicar o seu Plugin no Portal**
+
+> Você somente pode utilizar seu Plugin depois de [**adicioná-lo em uma Stack**](create-use/create-content/stack/create-stack.mdx) e depois disso, [**adicionar essa Stack a um Workspace**](home/workspace/stacks-and-context/add-stacks.mdx).
+
+:::caution Cuidado!
+Para publicar um Plugin, confira se o Slug (Identificador) é único dentro do Estúdio. Não é possível ter mais de um Slug com a mesma identificação (seja de Stack, Plugin ou Action) em um Estúdio.
+:::
+
+### **Pré-requisitos**
+
+- [**STK CLI**](home/stk-cli/install.mdx).  
+- Já ter [**criado um Plugin**](create-use/create-content/plugin/create-plugin.mdx).
+- Ter acesso habilitado para publicação.
+
+:::danger Atenção!  
+
+Em alguns cenários não é possível publicar a versão de um Plugin que seja inferior ao range da MAJOR, porque isso quebra a compatibilidade da versão. Confira outras ações que **quebram a MAJOR** de um range:
+
+- Adição/Remoção de novas Connection Interfaces, tanto no atributo [**requires** quanto no de **generates**](create-use/create-content/yaml-files/spec-file.mdx).
+- Adição/Remoção de Plugins.
+- Remoção de inputs.
+- Adição de [**inputs required**](create-use/create-content/yaml-files/inputs.mdx) sem valor default. 
+
+
+:::
+
+Siga os passos:
+
+**Passo 1.** Abra o seu terminal e faça o login no STK CLI:
+
+```bash
+stk login
+```
+
+**Passo 2.** Ainda no terminal do STK CLI, execute o comando dentro da pasta local do Plugin. A sintaxe dele é:
+
+```bash
+stk publish plugin --studio studio-slug-name
+```
+
+Depois disso, o STK CLI valida os YAMLs e os arquivos na sua pasta.
+
+Confira alguns dados que são validados:
+
+- **`studio_slug`**: o Estúdio que está associado.  
+- **`plugin_name`**: nome do Plugin.  
+- **`version`**: se há uma versão válida do Plugin.
+
+O seu **`plugin.yaml`** só não pode ser validado quando:
+
+1. Apresentar inconsistências.
+2. A versão que você quer publicar já existir no Estúdio.
+3. Você não tiver permissão para publicação.
+4. O **`plugin.yaml`** não estiver dentro da pasta corrente.
+
+Pronto, seu Plugin está no Estúdio da StackSpot!
+
+:::caution Cuidado!
+
+Se você ainda não tem nenhum Estúdio para adicionar o seu Plugin, acesse [**o Portal da StackSpot EDP**](https://app.stackspot.com/login) para [**Criar um Estúdio e depois siga os passos**](create-use/studio/create-studio.mdx).
+:::
+
+## **Próximos passos**
+
+- Agora que você publicou o seu Plugin, é possível [**gerenciar**](home/account/organization/configure-context-account.mdx) as versões dele.
+- Também é possível [**Aplicar um Plugin**](home/stk-cli/commands/plugin-commands.mdx#stk-apply-plugin) que adiciona novas capacidades em uma Aplicação.

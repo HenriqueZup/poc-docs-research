@@ -1,0 +1,145 @@
+---
+title: "Configure Workflow Context"
+sidebar_position: 5
+description: Configure workflows context.
+sidebar_custom_props: 
+  icon: CircleChevronRight
+---
+
+> In this section, you will learn how to configure Workflow Contexts in a Workspace level.
+
+<br/>
+
+## **Requirements**
+
+- [**You must have Account Holder or Workspace Admin permission to proceed**](home/account/organization/access-management/roles.md ).
+
+## **Introduction**
+
+Workflows in StackSpot allow you to define the sequence in which [**Actions**](create-use/create-content/action/actions.md) are executed based on the **activities performed by developers in the StackSpot Portal**, such as creating an application (Create App). 
+
+In simpler terms, a Workflow specifies the Actions that occur **before** and **after** each process.
+
+You also have the option to configure **Workflows for specific Stacks**, allowing them to operate independently from the account's default Workflow. Learn more in the [**Create Workflow section.**](home/account/organization/workflow/configure-workflow.md)
+
+Workflows are configured within Stacks. However, StackSpot provides flexibility by allowing you to:
+
+1. Configure **default Workflows** for your entire Account, ensuring all newly created Stacks follow the same Workflow.
+2. Configure **Workflows for specific Stacks**, enabling them to operate independently of the account's default Workflow.
+
+For more details, refer to the [**Create Workflow section**](home/account/organization/workflow/configure-workflow.md).
+
+## **What is a Workflow Context?**
+
+In addition to creating Workflows, you can define **Contexts** for them. A Workflow Context allows you to set predefined input values for the Actions within a Workflow. These values can be:
+
+- **Mandatory:** Required and unchangeable.
+- **Suggested:** Predefined but editable by developers.
+
+By configuring Workflow Contexts, you can standardize and streamline processes, making it easier for developers to execute tasks without needing to configure inputs manually.
+
+## **What you will learn**
+
+In this section, you will learn:
+
+- What a Workflow Context is.
+- How to configure a Workflow Context in your Workspace.
+
+## **Workflow Context**
+
+A Workflow Context allows you to **predefine input values for Actions within a Workflow**. These values will be consistent for all users of the Workflow, whether they are **mandatory** or **suggested**.
+
+### **Levels of Workflow context configuration**
+
+You can configure Workflow Contexts at three levels:
+1. **Account**: Applies to all Workspaces and Stacks within the Account.
+2. **Stack in the Account**: Applies to specific Stacks within the Account.
+3. **Stack in the Workspace**: Applies to specific Stacks within a Workspace.
+
+### **Key Rules for Mandatory Inputs**
+- If an input is marked as **mandatory** at any level (Account, Stack, or Workspace), it **cannot be changed** at lower levels.
+- Inputs that are **not mandatory** can still be modified at lower levels.
+- If a Workspace Administrator sets an input as mandatory, all users in the Workspace must adhere to the mandatory inputs defined at the Account, Stack, and Workspace levels.
+
+---
+
+### **Steps to configure a Workflow context in a Workspace**
+
+Follow the steps below to configure a Workflow Context for **Create App** or **Create Infra** Workflows:
+
+**Step 1.** Log in to the StackSpot EDP Portal
+
+- [**Log in to the StackSpot EDP Portal**](https://app.stackspot.com/login).
+- Click on **'Workspaces'** and select the Workspace where you want to configure the Workflow Context.
+
+**Step 2.** Access the Workflows Section
+
+- In the left-side menu, click on **'Workflows'**.
+
+**Step 3.** Select the Workflow type
+
+- Within the **'Workflows'** section, choose the type of Workflow you want to configure:
+   - **Create App**
+   - **Create Infra**
+   - **Create API**
+- For this example, select either **Create App** or **Create Infra**.
+
+**Step 4.** Choose the Workflow
+
+- Select the specific Workflow you want to configure.
+
+![Screenshot of the StackSpot EDP Portal showing the Create App tab with two Workflows listed: Workflow 01 and Workflow Repo.](/img/workspace-setup-workflow-context-2.png)
+
+**Step 5.** Select the Stack
+
+- Choose the Stack for which you want to configure the input values for Actions.
+
+**Step 6.** Configure Input Values
+
+- Within the Stack page, locate the Action you want to configure and click the down arrow next to it.
+- You have two options for configuring input values:
+   - **Suggest a value**: Enter the desired value in the input field. This value will be prefilled but can be edited by users.
+   - **Make a value mandatory**: Enter the value and check the **'Mandatory'** checkbox. This ensures the value cannot be changed by users in the Workspace.
+
+:::info
+
+- Mandatory inputs ensure consistency across Workflows and cannot be overridden at lower levels.
+- Suggested inputs provide flexibility, allowing users to modify them as needed.
+
+:::
+By following these steps, you can effectively configure Workflow Contexts to streamline processes and maintain standardization across your Workspaces.
+
+<br/>
+
+![The image displays a screenshot of the StackSpot EDP Portal, specifically in the Workflow section, where a red square highlights an Input field labeled "App Name." Within this field, the text "Input Value" has been entered.](/img/workspace-setup-workflow-context-4.png)
+
+Repeat this process for all Inputs you wish to configure (except those already designated as Mandatory at the Account level). 
+
+**Step 7.** Click **'Save'** at the bottom of the page and confirm it. 
+
+You've configured a Workflow Context in a Stack in your Workspace. 
+
+### **Configure Create API Workflow Context**
+
+**Step 1.** [**Log in to the StackSpot EDP Portal**](https://app.stackspot.com/login) and click on **'Workspaces'**;
+
+**Step 2.** In the left side menu, click **'Workflows'**;  
+
+**Step 3.** Within the **'Workflows'** section, select the type of Workflow you want to configure: 
+
+- Create App; 
+- Create Infra;
+- Create API. 
+
+In this case, select **Create API**. 
+
+**Step 4.** Within the Workflow page, click the down arrow next to the Action you want to set up input values. You have two options:
+
+1. **Suggest a value:** Type the desired value into the field.
+2. **Make a value mandatory:** Enter the value and then check the **'Mandatory'** checkbox. This ensures that a Workspace utilizing this Stack cannot alter this value.
+
+Repeat this process for all Inputs you wish to configure (except those already designated as Mandatory at the Account level).  
+
+**Step 5.** Click **'Save'** at the bottom of the page and confirm it. 
+
+You've configured a Workflow Context to Create an API in your Workspace. 

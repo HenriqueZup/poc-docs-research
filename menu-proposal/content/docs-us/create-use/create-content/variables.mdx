@@ -1,0 +1,198 @@
+---
+title: Variables
+---
+
+## **About Variables**
+
+Variables in StackSpot store and reuse non-sensitive configuration information. They can store any configuration data, such as username, environment name, and project name, and can be used as input values for parameters or templates in Plugins, Actions, and Declarative Hooks.
+
+:::danger
+
+**Do not use sensitive data in your variables**. For sensitive information such as passwords, consider [**using the `password` input type**](create-use/create-content/yaml-files/inputs.md#input-of-type-password) or an external credential storage service.
+
+:::
+
+Variables in StackSpot are interpolated during various actions including applying Plugins, running Actions, Workflow, and Declarative Hooks, creating Applications and Infrastructure, and performing deployments. These actions can create, read, and modify variable values. However, variables defined in a Context within an Account or Workspace cannot be modified.
+
+See below the syntax of a variable:
+
+- Prefix **`var.`**: Always start with **`var.`** in lowercase.
+- Suffix **`VARIABLE_NAME`**: The variable name should not contain spaces. Replace spaces with an **underscore**. Use only uppercase letters.
+- Declare within a JINJA expression using double curly braces "**`{{ var.VARIABLE_NAME }}`**" for text type inputs, use **`var.VARIABLE_NAME`** as the value for other types of input.
+
+If the user has an **`Account Admin`** profile or higher, they can create variables at the account level. There is also the option to use the default variables automatically defined by StackSpot. Check out each one below.
+
+### **Account Variables**
+
+Account variables are created and managed only at the Account level. Their name and value can be defined. If the value is defined, then this variable has an Account context, and this context (value) may or may not be mandatory. To create variables, [**access the guide to create Account variables**](home/account/organization/variables/create-variables.md).
+
+:::tip About Context
+
+An Account variable can have its value pre-configured and be available for your Account or Workspace by setting up a Context. To learn more about configuring the Context, visit the following pages:
+
+- [**How to configure context in your Account**](home/account/organization/configure-context-account.md).
+- [**How to configure context in a Workspace**](home/workspace/stacks-and-context/setup-context.md).
+
+:::
+
+### **StackSpot Variables**
+
+You **cannot rename** the StackSpot variables and their values are automatically defined. Below is the list of available variables:
+
+:::danger
+
+These variables **are not interpolated** in Plugin templates during the deployment of an Application or Infrastructure, except for the following variables:
+
+- **`{{ var.STK_ENV }}`**: The environment name.
+- **`{{ var.STK_ENV_ID }}`**: retrieves the environment ID.
+
+:::
+
+- **`{{ var.STK_PROJECT_NAME }}`**: The project name;
+- **`{{ var.STK_STACK }}`**: The name and version of the Stack used (`stack-name@stack-semantic-version`);
+- **`{{ var.STK_STUDIO }}`**: The Studio name;
+- **`{{ var.STK_WORKSPACE }}`**: The Workspace name;
+- **`{{ var.STK_MANIFEST_TYPE }}`**: The manifest type (app or infra);
+- **`{{ var.STK_PLUGIN_TYPE }}`**: The Plugin type (app or infra);
+- **`{{ var.STK_PLUGIN_NAME }}`**: The Plugin name;
+- **`{{ var.STK_PLUGIN_VERSION }}`**: The Plugin version used;
+- **`{{ var.STK_PLUGIN_QUALIFIER }}`**: The Plugin qualifier (`studio/stack@stack-semantic-version/plugin@plugin-semantic-version`);
+- **`{{ var.STK_ACCOUNT_NAME }}`**: The account slug used.
+- **`{{ var.STK_USERNAME }}`**: The username.
+- **`{{ var.STK_EMAIL }}`**: The user's email.
+
+## **Using Variables**
+
+When creating Plugins and Actions, use variables in their respective **`.yaml`** files or files within the **templates** folder. Additionally, leverage variables to craft Applications and Infrastructures within the StackSpot Portal. For more information, access the guide on [**how to fill inputs via Portal**](create-use/use-content/configure-inputs.md).
+
+Check out the examples below on how to use variables in your project.
+
+### **Filling Input Values with Variables in STK CLI**
+
+When interacting with **any text input** in the terminal, whether applying a Plugin, running an Action, or creating Applications and Infrastructure, you can fill the field with a variable available in your Account or Workspace. To do this, type two consecutive curly braces "**`{{`**" while filling the field.
+
+A list of variables will appear:
+
+- Variable name and its current value in parentheses "**`(  )`**".
+- All StackSpot variables are registered in your Account.
+- All Account variables are registered for your Workspace and Account.  
+
+You can also directly fill in the value while adding a text input or set the variable as the default value for the input. Consider the following example that adds a text input in a Plugin using an Account variable and a StackSpot variable:
+
+```yaml title="Example of text inputs filled with variables"
+schema-version: v3
+kind: plugin
+metadata:
+  name: use-variables-values
+  display-name: use-variables-values
+  description: Using the variables as input values.
+  version: 2.0.0
+spec:
+  type: app
+  compatibility:
+    - python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  single-use: False
+  technologies: # Ref: https://docs.stackspot.com/create-use/create-content/yaml-files/plugin-yaml/#technologies-1
+    - Api
+  stk-projects-only: false
+  // new-line-start
+  inputs:
+    - label: Type the name of your resource
+      name: resource
+      type: text
+      required: true
+      default: "{{ var.RESOURCE_DEFAULT }}" 
+    - label: Type your project name
+      name: project
+      type: text
+      required: true
+      default: "{{ var.STK_PROJECT_NAME }}"
+  // new-line-end      
+```
+
+:::danger
+
+- Use variables only in **text inputs**.
+- In the input value, whenever you use a variable, only add it in **String** format with double quotes.
+- As in the previous example, you can use a variable within the **`default`** field.
+- [**Declare StackSpot variables exactly as listed above**](#stackspot-variables).
+- The value saved in the **`.yaml`** manifest will be the variable name, identified by **`{{ var.NAME }}`**.
+- The value interpolated in the template will be the value of the variable, captured in the input of type **`text`**.
+
+:::
+
+### **Filling input values with variables via input flag parameter**
+
+Inputs can be filled directly in the terminal by specifying the input name and value in the **`--inputs-json`** parameter of the [**`stk run action`**](home/stk-cli/commands/action-commands.md#stk-run-action) and [**`stk apply plugin`**](home/stk-cli/commands/plugin-commands.md#stk-apply-plugin) commands.
+
+Check the JSON format syntax for the **`-i, ou --inputs-json`** parameter:
+
+```json
+--inputs-json '{"input_name": "{{ var.VARIABLE_NAME }}"}'
+```
+
+Examples:
+
+```bash
+stk run action studio-name/stack-name@1.0.0/action-name --inputs-json '{“input_name”: “{{ var.MY_VAR }}” }'
+```
+
+```bash
+stk apply plugin studio-slug/stack-slug@1.0.0/plugin-name --inputs-json '{“input_name”: “{{ var.MY_OTHER_VAR }}” }'
+```
+
+Or use the input name as a parameter and then inform the value:
+
+```bash
+stk run action studio-name/stack-name@1.0.0/action-name --input_name: var.MY_VAR
+```
+
+```bash
+stk apply plugin studio-slug/stack-slug@1.0.0/plugin-name --input_name: var.MY_OTHER_VAR
+```
+
+:::danger
+
+- Use variables only in **text inputs**.
+- In the input value, whenever you use a variable, only add it in **String** format with double quotes.
+- As in the previous example, you can use a variable within the **`default`** field.
+- [**Declare StackSpot variables exactly as listed above**](#stackspot-variables).
+- The value saved in the **`.yaml`** manifest will be the variable name, identified by **`{{ var.NAME }}`**.
+- The value interpolated in the template will be the value of the variable, captured in the input of type **`text`**.
+
+:::
+
+### **Using StackSpot variables in your template with JINJA**
+
+```yaml
+- {{ var.STK_PROJECT_NAME }} # list your project name
+- {{ var.STK_STACK }} # list your Stack version and name
+- {{ var.STK_STUDIO }} # list your Studio name
+- {{ var.STK_WORKSPACE }} # list your Workspace name
+```
+
+#### **Using Account variables**
+
+To use Account variables, declare the variables created in your Account in your **Plugins and Actions** templates using the following JINJA expression:
+
+````yaml
+{{ var.ACCOUNT_NAME }}
+````
+
+### **Using StackSpot and Account variables in Python `scripts.py` for Actions**
+
+To access variables in a Python Action script or a Declarative Hook of type [**`run-script`**](create-use/create-content/declarative-hooks/run-script.md), and use the **`metadata`** object available in the STK CLI. [**For more details on using this object in Python scripts, check the 'Metadata' section**](create-use/create-content/yaml-files/metadata.md).
+
+```py title="Python script using variables"
+from templateframework.metadata import Metadata
+
+def run(metadata: Metadata = None):
+  print('# list your project name', metadata.inputs['var']['STK_PROJECT_NAME'])
+  print('# list your Stack name', metadata.inputs['var']['STK_STACK'])
+  print('# list your Studio name', metadata.inputs['var']['STK_STUDIO'])
+  print('# list your Workspace name', metadata.inputs['var']['STK_WORKSPACE'])
+  print('# list your Context value', metadata.inputs['var']['ACCOUNT_NAME'])
+```

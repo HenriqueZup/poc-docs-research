@@ -1,0 +1,119 @@
+---
+title: run-script
+---
+
+> In this section, you will find reference of a Declarative Hook of the type run-script.
+
+<br/>
+
+The Declarative Hooks of the **`run-script`** type are used to run Python scripts inside a **`plugin.yaml`** or **`template.yaml`** file. Check below an example of a Declarative Hook of type **`run-script`**:  
+
+```yaml 
+hooks:
+  - type: run-script
+    trigger: before-render
+    script: path/to/script.py
+```
+
+The **`script`** attribute sets the path where the script to be executed is in the Template/Plugin's file structure.
+
+:::caution
+The script to be executed must be outside the **`templates`** folder of the Plugin/Template to not be interpolated.
+:::
+
+It is common to expect that a function named **`run`** is defined in this script. This function receives as a parameter an object from the **Metadata** class (**`class Metadata`**) of the template framework, and that returns a Metadata, which can be the same received or another created by the function.  
+
+### **Metadata**
+
+When **`run-script`** is executed and exported using a **Metadata** class, you may check a structure like the one in the example below:
+
+```python
+from templateframework.metadata import Metadata
+
+def run(metadata: Metadata = None):
+    all_inputs = metadata.all_inputs()
+    inputs_local = metadata.inputs
+    inputs_global = metadata.global_inputs
+    inputs_envs = metadata.inputs_envs
+    inputs_computed = metadata.computed_inputs
+    inputs_global_computed = metadata.global_computed_inputs
+```
+
+Check the description of each item in the class:
+
+- **`all_inputs = metadata.all_inputs()`**: Returns all the processed inputs of the Plugin/Template;  
+- **`inputs_local = metadata.inputs`**: This is the input dictionary;  
+- **`inputs_global = metadata.global_inputs`**: Dictionary of global inputs;
+- **`inputs_envs = metadata.inputs_envs`**: Dictionary of envs inputs;
+- **`inputs_computed = metadata.computed_inputs`**: Dictionary of computed inputs
+- **`inputs_global_computed = metadata.global_computed_inputs`**: Dictionary of global computed inputs.
+
+Check below a simple example of a script definition, which can be executed as a Declarative Hook:
+
+```python
+from templateframework.metadata import Metadata
+def run(metadata: Metadata = None):
+    print("Hello from script.py!")
+    return metadata
+```
+
+In the script, you can use the Python 3.8 standard library and the extra libraries that are STK CLI dependencies. Check below some that are included:  
+
+- [**Requests**](https://docs.python-requests.org/en/latest/).
+- [**Questionary**](https://questionary.readthedocs.io/en/stable/).
+
+## **Available Actions**
+
+### **`trigger:`**   
+Field to set triggers that tell you when the execution of a Python script should occur.  
+
+**`before-input`**:   
+Runs the script before receiving the input parameters from the user person.
+
+```yaml 
+trigger: before-input
+```   
+
+**`before-render`**:   
+Runs the script before the Template generates files in the project. 
+
+```yaml 
+trigger: before-render
+```  
+
+**`after-render`**:   
+Runs the script after the Template generates files in the project. 
+
+```yaml 
+trigger: after-render
+```
+___
+### **`script:`** 
+Defines the path of the Python script that will be executed.
+
+```yaml 
+script: path/to/script.py
+```
+
+:::caution
+The script to be executed must be outside the **`templates`** folder of the Plugin/Template to not be interpolated.
+:::
+___
+
+For **`run-script`** to execute a Python script, the script needs to be defined with:  
+
+- A function with the name **`run`**.  
+- The **`run`** function must receive an object from the Metadata class of the templateframework as a parameter.
+- On return, the function should return metadata. It can be the same metadata received or another one created by the function.
+
+#### **Example of `run` function in Python script**
+
+```python
+from templateframework.metadata import Metadata
+def run(metadata: Metadata = None):
+    print("Hello from script.py!")
+    return metadata
+```
+
+> In the script is available for use in the Python 3.8 standard library, and the [**Requests**](https://docs.python-requests.org/en/latest/) and [**Questionary**](https://questionary.readthedocs.io/en/stable/) libraries available as dependencies on the STK CLI.  
+

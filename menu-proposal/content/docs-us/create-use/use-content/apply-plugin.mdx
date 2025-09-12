@@ -1,0 +1,80 @@
+---
+title: Apply a Plugin
+description: Rules to apply a Plugin.
+---
+
+### **Usage of Plugins and Starters**
+
+In StackSpot EDP, the concept of a Starter simplifies using plugins together. A Starter is like a "ready-made recipe" combining pre-configured Plugins to meet a specific use case. It allows developers to quickly create Applications or Infrastructures without configuring each Plugin.
+
+### **What are qualifiers?** 
+
+To apply for a Plugin, you must use a qualifier that uniquely identifies the Plugin. There are two types of qualifiers:
+
+**1. Studio Qualifier.** Used when you apply the Plugin outside of a Workspace.
+
+```bash
+
+<studio-name>/<plugin-name>@<version>
+
+```
+
+Example: **`my-studio/auth-plugin@1.0.0`** 
+
+**2. Stack Qualifier.** Used when you apply the Plugin within a Workspace.
+
+```bash
+
+<studio-name>/<stack-name>@<version>/<plugin-name>
+
+```
+
+Example: **`my-studio/my-stack@1.0.0/auth-plugin`**
+
+## **How to use a Plugin**
+
+StackSpot Plugins can be used in two ways:
+
+**Option 1. Individually:** applying a single Plugin with the command:
+
+```bash
+stk apply plugin <qualifier>
+```
+
+**Option 2. Together:** applying a set of Plugins when creating an Application or Infrastructure with the following commands:
+
+```bash
+stk create app <app-name> --starter <starter-name>
+```
+
+```bash
+stk create infra <infra-name> --starter <starter-name>
+```
+
+### **StackSpot YAML (stk.yaml)**
+
+Whenever you apply a Plugin, either individually or in combination, StackSpot generates or updates a file named **stk.yaml** in the directory where you run the command. This file shows the current state of StackSpot and primarily manages the deployment flow along with other important functions.
+
+:::danger
+
+You cannot manually edit the **`stk.yaml`** file of an Application or Infrastructure should. You can modify the Plugins in your Application or Infrastructure. To do so, use the following commands:
+
+- To modify the version or settings of a Plugin:
+
+```bash
+stk update plugin
+```
+
+- To remove a Plugin:
+
+```bash
+stk remove plugin
+```
+
+- To add new features to your project:
+
+```bash
+stk apply plugin
+```
+
+:::

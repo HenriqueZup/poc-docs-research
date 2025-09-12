@@ -1,0 +1,124 @@
+---
+title: Arquivamento de Stack
+description: Entenda as regras de arquivamento de Stack na StackSpot.
+---
+
+## **Introdução**
+
+Na StackSpot EDP, o arquivamento de Stack é usado quando você necessita interromper o uso, ocultar ou remover uma versão da Stack. Isso pode ocorrer por motivos de segurança, conformidade (compliance) ou para melhorar a eficiência na gestão.
+
+Os níveis de descontinuação deste tipo de conteúdo no Portal da StackSpot EDP são organizados da seguinte forma:
+
+1. [**Depreciação do conteúdo**](create-use/studio/deprecate-unpublish-delete.mdx) e aviso de descontinuação;  
+2. Arquivamento e restrição de uso em uma nova ação;  
+3. [**Deleção**](create-use/studio/deprecate-unpublish-delete.mdx): remoção completa da StackSpot EDP.  
+
+<br/>
+
+Quando a versão de uma Stack é arquivada, não há impacto no conteúdo publicado nela e no que com ela foi criado (Aplicações e Infraestruturas), mas algumas restrições são feitas. Confira os detalhes na tabela a seguir:
+
+| **Ação** | **Após o arquivamento** | 
+|---| ---|
+| Uso no primeiro deploy (por ambiente) dos Plugins de Infra que fazem parte da versão arquivada da Stack. | ❌ |
+| Uso em redeploys (por ambiente) dos Plugins de Infra que fazem parte da versão arquivada da Stack. | ✔️ |
+|  Visível no Portal da StackSpot EDP e no CLI.  |  ❌  |
+|  Uso na criação ou atualização de novas Aplicações ou Infraestruturas.  |  ❌  |
+|  Apply de Plugin ou Action.  |  ❌  |
+|  Uso no Workflow STK.  |  ❌  |
+|  Criação de uma nova versão de Stack a partir de uma versão arquivada dela.  |  ✔️  |
+|  Atualização de documentação de Stacks.  |  ✔️  |
+
+> Ao arquivar uma Stack, ela **não pode mais ser usada em novas criações**, mas continua funcionando normalmente em tudo o que já foi criado e implantado com a Stack arquivada.
+
+## **Passo a passo**
+
+No Arquivamento de uma Stack, também é possível Arquivar uma versão de Stack que já está previamente Depreciada na StackSpot EDP.
+
+Com base nos níveis de descontinuação de conteúdos no Portal da StackSpot EDP, antes de arquivar uma Stack, é preciso depreciá-la. Para isso, siga os passos a seguir:
+
+
+#### **Opção 1:** Por meio do Gerenciador de Versões
+
+**Passo 1.** Acesse o seu Estúdio e, em seguida, clique na Stack;
+
+**Passo 2.** Na linha da versão da Stack que você quer depreciar e arquivar, clique no botão **'Mais opções'**;
+
+**Passo 3.** Agora clique no botão **'Gerenciar versão'** e, em seguida, clique no botão **'Mais opções'**;
+
+**Passo 4.** Clique no botão **'Depreciar versão da Stack'**;
+
+**Passo 5.** Preencha os campos a seguir:
+
+- Selecione um **motivo** para a depreciação:
+    - Falta de manutenção
+    - Falta de segurança
+    - Bugs
+    - Outros
+
+Em **'Arquivar versão da Stack selecionada'**, clique na caixa de seleção **'Também gostaria de arquivar a versão selecionada'**.
+
+Agora escreva **'CONFIRMAR'** na caixa em branco.
+
+**Passo 6.** Clique no botão **'Confirmar ação'**.
+
+Pronto, você **depreciou** e **arquivou** a versão de uma Stack. 
+
+#### **Opção 2:** Através da seção de Usage Insights
+
+ **Passo 1.** Acesse o seu Estúdio e, em seguida, clique na Stack que você quer arquivar uma versão;
+
+ **Passo 2.** Clique na seção **'Usage Insights'**;
+
+ **Passo 3.** Na linha da versão da Stack que você quer depreciar e arquivar, clique no botão **'Mais opções'**;
+
+ **Passo 4.** Preencha os campos a seguir:
+
+- Selecione um **motivo** para a depreciação:
+    - Falta de manutenção
+    - Falta de segurança
+    - Bugs
+    - Outros
+
+Em **'Arquivar versão da Stack selecionada'**, clique na caixa de seleção **'Também gostaria de arquivar a versão selecionada'**.
+
+Agora escreva **'CONFIRMAR'** na caixa em branco.
+
+**Passo 5.** Clique no botão **'Confirmar ação'**.
+
+Pronto, você **depreciou** e **arquivou** a versão de uma Stack. 
+
+
+:::warning Atenção!
+
+Não é possível fazer o deploy em um novo ambiente de uma Infraestrutura ou Aplicação que tenha a versão de uma Stack arquivada, mesmo que já tenha sido deployada anteriormente em outro ambiente.
+
+<br/>
+
+Para fazer um deploy nessa situação, primeiro você precisa **atualizar a versão da Stack**. Siga os passos a seguir:
+
+**Passo 1.** Acesse o código da sua Aplicação (**`stk.yaml`**);
+
+**Passo 2.** Execute o comando [**`stk update plugin`**](home/stk-cli/commands/plugin-commands.mdx#stk-update-plugin), informando a nova versão da Stack. Confira o exemplo a seguir: 
+
+```bash
+stk update plugin studio/stack@4.0.0/plugin
+```
+
+- `studio`: Estúdio onde a Stack foi publicada.
+- `stack@4.0.0`: nova versão da Stack.
+- `plugin`: Plugin associado à Stack. 
+
+<br/>
+
+Confira a seguir um exemplo da atualização no **`stk.yaml`**:
+
+```yaml  
+- name:
+   stack@v4/plugin@version
+```
+
+Pronto, agora você pode atualizar uma Infraestrutura ou Aplicação que tenha uma versão de Stack associada à ela.
+
+> É necessário executar o comando de **`stk update plugin`** para cada Plugin da Stack referenciado no **`stk.yaml`**.
+
+:::

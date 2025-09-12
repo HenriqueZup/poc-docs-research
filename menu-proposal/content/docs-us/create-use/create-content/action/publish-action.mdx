@@ -1,0 +1,49 @@
+---
+title: Publish Action
+description: Publish and version Actions on the Platform.
+---
+
+> In this section, you will find a guide on how to publish and version Actions on STK CLI.
+
+<br/>
+
+Publishing on StackSpot means storing and making available the content of Stacks, Plugins, and Actions on the StackSpot platform so that other developers can use them. You manage who can access what you publish through the visibility settings of your Studio.
+
+:::caution 
+
+When publishing an Action, see if the Slug (Identifier) is unique within the Studio. You cannot have the same Slug/identifier for Stack, Plugin, or Action in a Studio.
+
+:::
+
+## **Requirements**
+
+- [**STK CLI**](home/stk-cli/install.md).  
+- You need an [**Action**](create-use/create-content/action/run-action.md).
+
+:::warning
+
+To publish an Action, you need [**permission**](/home/account/organization/access-management/roles.md ) to **create and edit content**.
+
+:::
+
+1. Open your terminal. In your Action folder, execute the [**stk publish action**](home/stk-cli/commands/action-commands.md#stk-publish-action) command:
+
+<br/>
+
+```bash
+stk publish action
+```
+
+2. Choose a Studio in the terminal or inform which Studio you want to publish this Action using the  **`--studio`** option.
+
+<br/>
+
+Example:
+
+```bash
+stk publish action --studio my-studio-name
+```
+
+## **Next Steps**
+
+- [**Run published Actions**](create-use/create-content/action/run-action.md#run-published-action).

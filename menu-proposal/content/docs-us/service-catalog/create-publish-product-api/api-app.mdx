@@ -1,0 +1,82 @@
+---
+title: "Create API in an Application"
+sidebar_position: 1
+description: Learn how to create an API.
+sidebar_custom_props: 
+  hidden: true
+---
+
+> In this section, you will find how to create an API in Workspace and publish it in the Service Catalog.
+
+<br/>
+
+## **Create an API**
+
+To create an API from an Application, follow the steps below:
+
+**Step 1.** Go to your Workspace Dashboard in StackSpot Portal;
+
+**Step 2.** From the Application Dashboard, click the **'Create'** button at the bottom left of the screen. Then, click on **'Application'**;
+
+Choose a [**Stack**](create-use/create-content/stack/stacks.md) and a [**Starter**](create-use/guides/create-starter.md).
+
+**Step 4.** On the **'Applications Information** screen, fill out the fields:  
+
+- Name.  
+- Add a short description.
+
+Then, click on the **'Next Step'** button;
+
+**Step 5.** At the **'Source Code Repository'** screen, select one of the options:
+
+- Create repository: in this option, you must choose your Application visibility.
+- I already have a repository: enter the URL of the repository you want to use.
+
+Then click on **'Continue'**.
+
+**Step 6.** Under **'API Definition'**, you need to:
+
+- Upload a file with the OpenAPI standard (**`.yaml`**, **`.yml`** or **`.json`** extension).  
+- Name and describe the API.  
+- Add a Swagger with one or more available environments and include the Gateway URL.
+
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<ThemedImage
+  alt="Docusaurus themed image"
+  sources={{
+    light: useBaseUrl('/img/api-app-5-eng.png'),
+    dark: useBaseUrl('/img/api-app-5-eng-light.png'),
+  }}
+/>
+
+> You can define this after you create the API. To do this, access the Configuration section of the application you created.
+
+To continue, click on **'Continue'**.
+
+**Step 7.** Review the settings summary. If everything is correct, click **'Commit'**.
+
+## **Publish an API to the Catalog**
+
+Follow the instructions below:
+
+1. Access the **'API'** subsection;  
+2. Click on the API you have created;
+3. Then click on **'Publish API'**.
+
+<ThemedImage
+  alt="Docusaurus themed image"
+  sources={{
+    light: useBaseUrl('/img/publish-api-eng.png'),
+    dark: useBaseUrl('/img/publish-api-eng-light.png'),
+  }}
+/>
+
+You have published an API to the Catalog.
+
+To remove a published API, click on **'Unpublish'** and then **'Unpublish API'**.
+
+## **Next Step**
+
+- [**Create and Publish API in the Catalog**](service-catalog/create-publish-product-api/api-catalog.md)

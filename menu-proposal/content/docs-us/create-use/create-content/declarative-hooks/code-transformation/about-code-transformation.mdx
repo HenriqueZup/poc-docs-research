@@ -1,0 +1,1300 @@
+---
+title: Overview
+description: Reference of a Declarative Hook of the type code-transformation.
+---
+
+> In this section, you will find: Reference of a Declarative Hook of the type code-transformation.
+
+<br/>
+
+## **About the Declarative Hook code-transformation**
+
+The **code-transformation** Declarative Hook changes source code through a transformation engine. Changes must be defined using transformation patterns. Developers must write these standards in a language that extends the language of the source codes with operators that determine what should be changed. The engine changes whenever there is a correspondence between the transformation patterns and the source codes.
+
+The **code-transformation** Declarative Hook can be instrumental in several situations where improving the existing code in an application requires changes.
+
+## **How to define the `code-transformation` hook**
+
+Inside the **`spec`** field of your Plugin configuration file (**`plugin.yaml`**), declare the **`code-transformation`** as in the example below:
+
+```yaml
+schema-version: v3
+kind: plugin
+metadata:
+  name: code-transformation-plugin
+  display-name: code-transformation-plugin
+  description: Code transformation example.
+  version: 1.0.0
+spec:
+  hooks:
+    - type: code-transformation
+      engine-version: 0.2.0-beta
+      trigger: after-render
+      language: typescript
+      trans-pattern-path: trans-patterns/pattern.ts
+      source-path: src/code.ts
+```
+
+### **type:**
+
+The Declarative Hook type.
+
+### **engine-version:**
+
+The version of the code transformation engine used by Hook. The current version is `0.2.0-beta`.
+
+### **trigger:**
+
+It only supports the `after-render` option. Executes Hook commands after the Template generates files in the project.
+
+### **language:**
+
+Supported language for the transformation. Currently, `code-transformation` supports transformation patterns written in the **Typescript** language. You should only use transformation patterns and source codes in the Typescript language (`*.ts` or `*.html` extension).
+
+### **trans-pattern-path:**
+
+The path where the files with the transformation scripts are located. The path is relative to the Plugin folder.
+You must create the **trans-patterns** folder to place the files with the transformation scripts.
+
+:::warning 
+
+If you only enter the folder without the full file name, Hook will execute **all** transformation scripts present in the **trans-patterns** folder.
+
+:::
+
+Examples:
+
+To perform a transformation based on a pattern present in a specific file:
+
+```yaml
+trans-pattern-path: trans-patterns/pattern.ts
+```
+
+To perform multiple transformations based on patterns present in all files:
+
+```yaml
+trans-pattern-path: trans-patterns/
+```
+
+You can also enter the name of the file with the transformation pattern [**using JINJA expressions**](create-use/create-content/yaml-files/jinja.md):
+
+```yaml
+trans-pattern-path: trans-patterns/{{trans_pattern_file_name}}.ts
+```
+
+### **source-path:**
+
+Application Path where the pre-existing source codes that will transform are located. The path is relative to the Application folder.
+
+Examples:
+
+To transform the code of a specific file in your Application:
+
+```yaml
+source-path: app-src/code.ts
+```
+
+To transform the codes of all files in the Application folder:
+
+:::warning 
+
+When only informing the Application folder, **all files that have the pattern informed in the transformation scripts will be transformed**.
+
+:::
+
+```yaml
+source-path: app-src/
+```
+
+You can also enter the name of a file for your Application [**using JINJA expressions**](create-use/create-content/yaml-files/jinja.md):
+
+```yaml
+source-path: app-src/{{app_file_name}}.ts
+```
+
+## **Steps to create and use the code-transformation hook**
+
+To create and use the **`code-transformation`** Hook, you must follow the following steps:
+
+1. Create StackSpot app Plugin;  
+2. Create a folder (e.g., trans-patterns) that will contain the transformation pattern file(s);  
+3. Create transformation pattern file(s) in the folder created in the previous step. Each transformation pattern must have its file. Transformation pattern files must have the same extension as the source files you want to transform. For example, to transform TypeScript source files, the transformation pattern files must have the extension **`.ts`**;  
+4. Write the transformation patterns in the files created in the previous step. Standards must follow the rules defined in the other sections of this document;  
+5. Define the **`code-transformation`** Hook in the plugin configuration file created in Step 1, according to the section [**How to define the code-transformation hook**](#how-to-define-the-code-transformation-hook );  
+6. Apply the plugin created in Step 1 to a StackSpot app.  
+
+After these steps, if your transformation patterns are correct and there are occurrences between them and the Application's source codes, the engine will carry out the transformations, changing the Application's source files.
+
+## **Transformation operators**
+
+Transformation patterns have three operators for code transformation, the **insertion**, **removal**, and **ellipsis** operators.
+
+:::info
+
+The engine guarantees that the syntax of the transformed source code remains correct. However, **it does not guarantee maintaining the formatting in sections that use the code insertion or removal operator**. This behavior should be improved in the following versions to support languages where the syntax depends on the code formatting.
+
+:::
+
+### **1. Insertion Operator**
+
+Operator for inserting code snippets into the original source code.
+The syntax is:
+**`+<CODE-SNIPPET>+`**
+
+Replace the **`CODE-SNIPPET`** with the code snippet you want to insert into the original source code.
+
+The example below shows a transformation pattern that inserts the code snippet **`console.log("World!");`** after the snippet **`console.log("Hello");`**.
+
+<Tabs>
+<TabItem value="original" label="Source Code">
+
+```typescript showLineNumbers
+console.log("Hello");
+```
+
+</TabItem>
+
+<TabItem value="pattern" label="Transformation Pattern" default>
+
+```typescript showLineNumbers
+console.log("Hello");
++<console.log("World!");>+
+```
+
+</TabItem>
+<TabItem value="transformed" label="Transformed Code">
+
+```typescript showLineNumbers
+console.log("Hello");
+console.log("World!");
+```
+
+</TabItem>
+</Tabs>
+
+### **2. Removal Operator**
+
+The operator removes code snippets from the source code.
+The syntax is:
+
+**`-<CODE-SNIPPET>-`**
+
+Replace the **`CODE-SNIPPET`** with the code snippet you want to remove in the source code.
+
+The example below shows a transformation pattern that removes the code snippet **`console.log("Hello");`**. This transformation will result in an empty source code file.
+
+<Tabs>
+<TabItem value="original" label="Source Code">
+
+```typescript showLineNumbers
+console.log("Hello");
+```
+
+</TabItem>
+
+<TabItem value="pattern" label="Transformation Pattern" default>
+
+```typescript showLineNumbers
+-<console.log("Hello");>-
+```
+
+</TabItem>
+<TabItem value="transformed" label="Transformed Code">
+
+```typescript showLineNumbers
+
+```
+
+</TabItem>
+</Tabs>
+
+### **3. Ellipsis Operator**
+
+The operator will match zero or more code snippets in the source code. It is a wildcard operator, similar to * in regular expressions, although it cannot be entirely confused with it. The operator has the syntax **`<...>`**.
+
+The following example shows a transformation pattern that will match any source code file that begins with the **`console.log("start");`** and ends with the **`console.log("end");`**.
+
+```typescript showLineNumbers
+console.log("start");
+<...>
+console.log("end");
+```
+
+The following examples show some source codes that match the previous transformation pattern.
+
+<Tabs>
+<TabItem value="original1" label="Source Code 1">
+
+```typescript
+// new-line-start
+console.log("start");
+console.log("end");
+// new-line-end
+```
+
+</TabItem>
+
+<TabItem value="original2" label="Source Code 2" default>
+
+```typescript
+// new-line
+console.log("start");
+console.log("1");
+// new-line
+console.log("end");
+```
+
+</TabItem>
+<TabItem value="original3" label="Source Code 3">
+
+```typescript
+// new-line
+console.log("start");
+console.log("1");
+console.log("2");
+// new-line
+console.log("end");
+```
+
+</TabItem>
+<TabItem value="original4" label="Source Code 4">
+
+```typescript
+// new-line
+console.log("start");
+
+let myNumber: number = 10;
+// new-line
+console.log("end");
+```
+
+</TabItem>
+<TabItem value="original5" label="Source Code 5">
+
+```typescript
+// new-line
+console.log("start");
+
+function addNumbers(a: number, b: number): number {
+  return a + b;
+}
+
+let myNumber1: number = 10;
+let myNumber2: number = 20;
+
+console.log(addNumbers(myNumber1, myNumber2));
+// new-line
+console.log("end");
+```
+
+</TabItem>
+</Tabs>
+
+### **4. ID Match Operator**  
+
+The ID match operator uses a regular expression to match identifiers in the source code to be transformed. Identifiers usually represent names of variables, functions, methods, classes, packages, namespaces, among others, depending on the language. For more details on which constructs are identifiers in each language, visit [**Supported Constructs for Transformation Operators**](#constructs-supported-by-transformation-operators). The operator has the syntax **`*<REGEX>*`**.
+
+For example, if you need to insert the **`@Transactional`** decorator in functions whose names start with **`trans`**, you can only express this transformation pattern using the ID match operator, as shown below.
+
+<Tabs>
+<TabItem value="original" label="Original Code">
+
+```ts showLineNumbers
+function transAddUser(){
+    // do some stuff
+}
+```
+
+</TabItem>
+
+<TabItem value="pattern" label="Transformation Pattern" default>
+
+```ts showLineNumbers
++<@Transactional>+
+function *<trans.*>*(){
+    <...>
+}
+```
+
+</TabItem>
+<TabItem value="transformed" label="Transformed Code">
+
+```ts showLineNumbers
+@Transactional
+function transAddUser(){
+    // do some stuff
+}
+```
+
+</TabItem>
+</Tabs>
+
+As you can see in the previous example, you can only use the ID match operator where an identifier would occur, such as the function name on line 2. The operator's regular expression is **`trans.*`**, which matches any function whose name starts with **`trans`**, since **`.*`** denotes zero or more characters.
+
+#### **Other examples with identifiers**
+
+**1.** ID match to match functions that start with a specific prefix:
+
+- **Regex**: **`get.*`**
+
+The following example adds a log before any function whose name starts with **`get`**.
+
+```ts title="example1.ts with id match '*<get.*>*'"
+function *<get.*>* (<...>) {
++<console.log("Function called");>+
+<...>
+}
+```
+
+**2.** ID match to identify variables that end with a specific suffix:
+
+- **Regex**: **`.*Service`**
+
+The following example adds a comment above any variable whose name ends with **`Service`**:
+
+```ts title="example2.ts with id match '*<.*Service>*'"
++<// This is a service variable >+
+let *<.*Service>*: <...>; ```
+
+**3.** ID match to identify classes that contain a specific word:
+
+- **Regex**: **`.*Controller.*`**
+
+The following example adds a "**`@Controller`**" decorator to classes that contain **`Controller`** in the name:
+
+```ts title="example3.ts with id match '*<.*Controller.*>*'"
++<@Controller>+
+class *<.*Controller.*>* {
+<...>
+}
+```
+
+### **5. String Match Operator**  
+
+The string match operator is similar to the ID match operator, but it uses a regular expression to match strings in the source code that need to be transformed. While the **ID match** operator uses a regular expression to match identifiers within languages supported by the Declarative Hook **`code-transformation`**, the **string match** operator can match any string in the source code, regardless of the constructs allowed by the transformation operators. This means that the string match operator can target strings found within method, class, or variable calls, which is not possible with the **ID match** operator. The syntax for the string match operator is **`*<"REGEX">*`**.
+
+:::warning
+
+The string match operator **should always be used with the double-quoted syntax** `*<"">*`, even in languages ​​that allow single-quoted strings.
+
+:::
+
+For example, if you need to insert a **`console.log()`** call before another call, regardless of which string is passed as an argument, you can only express this transformation pattern using the string match operator, as shown below.
+
+<Tabs>
+<TabItem value="original" label="Original Code">
+
+```ts showLineNumbers
+// do some stuff
+console.log("any string");
+// do other stuff
+```
+
+</TabItem>
+
+<TabItem value="pattern" label="Transformatio Pattern" default>
+
+```ts showLineNumbers
+<...>
++<console.log("pre log");>+
+console.log(*<".*">*);
+<...>
+```
+
+</TabItem>
+<TabItem value="transformed" label="Transformed Code">
+
+```ts showLineNumbers
+// do some stuff
+console.log("pre log");
+console.log("any string");
+// do other stuff
+```
+
+</TabItem>
+</Tabs>
+
+As you can see in the previous example, you can only use the string match operator where a string would occur, such as the argument of the **`console.log()`** function call. The operator's regular expression is **`.*`**, which matches any string, since **`.*`** denotes zero or more characters.
+
+#### **Other examples with strings**
+
+**1.** String match to identify specific strings in function calls:
+
+- **Regex**: **`"error.*"`**
+
+The following example adds a log before any call to **`console.log`** that contains a string starting with **`error`**:
+
+```ts title="example1.ts with String match '*<"error.*">*'"
+<...>
++<console.log("Logging an error");>+
+console.log(*<"error.*">*); <...>
+```
+
+**2.** String match to match exact strings:
+
+- **Regex**: "Hello World"
+
+The following example removes any call to **`console.log`** that contains the exact string **`Hello World`**:
+
+```ts title="example2.ts with String match '*<"Hello World">*'"
+<...>
+-<console.log(*<"Hello World">*);>-
+<...>
+```
+
+**3.** String match to match strings that **contain numbers**:
+
+```ts title="example3.ts with String match '*<".*\d+.*">*'"
+<...>
++<console.log("String contains numbers");>+
+console.log(*<".*\d+.*">*);
+<...>
+```
+
+### **Operator Nesting**  
+
+**The only operator that allows nesting of other operators is the removal operator.**. You can nest the **ellipsis, ID match, and string match** operators to create powerful patterns.
+
+:::warning
+
+The code transformation engine **does not support** nesting only an ellipsis operator within a removal operator, such as **`-<<...>>-`**.
+
+:::
+
+For example, if you need to remove a **`console.log()`** call regardless of which string is passed as an argument, you can only express this transformation pattern using the string match operator nested within the removal operator, as shown below.
+
+<Tabs>
+<TabItem value="original" label="Original Code">
+
+```ts showLineNumbers
+// do some stuff
+console.log("any string");
+// do other stuff
+```
+
+</TabItem>
+
+<TabItem value="pattern" label="Transformation Pattern" default>
+
+```ts showLineNumbers
+<...>
+-<console.log(*<".*">*);>-
+<...>
+```
+
+</TabItem>
+<TabItem value="transformed" label="Transformed Pattern">
+
+```ts showLineNumbers
+// do some stuff
+// do other stuff
+```
+
+</TabItem>
+</Tabs>
+
+Another example shows how you can use the ellipsis and ID match operators nested within the removal operator to remove a function whose name starts with **`create`**, regardless of its body and parameters.
+
+<Tabs>
+<TabItem value="original" label="Original Code">
+
+```ts showLineNumbers
+
+function deleteUser(userId: number) {
+  const userIndex = users.findIndex(user => user.id === userId);
+  if (userIndex === -1) {
+    throw new Error("User not found.");
+  }
+
+  users.splice(userIndex, 1);
+
+  return { message: "User delete successfully!" };
+}
+
+function createUser(user:User) {
+  if (!user.firstname || !user.lastname || !user.email || !user.password) {
+    throw new Error("All fields are mandatory.");
+  }
+
+  repository.registerUser(user);
+
+  return {
+    message: "User created successfully!",
+    user: newUser,
+  };
+}
+
+```
+
+</TabItem>
+
+<TabItem value="pattern" label="Transformed Pattern" default>
+
+```ts showLineNumbers
+<...>
+
+-<function *<create.*>*(<...>) {
+  <...>
+}>-
+
+<...>
+```
+
+</TabItem>
+<TabItem value="transformed" label="Transformed Code">
+
+```ts showLineNumbers
+function deleteUser(userId: number) {
+  const userIndex = users.findIndex(user => user.id === userId);
+  if (userIndex === -1) {
+    throw new Error("User not found.");
+  }
+
+  users.splice(userIndex, 1);
+
+  return { message: "User delete successfully!" };
+}
+```
+
+</TabItem>
+</Tabs>
+
+## **Transformation patterns**
+
+A transformation pattern is a regular source code file with the addition of transformation operators. The non-operator code serves as context for the engine to determine the parts of the source code that need modification.
+
+### **Declaring Transformation Patterns**
+
+In a transformation pattern file, you can declare one or more patterns. Each pattern requires a header. The headers have two properties: the pattern name, **`pattern-name`**, and the pattern scope, **`pattern-scope`**. The syntax for the transformation pattern header is:
+
+```
+<<<< pattern-name: my_pattern_name; pattern-scope: file-scope; >>>>
+```
+
+- **pattern-name:** Enter a name to identify your transformation pattern. The name should not contain spaces. Example: **`my_pattern`**, **`my-pattern`**, or **`my.pattern`**. 
+
+- **pattern-scope:** Use **`file-scope`** for transformation patterns with file scope, or **`snippet-scope`** to use the transformation pattern with snippet scope. For more details on transformation pattern scope, see [**Transformation Scope**](#transformation-scope).
+
+:::warning
+
+Until version **`0.1.0-beta`** of the code transformation engine, you declared one transformation pattern per file, without a header, all with file scope. Starting from version **`0.2.0-beta`**, declaring a single pattern without a header per file is still supported but deprecated. We encourage declaring all patterns with a header.
+
+:::
+
+:::warning
+
+When applying a file with multiple transformation patterns, the engine will transform the source code following a **sequential order of the headers** defined. For example:
+
+```ts title="Transformation file with multiple patterns"
+<<<< pattern-name: pattern-name; pattern-scope: file-scope; >>>> // first pattern to be applied
+
+// pattern
+
+<<<< pattern-name: pattern-name2; pattern-scope: snippet-scope; >>>> // second pattern to be applied
+
+// pattern
+
+<<<< pattern-name: pattern-name3; pattern-scope: snippet-scope; >>>>  // third pattern to be applied
+
+// pattern
+```
+
+:::
+
+The examples below show transformation pattern files with, respectively, only one pattern, more than one pattern, and patterns with different scopes.
+
+<Tabs>
+<TabItem value="pattern1" label="Only one pattern">
+
+```ts showLineNumbers
+<<<< pattern-name: my_only_pattern; pattern-scope: file-scope; >>>>
+// This pattern inserts an "id" attribute in a class whose name ends with "Entity"
+
+<...>
+
+class *<.*Entity>* {
+  +<id : number;>+
+  <...>
+}
+
+<...>
+```
+
+</TabItem>
+
+<TabItem value="pattern2" label="More than one pattern">
+
+```ts showLineNumbers
+<<<< pattern-name: my_first_pattern; pattern-scope: file-scope; >>>>
+// This pattern inserts an "id" attribute in a class whose name ends with "Entity"
+
+<...>
+
+class *<.*Entity>* {
+  +<private _id : number;>+
+  <...>
+}
+
+<...>
+
+<<<< pattern-name: my_second_pattern; pattern-scope: file-scope; >>>>
+// This pattern inserts a constructor in a class whose name ends with "Entity"
+
+<...>
+
+class *<.*Entity>* {
+  <...>
+  +<constructor (id:number) {
+        this._id = id;
+  }>+
+}
+
+<...>
+```
+
+</TabItem>
+<TabItem value="pattern3" label="Patterns with different scopes">
+
+```ts showLineNumbers
+<<<< pattern-name: my_file_scope_pattern; pattern-scope: file-scope; >>>>
+// This pattern (with file scope) inserts an import at the beginning of the source file
+
++<import _ from 'lodash';>+
+<...>
+
+<<<< pattern-name: my_snippet_scope_pattern; pattern-scope: snippet-scope; >>>>
+// This pattern (with snippet scope) inserts a console.debug call at the beginning of every function
+
+function *<.*>*(<...>) {
+  +<console.debug("entering in a function");>+
+  <...>
+}
+```
+
+</TabItem>
+</Tabs>
+
+### **Example of transformation pattern**
+
+You have seen the transformation patterns that use only one of the operators. However, creating even more powerful transformation patterns is possible using all three operators.
+
+For example, you can remove the initialization of attributes from the **`Person`** class and insert a constructor using a transformation pattern. To achieve this, we first use the removal operators to remove the initialization of class attributes. Next, we use the insertion operator to insert a constructor. Finally, we use the ellipsis operator to match any remaining code after declaring the **`age`** attribute of the **`Person`** class in the source file.
+
+<Tabs>
+<TabItem value="original" label="Source Code">
+
+```typescript
+class Person { 
+  firstname : string = "";
+  lastName : string = "";
+  age : number = 0;
+
+  getFullName(): string {
+    return firstName + lastName;
+  }
+}
+```
+
+</TabItem>
+
+<TabItem value="pattern" label="Transformation Pattern" default>
+
+```ts
+<<<< pattern-name: pattern_with_many_ops; pattern-scope: file-scope; >>>>
+
+class Person {
+  -<firstname : string = "";>-
+  +<firstname : string;>+
+  -<lastName : string = "";>-
+  +<lastName : string;>+
+  -<age : number = 0;>- 
+  +<age : number;>+
+  +<constructor(firstName: string, lastName: string, age: number) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.age = age;
+  }>+
+
+  <...>
+}
+```
+
+</TabItem>
+<TabItem value="transformed" label="Transformed Code">
+
+```typescript
+class Person { 
+  firstname : string;
+  lastName : string;
+  age : number;
+
+  constructor(firstName: string, lastName: string, age: number) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.age = age;
+  }
+
+  getFullName(): string {
+    return firstName + lastName;
+  }
+}
+```
+
+</TabItem>
+</Tabs>
+
+### **Creating syntactically valid transformation patterns**
+
+Transformation patterns are codes written in an extended version of the original code language. It is important to note that for a transformation pattern to be executed by the transformation engine, all context codes in the pattern must be syntactically correct. For instance, if syntax errors exist in the transformation pattern, the engine won't be able to execute it. Below is an example of an invalid transformation pattern that cannot be executed due to syntax errors.
+
+```typescript title="INVALID transformation pattern" showLineNumbers
+function func()
+   <...>
+   +<console.log("Finishing func");>+
+}
+```
+
+The previous pattern is syntactically invalid because it lacks the opening braces **`{`** of the **`func`** function. The ellipsis operator will not match this missing character, as it is in the context of matching only statements within the function body.
+
+The following is another example of a transformation pattern that is syntactically invalid:
+
+```typescript title="INVALID transformation pattern" showLineNumbers
+console.log(<...>
+```
+
+The previous code pattern is invalid due to the absence of closing parentheses **`)`** in the **`log`** method call. The ellipsis operator won't match this missing character since it only matches arguments from a method call.
+
+:::info
+
+**Transformation patterns and their operators are not regular expressions (regex).** Regex manipulates text without structure, whereas transformation patterns are codes with a defined syntax, just like any programming language. The engine generates syntactic trees of transformation patterns and must adhere to a specific structure.
+
+:::
+
+Still, on the transformation patterns, in addition to the context code needing to be syntactically valid, the sections that will be inserted or removed through the insertion and removal operators need to be syntactically valid and also maintain the original code syntactically valid after the transformation. The following transformation pattern is an example of an invalid pattern.
+
+```typescript title="INVALID transformation pattern" showLineNumbers
+class MyClass {
+
+   myMethod():void{}
+
+   myProperty:string = "";
+
+   +<console.log("bla");>+
+}
+```
+
+The previous pattern is syntactically invalid because, although the code snippet to be inserted (line 7) is syntactically valid, the original code transformed by it would be syntactically invalid after the transformation. This happens because it is impossible to insert a method called **`console.log("bla");`** inside a class, outside the body of a method.
+
+See another example, now with the code snippet to be inserted invalid:
+
+```typescript title="INVALID transformation pattern" showLineNumbers
+class MyClass {
+
+   myMethod():void{}
+
+   myProperty:string = "";
+
+   +<myMethod2():void {>+
+   +< console.log("Executing myMethod2");>+
+   +<}>+
+}
+```
+
+The previous pattern is syntactically invalid because each insertion operator does not produce valid code snippets. For example, **`myMethod2():void {`** is not a syntactically valid structure in TypeScript. Insertion and removal operators do not act by inserting or removing lines but rather by complete, syntactically valid code snippets. The following example shows how to change the previous transformation pattern to make it valid.
+
+```typescript title="Valid transformation pattern" showLineNumbers
+class MyClass {
+
+   myMethod():void{}
+
+   myProperty:string = "";
+
+   +<myMethod2():void {
+     console.log("Executing myMethod2");
+   }>+
+}
+```
+
+The previous transformation pattern is valid because it uses a single operator to insert the **`myMethod2`** method into the **`MyClass`** class.
+
+Finally, the following example shows a syntactically invalid transformation pattern because it presents the insertion of an invalid code snippet. The invalid snippet tries to insert and remove more than one construction using the same insertion and removal operator.
+
+```typescript title="INVALID transformation pattern" showLineNumbers
++<let myVar1:number = 10; let myVar2:string = "bla";>+
+-<console.log("Hello");
+console.log("StackSpot");>-
+```
+
+The previous transformation pattern is invalid because it tries to insert two pieces of code in a single insertion operator (line 1). It is also invalid because it tries to remove two pieces of code in a single removal operator (from lines 2 to 3). The following example shows how to change the previous transformation pattern to make it valid.
+
+```typescript title="Valid transformation pattern" showLineNumbers
++<let myVar1:number = 10;>+ +<let myVar2:string = "bla";>+
+-<console.log("Hello");>-
+-<console.log("StackSpot");>-
+```
+
+The previous transformation pattern is valid because it uses an insert and remove operator for each code snippet.
+
+### **Use of operators in comma-separated constructions**
+
+In transformation patterns, the use of transformation operators in the comma-separated context constructions has special treatment. See the following example:
+
+```typescript title="Transform pattern" showLineNumbers
+function func(<...>){
+   <...>
+   +<console.log("Finishing func");>+
+}
+```
+
+The previous transformation pattern will match a file containing a function named **`func`**, regardless of the number, type, name of its parameters, and body. The ellipsis operator on line 1 is part of a comma-separated list of formal parameters in a function declaration.
+
+However, if you want to add a new parameter to a function declaration, you can create a new transformation pattern, as shown in the following example:
+
+```typescript title="Transform pattern" showLineNumbers
+function func(<...> +<newParam:string>+){
+   <...>
+}
+```
+
+The previous transformation pattern will insert a parameter at the end of the parameter list of the **`func`** function. However, the **`func`** function can have zero or more parameters in the original code. In the first case, it would not be necessary to add a comma before **`newParam:string`**. However, in the second case, adding the comma would be required. Whoever creates the standard has yet to determine which situations will require the placement of a comma. Therefore, you should not place the comma in the context code (between the ellipsis operator and the insertion operator on line 1) or in the section that will be inserted (within the insertion operator on line 1). The engine will solve when and where to place commas when operators are in a comma-separated construction.
+
+The following is an example of using a removal operator in a comma-separated construction:
+
+```typescript title="Transform pattern" showLineNumbers
+<...>
+-<import { FormsModule } from '@angular/forms';>-
+<...>
+@NgModule({
+   <...>
+   imports: [<...> -<FormsModule> <...>]
+   <...>
+})
+export class AppModule {}
+<...>
+```
+
+The previous transformation pattern uses transformation operators in two comma-separated constructs. The ellipsis operators at the beginning (line 5) and end (line 7) of the list of properties of an object, and the ellipsis and removal operators in the list of values of the array in line 6. In the first case, the engine will try to match the original code, an **`import`** property, regardless of what order it appears in the object. The second case will remove the **`FormsModule`** value, irrespective of where it appears in the imports array. Additionally, the engine will remove any commas if necessary.
+
+Finally, if you want to transform a specific position from a comma-separated construction, you can adopt the strategy in the following example.
+
+```typescript title="Transform pattern" showLineNumbers
+<...>
+function func(<...>,<...>,-<param3:number>- +<newParam3:boolean>+, <...>, -<param5:string>-){
+   <...>
+}
+
+func(<...>,<...>,-<arg3>- +<newArg3>+, <...>, -<arg5>-)
+<...>
+```
+
+In **line 2** of the previous transformation pattern:
+
+  1. The third formal parameter **`param3:number`** will be removed from the function declaration **`func`**;  
+  2. Inserted a new parameter in its place, **`newParam3:boolean`**;  
+  3. The removal of the fifth formal parameter **`param5:number`**. The same goes for passing arguments when calling the **`func`** function on **line 6**.  
+ 
+In this case, the commas present in the context code allow you to locate precisely which parameter or argument is being inserted or removed. Even in this case, the engine knows when to keep, add or remove commas.
+
+### **Comments and blank characters**
+
+:::warning
+
+**Blank characters and comments are ignored to match transformation patterns** with source code files, except in languages where the syntax depends on code formatting (e.g., python). For example:
+
+:::
+
+```typescript title="Transform pattern" showLineNumbers
+<...>
+let message: string = 'Hello, World!';
+console.log(message);
+let message2: string = 'Hello, StackSpot!';
++<console.log(message2);>+
+<...>
+// my comment on the transformation pattern
+```
+
+The previous transformation pattern matches the source code below, even though the original code has different comments and formatting.
+
+```typescript title="Original code with different formatting and comments" showLineNumbers
+// my comment in original code
+let message: string = 'Hello, World!';console.log(message);let message2: string = 'Hello, StackSpot!';
+```
+
+## **Operator anchoring**
+
+Among the currently available operators, **insertion** and **ellipsis** need to be placed in the transformation pattern so that code snippets serve as the context so that the engine can identify precisely which parts of the source code should be changed. At StackSpot, these snippets of code that serve as the context for operators are called **Anchor**.
+
+Using any valid piece of code in the original code as an anchor for operators in the transformation pattern is possible. Apart from code snippets, the beginning and end of the source file and even a removal operator can also be used as anchors. However, it is essential to note that the insertion and ellipsis operators alone cannot be valid anchors for another operator in a transformation pattern. We will delve deeper into this in the later sections.
+
+Anchors can be of two types:
+
+1. **Pre-anchor**: when the anchor occurs before the transformation operator;
+2. **Post-anchor**: when the anchor occurs after the transformation operator.
+
+:::warning
+
+Understanding the concept of operator anchoring is **extremely important** so that **you can create valid transformation patterns**.
+
+:::
+
+Below, check the list of operators and the use of anchors.
+
+### **1. Rule for insertion operators**
+
+The insertion operator **`+<>+`** needs **at least one anchor** to determine precisely where in the source code the transformation will occur. It can be a pre-anchor and/or post-anchor.
+
+For example, consider the following transformation pattern, which inserts a snippet of code into the original code:
+
+```typescript title="Valid transformation pattern with insertion operator with two anchors" showLineNumbers
+let message: string = 'Hello, World!';
++<console.log(message);>+
+```
+
+In this case, the part of **line 1** is a pre-anchor, and the end of the file is a post-anchor of the insertion operator. Check out a case below where the insertion operator has both anchors. This is a valid transformation pattern.
+
+However, the insertion operator only requires one anchor. Below is an example of this situation.
+
+```typescript title="Valid transformation pattern with insertion operator with only one anchor (pre-anchor)" showLineNumbers
+let message: string = 'Hello, World!';
++<console.log(message);>+
+<...>
+```
+
+In this case, the excerpt from **line 1** is a pre-anchor, but the ellipsis operator from **line 3** is not a valid anchor. Thus, the insertion operator has only one anchor, the pre-anchor. This is a valid transformation pattern.
+
+It is also possible to have another scenario with an insertion operator with only one anchor, but this time only one post-anchor. See the example below.
+
+```typescript title="Valid transformation pattern with insertion operator with only one anchor (post-anchor)" showLineNumbers
+let message: string = 'Hello, World!';
+<...>
++<console.log(message);>+
+```
+
+In this case, the end-of-file is the post-anchor, but the ellipsis operator on line 2 is not a valid anchor. Thus, the insertion operator has only one anchor, the post-anchor. This is a valid transformation pattern.
+
+Finally, an **invalid** transformation pattern occurs when an insertion operator is without anchors, as in the following example.
+
+```typescript title="INVALID transformation pattern with insertion operator without any anchor" showLineNumbers
+let message: string = 'Hello, World!';
+<...>
++<console.log(message);>+
+<...>
+```
+
+In this case, the insertion operator is between two ellipsis operators and, therefore, has no anchor. This is an invalid transformation pattern, as it is not possible for the engine to define where in the source file the **`console.log(message)`** code snippet should be inserted.
+
+### **2. Rule for ellipsis operators**
+
+The ellipsis operator **`<...>`** needs **two anchors** to determine precisely from (start) and to (end) where the engine will match the source code. In other words, both a pre-anchor and a post-anchor are needed.
+
+For example, consider the following transformation pattern:
+
+```typescript title="Valid transformation pattern with ellipsis operator with two anchors" showLineNumbers
+let message: string = 'Hello, World!';
+<...>
+```
+
+In this case, the section of line 1 is the pre-anchor, and the end of the file is the post-anchor of the ellipsis operator. This pattern will match any source code whose file begins with the **`let message: string = 'Hello, World!';`**, regardless of what comes after. This is a valid transformation pattern.
+
+An **invalid** transformation pattern occurs when there is an ellipsis operator without one of the anchors, for example, without the pre-anchor or post-anchor. Below is an example of this situation.
+
+```typescript title="INVALID transformation pattern with an ellipsis operator without a pre-anchor and another without a post-anchor" showLineNumbers
+let message: string = 'Hello, World!';
+<...>
+<...>
+console.log(message);
+```
+
+The ellipsis operator on **line 2** has a pre-anchor, which refers to the excerpt from **line 1**. However, it has no post-anchor because another ellipsis operator follows it. On the other hand, the ellipsis operator on **line 3** has a post-anchor, which refers to the section in **line 4**. However, it does not have a pre-anchor, as another ellipsis operator precedes it.
+
+This is an invalid transformation pattern. Therefore, the engine can't define in which part of the source code the ellipsis operator on **line 2** should stop matching and in which part of the source code the ellipsis operator on **line 3** ** pattern matching will begin.
+
+### **3. Rule for removal operators**
+
+The **`-<>-`** removal operator does not need anchors. This occurs because the piece of code to be removed (within the operator) must necessarily exist in the source code and, therefore, offers sufficient context for the engine to define in which part of the source code the removal will occur.
+
+For example, consider the following transformation pattern:
+
+```typescript title="Valid transformation pattern with removal operator" showLineNumbers
+<...>
+-<let message: string = 'Hello, World!';>-
+<...>
+```
+
+In this case, the engine will remove the first occurrence of the **`let message: string = 'Hello, World!';`**, regardless of the code snippet that occurs before or after in the source file. This is a valid transformation pattern even if the removal operator has no anchor.
+
+### **Anchoring in the presence of insertion operators**
+
+Insertion operators are not valid anchors for other operators. However, the presence of an insertion operator before and after another transformation operator does not prevent there from being a valid pre and post-anchor for that other operator. The transformation engine acts as if it ignores insertion operators before and after the other operator in search of valid anchors. Example:
+
+```typescript title="Transformation pattern valid even in the presence of an insertion operator" showLineNumbers
+let message: string = 'Hello, World!';
++<console.log(message);>+
+<...>
+```
+
+In this case, the insertion operator in **line 2** has an anchor in **line 1** (pre-anchor), making it valid according to the anchoring rule for insertion operators. The ellipsis operator on **line 3** appears to have only one anchor, the end-of-file post-anchor, since the insertion operator on **line 2** is not valid.
+
+Therefore, the anchoring rule for ellipsis operators, which requires two anchors, would not be respected. However, as the engine ignores insertion operators in search of valid anchors, the code snippet on **line 1** becomes a valid pre-anchor for the ellipsis operator on **line 3**, fulfilling the requirement for two anchors. This is a valid transformation pattern.
+
+The same situation can occur when there are multiple insertion operators in sequence. Example:
+
+```typescript title="Transformation pattern valid even in the presence of multiple insertion operators in sequence" showLineNumbers
+let message: string = 'Hello, World!';
++<console.log(message);>+
++<let message2: string = 'Hello, StackSpot!';>+
++<console.log(message2);>+
+<...>
+```
+
+On line 5, the ellipsis operator has an end-of-file anchor (post-anchor) and an anchor on line 1 (pre-anchor). The engine ignores the insertion operators and searches for a valid anchor. The same applies to insertion operators. For instance, although the insertion operator on line 3 is among other insertion operators, the engine ignores them and finds a valid anchor on line 1 (pre-anchor). This satisfies the anchoring rule for insertion operators. Therefore, this is a valid transformation pattern.
+
+## **Transformation scope**
+
+Every transformation pattern has a transformation scope, which can be file scope and snippet scope.
+
+
+:::info
+
+Currently, the transformation engine has **only file scope support**. Snippet scope support should be available in future versions of the transformation engine.
+
+:::
+
+### **File scope**
+
+File-scope transformation patterns only match the entire content of the original source files. To declare the file scope in your transformation pattern, add the following header:
+
+```
+<<<< pattern-name: my-pattern-name; pattern-scope: file-scope; >>>>
+```
+
+The following example shows a transformation pattern that will match any source code file that begins with the `import axios from 'axios';` section, regardless of the snippets that occur later. It will also insert the `import { useQuery } from 'react-query';` section right after the import of the axios module.
+
+```typescript title="Transform pattern" showLineNumbers
+import axios from 'axios';
++<import { useQuery } from 'react-query';>+
+<...>
+```
+
+Below is a source code file that matches the previous transformation pattern.
+
+```typescript title="Original source code file that matches the transformation pattern" showLineNumbers
+import axios from 'axios';
+console.log("axios");
+```
+
+However, the following example shows a source code file that **DOES NOT** match the previous transformation pattern.
+
+```typescript title="Original source code file that does NOT match the transformation pattern" showLineNumbers
+import { Dispatch } from 'redux';
+import axios from 'axios';
+console.log("axios");
+```
+
+This is because file-scoped patterns must match the entire source file. However, the snippet on **line 1** of the transformation pattern **`import axios from 'axios';`** does not match the snippet on **line 1** of the source code **`import { Dispatch } from 'redux';`**.
+
+A possible solution would be to change the transformation pattern for the following example.
+
+```typescript title="Transform pattern changed" showLineNumbers
+<...>
+import axios from 'axios';
++<import { useQuery } from 'react-query';>+
+<...>
+```
+
+:::tip
+
+In file-scoped transformation patterns **, it is always recommended to start and end with the ellipsis operator \<...>**unless you want to match the pattern only with source code files that start and end precisely with the same sections of the transformation pattern.
+
+:::
+
+Still on file-scoped transformation patterns. Consider the following transformation pattern example.
+
+```typescript title="Transform pattern" showLineNumbers
+<...>
+console.log("example");
++<console.log("new-example");>+
+<...>
+```
+
+A possible original source code file that matches the previous transformation pattern is the following:
+
+```typescript title="Original source code file that matches the transformation pattern" showLineNumbers
+function func():void{
+   console.log("example");
+}
+
+console.log("example");
+console.log("example");
+console.log("example");
+```
+
+However, even when matching, it is essential to understand that as the transformation pattern has file scope, it will insert the **`console.log("new-example");`** section only after the first "global" occurrence (it does not include the console.log snippet that occurs within the function body) from the **`console.log("example");`** snippet in the source code file. This way, the original transformed code would be the following:
+
+
+```typescript title="Transformed original source code file" showLineNumbers
+function func():void{
+   console.log("example");
+}
+
+console.log("example");
+console.log("new-example");
+console.log("example");
+console.log("example");
+```
+
+To insert the snippet **`console.log("new-example");`** after all occurrences of the snippet **`console.log("example");`** in the source code, a pattern like the following example.
+
+```typescript title="Transform pattern changed" showLineNumbers
+<...>
+function func():void{
+   <...>
+   console.log("example");
+   +<console.log("new-example");>+
+   <...>
+}
+<...>
+console.log("example");
++<console.log("new-example");>+
+<...>
+console.log("example");
++<console.log("new-example");>+
+<...>
+console.log("example");
++<console.log("new-example");>+
+<...>
+```
+
+However, any other new occurrence of the **`console.log("example");`** section in the source code would not be transformed. A more concise and efficient way to resolve this scenario is to use snippet-scoped transformation patterns.
+
+### **Snippet scope**
+
+Unlike the [**file scope**](#file-scope) where the transformation pattern must match the entire source file, the snippet scope looks for code snippets in the original source that match the pattern and transforms all occurrences. To declare the snippet scope in your transformation pattern, add the following header:
+
+```
+<<<< pattern-name: my-pattern-name; pattern-scope: snippet-scope; >>>>
+```
+
+Consider the following example of a snippet scope transformation pattern:
+
+```ts title="Transformation Pattern"
+<<<< pattern-name: my-pattern-name; pattern-scope: snippet-scope; >>>>
+
+-<console.info(*<".*">*);>-
+```
+
+The pattern will [**remove any code construct**](#2-removal-operator) that matches a call to the **`console.info()`** method with any string argument, as the [**String match**](#5-string-match-operator) operator is nested and uses the regular expression **`".*"`**.
+
+Below is an example of original source code that matches the mentioned transformation pattern and the transformed code after applying the pattern:
+
+<Tabs>
+<TabItem value="original" label="Original Code">
+
+```ts title="Original source code" showLineNumbers
+class User {
+    id: number;
+    name: string;
+    email: string;
+
+    constructor(id: number, name: string, email: string) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+    }
+}
+
+class UserService {
+    private users: User[] = [];
+
+    createUser(user: User): void {
+        console.info("createUser");
+        this.users.push(user);
+    }
+
+    readUser(id: number): User | undefined {
+        console.info("readUser");
+        return this.users.find(user => user.id === id);
+    }
+
+    updateUser(id: number, updatedUser: User): void {
+        console.info("updateUser");
+        const index = this.users.findIndex(user => user.id === id);
+        if (index !== -1) {
+            this.users[index] = updatedUser;
+        }
+    }
+
+    deleteUser(id: number): void {
+        console.info("deleteUser");
+        this.users = this.users.filter(user => user.id !== id);
+    }
+}
+```
+
+</TabItem>
+
+<TabItem value="result" label="Transformed Code">
+
+```ts title="Transformed source code" showLineNumbers
+class User {
+    id: number;
+    name: string;
+    email: string;
+
+    constructor(id: number, name: string, email: string) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+    }
+}
+
+class UserService {
+    private users: User[] = [];
+
+    createUser(user: User): void {
+        this.users.push(user);
+    }
+
+    readUser(id: number): User | undefined {
+        return this.users.find(user => user.id === id);
+    }
+
+    updateUser(id: number, updatedUser: User): void {
+        const index = this.users.findIndex(user => user.id === id);
+        if (index !== -1) {
+            this.users[index] = updatedUser;
+        }
+    }
+
+    deleteUser(id: number): void {
+        this.users = this.users.filter(user => user.id !== id);
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+You can see that all calls to **`console.info()`** with a string argument were removed from the source code (lines 17, 22, 27, 35).
+
+:::warning
+
+Since the beginning and end of the file are not valid anchors in snippet scope patterns, **using ellipsis operators at the beginning or end of this type of pattern is invalid**, unlike file scope patterns.
+
+:::
+
+## **Constructs Supported by Transformation Operators**
+
+Transformation operators are supported in the main constructs of the languages supported by the engine. This means that when you create a transformation pattern, you can use the operators in any valid code snippet of the language where a construct that supports transformation operators occurs. Below, you will find a list by language of constructs that support transformation operators. Therefore, if the construct you want to use is not listed, it will not be possible to use transformation operators.
+
+
+<br/>
+
+import CustomDocCard from '@site/src/components/MdxComponents/CustomDocCard';
+import CustomDocCardList from '@site/src/components/MdxComponents/CustomDocCardList';
+
+<CustomDocCardList>
+  <CustomDocCard title="Supported Constructs in TypeScript" description="See supported Constructs in TypeScript" link="/create-use/create-content/declarative-hooks/code-transformation/typescript-lang.md" />
+  <CustomDocCard title="Supported Constructs in HTML" description="See supported Constructs in HTML" link="/create-use/create-content/declarative-hooks/code-transformation/html-lang.md" />
+  <CustomDocCard title="Supported Constructs in Java" description="See supported Constructs in Java" link="/create-use/create-content/declarative-hooks/code-transformation/java-lang.md" />
+</CustomDocCardList>

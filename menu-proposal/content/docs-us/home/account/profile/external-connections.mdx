@@ -1,0 +1,141 @@
+---
+title: External Connections
+sidebar_position: 3
+description: Configure SCM Access.
+---
+
+> In this section, you will find how to configure your SCM (Source Code Management) Access on StackSpot.
+
+:::warning
+
+You only need to make this configuration **if your organization** decides that users should manage access to the [**SCM**](home/account/organization/scm-integration/index.md) via PAT (Personal Access Token) on an **individual basis**.
+
+If your company decides the organization itself will manage the <Tooltip text="Source code management (SCM) tracks changes to a code repository, keeping a record of alterations and assisting in managing conflicts that arise when integrating updates from different contributors.">SCM</Tooltip> , **this setting will not appear** in the menu of your StackSpot Platform account.
+:::
+
+When configuring the External Connections, you integrate your <Tooltip text="Source code management (SCM) tracks changes to a code repository, keeping a record of alterations and assisting in managing conflicts that arise when integrating updates from different contributors.">SCM</Tooltip> (Source Code Management) with StackSpot. It allows you to commit to your organization's repository to create [**Applications**](home/stackspot/main-concepts.md#application) or [**Infrastructure**](home/stackspot/main-concepts.md#shared-infrastructure).
+
+Follow the steps below to configure:
+
+## **Configure External Connections** 
+
+**Step 1.** Access the [**Account Portal**](http://myaccount.stackspot.com) directly; or after [**logging into the StackSpot Portal**](https://app.stackspot.com/), click on your **profile avatar**.
+
+**Step 2.** Select the **'My Profile'** option from the displayed menu;
+
+**Step 3.** In the Account Portal main menu, click on **'External Connections'**; 
+
+**Step 4.** Click on the edit icon in the right corner of the card and fill out the fields with the information below:
+
+- **User name**: Your GitHub user name.
+
+- **Personal Token**: A long number and letter string. Log into your SCM provider (GitHub, Azure, etc.) to generate this token.
+
+:::info
+
+[**To find each provider's data, check the Generate Personal Access Tokens section**](#generate-personal-access-tokens).
+
+:::
+
+**Step 5.** Click on the **'Save'** button.
+
+**If you don't have a generated token, follow the instructions below:** 
+
+## **Generate Personal Access Token**
+
+### **On GitHub**
+
+> You need to have writing permission on the workflow repository to follow the next steps.
+
+You need to generate a PAT on GitHub. Follow the instructions:
+
+1. [**Access your GitHub account and login**](https://github.com/);
+2. On the top right menu, click on your photo and then on **'Settings'**;
+3. On the left side menu, at the end of the menu, click on **'Developer Settings'**;
+4. On the left side menu, click on **'Personal Access Tokens'** then on the same menu, click on the option **'Tokens Classic'**;
+5. Within the section, on the left of the page, locate and click on the button **'Generate new Token'** and select the option **'Generate new Token (classic)'**;
+6. The form **"New personal access token (classic)"** is loaded, then fill in the field **'Note'** with the description of the token purpose. Then click the **"Expiration"** button and select or set an expiration date for your token;
+7. Then, in the **"Select scopes"** section, check the following checkboxes in sequence:
+
+- All **"repo"** options:
+  - **repo:statusAccess**;
+  - **repo_deployment**;
+  - **public_repo**;
+  - **repo:invite**;
+  - **security_events**.
+- The option **"workflow"**;
+- The **"write:packages"** option.
+
+Check the example below:
+
+<img src="/img/github-pat-permissions.png" alt="Imagem com as permissões 'repo, workflow e write:packages selecionadas'" title="PAT scope" width="500" />
+
+:::info
+The scopes may depend on the activities your company needs to perform. So, select all the ones that are necessary for you.
+:::
+
+8. At the bottom of the page click on the **'Generate Token'** button. The generated code will be displayed temporarily, copy and save the generated code.
+
+9. **(Optional)** If your organization has login via **SSO** (*Single Sign On*) configured, authorize your Token in your organization:
+
+- On GitHub, go to **'Settings'** and then **'Developer Settings'** and in your token, click on **'Configure SSO'**:
+
+<img src="/img/authorize-sso.gif" title="Authorize SSO" alt="Page located in the Settings/ Developer Settings > Personal access tokens (classic) menu that demonstrates the option to authorize SSO on the token." width="500px" />
+
+Then, check if your token was authorized as per the example below:
+
+<img src="/img/check-sso-auth.png" title="Check SSO" alt="Page located in the Settings/ Developer Settings > Personal access tokens (classic) menu to consult the authorized token." width="500px" />
+
+Then, check if your token was authorized.
+
+For more information about the Personal Access Token, see [**GitHub documentation**](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token).
+
+### **Via Azure DevOps**
+
+:::caution
+In your organization, the user who can generate the token is within the group > **'Project Collection Administrators'**. Confirm that you have this permission in **'Permissions'** Azure section.
+:::
+
+1. Access your Azure account; Go to the address: `https://dev.azure.com/{Your_Organization}` and log in;
+2. In the upper right menu, click on **'User Settings'** and then click on **'Personal access tokens'**;
+3. Click the **'New Token'** button and fill in the following fields:
+
+<br/>
+
+- **Name:** Enter a name for the token;
+- **Organization:** Select your organization;
+- **Expiration (UTC):** Select or set an expiration date for the token;
+- **Scopes:** Select from **'Full access'** for full access or **'Custom defined'** to choose permissions. If you choose **'Custom defined'**, check the following items:
+  - **Auditing:** Read Audit Log;
+  - **Build:** Read & execute;
+  - **Code:** Read & Write;
+  - **Packaging:** Read & Write;
+  - **Pipeline Resources:** Use & manage;
+  - **Project and Team:** Read, write & manage.
+  - **Release:** Read, write & execute;
+  - **Services Connections:** Read, query & manage.
+
+  <br/>
+
+4. To finish, click on the **'Create'** button. The token code will be displayed temporarily. **Save the generated code.**
+
+### **Via GitLab**
+
+1. Access your [**GitLab**](https://gitlab.com/users/sign_in) account and log in;
+2. In the left side menu, select your **Avatar**;
+3. Select **Edit Profile**;
+4. In the left side menu, select **Access Tokens**;
+5. Select **Add new token**;
+6. Enter the name and expiration date for the token. If you do not enter a due date, the due date is automatically set to 365 days after the current date;
+7. Select the following scopes:
+- `write_repository`;
+- `create_runner`; 
+- `api`.
+
+:::info
+Scopes may depend on the activities your company needs to perform. Therefore, select all the ones that are necessary for you.
+[**Access the full list of GitLab scopes**](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#personal-access-token-scopes).
+:::
+
+8. Select **Create Personal Access Token**. The generated code will be displayed temporarily, copy and **save the generated code**.
+

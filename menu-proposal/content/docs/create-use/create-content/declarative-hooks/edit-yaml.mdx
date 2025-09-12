@@ -1,0 +1,218 @@
+---
+title: edit-yaml
+---
+
+> Nesta seção, você encontra: Referência de um Hook Declarativo do tipo edit-yaml.
+
+<br/>
+
+Um Hook Declarativo do tipo **`edit-yaml`** define alterações feitas em arquivos YAML existentes. Confira um exemplo de definição de um hook declarativo do tipo **`edit-yaml`**:
+
+```yaml 
+name: "hook-edit-yaml"
+description: Test edit-yaml in hooks
+types:
+  - app
+spec:
+  inputs:
+    - label: Just a text
+      type: text
+      name: yaml_body
+    - label: Just a Tag
+      type: text
+      name: yaml_tag
+  hooks:
+    - type: edit-yaml
+      trigger: after-render
+      path: package.yaml
+      indent: 4
+      encoding: utf-8
+      changes:
+        - yamlpath: "$.scripts"
+          update:
+            value: |
+              {
+              "test": "ola 123",
+              "ola": "como vai você"
+              }
+        - yamlpath: "$"
+          remove:
+            - name: private
+            - name: devDependencies
+        - yamlpath: "$.log"
+          clear: true
+        - yamlpath: "$.spec.components[?name = '{{INTERPOLAR-INPUT-AQUI}}']"
+          update:
+            value: |
+              traits:
+              - type: teste
+                properties:
+                  port: {{port}}  
+```
+
+## **Ações Disponíveis**
+
+### **`path:`**   
+Define o caminho do arquivo que será editado. O caminho pode ser composto por expressões [**Jinja**](https://jinja.palletsprojects.com/en/3.1.x/).
+
+```yaml 
+path: package.yaml
+```
+___
+
+### **`trigger:`**   
+Campo para definir gatilhos que informam o momento em que a edição de arquivos deve ocorrer.
+
+**`before-input`**:   
+Executa o Hook Declarativo antes de receber os parâmetros de entrada da pessoa usuária.
+
+```yaml 
+trigger: before-input
+``` 
+
+**`before-render`**:   
+Executa o Hook Declarativo antes do Template gerar arquivos no projeto.
+
+```yaml 
+trigger: before-render
+```
+
+**`after-render`**:   
+Executa o Hook Declarativo após o Template gerar arquivos no projeto.
+
+```yaml 
+trigger: after-render
+```
+___
+
+### **`enconding:`**   
+Define o tipo de encoding a ser gravado no arquivo, e aceita os formatos [`ascii, utf-8, utf-16`]. O valor padrão é o `utf-8`.
+
+```yaml 
+encoding: utf-8
+``` 
+___
+
+### **`indent:`**   
+Define o número de espaços para a indentação do documento gerado. O valor padrão de espaços é **`2`**.
+
+```yaml
+indent: 4
+```
+
+> Usar somente inteiros de `1` até `9`.
+___
+
+### **`changes:`**   
+É uma lista de ações de edição que serão executadas na ordem em que aparecem. E o seu bloco tem como **obrigatório** o parâmetro **`yamlpath`**.  
+
+:::info
+Durante o processo de pesquisa no atributo **`changes`**, todos os nós que correspondem aos critérios (atributo **`yamlpath`**) são alterados de uma só vez. Você pode fazer várias alterações em um arquivo apenas usando expressões.
+
+Confira algumas expressões aceitas:
+
+<details>
+<summary><strong>Confira as expressões detalhadas</strong></summary>
+
+| **Expressão** | **Descrição** |
+| :---: | :---: |
+| `@` | Define o objeto do elemento atual. |
+| `$` | Define o objeto do elemento raiz. | Exemplo |
+| `()` | Esta é uma expressão de script, usando o mecanismo de script subjacente. |
+| `[início:fim]` | Retorna uma cópia de parte de um array de um subarray criado entre as posições inicial e final (final não está incluído) de um array original. |
+| `?()` | Aplica o filtro à expressão do script. |
+| `[]` | Este é um operador filho que foi usado em expressões. |
+| `..` | Esta é uma descida recursiva. |
+| `*` | É usado em elementos de objeto independentemente de usar seus nomes. |
+| `[]` | Em json e javascript, é o operador do array nativo. |
+| `[,]` | O caminho Json nos permite um conjunto de índices e nomes de array. |
+
+</details>
+:::
+
+#### **`yamlpath:`**   
+Permite inserir a linguagem de busca do JSON no arquivo YAML. O seu uso é **Obrigatório**.  
+
+```yaml 
+changes:
+  - yamlpath: "$.packages.version"
+    ...
+```  
+
+> Se necessário, consulte o [**Suporte do yamlpath (jsonpath)**](https://github.com/h2non/jsonpath-ng#jsonpath-syntax)  
+
+É possível interpolar os valores do campo `yamlpath` com [**Jinja**](create-use/create-content/yaml-files/jinja.mdx):
+
+```yaml
+hooks:
+  - type: edit-yaml
+    trigger: after-render
+    path: app.yaml
+    indent: 2
+    encoding: utf-8
+    changes:
+      - yamlpath: "$.spec.components[?name = '{{INTERPOLAR-INPUT-AQUI}}']"
+        update:
+          value: |
+            traits:
+            - type: teste
+              properties:
+                port: {{port}}
+```                
+
+**`update:`**   
+Altera ou acrescenta um item dentro de um resultado de um **`yamlpath`**. Os campos disponíveis são **`value`** ou **`snippet`**.  
+
+**`value`**   
+Recebe o valor para ser adicionado ao YAML.  
+
+```yaml 
+  update:
+    value: "qa"
+```  
+
+**`snippet`**   
+Recebe o snippet para ser adicionado ao YAML.  
+
+```yaml 
+update:
+    snippet: snippets/fragment.yaml
+```  
+
+**`remove:`**   
+Remove um elemento de dicionário. O campo disponível é o **`name`**. 
+
+**`name:`**   
+Recebe o nome do elemento a ser removido do dicionário YAML. É possível interpolar os valores do campo `name` com [**Jinja**](create-use/create-content/yaml-files/jinja.mdx). 
+
+```yaml 
+- yamlpath: "$.scripts"
+  remove:
+    - name: prepare
+```
+
+**`clear:`**   
+Remove todo o conteúdo do nó YAML, dado o contexto do **`yamlpath`**. Os valores aceitos são `true` ou `false`.
+
+```yaml 
+  - yamlpath: "$.devDependencies"
+    clear: true
+
+```
+
+#### **`when:`** 
+Ação condicional que avalia se a inserção será efetivada. A opção disponível é **`not-exists`**, que recebe o texto ou arquivo para serem avaliados pela condição.   
+
+**`not-exists:`**   
+Checa se os valores informados nos campo **`value`** existem no arquivo. Caso exista, as ações **`update`**, **`remove`** e **`clear`**  não serão efetivadas. 
+
+```yaml
+hooks:
+  - yamlpath: "$.some"
+    update:
+      value: |
+        not-existing:
+          item: 2
+    when:
+      not-exists: "$.some.not-existing"
+```

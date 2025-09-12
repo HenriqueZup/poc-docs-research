@@ -1,0 +1,181 @@
+---
+title: "Configurar SSO"
+sidebar_position: 1
+description: Detalhes sobre configuração de Single Sign-On (SSO) da sua conta.
+--- 
+
+> Nesta seção, você encontra como configurar o Single Sign-On (SSO) na sua Conta.
+
+<br/>
+
+Você pode configurar a integração com o provedor de identidades da sua empresa (IDP). Isso é necessário para qualquer usuário que faça o login via <Tooltip text="Single sign-on (SSO) é um mecanismo de autenticação que permite aos usuários acessar múltiplas aplicações com um único conjunto de detalhes de login.">**SSO**</Tooltip> da [**sua organização pelo Portal**](https://app.stackspot.com/login).
+
+Você pode configurar **métodos de SSO múltiplos**, no entanto, você **só pode manter um ativo**.
+
+## **Requisito**
+
+[**Para prosseguir, você deve ter permissão de Account Holder ou Admin**](home/account/organization/access-management/roles.mdx).
+
+
+Siga os passos:
+
+## **Configurar um SSO (Single sign-on)**
+
+> [**Acesse o Portal da Conta StackSpot**](http://myaccount.stackspot.com) para completar os passos.
+
+<br/>
+
+**Passo 1.** [**Faça login no Portal da StackSpot EDP**](https://app.stackspot.com/login);
+
+**Passo 2.** Clique no **seu avatar de perfil** e selecione a opção **'Organização'** no menu exibido; 
+
+**Passo 3.** No menu principal do Portal da Conta, clique em **'Identidade e segurança'** e selecione **'Single sign-on (SSO)'**; 
+
+![Captura de tela do Portal da Conta StackSpot na seção Organização. Um retângulo vermelho destaca a seção 'Identidade e Segurança' e a subseção 'Single Sign-On (SSO)' no menu principal.](/img/config-sso-1.png)
+
+**Passo 4.** Clique em **'Configurar SSO'**. 
+
+<br/>
+
+**Passo 5.** Escolha como configurar seu SSO. Existem dois métodos de autenticação na StackSpot:
+
+- **SAML V2.0**
+- **OpenID Connect V1.0**
+
+Selecione um, clique em **'Próximo'** e siga os passos para cada método:
+
+### **Configurar SSO via SAML V2.0**
+
+Security Assertion Markup Language (SAML) é um padrão aberto para a troca de dados de autenticação e autorização entre as partes. Para saber mais sobre esse método de integração, [**consulte a documentação da Oracle**](https://www.oracle.com/security/cloud-security/what-is-saml/).
+
+Confira os passos para configurar o SSO via SAML V2.0:
+
+**Passo 1.** Você pode configurar vários métodos de SSO. Primeiro, nomeie o que está sendo configurado atualmente, escrevendo seu nome no campo **'Nome do SSO'**; 
+
+**Passo 2.** Faça upload de um arquivo XML com seu IDP (descritor de entidade SAML) para configurar a integração. Clique no botão **'Selecionar Arquivo'** para fazer o upload e, em seguida, clique em **'enviar arquivo'**;
+
+:::info Informação Adicional
+O arquivo XML no **Passo 2** ajuda a preencher automaticamente alguns campos de configuração. 
+::: 
+
+**Passo 3.** Depois do upload, revise **as informações** nos campos abaixo do botão **'Selecionar Arquivo'**:
+
+- **URL de Redirecionamento (opcional);**
+- **URL do Serviço de Logon Único:** endpoint SAML que inicia o processo de autenticação.
+- **ID da Entidade**;
+- **Certificado de configuração de string**;
+- **URL do Serviço de Logout Único (opcional):** endpoint de logout SAML.
+
+Verifique as informações e clique em **'Salvar'**.
+
+Confira os passos no GIF a seguir: 
+
+![GIF dos passos acima de configurar SSO via SAML](/img/sso-saml.gif)
+> GIF está em inglês. 
+
+<br/>
+
+:::caution Cuidado!
+
+Você **não pode editar informações de um arquivo de SSO (Single Sign-On)** depois que você fez a configuração. Você precisa **desativar o SSO ou removê-lo** e fazer a configuração novamente desde o início com as alterações que você deseja. 
+
+::: 
+
+Agora, para terminar a configuração do Single Sing-on via SAML 2.0 e poder ativá-lo, você precisa:
+
+- [**Configurar os Atributos de Afirmação SAML**](#configurar-atributos-de-afirmação-saml). 
+
+
+#### **Configurar Atributos de Afirmação SAML**
+
+Após configurar o método de SSO via SAML (Security Assertion Markup Language), você deve configurar seus Atributos. Eles indicam onde a StackSpot pode obter informações dos usuários no login.
+
+Siga os passos para configurar:
+
+**Passo 1.** Clique no **seu avatar de perfil** e selecione a opção **'Organização'** no menu exibido; 
+
+**Passo 2.** No menu principal do Portal da Conta, clique em **'Identidade e segurança'** e selecione **'Single sign-on (SSO)'** e **selecione** o SSO o qual você quer configurar os Atributos; 
+
+**Passo 3.** Clique na guia **'Atributos'** que está logo após a guia **'Informações do Provedor de Identidade'**;
+
+**Passo 4.** Clique no botão **'Editar'** e preencha os campos com os seguintes dados: 
+
+- E-mail; 
+- Primeiro Nome; 
+- Último Nome.
+
+Clique em **'Salvar'**. 
+
+Agora você pode [**configurar Mapeamentos de Grupo**](home/account/organization/sso-group-mapping/group-mapping.mdx). 
+
+
+### **Configurar SSO via OpenID connect V1.0**
+
+OpenID Connect (OIDC) é um protocolo para autenticação de identidade. [Saiba mais sobre este método na Documentação da Microsoft](https://www.microsoft.com/en-us/security/business/security-101/what-is-openid-connect-oidc).
+Siga as etapas para configurar:
+
+**Passo 1.** Para realizar a integração, faça **upload de um arquivo JSON** com os metadados do seu provedor de identidade OpenID Connect. 
+Clique no botão **'Selecionar Arquivo'** para fazer o upload e, em seguida, clique **'Enviar arquivo'**. Dessa forma, as informações serão carregadas automaticamente. 
+
+Em seguida, clique em **'Próximo'**.
+
+**Passo 2.** Agora, você deve revisar as informações no formulário e **preencher três campos**: Nome do SSO, Client ID e Client Secret. 
+
+Confira todos os campos do formulário a seguir: 
+
+- **Nome do SSO**: você pode configurar vários métodos de SSO. Então, nomeie o que está sendo configurado atualmente.
+- **URL de Redirecionamento**; 
+- **URL de Autorização**: o endpoint de URL de autorização exigido pelo protocolo OIDC.
+- **URL do Token**: o endpoint URL do Token exigido pelo protocolo OIDC.
+- **URL de informações do Usuário**; 
+- **URL JWKS**; 
+- **URL de Revogação do Token**; 
+- **URL de Sessão Final (opcional)**;
+- **ID do Cliente**: seu ID do Cliente registrado com o Provedor de Identidade;
+- **Secret do Cliente**: seu segredo do Cliente registrado com o Provedor de Identidade. 
+
+**Passo 3.** Verifique as informações e clique em **'Próximo'**. 
+
+**Passo 4.** Este passo é **opcional e pode ser feito em outro momento.**
+
+Clique em **'Criar Mapeamento de Grupo'** para simplificar o gerenciamento de acesso associando grupos de permissão de Provedores de Identidade externos com os grupos internos do sistema dentro da StackSpot.
+
+Você também pode clicar em **Avançar** e configurar posteriormente. [**As instruções de configuração estão na seção de Mapeamento de Grupo**](home/account/organization/sso-group-mapping/group-mapping.mdx).   
+
+![GIF dos passos acima de configurar SSO via OpenID](/img/sso-openid.gif)
+> GIF está em inglês. 
+
+<br/>
+
+:::caution Cuidado! 
+
+Você **não pode editar informações de um arquivo de SSO (Single Sign-On)** depois que você fez a configuração. Você precisa **desativar o SSO ou removê-lo** e fazer a configuração novamente desde o início com as alterações que você deseja. 
+
+::: 
+
+## **Como ativar ou desativar um método de SSO (Single Sign-on)** 
+
+Você pode configurar métodos de SSO múltiplos, no entanto, apenas um pode estar ativo por vez. Para ativar um SSO, você deve desativar outro. 
+
+### **Requisitos** 
+
+- Se for SSO via SAML, você deve ter [**configurado seus Atributos**](#configurar-atributos-de-afirmação-saml). 
+
+Siga os passos:
+
+**Passo 1.** Clique no **seu avatar de perfil** e selecione a opção **'Organização'** no menu exibido; 
+
+**Passo 2.** No menu principal do Portal da Conta, clique em **'Identidade e segurança'** e selecione **'Single sign-on (SSO)'**;
+
+**Passo 3.** Selecione o SSO que deseja ativar ou desativar; 
+
+**Passo 4.** No menu à esquerda, clique na guia **'Configurações'**; 
+
+**Passo 5.** Agora você tem duas opções:
+
+- **Ative o botão de alternância** ao lado de **'Status do SSO'** para **ativar** o SSO; 
+- **Desative o botão de alternância** ao lado de **'Status do SSO'** para **desativar** o SSO. 
+
+## **Próximos Passos:** 
+
+- [**Configuração de Mapeamento de Grupo**](home/account/organization/sso-group-mapping/group-mapping.mdx)

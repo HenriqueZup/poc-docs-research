@@ -1,0 +1,156 @@
+---
+title: Account Members
+description: Learn about members management in your account.
+---
+
+> In this section, you will find details about members in the StackSpot Account.
+
+<br/>
+
+## **Overview**
+
+Members are users you add to your organization to collaborate with your StackSpot Account. In this section you learn:
+
+- How to add new members;
+- How to activate or block members;
+- How to manage account members.
+
+### **Requirements**
+
+- [You must have **Account Holder** or **SysAdmin permissions**](home/account/organization/access-management/roles.md);
+
+## **Add a member to your Account**
+
+:::warning
+If you have **configured your account's SSO** and integrated an **Identity Provider** (e.g. Azure AD) to manage the users, **the process for adding members is not as follows**.
+To find out how to import members from an Identity Provider into StackSpot, go to the guide [**SSO Setup**](home/account/organization/sso-group-mapping/sso-configuration.md).
+:::
+
+**Step 1.** Access the [**Account Portal**](http://myaccount.stackspot.com) directly via the link, or after logging into the [**StackSpot Portal**](https://app.stackspot.com/), click on your **profile avatar**;  
+
+**Step 2.** Select the **'Organization'** option from the displayed menu;  
+
+**Step 3.** In the main menu of the Account Portal, click on **Access Management**;  
+
+**Step 4.** Click on **'Members'**;
+
+**Step 5.** Click on the **'Add members'** button;
+
+**Step 6.** Fill out the information:
+
+- Username;
+- E-mail;
+- First name;
+- Last name;
+- Phone (optional).
+
+**Step 7.** Decide how you want the member to set up their account e-mail:
+
+- **Enable the 'Onboarding' button**: If you want the user to set up their e-mail by themselves. So, when you add the user, they will receive an e-mail to set up the account password.
+- **Disable the 'Onboarding' button**: If you want to set up the user password. Then, you need to inform them using an external tool like your enterprise Chat.
+
+**Step 8.** Decide whether the member will be able to log in to the Account as soon as you add them to your organization:  
+
+- **Enable the 'Active User' button** so that the member you have added can already log in.
+- **Disable the 'Active User' button** so that the member you have added cannot log in yet.
+
+Click on the **'Save'** button.
+
+## Members information management
+
+You can **edit your Account Member's information** after you add them to your organization. See the steps to do that below:
+
+**Step 1.** Access the [**Account Portal**](http://myaccount.stackspot.com) directly via the link, or after logging into the [**StackSpot Portal**](https://app.stackspot.com/), click on your **profile avatar**;  
+
+**Step 2.** Select the **'Organization'** option from the displayed menu;  
+
+**Step 3.** In the main menu of the Account Portal, click on **Access Management**;  
+
+**Step 4.** Click on **'Members'**;
+
+**Step 5.** In this section, you can find a list of all your Account Members. Check below the information you can see from each member: 
+
+- Users ID;
+- Username;
+- E-mail;
+- **Member status:** Active/blocked. Here you can activate or block a member on your account. 
+- **Reset password**: In this section, you can reset your Account member's password. To do that, click on the **'Reset Password'** at the end of the page.
+
+**Step 6.** Click on the member you want to manage or edit information. **See how to do each configuration below:**
+
+### Edit a member's data
+
+In the **'User information'** tab you can edit any information you configured when you first added the member.
+Follow the instructions to do that:
+
+1. **Click on the information fields** and edit it as you like;
+2. After you edit, click on the **'Save'** button.
+
+### **Edit a member's Group**
+
+In the [**'Groups'**](home/account/organization/access-management/groups.md) tab you can add the member to a group.
+Follow the instructions to do that:
+
+1. Click on the **'Groups'** tab;
+2. Click on the **'Add Groups'** button;
+3. Select a Group from a list that shows up on the right side of the screen.
+
+### Add or remove a role to a member
+
+In the **'Roles'** tab you can assign a [**role**](home/account/organization/access-management/roles.md) to the member.
+
+:::tip
+It's a good practice to **add a member to the Group** instead of adding a role and a resource directly to them.
+
+See the steps to do that on the [**Groups' page**](home/account/organization/access-management/groups.md).
+::: 
+
+#### **To add a new role**
+
+Follow the instructions:
+
+1. Click the **'Add role'** button.
+2. Select the roles and click on the **'Add'** button.
+
+#### **To remove a role**
+
+Follow the instructions:
+
+1. Click on **'Remove'** button next to the role you want to remove.
+2. Confirm the removal.
+
+### **Manage a member's resources**
+
+In the **'Resources'** tab, you can see what resources an account member has permission to work on.
+
+#### **Example:**
+
+A member of your account has the role of [**Content Creator**](home/account/organization/access-management/roles.md), but he doesn't have permission to create Plugins within a Studio called **'Test Studio'** that was recently created.
+
+For him to be allowed to create Plugins within the test Studio, you have to add the resource to the member.
+
+**In this resource tab,** you can choose/assign which Studios the member can create Plugins in.
+
+In the case of this example, you would **assign** the resource of: **create Plugins within the test Studio.**
+
+**In this tab, you can both add a new resource to the account member or delete it.**
+
+See the instructions below:  
+
+#### **To add a resource**
+
+**Step 1:** Click on the **'Add Resource' button;
+
+**Step 2.** Search for the resource (or resources) you want to add and select it;
+
+**Step 3.** Click on the **'Add'** button.
+
+#### **To delete a resource**
+
+Click the **'Remove'** button next to the resource you want to delete.
+
+Once you've set everything up, click the **'Save'** button.
+
+**Next Steps:**
+
+- [**Create Groups**](home/account/organization/access-management/groups.md) to manage your Account members roles and permissions.

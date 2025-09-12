@@ -1,0 +1,199 @@
+---
+title: Activities
+description: Learn more about the Activities dashboard.
+---
+
+> In this section, you will find how to check information about your Applications or Shared Infra activities.
+
+<br/>
+
+In the Activities section, you can check information about the activities on your Application or Infrastructure. These activities can be:
+
+- Workflows; 
+- Actions;
+- Deploy;
+- Rollback;
+- Destroy;
+- Infrastructure changes.
+
+To **view the activities** performed in the repository of your Application [**that was deployed via the pipeline**](deployment/deploy/register-app-deployment.md) or [**Self-hosted**](deployment/deploy/self-hosted-runtime.md)**, you need to configure a **Webhook inside GitHub** that allows these activities to be registered on the StackSpot EDP platform. Follow the steps below to set this up:
+
+:::warning 
+
+If you deployed using the [**StackSpot Runtime Engine**](deployment/runtime-engine/intro-runtime-engine.md), you can automatically view your Application's activities on the StackSpot EDP platform. In this case, **you don't need to configure the Webhook**.
+
+However, the deployment configuration flow in StackSpot is available only for:
+
+1. **Enterprise accounts created before 2024**;
+2. [**Personal**](home/account/intro-account.md) accounts.
+
+**Enterprise accounts created from January 2024** must perform deployments via [**Runtime Self-hosted**](deployment/deploy/self-hosted-runtime.md).
+
+:::
+
+## **Configuring Webhook to register activities of the Application repository deployed via pipeline or Self-hosted**
+
+### **Requirements**
+
+1. **Permissions**: You need permission to **create and edit repositories** in the GitHub account.
+2. **Account-slug validation in the URL**: The account-slug must be valid and registered on StackSpot.
+3. **Repository registration**: The repository linked to the webhook must be registered within an Application.
+4. **IP restrictions**: The webhook URL is accessible only from GitHub IPs; it cannot be executed locally.
+
+### **Steps to configure**
+
+**Step 1.** Log in to your GitHub account and **access the repository of your Application** that you want to log into the StackSpot EDP platform.
+
+**Step 2.** Inside the repository, click on the **Settings** tab, as shown in the image below.
+
+![Screenshot of a repository in GitHub with a square highlighting the 'Settings' tab](/img/setup-webhook-activities-1.png)
+
+**Step 3.** Inside Settings, click on **Webhooks** from the left-side menu.
+
+**Step 4.** In Webhooks, click **Add Webhook**.
+
+**Step 5.** Fill out the fields in the opened form as follows to configure the Webhook:
+
+- **Payload URL**: Enter the URL `https://workflow-api.v1.stackspot.com/accounts/account-slug/github/webhook`. Replace `account-slug` with your **StackSpot account's slug**.
+
+:::info
+
+- If your account is **Enterprise**, your StackSpot account slug is usually your company's name.
+- If your account is **Personal**, your slug is your name. If you have more than one name, separate them with hyphens.
+:::
+
+- **Content type**: Select **'application/json'**;
+- **Secret**: Leave this field blank;
+- **SSL Verification**: Choose **'Enable SSL verification'**;
+- **Which events would you like to trigger this webhook?**: Select the events you want to send to StackSpot. Click on **Let me select individual events** and select **'Workflow runs'** and **'Workflow jobs'**.
+- **Active**: Leave the checkbox checked.
+
+**Step 6.** Click the **'Add webhook'** button.
+
+You've have configured the Webhook.
+
+## **Finding the Activities section in the Portal**
+
+To find the Activities section, follow these steps:
+
+**Step 1.** Go to your Workspace;
+
+**Step 2.** On the main menu:
+
+- Click on **'Applications'** and select the Application you want to check the activities for, or
+- Click on **'Infrastructure'** and select the one for which you want to check the activities.
+
+**Step 3.** In the Application or the Infrastructure section, on the main menu, click on **'Activities'**;
+
+You are in the Activities dashboard.
+
+The dashboard is divided into tabs. To view all activities in one place, click on 'All Activities'.
+
+Check more details about each subsection below:
+
+## **All Activities**
+
+On the **'All Activities'** tab, you can follow the status of Plugins in deployment.
+
+In this section, you can see other details, such as:
+
+- Plugins history;
+- Date;
+- Version;
+- If there is an error, the error message will be displayed.
+- Status of each Plugin. It can be:
+  - **Success**: The Plugin was successfully deployed.
+  - **Error**: There was a deployment error in the environment where the Plugin was to be applied. [**For more information about errors, refer to the Troubleshooting section**](home/troubleshooting.md) and possible solutions.
+
+
+![Captura de tela do portal da StackSpot EDP exibindo a seção de atividades. A interface mostra uma lista de atividades recentes realizadas no ambiente, com informações como data, hora e descrição de cada ação.](/img/activities.png)
+
+
+## **Actions Activities** 
+
+On the **'Actions'** tab under Activities, you can track:
+
+- The status of running Actions;
+- Application provisioning;
+- Infrastructure resources.
+
+You can check the details of each Action, such as:
+
+- History;
+- Status;
+- View who performed the Action.
+
+## **Deployment Activities**
+
+In this section, you can:
+
+- Track the history of deployments performed with each version;
+- Track the status of each deployment performed;
+- Identify who made the deployment;
+- Version the **Rollback of your Application or Infrastructure**.
+
+### **Steps to Rollback**
+
+Follow the steps below:
+
+**Step 1.** Go to the **'Deploy'** tab under Activities;
+
+**Step 2.** Click on the down arrow icon button. It is on the right corner of the deploy activity you want to rollback;
+
+**Step 3.** Click on the **'Rollback'** button;
+
+**Step 4.** Check the current and previous version summary screen information. Then, click on the **'Rollback'** button again. 
+
+Rollback takes a few minutes, but you can also check the status of this activity on the Activity Dashboard.
+
+
+<!--
+## Drift Activities
+
+On the **Drifts** tab, you track Drifts detected by Runtime Engine. You can perform Auto Reconciliation.  
+
+On this screen, you can:
+
+- Track the history and status of each Drift;  
+- Identify who performed the drift;
+- Identify the Reconciliation status.
+
+### **Reconciliation**
+
+Follow the steps:
+
+**Step 1.** Go to the **'Drift'** tab under Activities;
+
+**Step 2.** Click on the arrow down icon button. It is on the right corner of the Drift you want to make the Reconciliation;  
+
+**Step 3.** Click on the **'Reconcile'** button;
+
+**Step 4.** Check the information about the current value and the correct value. After that, click on the **"Reconcile"** button again;
+
+Reconciliation may take a few minutes, but you can also check the status of this activity in the Activity Dashboard.
+
+For more details about Drift, see:
+
+- [**Drift Detection**](deployment/runtime-engine/drift-detection.md).
+-->
+
+## **Workflows Activities**
+
+On the Workflows tab, you can track Workflow events generated from the **`stk create app`** and **`stk create infra`** commands.
+
+On this screen, you can:
+
+- View the Workflow status;
+- Identify who started it and what time it started;
+- Identify which Actions the Workflow is running;
+- Check the Workflow's execution logs.
+
+### **Workflow execution logs**
+
+Follow the steps below to view:
+
+**Step 1.** Go to the **'Workflow'** tab on Activities;
+
+**Step 2.** Select the Workflow you want to view the run logs;
+
+**Step 3.** Click on the **'Go execution log'** button.

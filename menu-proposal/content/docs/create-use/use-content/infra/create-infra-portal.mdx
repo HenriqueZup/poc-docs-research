@@ -1,0 +1,277 @@
+---
+title: Criar Infraestrutura via Portal
+description: Como criar Infraestrutura via Portal.
+---
+
+> Nesta seção, você encontra um guia de como criar a sua Infraestrutura no Portal da StackSpot.
+ 
+<br/>
+
+Uma Infraestrutura é gerada por Stacks que possuem Plugins de Infraestrutura que geram as suas peças de infraestrutura (código IAC). Ela é semelhante a uma [**Aplicação**](create-use/use-content/application/index.mdx) que gera apenas o código fonte a partir dos Plugins de Aplicação.
+
+### **Pré-requisitos**
+
+- Ser membro de um Workspace.
+- Estar **logado** em uma conta StackSpot.  
+- Acessar um [**Estúdio**](create-use/studio/create-studio.mdx).
+- Ter uma [**Stack e um Starter**](create-use/create-content/stack/create-stack.mdx).
+- Já ter [**ambientes criados**](home/account/organization/create-env.mdx).
+- [**Já ter configurado o Deployment via Self-Hosted para configurar e conectar os ambientes na Conta Cloud**](deployment/deploy/overview.mdx)
+- Já ter [**SCM configurado**](home/account/organization/scm-integration/index.mdx) (Quem faz essa configuração é a pessoa responsável por **administrar sua conta**).
+- Caso a sua conta seja Enterprise e o administrador decida que que os usuários devem **gerenciar o acesso ao <Tooltip text="Source code management (SCM) rastreia alterações em um repositório de código, mantendo um registro de modificações e auxiliando na gestão de conflitos que surgem ao integrar atualizações de diferentes colaboradores.">SCM</Tooltip> via PAT (Personal Access Token) de forma individual**, você deve configurá-lo em [**'Conexões Externas'**](home/account/profile/external-connections.mdx).
+
+<br/>
+
+**Se você não cumprir algum dos requisitos acima, pare de seguir esse guia e acesse o link do requisito que falta.**
+
+<br/>
+
+## Siga os passos para criar sua Infraestrutura no Portal
+
+**Passo 1.** Faça login no [**Portal StackSpot EDP**](https://app.stackspot.com/pt/login); 
+
+**Passo 2.** Clique no botão **'Criar'** e selecione a opção **’Infraestrutura’**; 
+
+:::warning Atenção!
+
+- Caso a pessoa administradora da sua Conta **não tenha configurado o SCM**, você não poderá seguir. Para mais detalhes,  [**confira a seção Configurar SCM**](home/account/organization/scm-integration/index.mdx).
+
+- Caso a pessoa administradora da sua Conta decida que os usuários devem **gerenciar o acesso ao SCM via PAT (Personal Access Token) de forma individual**, você deve configurá-lo em [**'Conexões Externas'**](home/account/profile/external-connections.mdx).
+:::
+
+**Passo 3.** Selecione:
+
+- **O Workspace em que você quer criar sua Infraestrutura**;  
+- Uma **Stack base** de infraestrutura e **sua versão**;  
+- Um [**Starter**](home/stackspot/main-concepts.mdx#starter), que é um modelo pré-definido com as especificações de um conjunto de Plugins. **Escolher um Starter é opcional**.
+
+Clique no botão **‘Próximo’**.
+
+Confira todos os passos no GIF:
+
+![](/img/create-shared-infra-starter.gif)
+
+<br/>
+
+:::info
+
+- A Stack de Infraestrutura já foi criada, ou seja, agora você só precisa configurá-la e enviá-la.
+
+- Você verá uma lista com os Plugins de Infra pré-selecionados da Stack que está utilizando. É possível escolher quais você quer aplicar. É um campo obrigatório.
+
+:::
+
+<br/>
+
+**Passo 4.** Na tela **'Criar Infraestrutura'**, informe os dados:
+
+- Nome;
+- Descrição.  
+
+<br/>
+
+**Passo 5.**  Na tela **'Repositório do Código Fonte'**, escolha o repositório para criar a sua Infraestrutura. Existem duas formas:
+
+1. **Criar um repositório do zero**: a criação do repositório estará disponível apenas se houver uma Action vinculada a este passo no Workflow.
+
+Confira um exemplo de formulário para criar um repositório:
+
+  - **Nome**: nome do repositório, ou seja, da aplicação.
+  - **Visibilidade**: visibilidade do repositório, se é público ou privado no GitHub.
+  - **Descrição**: descreva brevemente para que serve a sua Aplicação.
+
+> Os inputs desta seção podem variar conforme o Workflow configurado. Por exemplo, sua Organização pode ter Actions previamente configuradas com inputs diferentes dos apresentados neste exemplo.
+
+<br/>
+
+> Você pode editar esse passo, **apenas se o Account Holder liberar o acesso**.
+
+<br/>
+  
+2. **Já tenho um repositório**: adicione a URL do repositório;
+
+:::warning Atenção!
+
+Antes de acessar os Plugins, caso existam outras Actions configuradas na etapa Before, elas serão exibidas para você como etapas sequenciais do fluxo, permitindo que você preencha as informações necessárias em cada passo.
+:::
+
+
+<br/>
+
+**Passo 6.** Neste passo, **aplique os Plugins** na sua Infraestrutura. Os Plugins da Stack que você adicionou estão disponíveis em uma lista;
+
+- Para adicionar mais Plugins, clique no botão **'Adicionar Plugins'** e  selecione os Plugins que deseja aplicar. Para finalizar clique em **'Adicionar Plugins'**.
+
+<br/>
+
+**Passo 7.** Em seguida, **configure** cada Plugin de Infraestrutura **preenchendo seus campos de inputs** (eles podem variar de acordo com cada Plugin). Para configurar, **clique no Plugin para expandir a aba**, como na imagem:
+
+> [**Para saber mais sobre regras de preenchimento de inputs confira a seção de Configuração de Inputs**](create-use/use-content/configure-inputs.mdx)
+
+<br/>
+
+![Captura de tela da página de configuração de plugins durante o processo de criação de uma aplicação. A imagem exibe campos de entrada e opções para selecionar e configurar plugins necessários.](/img/print-create-app-1-eng.png)
+
+:::caution Cuidado!
+Se o Plugin que você deseja aplicar à sua Infraestrutura contém a flag **`single-use`**, você não poderá adicioná-lo mais de uma vez
+
+<br/>
+
+- **Exemplo:**
+Se você precisa de dois Buckets S3 (Simple Storage Service) na sua Aplicação, um para armazenar imagens e outro para logs, seria necessário aplicar o Plugin de Infra duas vezes. No entanto, se o Plugin tiver a funcionalidade de uso único (single-use), ele só poderá ser aplicado uma vez, permitindo a criação de apenas um Bucket S3. Nesse caso, você precisará escolher entre armazenar imagens ou logs.
+:::
+
+#### **Informações importantes sobre alguns inputs que podem aparecer**
+
+  - **ID do Plugin:** este campo serve para **nomear a utilização do Plugin** e indicar qual é o objetivo dele na Aplicação, pois Plugins podem ser **aplicados mais de uma vez**. Ele já **vem automaticamente preenchido, como na imagem**, mas você pode **editá-lo**. Para isso, clique no campo e edite o texto.
+  **O ID do Plugin é imutável depois de configurado. Caso você queira editar este nome, esse é o único momento possível.**
+
+<br/>
+
+
+<img src="/img/alias-plugin-name-create-app.png" alt="Campo Alias na configuração do Plugin" title="alias plugin name create app" width="500px" /> 
+<br/>
+
+
+  - Se o Plugin que você está aplicando possui **`inputs-envs`** configurados no arquivo YAML, é possível parametrizar os valores por ambiente. No Portal, você irá visualizar a opção **'Definir valores por ambientes'**. Basta selecioná-la e configurar os inputs conforme o ambiente desejado.
+
+  - **Campo 'Nomeie recursos para usar depois':** se o Plugin que você selecionou foi criado com o Schema v.2 e tem uma [**Connection Interface gerada**](create-use/connections/index.mdx), você deve nomeá-la neste campo.
+
+  - **Campo 'Recursos Requerido'**: se o Plugin que você selecionou foi criado com o **Schema v.2** e ele **exigir** alguma [**Connection Interface**](create-use/connections/index.mdx), você deve selecionar uma aqui. Para isso, clique no campo do input. 
+
+Confira na imagem a seguir um exemplo do campo para **Plugins criados no Schemas v.2**:
+
+<br/>
+
+
+![Captura de tela dos campos de input "Name resources to use later" e "Resource Required" de um Plugin no criado com o Schema v.2 no portal StackSpot EDP, exibido durante o processo de criação de uma Aplicação](/img/create-app-infra-resource-required-v2.png)
+
+
+  -  Uma lista de **Connection Interfaces já provisionadas** será exibida. Você pode escolher uma das seguintes opções: 
+    1. Selecionar uma das Connection Interfaces listadas; ou
+    2. **Escolher outro Plugin** para gerar a Connection Interface necessária. Clique em **Adicionar connection de um Plugin.**
+
+  Na tela, são exibidos os Plugins disponíveis na Stack que você selecionou e que geram o mesmo tipo de **Connection**. Selecione o Plugin desejado e repita o processo sempre que necessário.
+
+:::caution Cuidado! 
+
+Se o Plugin foi criado com o **Schema v3**, os textos dos campos de inputs para Connection Interfaces geradas ou requeridas são **definidos pela pessoa que desenvolveu o Plugin**. Portanto, esses textos podem variar e **não seguem um padrão fixo**.
+
+Em caso de dúvidas, consulte a **documentação específica do Plugin** para obter mais detalhes.
+::: 
+
+**Passo 8.** Depois de salvar a configuração de todos os Plugins, clique no botão **'Próximo'**;
+
+:::info Informação Adicional
+
+- Em cada Plugin que você adicionar existe uma tag que indica se ainda falta alguma configuração a ser feita. Quando tudo já for configurado, a tag fica verde e indica **'Plugin Configurado'**.
+
+- Se existirem contextos definidos, algumas (ou todas) as variáveis já estarão preenchidas. E, quando as variáveis são mandatórias, você não consegue mudá-las.
+
+:::
+
+**Passo 8.1 (Opcional)** Se você configurou uma Extensão no seu arquivo [**workflow.yaml**](create-use/create-content/yaml-files/workflow-yaml.mdx) e, durante a criação da Infraestrutura, selecionou um Starter que tem **Workflow do tipo create**, agora você precisa preencher os campos com os dados da Extensão que deseja adicionar à sua Infraestrutura; 
+
+<br/>
+
+> As Extensões só funcionam **através do Portal** da StackSpot EDP. 
+
+**Passo 9.** Revise as informações da sua Infraestrutura. Você também pode editar as informações. Se necessário, clique no botão **'Editar'** para fazer alterações;
+
+**Passo 10.** Clique em **'Criar'** para subir a Infraestrutura para o repositório. O commit do código será feito no repositório apontado durante a configuração.
+
+:::warning Atenção!
+
+O **deploy da Infraestrutura** só é feito neste momento caso sua organização tenha [**configurado o deploy via Runtime Self-Hosted**](deployment/deploy/self-hosted-runtime.mdx).
+
+:::
+
+Pronto, você criou a sua Infraestrutura.
+
+:::tip Dica!
+
+- A sua Infraestrutura é publicada no Workspace.
+
+- O commit/push do código é feito no repositório Git que você adicionou durante a configuração.
+:::
+
+Depois que o workflow terminar, a pessoa desenvolvedora já pode usar as Infraestruturas em uma Aplicação.
+
+### **Erro ao criar uma Infraestrutura**
+
+<br/>
+
+> Confira como reexecutar o **'Workflow de Criação de uma Aplicação'** em caso de erro. Este processo é apenas possível dentro do Portal da StackSpot EDP.
+
+<br/>
+
+Ao criar uma Infraestrutura e clicar em **'Executar'** para enviar a Infraestrutura para o repositório, você **inicia um [Workflow](home/workspace/configure-workflow.mdx)**. Workflows definem a ordem em que as ações serão executadas, por exemplo, para enviar uma Infraestrutura para um repositório.
+
+Caso este Workflow **retorne um erro**, a criação da Infraestrutura será interrompida. Você precisará verificar o que está errado e **reexecutar o Workflow** para criar a Infraestrutura corretamente.
+
+Siga os passos para reexecutar o Workflow:
+
+<br/>
+
+**Passo 1.** Dentro do Workspace, após começar a criar sua Infraestrutura, clique na janela **'Running'** que aparece na parte inferior esquerda da página após clicar em **'Executar'**. Depois, clique em **'Ver detalhes'**. 
+
+<br/>
+
+:::info Informação Adicional
+
+Se você **fechou o modal** com o log de execução da  sua Infraestrutura:
+
+1. Vá para o seu Workspace;
+2. Clique em **'Infraestruturas'** no menu principal e selecione sua Infraestrutura;
+3. Dentro da sua Infraestrutura, clique em **'Atividades'** no menu principal;
+4. Selecione o Workflow que você quer revisar e revise o erro no atributo "errorLog";
+5. Dentro do log, clique no botão **'Retornar para a revisão da criação da Infraestrutura'**;
+6. Continue a partir do **'Passo 3'**.
+
+:::
+
+<br/>
+
+**Passo 2.** Na página de **'Commit'**, clique em **'Voltar para Revisão'**;
+
+**Passo 3.** Verifique se há algo errado e edite clicando no botão **'Editar'** ou voltando nas etapas de criação clicando no botão **'Voltar'**;
+
+**Passo 4.** Salve suas alterações e clique novamente no botão **'Commit'**.
+
+:::warning Atenção!
+
+Se ocorrer um erro, repita o processo.
+:::
+
+<br/>
+
+## **Editar nome e descrição da Infraestrutura no Portal**
+
+Mesmo após fazer o deploy, você pode editar o nome e descrição da sua Infraestrutura no Portal. Para fazer isso, siga os passos:
+
+ **Passo 1.** Faça login no [**Portal StackSpot EDP**](https://app.stackspot.com/pt/login) e no menu principal da página inicial clique em **’Infraestruturas’**; 
+
+**Passo 2.** Procure e selecione sua Infraestrutura para acessar seu dashboard. Dentro do menu principal da Infraestrutura, clique em **'Configurações'**;
+
+**Passo 3.** Você pode ver informações básicas sobre sua Infraestrutura, como nome e descrição. Para editá-los, clique em **'Editar'**. Faça a alteração e clique em **'Salvar'**.
+
+Pronto, você editou sua Infraestrutura.
+
+:::info Informação Adicional  
+
+- Quando você cria a Infraestrutura via Portal, ela é **registrada automaticamente** no Workspace.  
+- O **deploy da Infraestrutura** só será realizado nesse momento se sua organização tiver [**configurado o deploy via Runtime Self-Hosted**](deployment/deploy/self-hosted-runtime.mdx).   
+
+:::  
+
+## **Próximos passos**
+
+:::danger Atenção!
+
+Após criar sua Aplicação ou Infraestrutura, é preciso realizar o deploy. Os passos para isso podem variar conforme a configuração da pipeline da sua Organização. Para mais informações, entre em contato com o Account Admin ou a pessoa responsável pela configuração do Self-hosted.
+
+::: 
+
+- Gerenciar a [**execução de Actions na sua Infraestrutura**](create-use/use-content/application/actions-application.mdx).
+- [**Gerencie e acompanhe sua Infraestrutura**](deployment/manage/activities.mdx).
+- Para **destruir** sua Infraestrutura, [**confira a seção de Destroy**](deployment/deploy/register-app-destroy.mdx).

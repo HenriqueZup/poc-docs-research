@@ -1,0 +1,196 @@
+---
+title: Register Application Destruction
+description: How to register the destruction of the Application in StackSpot EDP.
+---
+
+> In this section, you will find how to register the destruction of the Application in your pipeline and in StackSpot EDP.
+
+<br/>
+
+## **Overview**
+
+To destroy a version of the Application in StackSpot, you need to use your own pipeline. To track all the Application Workflows within the StackSpot platform, you must **register the destruction using the STK CLI**.
+
+To do this, run the command **`stk register app-destroy`** in one of the workflow steps that destroys the Application in an environment. 
+
+This way, you can:
+
+1. **Monitor and track the execution of these workflows directly on the Platform**. Activities related to destruction will be displayed as [**Activities**](deployment/manage/activities.md) within the Application. 
+
+:::danger 
+To **view all the Workflow logs from the repository** of your Application in the Workspace, you need to **configure a Webhook** within GitHub. 
+To do this, [**follow the steps in the guide Configure Webhook to register repository activities on the Activities screen**](deployment/manage/activities.md).
+::: 
+
+2. **See in the Application header the different versions** of Infrastructure and Application destroyed within the Workspace in the StackSpot Portal. 
+
+3. With the destruction of all Application versions registered in all environments, it is possible to [**delete your application entirely from the StackSpot platform**](create-use/use-content/application/delete-app-portal.md). 
+
+
+Check out the complete destruction flow in the following diagram: 
+
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<ThemedImage alt="Diagrama de fluxo de deploy" width="auto" sources={{ light: useBaseUrl('/img/Fluxo-de-destroy-EN-Light.png'), dark: useBaseUrl('/img/Fluxo-de-destroy-EN-Dark.png'), }} />
+
+:::warning
+Because the deployment of your Application's infrastructure is done via [**Self-hosted**](deployment/deploy/self-hosted-runtime.md): 
+
+1. You need to destroy the infrastructure components in your pipeline; 
+2. Execute an empty deploy, i.e., with the infrastructure components destroyed; 
+
+With this, you upload an **empty Infrastructure version** to StackSpot EDP, and it is then possible to delete your Application via the Portal. 
+::: 
+
+Check out the steps to integrate the commands into your pipeline:
+
+## **Configure Integration in Your Pipeline**
+
+Run the command **`stk register app-destroy`** in one of the workflow steps that destroys the Application in an environment in your pipeline. See an example below:  
+
+```
+stk register app-destroy --environment dev --status success 
+``` 
+
+There are two ways to integrate the commands with your pipeline: 
+
+1. Automated, through an Action (**recommended**); or
+2. Manually.
+
+See the steps for both ways below: 
+
+### **1. Integrate Commands in the Pipeline via [**Action**](create-use/create-content/action/actions.md) (Recommended)**
+
+The [**Action is available in the StackSpot Marketplace**](https://github.com/marketplace/actions/stackspot-run-command) and performs the following automations in your pipeline: 
+
+- Installs the STK CLI in your pipeline (if not already installed); 
+- Authenticates with Client_ID, Client_KEY, and REALM;
+- Integrates and executes the commands `stk register app-deploy`, `stk register app-destroy`, and `stk delete app`. 
+
+To use it, follow these steps: 
+
+**Step 1.** Configure the CI/CD authentication keys in the repository where your Application is located.  [**To do this, follow the steps in the guide Authenticate via CI/CD**](https://docs.stackspot.com/home/stk-cli/pipeline-ci-cd#autenticar-via-cicd). 
+
+**Step 2.** Add the [**Action**](https://github.com/marketplace/actions/stackspot-run-command) to the deploy workflow of your Application. To do this, copy the code snippet below and paste it into your file:
+
+- **Destruction with success status:**
+
+```
+- uses: stack-spot/cli-github-action-run-command@v1.0.0
+        id: stk-register-app-destroy-success
+        with:
+          client_id: ${{ secrets.CLIENT_ID }}
+          client_key: ${{ secrets.CLIENT_KEY }}
+          realm: ${{ secrets.REALM }}
+          command_stk: "register app-destroy --target my-app/ --env dev --status success"
+```
+
+- **Destruction with failed status:**
+
+```
+- uses: stack-spot/cli-github-action-run-command@v1.0.0
+        id: stk-register-app-destroy-failed
+        with:
+          client_id: ${{ secrets.CLIENT_ID }}
+          client_key: ${{ secrets.CLIENT_KEY }}
+          realm: ${{ secrets.REALM }}
+          command_stk: "register app-destroy --target my-app/ --env dev --status failed"
+```
+
+**Step 3.** Configure the flags of the **`stk register app-destroy`** command with the correct variables: 
+
+- **`target`**: path to the application directory;  
+- **`version`**: version of the application being destroyed; 
+- **`env`**: deployment environment;
+- **`status`**: deployment status (failed, success) 
+
+[**For more information, visit the `stk register app-destroy` command page**](home/stk-cli/commands/application-commands.md). 
+
+:::info
+
+To register the destruction of the Application, you need to be inside a Workspace. To run commands that require an active Workspace, add the command `command_stk: "use workspace [workspace-name]"` before these commands as in the example below: 
+
+```
+- uses: stack-spot/cli-github-action-run-command@v1.0.0
+        id: stk-delete-app
+        with:
+          client_id: ${{ secrets.CLIENT_ID }}
+          client_key: ${{ secrets.CLIENT_KEY }}
+          realm: ${{ secrets.REALM }}
+          command_stk: "use workspace my-workspace-name"
+          command_stk: "register app-deploy --target my-app/ --version 1.0.0 --env dev --status failed"
+```
+::: 
+
+### **2. Integrate Commands in the Pipeline Manually**
+
+For your convenience, StackSpot recommends using the Action. But you can configure the steps manually in your pipeline.
+
+#### **Requirements** 
+
+- Register the Client_ID, Client_Key, and Realm data of your Access Token as GitHub secrets.
+- [STK CLI installed in your pipeline](home/stk-cli/pipeline-ci-cd.md); 
+- Authenticate in the Pipeline; 
+- Have an active Workspace in your Pipeline. 
+
+After following the previous steps, the pipeline file should look like the example below:
+
+```yaml title=".github/workflows/run-cli-commands.yml"
+name: Run CLI Commands
+
+on: [push]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      LANG: C.UTF-8
+      LANGUAGE: C.UTF-8
+      LC_ALL: C.UTF-8
+      PYTHONIOENCODING: utf-8
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Download STK CLI
+        shell: bash
+        run: |
+          curl \
+            --fail \
+            --http2-prior-knowledge \
+            --location \
+            --output /tmp/stk.deb \
+            --silent \
+            --show-error \
+            --tlsv1.3 \
+            https://stk.stackspot.com/installer/linux/stk.deb
+  
+      - name: Install STK CLI
+        shell: bash
+        run: |
+          sudo dpkg --install /tmp/stk.deb || echo "Installation failed with exit code: $?"
+
+      - name: Authenticate StackSpot
+        run: |
+          $HOME/.stk/bin/stk login --client-id ${{ secrets.CLIENT_ID }} --client-key ${{ secrets.CLIENT_KEY }} --realm ${{ secrets.CLIENT_REALM }}
+
+      - name: Use your Workspace
+        run: |
+          $HOME/.stk/bin/stk use workspace <workspace>
+```
+
+After configuring all the steps, add the following command execution as the next step in the pipeline to register the destruction of your Application:
+
+```
+- name: Register App Destroy 
+        run: | 
+          stk register app-destroy --target my-app/ --status success
+```
+
+
+## **Next Steps** 
+
+- [**How to Delete Your Application on the StackSpot Portal**](create-use/use-content/application/delete-app-portal.md)
+- [**How to Delete Your Application via Pipeline**](create-use/use-content/application/delete-app-pipeline.md)

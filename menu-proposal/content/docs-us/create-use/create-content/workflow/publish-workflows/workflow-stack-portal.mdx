@@ -1,0 +1,108 @@
+---
+title: Add Workflow to a Stack
+description: Learn how to add a Workflow to a Stack.
+---
+
+> In this section, you will find a guide on how to add a Workflow to a Stack version.
+
+## **Overview**  
+
+You can add a Workflow to a Stack version using the **StackSpot Portal** or the **STK CLI**.
+
+### **Types of versioning**    
+
+When adding a Workflow, you can choose between two types of versioning:
+
+1. By **specific semantic version** (major, minor, and revision, with the last two being optional). See an example: **`<studio>/<workflow>@1.0.0`**;
+
+2. By **version range**, such as **`<studio>/<workflow>@1`**, **`<studio>/<workflow>@1.1`**, **`<studio>/<workflow>@~1.0.0`**.
+
+<br/>
+
+A Workflow can depend on a Plugin, Action, or even another Workflow.
+
+When a Workflow relies on an Infrastructure (Infra) Plugin, it is essential that all dependencies related to that Plugin are also included when the Workflow is added to the Stack. StackSpot handles this process automatically.
+
+However, if the same Infra Plugin is already published in the Stack but has a different version or range from the one the Workflow requires, you will need to manually resolve this inconsistency before you can successfully publish the Stack.
+
+Refer to the steps for adding a Workflow to the Stack **through the StackSpot EDP Portal**.
+
+## **Steps**
+
+You can add a Workflow version to a Stack while it is in the draft (Draft).
+
+**Step 1.** [**Access the StackSpot EDP Portal**](https://app.stackspot.com/), navigate to your Studio where you wish to add a Workflow;
+
+**Step 2.** In your Stack, click on the **’Content'** tab;
+
+**Step 3.** Navigate to the **’Workflows'** section and click on the **’Add workflow'** button;
+
+**Step 4.** In the **’Add workflow'** tab, you can access the available Workflows under the **Studio**, **Account**, and **Qualifier insertion** tabs;
+
+**Step 5.** Select the desired **Workflow** along with the specific **version** or **version range** from your chosen tab;
+
+**Step 6.** To complete the process, click the **’Add Workflow to Stack'** button.
+
+You have now successfully added a Workflow version to a Stack.
+
+You can delete a Workflow version from a Stack while it is still in draft (Draft). See the steps below:
+
+### **Delete a version**
+
+**Step 1.** In the **'Workflows'** tab of your Stack, click the **'Details'** button;
+
+**Step 2.** Select the **’Delete Workflow'** option;
+
+**Step 3.** To confirm, click the **'Delete'** button.
+
+### **Add Workflow to `yaml` from Stack via STK CLI**
+
+You can add a Workflow to the schema (`yaml`) of your Stack via STK CLI. 
+
+See an example of `yaml` from Stack with Wokflow:
+
+```yaml
+schema-version: v1
+kind: stack
+metadata:
+  name: stack-cli            #required
+  display-name: Stack Cli              #required
+  description: test stack publish by cli             #required
+  version: 1.0.0              #required
+  picture: images/logo.jpg
+  tags:
+    - cli
+spec:
+  repository: https://github.com/stack-spot/stack-cli
+  docs:                               #required
+    en-us: docs/en_us/docs.md             #at least 1 language required
+    pt-br: docs/pt_br/docs.md             #at least 1 language required
+  links:
+    - name: Link legal
+      url: https://stackspot.com/
+      picture: images/logo.jpg
+    - name: Link legal2
+      url: https://stackspot.com/
+      picture: https://stackspot.com/logo.png
+  plugins:
+    app:
+      - name: studio/plugin-1@1.1.1
+      - name: cli/plugin-2@~1.1.0
+      - name: cli/plugin-3@1.1.1
+    infra:
+      - name: infra/plugin-4@1.1.1
+        actions:
+          - name: cli/action-shell-1
+      - name: infra/plugin-5@~1.1.0
+      - name: infra/plugin-6@1.1.1
+  actions:
+    - name: cli/action-shell-1@1.0.1
+    - name: cli/action-shell-2@1.0.1
+    - name: cli/action-shell-3@~1.0.0
+// new-line-start    
+  workflows:
+    - name: studio-a/workflow-1@1.1.1
+    - name: studio-a/workflow-2@1.0.1
+    - name: studio-a/workflow-3@1.0.0
+// new-line-end    
+```

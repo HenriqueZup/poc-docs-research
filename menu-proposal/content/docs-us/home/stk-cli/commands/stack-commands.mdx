@@ -1,0 +1,155 @@
+---
+title: Stack Commands
+sidebar_position: 7
+description: List of commands to manage Stacks.
+---
+
+> In this section, you will learn more about the Stack's commands.
+
+<br/>
+
+
+>Command   | Description
+>--------- | ------
+>[**stk create stack**](#stk-create-stack) | Create a Stack with the STK CLI.
+>[**stk list stack**](#stk-list-stack) | Lists all Stacks within a Workspace.
+>[**stk validate stack**](#stk-validate-stack) | Validate the Stack structure to be published.
+>[**stk publish stack**](#stk-publish-stack) | Publish a Stack created with the STK CLI.
+
+
+### **stk create stack**
+
+The **`stk create stack`** command creates a basic Stack structure.
+
+:::tip
+
+The `-o`, `--target` option allows you to define a different folder name to create the Stack content. If the folder does not exist, it will be created.
+
+If you do not use the `-o` or `--target` option, the Stack content folder name will be the same as the one you gave when creating your Stack.
+
+:::
+
+#### **Usage**
+
+**Syntax**
+
+```bash
+stk create stack [NAME]
+```
+
+**Example**
+
+```bash
+stk create stack my-stack-name
+```
+
+#### **Parameters**
+
+| **Option** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-d, --description` | Your Stack description. | <pre>stk create stack my-stack-name --description "My Stack description"</pre> |
+| `-v, --version` | Semantic version of your Stack. | <pre>stk create stack my-stack-name --version 1.3.0</pre> |
+| `-r, --remote` | Git URL to set as remote repository origin. | <pre>stk create stack my-stack-name --remote https://github.com/MyGitHubOrg/my-repository</pre> |
+| `-sgi, --skip-git-init` | It will not start a Git repository. | <pre>stk create stack my-stack-name --skip-git-init</pre> |
+| `-q, --non-interactive` | It does not ask for missing inputs, returning an error when required inputs are not provided. | <pre>stk create stack my-stack-name --non-interactive</pre> |
+| `-o, --target` | The `-o`, `--target` option allows you to define a different folder name to create the Stack content. If the folder does not exist, it will be created. If you do not use the `-o` or `--target` option, the Stack content folder name will be the same as the one you gave when creating your Stack. | <pre>stk create stack my-stack-name --description "My Stack description" --target home/user/documents/stacks</pre> |
+| `-f, --from` | Generate the Starter file based on an existing Stack. Use the following syntax: stk create stack --from [studio-slug]/[stack-slug]@[semantic-version] | <pre>stk create stack --from my-other-studio/source-stack@1.0.0</pre> |
+| `-h, --help` | Displays the command help and exits. | <pre>stk create stack --help</pre>|
+
+___
+
+### **stk list stack**
+
+The **`stk list stack`** command lists the Stacks. You have two options:
+
+1. List Stacks from a Workspace available to your account. In this case, you must be inside a Workspace. To do this, execute the command [**stk use workspace**](home/stk-cli/commands/workspace-commands.md#stk-use-workspace) before listing the Stacks.
+
+2. List Stacks outside of a Workspace. After executing the command, specify the Studio, it will list its Stacks.
+
+> You can access the Stack's name, type, description, and version. It also notifies if there is deprecated content with the `'deprecated'` tag.
+
+#### **Usage**
+
+```bash
+stk list stack
+```
+
+To list Stacks outside a Workspace, enter a Studio so that the command lists the Stacks:
+
+Example:
+
+```bash
+stk list stack --studio java-dev-studio
+```
+
+#### **Parameters**
+
+| **Options** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-stu, --studio` | Enter the Studio Slug to list Stacks outside a Workspace. | <pre>stk list stack --studio my-studio-slug</pre> |
+| `-h, --help` | Display command help and exit.| <pre>stk list stack --help</pre>|
+
+___
+
+### **stk validate stack**
+
+The **`stk validate stack`** command validate the structure of your Stack and it's components. The files ignored on your `.gitignore` will not be validated.
+
+#### **Usage**
+
+**Syntax**
+
+```bash
+stk validate stack
+```
+
+**Example**
+
+Inside your Stack's Folder, run the following command:
+
+```bash
+stk validate stack
+```
+
+#### **Parameters**
+
+| **Option** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-v, --verbose` | Show validation with more details. | <pre>stk validate stack --verbose</pre> |
+| `-h, --help` | Displays the command help and exits. | <pre>stk validate stack --help</pre>|
+
+___
+
+### **stk publish stack**
+
+The **`stk publish stack`** command publish your Stack with the STK CLI.
+
+:::warning
+
+[Files listed in **`.stkignore`** **will not be published to StackSpot**](create-use/create-content/yaml-files/stkignore.md), but will be added by Git commits as normal. They are not ignored in **`.gitignore`**.
+
+:::
+
+#### **Usage**
+
+**Syntax**
+
+```bash
+stk publish stack [OPTIONS] --studio [STUDIO-SLUG]
+```
+
+**Example**
+
+Inside your Stack's Folder, run the following command:
+
+```bash
+stk publish stack --studio [STUDIO-SLUG]
+```
+
+#### **Parameters**
+
+| **Option** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-s, --studio` | Studio to be used in the publication. | <pre>stk publish stack --studio my-studio</pre> |
+| `-v, --verbose` | Show publication output with more details. | <pre>stk publish stack --verbose --studio my-studio</pre> |
+| `-h, --help` | Displays the command help and exits. | <pre>stk publish stack --help</pre>|

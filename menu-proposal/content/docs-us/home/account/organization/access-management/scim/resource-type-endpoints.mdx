@@ -1,0 +1,580 @@
+---
+title: Resources Endpoints
+description: Learn details about Resources Endpoints.
+---
+
+This feature includes endpoints related to activities you can perform for [**Resource Type management**](home/account/organization/access-management/overview.md#principais-conceitos) within the StackSpot EDP Platform.
+
+| Method | Endpoint                | Description                   | Parameters                                                                                   | Responses    |
+|--------|-------------------------|-----------------------------|---------------------------------------------------------------------------------------------|--------------|
+| GET    | /scim/Resource-Types    | Get All resource-types       | X-Tenant-Id: string (header)                                                                 | 200: OK      |
+| POST   | /scim/Resource-Types    | Create a new resource-type  | X-Tenant-Id: string (header), body: Create Resource (body, required, schema: domain.CreateResourceType) | 201: Created |
+| GET    | /scim/Resource-Types/\{id}| Get resource-type by id    | X-Tenant-Id: string (header)                                                                 | 200: OK      |
+| GET    | /scim/Resources         | Get resource                | X-Tenant-Id: string (header)                                                                 | 200: OK      |
+| POST   | /scim/Resources         | Create a new resource       | X-Tenant-Id: string (header), body: Create Resource (body, required, schema: domain.CreateResource) | 201: Created |
+| PUT    | /scim/Resources-Types/\{id}| Replace resource-types    | X-Tenant-Id: string (header), body: Create Resource (body, required, schema: domain.UpdateResourceType) | 200: OK      |
+| PATCH  | /scim/Resources-Types/\{id}| Patch Operation resource-types | X-Tenant-Id: string (header), body: Update Resource (body, required, schema: domain.ResourceTypePatchOperation) | 200: OK      |
+| DELETE | /scim/Resources-Types\{id}| Remove resource-types      | X-Tenant-Id: string (header)                                                                 | 204: No Content |
+| GET    | /scim/Resources/\{id}    | Get resource by id          | X-Tenant-Id: string (header)                                                                 | 200: OK      |
+| PUT    | /scim/Resources/\{id}    | Replace resource            | X-Tenant-Id: string (header), body: Update Resource (body, required, schema: domain.UpdateResource) | 200: OK      |
+| DELETE | /scim/Resources/\{id}    | Remove resource by id       | X-Tenant-Id: string (header)                                                                 | 204: No Content |
+| PATCH  | /scim/Resources/\{id}    | Patch Operation a new resource | X-Tenant-Id: string (header), body: Update Resource (body, required, schema: domain.ResourcePatchOperation) | 200: OK      |
+
+## Response Definitions 
+
+### domain.CreateResource
+
+| Field       | Type    | Required    |
+|-------------|---------|-------------|
+| client_id   | string  | No         |
+| description | string  | No         |
+| name        | string  | Yes         |
+| slug        | string  | No         |
+| type        | string  | Yes         |
+
+### domain.CreateResourceType
+
+| Field       | Type    | Required    |
+|-------------|---------|-------------|
+| actions     | array   | Yes         |
+| client_id   | string  | No         |
+| description | string  | No         |
+| name        | string  | Yes         |
+| slug        | string  | No         |
+
+### domain.Resource
+| Field       | Type  | Required    |
+|-------------|-------|-------------|
+| client_id   | string| No         |
+| created_at  | string| No         |
+| description | string| No         |
+| id          | string| No         |
+| name        | string| Yes         |
+| slug        | string| No         |
+
+### domain.ResourceAttributes
+| Field       | Type  | Required|
+|-------------|-------|-------------|
+| client_id   | string| No         |
+| description | string| No         |
+| name        | string| Yes         |
+| slug        | string| No         |
+| type        | object| Yes         |
+
+### domain.ResourceDomain
+| Field      | Type  | Required    |
+|------------|-------|-------------|
+| attributes | object| Yes         |
+| externalID | object| No         |
+| id         | string| Yes         |
+| meta       | object| Yes         |
+| schemas    | array | Yes         |
+
+### domain.ResourcePageDomain
+| Field        | Type  | Required    |
+|--------------|-------|-------------|
+| resources    | array | Yes         |
+| totalResults | integer| Yes         |
+
+### domain.ResourcePatchOperation
+| Field      | Type   | Required    |
+|------------|--------|-------------|
+| Operations | array  | Yes         |
+| schemas    | string | Yes         |
+
+### domain.ResourceTypeDomain
+| Field       | Type   | Required|
+|-------------|--------|-------------|
+| attributes  | object | Yes         |
+| externalID  | object | No         |
+| id          | string | Yes         |
+| meta        | object | Yes         |
+| schemas     | array  | Yes         |
+
+### domain.ResourceTypePageDomain
+| Field        | Type  | Required|
+|--------------|-------|-------------|
+| resources    | array | Yes         |
+| totalResults | integer | Yes         |
+
+### domain.ResourceTypePatchOperation
+| Field      | Type   | Required|
+|------------|--------|-------------|
+| operations | array  | Yes         |
+| schemas    | string | Yes         |
+
+## **Example Response of Resource Type** 
+
+### **`GET /tenant-id/scim/Resource-Types Get all Resource Type`**
+
+Here you find an example of the API response for the endpoint **`GET /tenant-id/scim/Resource-Types Get all Resource Type`**
+
+### Request: 
+
+```
+GET /tenant-id/scim/Resource-Types Get all Resource Type
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 200: {
+    "Resources": [
+        {
+            "actions": [],
+            "clientId": null,
+            "description": "Resource-Type description",
+            "id": "cb1401c4-3628-47a9-811d-1558c93863ad",
+            "meta": {
+                "resourceType": "Resource Type",
+                "created": "2024-05-24T21:43:21Z",
+                "location": "Resource-Types/cb1401c4-3628-47a9-811d-1558c93863ad"
+            },
+            "name": "example-resource-type",
+            "resources": null,
+            "schemas": [
+                "urn:ietf:params:scim:schemas:core:2.0:ResourceType"
+            ],
+            "slug": "resource-type-slug"
+        },
+    ],
+    "itemsPerPage": 100,
+    "schemas": [
+        "urn:ietf:params:scim:api:messages:2.0:ListResponse"
+    ],
+    "startIndex": 1,
+    "totalResults": 1
+}
+````
+
+## **Example Response of Resource Type** 
+
+### **`POST /tenant-id/scim/Resource-Types Create Resource Type`**
+
+Here you find an example of the API response for the endpoint **`POST /tenant-id/scim/Resource-Types Create Resource Type`**
+
+### Request: 
+
+```
+POST /tenant-id/scim/Resource-Types Create Resource Type
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 201: {
+    "actions": [
+        {
+            "id": "8fb5d7bd-de19-441b-98cd-ff679cced4f3",
+            "name": "Action Example",
+            "description": "Action description",
+            "created_at": "2024-05-31T13:12:51.879932071Z"
+        }
+    ],
+    "clientId": null,
+    "description": "Resource-Type Example",
+    "id": "05285763-c30d-46d7-993b-b2097596de28",
+    "meta": {
+        "resourceType": "Resource Type",
+        "created": "2024-05-31T13:12:51Z",
+        "location": "Resource-Types/05285763-c30d-46d7-993b-b2097596de28"
+    },
+    "name": "scim-resource-type",
+    "resources": null,
+    "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:ResourceType"
+    ],
+    "slug": "scim-resource-type"
+}
+````
+
+### **`GET /tenant-id/scim/Resource-Types/\{id} Get Resource-Type By Id`**
+
+Here you find an example of the API response for the endpoint **`GET /tenant-id/scim/Resource-Types/\{id} Get Resource-Type By Id`**
+
+### Request: 
+
+```
+GET /tenant-id/scim/Resource-Types/\{id} Get Resource-Type By Id
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 201: {
+    "actions": [
+        {
+            "id": "8fb5d7bd-de19-441b-98cd-ff679cced4f3",
+            "name": "scim-action",
+            "description": "Action description",
+            "created_at": "2024-04-30T20:30:03.899548Z"
+        }
+    ],
+    "clientId": null,
+    "description": "Example description",
+    "id": "b20556dc-cad3-40d7-891f-db5d50581382",
+    "meta": {
+        "resourceType": "Resource Type",
+        "created": "2024-05-06T20:06:49Z",
+        "location": "Resource-Types/b20556dc-cad3-40d7-891f-db5d50581382"
+    },
+    "name": "scim-resource-type",
+    "resources": [
+        {
+            "id": "0ebee203-14d6-449b-9ad3-3c308a98d1be",
+            "name": "scim-resource-type",
+            "slug": "scim-resource-type",
+            "description": "This is a test to scim api",
+            "created_at": "2024-05-20T19:38:52.135599Z"
+        }
+    ],
+    "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:ResourceType"
+    ],
+    "slug": "scim-resource-type-test-patch"
+}
+````
+
+### **`PUT /tenant-id/scim/Resource-Types/\{id} Update Resource-Type`**
+
+Here you find an example of the API response for the endpoint **`PUT /tenant-id/scim/Resource-Types/\{id} Update Resource-Type`**
+
+### Request: 
+
+```
+PUT /tenant-id/scim/Resource-Types/\{id} Update Resource-Type
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 200: {
+    "actions": [
+        {
+            "id": "8fb5d7bd-de19-441b-98cd-ff679cced4f3",
+            "name": "scim-action",
+            "description": "Action description",
+            "created_at": "2024-04-30T20:30:03.899548Z"
+        }
+    ],
+    "clientId": null,
+    "description": "Example description",
+    "id": "b20556dc-cad3-40d7-891f-db5d50581382",
+    "meta": {
+        "resourceType": "Resource Type",
+        "created": "2024-05-06T20:06:49Z",
+        "location": "Resource-Types/b20556dc-cad3-40d7-891f-db5d50581382"
+    },
+    "name": "scim-resource-type",
+    "resources": [
+        {
+            "id": "0ebee203-14d6-449b-9ad3-3c308a98d1be",
+            "name": "scim-resource-type",
+            "slug": "scim-resource-type",
+            "description": "This is a test to scim api",
+            "created_at": "2024-05-20T19:38:52.135599Z"
+        }
+    ],
+    "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:ResourceType"
+    ],
+    "slug": "scim-resource-type-test-patch"
+}
+````
+
+### **`PUT /tenant-id/scim/Resource-Types/\{id} Update Resource-Type`**
+
+Here you find an example of the API response for the endpoint **`PUT /tenant-id/scim/Resource-Types/{id} Update Resource-Type`**
+
+### Request: 
+
+```
+PATCH /tenant-id/scim/Resource-Types/{id} Update Resource-Type With Patch operation
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 200: {
+    "actions": [
+        {
+            "id": "8fb5d7bd-de19-441b-98cd-ff679cced4f3",
+            "name": "scim-action",
+            "description": "Action description",
+            "created_at": "2024-04-30T20:30:03.899548Z"
+        }
+    ],
+    "clientId": null,
+    "description": "Example description",
+    "id": "b20556dc-cad3-40d7-891f-db5d50581382",
+    "meta": {
+        "resourceType": "Resource Type",
+        "created": "2024-05-06T20:06:49Z",
+        "location": "Resource-Types/b20556dc-cad3-40d7-891f-db5d50581382"
+    },
+    "name": "scim-resource-type",
+    "resources": [
+        {
+            "id": "0ebee203-14d6-449b-9ad3-3c308a98d1be",
+            "name": "scim-resource-type",
+            "slug": "scim-resource-type",
+            "description": "This is a test to scim api",
+            "created_at": "2024-05-20T19:38:52.135599Z"
+        }
+    ],
+    "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:ResourceType"
+    ],
+    "slug": "scim-resource-type-test-patch"
+}
+````
+
+
+---- 
+
+## **Example Response of Resource** 
+
+### **`GET /tenant-id/scim/Resources Get all Resources`**
+
+Here you find an example of the API response for the endpoint **`GET /tenant-id/scim/Resources Get all Resources`**. 
+
+### Request: 
+
+```
+GET /tenant-id/scim/Resources Get all Resources
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 200: {
+    "Resources": [
+        {
+            "clientId": null,
+            "description": "Example description",
+            "id": "0ebee203-14d6-449b-9ad3-3c308a98d1be",
+            "meta": {
+                "resourceType": "Resource",
+                "created": "2024-05-20T19:38:52Z",
+                "location": "Resources/0ebee203-14d6-449b-9ad3-3c308a98d1be"
+            },
+            "name": "scim-resource",
+            "schemas": [
+                "urn:ietf:params:scim:schemas:core:2.0:Resource"
+            ],
+            "slug": "scim-resource",
+            "type": {
+                "id": "b20556dc-cad3-40d7-891f-db5d50581382",
+                "name": "scim-resource-type",
+                "slug": "scim-resource-type",
+                "actions": [
+                    {
+                        "id": "8fb5d7bd-de19-441b-98cd-ff679cced4f3",
+                        "name": "scim-action-",
+                        "description": "This is an example",
+                        "created_at": "2024-04-30T20:30:03.899548Z"
+                    }
+                ],
+                "description": "This is my example",
+                "created_at": "2024-05-06T20:06:49.051251Z"
+            }
+        }
+    ],
+    "itemsPerPage": 100,
+    "schemas": [
+        "urn:ietf:params:scim:api:messages:2.0:ListResponse"
+    ],
+    "startIndex": 1,
+    "totalResults": 1
+}
+````
+
+### **`POST /tenant-id/scim/Resources Create Resources`**
+
+Here you find an example of the API response for the endpoint **`POST /tenant-id/scim/Resources Create Resources`**. 
+
+### Request: 
+
+```
+POST /tenant-id/scim/Resources Create Resources
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 201: {
+    "clientId": null,
+    "description": "Resource Example",
+    "id": "c7bce64f-0e09-42a2-b85b-f12d41d65752",
+    "meta": {
+        "resourceType": "Resource",
+        "created": "2024-05-31T13:19:43Z",
+        "location": "Resources/c7bce64f-0e09-42a2-b85b-f12d41d65752"
+    },
+    "name": "scim-resource",
+    "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:Resource"
+    ],
+    "slug": "scim-resource",
+    "type": {
+        "id": "b20556dc-cad3-40d7-891f-db5d50581382",
+        "name": "Resource-Type example",
+        "slug": "resource-type-slug",
+        "actions": null,
+        "description": "Description Example",
+        "created_at": "0001-01-01T00:00:00Z"
+    }
+}
+````
+
+### **`GET /tenant-id/scim/Resources/\{id} Get Resources By Id`**
+
+Here you find an example of the API response for the endpoint **`GET /tenant-id/scim/Resources/\{id} Get Resources By Id`**
+
+### Request: 
+
+```
+GET /tenant-id/scim/Resources/\{id} Get Resources By Id
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 200: {
+    "clientId": null,
+    "description": "Description example",
+    "id": "c7bce64f-0e09-42a2-b85b-f12d41d65752",
+    "meta": {
+        "resourceType": "Resource",
+        "created": "2024-05-31T13:19:43Z",
+        "location": "Resources/c7bce64f-0e09-42a2-b85b-f12d41d65752"
+    },
+    "name": "scim-resource",
+    "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:Resource"
+    ],
+    "slug": "scim-resource",
+    "type": {
+        "id": "b20556dc-cad3-40d7-891f-db5d50581382",
+        "name": "scim-resource-type",
+        "slug": "scim-resource-type",
+        "actions": [],
+        "description": "This is my example",
+        "created_at": "2024-05-06T20:06:49.051251Z"
+    }
+}
+````
+
+### **`PUT /tenant-id/scim/Resources/\{id} Update Resources`**
+
+Here you find an example of the API response for the endpoint **`PUT /tenant-id/scim/Resources/\{id} Update Resources`**
+
+### Request: 
+
+```
+PUT /tenant-id/scim/Resources/\{id} Update Resources
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 200: {
+    "clientId": null,
+    "description": "Description example",
+    "id": "c7bce64f-0e09-42a2-b85b-f12d41d65752",
+    "meta": {
+        "resourceType": "Resource",
+        "created": "2024-05-31T13:19:43Z",
+        "location": "Resources/c7bce64f-0e09-42a2-b85b-f12d41d65752"
+    },
+    "name": "scim-resource",
+    "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:Resource"
+    ],
+    "slug": "scim-resource",
+    "type": {
+        "id": "b20556dc-cad3-40d7-891f-db5d50581382",
+        "name": "scim-resource-type",
+        "slug": "scim-resource-type",
+        "actions": [],
+        "description": "This is my example",
+        "created_at": "2024-05-06T20:06:49.051251Z"
+    }
+}
+````
+
+### **`DELETE /tenant-id/scim/Resources/\{id} Remove Resources`**
+
+Here you find an example of the API response for the endpoint **`DELETE /tenant-id/scim/Resources/\{id} Remove Resources`**. 
+
+### Request: 
+
+```
+DELETE /tenant-id/scim/Resources/\{id} Remove Resources
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 204: NO BODY RESPONSE
+````
+
+### **`PATCH /tenant-id/scim/Resources/\{id} Update Resources With Patch operation`**
+
+Here you find an example of the API response for the endpoint **`PATCH /tenant-id/scim/Resources/\{id} Update Resources With Patch operation`**. 
+
+### Request: 
+
+```
+PATCH /tenant-id/scim/Resources/\{id} Update Resources With Patch operation
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 200: {
+    "clientId": null,
+    "description": "Description example",
+    "id": "c7bce64f-0e09-42a2-b85b-f12d41d65752",
+    "meta": {
+        "resourceType": "Resource",
+        "created": "2024-05-31T13:19:43Z",
+        "location": "Resources/c7bce64f-0e09-42a2-b85b-f12d41d65752"
+    },
+    "name": "scim-resource",
+    "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:Resource"
+    ],
+    "slug": "scim-resource",
+    "type": {
+        "id": "b20556dc-cad3-40d7-891f-db5d50581382",
+        "name": "scim-resource-type",
+        "slug": "scim-resource-type",
+        "actions": [],
+        "description": "This is my example",
+        "created_at": "2024-05-06T20:06:49.051251Z"
+    }
+}
+````

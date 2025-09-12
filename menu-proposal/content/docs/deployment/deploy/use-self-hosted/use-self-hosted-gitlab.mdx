@@ -1,0 +1,216 @@
+---
+title: '(Descontinuado) Usar o Runtimes Self-Hosted GitLab '
+description: Como configurar e usar um Self-Host em sua pipeline de deploy usando
+  o provedor GitLab.
+---
+
+:::danger Atenção!
+
+Este conteúdo está sendo descontinuado, [**conheça como fazer o deploy com Self-Hosted e o Workflow da StackSpot**](docs/deployment/deploy/use-self-hosted/self-hosted-deploy.mdx).
+
+:::
+
+> Nesta seção, você encontra como usar o Runtimes Self-Hosted na sua pipeline de deploy.
+
+<br/>
+
+
+import FlowChart from '@site/src/components/MdxComponents/FlowChart';
+
+<FlowChart steps={[
+  { title: 'Configurar Conta', link: 'home/account/intro-account.mdx' },
+  { title: 'Configurar Deploy', link: 'deployment/deploy/overview.mdx', default: true },
+  { title: 'Criar Conteúdo', link: 'create-use/create-content/getting-started.mdx' },
+  { title: 'Usar Conteúdo', link: 'create-use/use-content/quickstart.mdx' },
+]} />
+
+## **Pré-requisitos**
+
+:::danger Atenção!
+
+Esta configuração é feita apenas pelo Account Holder, Account Admin ou SRE.
+
+:::
+
+- Pessoa usuária com **permissão de escrita** em um repositório do GitLab;
+- Ter acesso a uma **Conta AWS**; 
+- [**Gerar Credencial de Serviço**](home/account/organization/service-credential.mdx) ou [**Token de Acesso Pessoal StackSpot**](home/account/profile/access-token.mdx);
+
+:::tip Dica!
+Recomenda-se priorizar o uso da [**Credencial de Serviço**](home/account/organization/service-credential.mdx).
+:::
+
+- [**Cadastre as credenciais como variáveis com máscaras no GitLab**](https://docs.gitlab.com/ee/ci/variables/); 
+- [**O Runner do provedor (GitLab) deve suportar Docker in Docker**](https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-docker-in-docker); 
+- Ter uma **Aplicação ou Infraestrutura** criada e registrada na StackSpot.   
+
+## **Como usar o Self-Hosted Runtimes**
+
+Para usar o **Runtimes Self-hosted no GitLab Pipelines**, você deve primeiro criar e configurar uma pipeline para executar uma Action da StackSpot.
+
+<br/>
+
+Confira os passos a seguir: 
+
+## **Implemente o exemplo do Workflow na sua pipeline**
+
+**Passo 1.** Crie um novo arquivo de Workflow em seu repositório. Por exemplo: **`stackspot_deploy.yml`**.
+
+**Passo 2.** Copie e cole o exemplo a seguir em seu novo arquivo de Workflow:
+
+#### **Manifesto de Pipeline para Action StackSpot**
+
+```yaml title="stackspot_deploy.yml"
+image: <your-image>
+
+# Definição de variáveis globais
+variables:
+  # Ver item número 2 da descrição do manifesto abaixo 
+  WORKFLOW_REPO_URL: "https://github.com/stack-spot/workflow-stackspot-actions-runtime-selfhosted.git"
+
+stages:
+  - run_stackspot
+
+# Passos de configuração comuns para todos os jobs
+before_script:
+  # Atualiza a lista de pacotes e instala dependências necessárias
+  - apt-get -qq update
+  - apt-get install -y curl git
+
+  # Faz o download e instala o STK CLI
+  - curl -s -O "https://stk.stackspot.com/installer/linux/stk"
+  - chmod +x stk
+  - ./stk init
+  
+  # Define o caminho do STK CLI para uso no script
+  - export STK=~/.stk/bin/stk
+
+  # Verifica a instalação do STK CLI
+  - $STK --version
+
+stk:
+  stage: run_stackspot
+  script:
+    
+    # Clona o repositório do workflow
+    - git clone $WORKFLOW_REPO_URL
+    - cd workflow-stackspot-actions-runtime-selfhosted
+    - run_action_path=$(pwd)
+    - cd ..
+
+    # Exporta variáveis de ambiente necessárias para a StackSpot
+    - export INPUTS_CLIENT_ID=$STK_CLIENT_ID
+    - export INPUTS_CLIENT_KEY=$STK_CLIENT_SECRET
+    - export INPUTS_CLIENT_REALM=$STK_REALM
+    - export INPUTS_TF_STATE_REGION=$AWS_REGION
+    - export INPUTS_IAC_REGION=$AWS_REGION
+    - export INPUTS_AWS_REGION=$AWS_REGION
+    - export INPUTS_IAC_BUCKET_NAME=$IAC_BUCKET_NAME
+    - export INPUTS_TF_STATE_BUCKET_NAME=$TF_STATE_BUCKET_NAME
+    - export INPUTS_AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+    - export INPUTS_AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+    - export INPUTS_AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN
+    - export INPUTS_ENVIRONMENT=$ENVIRONMENT
+    - export INPUTS_REPOSITORY_NAME=$CI_PROJECT_NAME # Referência: https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
+    - export INPUTS_VERSION_TAG=$CI_JOB_ID # Ajuste essa lógica conforme necessário
+
+    # Autentica no StackSpot usando as credenciais fornecidas
+    - $STK login --client-id $INPUTS_CLIENT_ID --client-key $INPUTS_CLIENT_KEY --realm $INPUTS_CLIENT_REALM
+
+    # Define o workspace a ser utilizado
+    - $STK use workspace $STK_WORKSPACE
+
+    # Executa a ação do StackSpot
+    - $STK run action $run_action_path --workflow_type deploy --non-interactive
+```
+
+### **Sobre o manifesto** 
+
+Neste manifesto de pipeline, você encontra a **configuração necessária** para executar uma Action da StackSpot em uma **imagem baseada em Ubuntu**. Se estiver utilizando outro tipo de imagem, ajuste os comandos conforme necessário.
+
+Este manifesto seguirá os passos abaixo para garantir que a Action funcione corretamente:
+
+1. **Instalação das dependências necessárias:**
+   - Curl;
+   - Git;
+   - STK CLI. 
+
+2. **(Opcional) Clonar o repositório oficial da Action:**
+Você pode clonar diretamente o repositório público da Action de Runtimes Self-Hosted da StackSpot: [**Repositório GitHub**](https://github.com/stack-spot/workflow-stackspot-actions-runtime-selfhosted). 
+
+Este passo é opcional. Sinta-se à vontade para clonar o repositório e publicá-lo na sua própria conta StackSpot, permitindo assim controle e uso por versão semântica no comando de **`run action`**. 
+
+3. **Definição dos inputs da Action:**
+No arquivo, é abordada uma forma de definir os inputs das Actions StackSpot via variáveis de ambiente. Se preferir passar os inputs diretamente no comando **`run action`**, sinta-se à vontade para modificar o arquivo. Para mais informações, consulte a [**documentação de Executar Actions**](create-use/create-content/action/run-action.mdx).
+
+4. **Login na StackSpot:**
+Realiza o login utilizando as credenciais de serviço. 
+
+5. **Uso de um Workspace da StackSpot:**
+Verifique se você está **usando o Workspace correto da StackSpot**, que corresponde à Aplicação ou Infraestrutura onde será realizado o deploy, destroy ou rollback.
+
+6. **Execução da Action StackSpot Runtimes Self-Hosted:**
+A Action será **executada na pasta da Aplicação ou Infraestrutura onde o deploy, destroy ou rollback** será realizado. É fundamental que a Action esteja na **pasta correta**; caso contrário, a execução não funcionará.
+
+#### **O que a Action StackSpot Runtimes Self-Hosted faz**: 
+
+1. **Analisa os Plugins aplicados** na Infraestrutura ou Aplicação, e a API de Runtimes **orquestra a ordem de provisionamento**, retornando uma lista de tarefas para as próximas Actions executarem;
+
+2. **Gera o IaC (terraform) do Plugin** aplicado à Infraestrutura ou Aplicação, substituindo as variáveis do [**template do Plugin**](https://public-docs.stg.stackspot.com/create-use/create-content/plugin/create-plugin#usar-jinja);
+
+3. Executa a **task DEPLOY_SELF_HOSTED**, que baixa e aplica o IaC (Terraform) na Infraestrutura do cliente.  O arquivo **`tfstate`** gerado é armazenado no bucket configurado, e o processo continua;
+
+4. Quando um **Plugin é removido**, uma task **`DESTROY_SELF_HOSTED`** é gerada, e a Action executa um Terraform destroy no `tfstate` do Plugin;
+
+5. [**Notifica a API de Runtimes**](deployment/deploy/self-hosted-runtime.mdx) quando uma **execução de pipeline é interrompida**, seja por cancelamento manual, falha em um passo customizado ou desligamento do runner. Isso garante que a API seja informada sobre o erro, evitando bloqueios futuros na execução de pipelines para a mesma Aplicação e ambiente. Sem essa notificação, a API impediria novas execuções, exigindo intervenção manual. Essa Action **assegura que o fluxo de execução não fique travado**.   
+
+<br/>
+
+Agora você está pronto para configurar e executar a Action da StackSpot em sua pipeline!
+
+
+:::info Informação Adicional 
+Para saber mais sobre os inputs da Action, [**acesse o repositório oficial**](https://github.com/stack-spot/workflow-stackspot-actions-runtime-selfhosted/main/examples/gitlab/stackspot-deploy.yml).
+::: 
+
+## **Acompanhar o status do deploy**
+
+É possível acompanhar o status do deploy através de duas formas:
+
+### **Localmente no STK CLI**: 
+
+**Passo 1.** Execute o comando para acessar o Workspace da sua Aplicação: 
+
+```bash 
+stk use workspace <workspace-slug>
+```
+
+**Passo 2.** Execute o comando a seguir para acompanhar o status:    
+
+```bash 
+stk deploy status <deploy-id> --watch
+```
+
+Você encontra o **deploy id** ao finalizar a execução do deploy na sua pipeline. Deve aparecer como no exemplo a seguir: 
+
+```bash
+RUN DEPLOY_SELF_HOSTED successfully started with ID: 01J9V6MWFTWQ392331QBCS46KQ
+```
+
+### **Via Portal da StackSpot EDP** 
+
+Confira o passo a passo:
+
+**Passo 1.** Acesse o seu Workspace [**no Portal da StackSpot EDP**](https://app.stackspot.com/);
+
+**Passo 2.** Acesse sua Aplicação ou Infraestrutura;
+
+**Passo 3.** No menu lateral, selecione o **ambiente** onde você fez o deploy;
+
+**Passo 4.** Vá para a seção de **'Atividades'** no menu lateral e clique na aba **'Deploy Self-hosted'**. 
+
+## **Próximos passos**
+
+- [**Configure o comando de registro de deploy de Aplicação na sua pipeline**](deployment/deploy/register-app-deployment.mdx);
+- [**Configure Webhook para registrar atividades do repositório da sua Aplicação na tela de Atividades**](deployment/manage/activities.mdx); 
+- [**Gerencie sua Aplicação**](deployment/manage/index.mdx).

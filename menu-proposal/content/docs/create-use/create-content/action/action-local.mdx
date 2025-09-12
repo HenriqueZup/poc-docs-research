@@ -1,0 +1,160 @@
+---
+title: Usar Actions
+description: Como criar e executar uma Action.
+---
+
+## **Criar uma Action**
+
+Você pode criar Actions pelo [**CLI da StackSpot (STK CLI)**](home/stk-cli/index.mdx). Por padrão, toda Action possui um escopo **local** e só pode ser executada pelo STK CLI, mas você também pode configurar a Action em sua Conta e executá-la remotamente.
+
+<!-- Para mais informações sobre como executar uma Action remotamente, acesse a página de **Actions remotas*. -->
+Para criar a estrutura inicial da sua Action, execute o comando [**`stk create action`**](home/stk-cli/commands/action-commands.mdx#stk-create-action). Confira o exemplo:
+
+```bash title="A estrutura da Action 'my-action-name' será criada"
+stk create action my-action-name
+```
+
+Após executar o comando acima, responda algumas perguntas no terminal:
+
+1. Escolha o Tipo da Action:
+    - python
+    - shell
+
+<!-- Quando sair, adicionar: `- container; - webservice` -->
+
+Você pode informar o tipo da Action pelo terminal com a opção **`--type`**.
+
+2. Adicione uma URL de um repositório Git para hospedar o código da sua Action para ser exibida no Portal, ou utilize a opção **`--remote`** pelo terminal.
+
+3. Defina a versão inicial da sua Action no formato **`X.Y.Z`** (apenas números, exemplo: **`1.1.0`**), ou utilize a opção **`--version`** pelo terminal.
+
+4. Adicione uma descrição para a Action, ou utilize a opção **`--description`** e digite o texto entre aspas duplas (**`" Text description "`**) pelo terminal.
+
+```bash title="Exemplo informando os parâmetros pelas opções no terminal"
+stk create action my-action-name --type container --remote https://github.com/my-action-name/repo --version 1.1.0 --description "The purpose of my Action"
+```
+
+## **Validar e Publicar uma Action em um Estúdio**
+
+Após criar a sua Action, você pode testá-la [**executando a Action antes de publicá-la**](#executar-action-não-publicada).
+
+Antes de  publicar a sua Action, você precisar validar a sua estrutura. Siga os passos:
+
+:::info Informação Adicional
+
+Para publicar uma Action, confira se o Slug (Identificador) é único dentro do Estúdio. Não é possível ter um mesmo Slug, ou seja com a mesma identificação (seja de Stack, Plugin ou Action) em um Estúdio.
+
+:::
+
+**Passo 1.** Execute o comando [**stk validate action**](home/stk-cli/commands/action-commands.mdx) dentro da pasta da Action.
+
+```bash title="Dentro da pasta da Action: '/Users/user.name/my-action-name' "
+stk run validate action
+```
+
+**Passo 2.** Se a validação executar com sucesso, siga as instruções para publicar a sua Action.
+
+:::warning Atenção!
+
+Se retornar algum erro, você precisa corrigir e executar a validação novamente.
+
+:::  
+
+- Na pasta da sua Action, execute o comando [**stk publish action**](home/stk-cli/commands/action-commands.mdx#stk-publish-action):
+
+```bash
+stk publish action --studio [studio-name]
+```
+
+- Informe para qual Estúdio você deseja publicar a Action, utilize a opção **`--studio`**.
+
+Exemplo:
+
+```bash
+stk publish action --studio my-studio-name
+```
+
+## **Executar uma Action**
+
+Ao executar uma Action, todas as ações definidas nela serão executadas localmente em sua máquina. Porém, existem algumas obervações antes de executar essas Actions localmente, confira a seguir:
+
+### **Executar Action não publicada**
+
+Actions que não foram publicadas podem ser executadas localmente em sua máquina para testar as funções que a Action executa, para isso, execute o comando informando o caminho da pasta da Action:
+
+Execute o comando [**stk run action**](home/stk-cli/commands/action-commands.mdx#stk-run-action).
+
+Exemplo:
+
+```bash
+stk run action /Users/user.name/my-action-name
+```
+
+## **Executar Action publicada**
+
+Actions publicadas ficam disponíveis no Portal da StackSpot, você pode executar as Actions publicadas utilizando ou não as informações pré definidas no Workspace da sua Conta.
+
+Você pode executar a Action utilizando o Workspace ou não, confira os exemplos:
+
+### **1. Executar uma Action sem usar as variáveis de contexto do Workspace**  
+
+Siga o padrão **`<studio-slug>/<action-name>@<action-version>`**. Só pode ser utilizado quando não há um Workspace ativo.
+
+Exemplo sem Workspace:
+
+```bash
+stk run action my-studio-name/action-name@1.0.0
+```
+
+### **2. Executar uma Action usando as variáveis de contexto configuradas para a Action na Stack dentro do Workspace ativo**
+
+A versão da Action (`@stack-version`) só pode ser definida se não houver um Workspace ativo: **`<studio-slug>/<stack-slug>/<action-name>@<stack-version>`**.
+
+Exemplo com Workspace Ativo:
+
+``` bash
+stk run action my-studio-name/my-stack-name/my-action-name
+```
+
+<!-- Confira como executar **Actions remotamente**. -->
+
+:::warning Atenção!
+Confira se a Equipe em que você está ainda pertence ao Estúdio em que a Action foi adicionada. Caso a Equipe em que você está for deletada do Estúdio, não será possível fazer nenhuma ação nele.
+:::
+
+- **Configuração de Connection Interface** 
+Durante a execução de uma action, ela pode depender de uma **`connection`**. Confira um exemplo de um trecho da sintaxe do manifesto:
+
+```yaml
+requires:
+  connections:
+  - type: some-type
+    alias: some_alias
+  - type: some-type
+    alias: some_alias2
+```
+
+Agora, confira o exemplo completo do manifesto da Action com a dependência de uma **`connection`**: 
+
+```yaml
+schema-version: v2
+kind: action
+metadata:
+  name: some-kebab-case-name
+  description: some description
+  display-name: Some display name
+  version: 1.0.1
+  picture: images/plugin.png
+spec:
+  type: python
+  release-notes: docs/release-notes.mdx
+  requires:
+    connections:
+    - type: some-type
+      alias: some_alias
+    - type: some-type
+      alias: some_alias2
+  python:
+    workdir: another/random/path
+    script: random_name/a_cool_name.py
+```

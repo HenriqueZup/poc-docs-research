@@ -1,0 +1,363 @@
+---
+title: Criar Stack e Starter via STK CLI
+description: Como criar Stack e Starter via STK CLI.
+---
+
+> Nesta seção você encontra um guia de criação de Stacks e Starters via STK CLI, e como validá-los. 
+
+<br/>
+
+## **Criar Stack via STK CLI**
+
+### **Antes de você começar**
+
+- [**Instale o STK CLI**](home/stk-cli/install.mdx). 
+-  Tenha conhecimentos básicos sobre o uso de uma interface de linha de comando (CLI).  
+- [**Familiarize-se com os comandos do STK CLI**](home/stk-cli/commands/index.mdx).
+
+Siga os passos:
+
+**Passo 1.** Confira se você [**criou**](create-use/create-content/plugin/create-plugin.mdx) e [**publicou**](create-use/create-content/plugin/publish-plugin.mdx) Plugins no seu Estúdio. 
+
+**Passo 2.** Acesse o seu terminal e faça login no STK CLI:
+
+```bash
+stk login
+```
+
+**Passo 3.** Para criar uma Stack execute o comando:
+
+```bash
+stk create stack 
+```
+
+**Passo 4.** Responda as perguntas no seu terminal: 
+
+- ? **Nomeie sua stack**: exemplo-stack
+- ? **Versão**: (0.0.1)
+- ? **Você deseja iniciar um repositório git?** No
+- ? **Adicionar remote? (adicionar o seu repositório já criado para armazenar a Stack)** Yes
+- ? **Git URL para definir como remote origin**: adicione a URL
+- ? **Descrição da stack:** Descreva a Stack explicando o seu propósito
+
+**Passo 5.** Abra a pasta da Stack. Clique no arquivo **`stack.yaml`** e preencha os parâmetros da Stack:
+
+Dentro dos parâmetros **`spec:`**, preencha as seguintes opções:
+
+1. **`repository:`**
+
+Se tiver iniciado o repositório Git, preencha o repositório local da seguinte forma:
+
+```yaml
+spec:
+  repository: git@github.com:GitHub-UserName/my-local-repository.git
+```
+
+Exemplo:
+
+```yaml
+spec:
+  repository: git@github.com:JohnDoe/my-stack.git
+```
+
+2. **`docs:`**
+
+Se você tem alguma documentação da sua Stack, nomeie o arquivo Markdown da documentação como **`docs.mdx`** e coloque o arquivo nas seguintes pastas:
+
+- docs/en_us: Para documentação na versão em Inglês;  
+- docs/pt_br: Para documentação na versão em Português;
+
+Exemplo:
+
+```yaml
+spec:
+#...Other spec options above
+  docs:
+    en-us: docs/en_us/docs.mdx
+    pt-br: docs/pt_br/docs.mdx
+```
+
+3. **`links:`**
+
+Preencha o nome, a URL e a imagem para adicionar um link à sua Stack. O link ficará no Portal da StackSpot.
+
+Exemplo:
+
+```yaml
+spec:
+#...Other spec options above
+  links:
+    - name: My Stack link
+      url: https://github.com/JohnDoe/my-stack
+      picture: stack-image.png
+```
+
+4. **`plugins`:**
+
+Para os dois tipos de Plugins, **app** e **infra**, preencha os Plugins com a seguinte sintaxe: 
+
+```yaml
+spec:
+#...Other spec options above
+  plugins:
+    app:
+      - name: studio-slug/app-plugin-name@<semantic-version>
+    infra:
+      - name: studio-slug/infra-plugin-name@<semantic-version>
+```
+
+:::tip Dica!
+
+Os Plugins podem ser de Estúdios diferentes do Estúdio que você vai publicar a Stack desde que você tenha acesso a eles.
+
+:::
+
+Exemplo:
+
+```yaml
+spec:
+#...Other spec options above
+  plugins:
+    app:
+      - name: my-studio/java-app-plugin@1.1.0
+    infra:
+      - name: my-studio/sqs-infra-plugin@2.1.0
+```
+
+5. **`actions:`**  
+
+Para definir Actions na sua Stack, preencha os nomes das Actions da seguinte forma:
+
+```yaml
+spec:
+#...Other spec options above
+  actions:
+    - name: studio-slug/action-name1@<semantic-version>
+    - name: studio-slug/action-name2@<semantic-version>
+    - name: studio-slug/action-name3@<semantic-version>
+```
+
+:::tip Dica!
+
+As Actions podem ser de Estúdios diferentes do Estúdio que você vai publicar a Stack desde que você tenha acesso a eles.
+
+:::
+
+Exemplo:
+
+```yaml
+spec:
+#...Other spec options above
+  actions:
+    - name: my-studio/my-personal-action@3.0.0
+    - name: organization-studio/action-with-connection@1.0.0
+    - name: data-studio/action-get-data@0.0.1
+```
+
+E por fim, você terá um arquivo **`stack.yaml`** como no exemplo:   
+
+```yaml
+schema-version: v1
+kind: stack
+metadata:
+  name: my-stack
+  display-name: my-stack
+  description: My Stack description
+  version: 1.0.0
+spec:
+  repository: git@github.com:GitHub-UserName/my-local-repository.git
+  docs:
+    en-us: docs/en_us/docs.mdx
+    pt-br: docs/pt_br/docs.mdx
+  links:
+    - name: My Stack link
+      url: https://github.com/my-github-org/my-stack
+      picture: stack-image.png
+  plugins:
+    app:
+      - name: studio-slug/app-plugin-name@1.0.0
+    infra:
+      - name: studio-slug/infra-plugin-name@1.2.0
+  actions:
+    - name: studio-slug/action-name1@0.0.1
+    - name: studio-slug/action-name2@1.0.1
+    - name: studio-slug/action-name3@2.1.0 
+```
+
+**Passo 6.** Salve o seu arquivo yaml e agora, crie o seu Starter. Siga os passos a seguir.
+
+## **Criar Starter via STK CLI**  
+
+> Adicione os Plugins que o Starter usará, ou o comando de validação da Stack falhará.
+
+Siga os passos: 
+
+**Passo 1.** Certifique-se de que já tem uma Stack e que atualmente está dentro da pasta da Stack para criar um Starter;
+
+**Passo 2.** Execute o seguinte comando:
+
+```yaml
+stk create starter
+```
+
+**Passo 3.** Responda as perguntas no seu terminal:
+
+? **Nomeie seu starter**: basic-starter
+? **Você deseja iniciar um repositório git?** Yes/No
+? **Adicionar remote? (adicionar o seu repositório já criado para armazenar o Starter)** Yes/No
+? **Git URL para definir como remote origin:** adicione a URL
+? **Descrição do starter:** (Descreva o starter explicando o seu propósito) 
+
+:::warning Atenção!
+
+Adicione o nome do Starter manualmente ao seu arquivo **`stack.yaml`**.
+
+Como no exemplo:
+```yaml
+spec:
+#...Other spec options above
+  starters:
+    - path: starters/basic-starter
+    - path: starters/java-starter
+```
+::: 
+
+**Passo 4.**: Abra a pasta da Stack e, em seguida, abra a pasta do Starter. Clique no arquivo **`starter.yaml`** e preencha os parâmetros do Starter:
+
+1. **`type:`**  
+
+O tipo de Plugin que será adicionado ao Starter. Atualmente, somente o tipo **App** é suportado. 
+
+2. **`docs:`**
+
+Se você tem alguma documentação do seu Starter, nomeie o arquivo Markdown da documentação como **`docs.mdx`** e coloque o arquivo nas seguintes pastas:
+
+- docs/en_us: Para documentação na versão em Inglês;
+- docs/pt_br: Para documentação na versão em Português;
+
+Exemplo:
+
+```yaml
+spec:
+#...Other spec options above
+  docs:
+    en-us: docs/en_us/docs.mdx
+    pt-br: docs/pt_br/docs.mdx
+```
+
+3. **`plugins:`**  
+
+Neste parâmetro, adicione a opção de **`required:`**. Adicione o nome dos Plugins que serão mandatórios no seu Starter.
+
+```yaml
+spec:
+#...Other spec options above
+  plugins:
+    required:
+      - name: studio-slug/<plugin-name>
+```
+
+Exemplo:
+
+```yaml
+spec:
+#...Other spec options above
+  plugins:
+      required:
+        - name: my-studio/app-java-plugin
+```
+
+O seu arquivo **`starter.yaml`** terá que ficar como no exemplo:
+
+```yaml
+schema-version: v1
+kind: starter
+metadata:
+  name: basic-starter
+  description: basic-starter
+spec:
+  type: app
+  docs:
+    en-us: docs/en_us/docs.mdx
+    pt-br: docs/pt_br/docs.mdx
+  plugins:
+    required:
+      - name: my-studio/app-java-plugin  
+```
+
+Salve o arquivo e valide as mudanças. 
+
+:::info Informação Adicional
+
+Gere uma estrutura básica do Starter dentro de uma Stack. Para isso você pode no momento em que cria a Stack, [**executar o comando para criar a Stack**](home/stk-cli/commands/stack-commands.mdx#stk-create-stack) com a opção **`--from`** para criar o seu Starter a partir de um Stack. Confira a seguir:
+
+Use a seguinte sintaxe: `stk create stack --from [studio-slug]/[stack-slug]@[semantic-version]`;
+
+Exemplo:
+
+```bash
+stk create stack --from other-studio-slug/source-stack-slug@1.2.0
+```
+
+Confira o(s) nome(s) do(s) Starter(s) gerado(s) e atualize o campo **'starters'** no arquivo de configuração da sua Stack (**`stack.yaml`**).
+
+:::
+
+## **Validar Starter**
+
+Dentro da pasta do seu Starter, execute o seguinte comando:
+
+```bash
+stk validate starter
+```
+
+Em seguida, valide sua Stack para conferir se todas as mudanças foram publicadas.
+
+## **Validar Stack via STK CLI**
+
+Para validar a Stack e seus Starters, siga os passos:  
+
+1. Entre na pasta da sua Stack;
+2. Execute o comando:
+
+```bash
+stk validate stack
+```
+
+## **Publicar Stack via STK CLI**
+
+### **Pré-requisitos**
+
+:::caution Cuidado!
+
+- É **obrigatório** que a sua Stack tenha Starters com Plugins. Os Plugins podem ser de Estúdios diferentes do Estúdio que você vai publicar a Stack desde que você tenha acesso a eles. Se você precisar, [**confira como adicionar Plugins em seu Starter**](#criar-starter-via-stk-cli);
+
+- Verifique se os Starters criados foram adicionados no arquivo de configuração da sua Stack (**`stack.yaml`**). Para isso confira no passo **5** o item **'6. starters:'** [**como adicionar os Starters em sua Stack**](#criar-stack-via-stk-cli).
+
+- A pasta da sua Stack não pode estar vazia.
+
+:::
+
+Ao publicar uma Stack, os Starters também serão publicados e terão versões em conjunto.
+
+:::warning
+
+Se adicionar outro Starter à sua Stack, será preciso alterar a versão e publicá-la novamente. O mesmo fluxo de trabalho aplica-se ao Portal da StackSpot.
+
+:::
+
+Siga os passos:
+
+**Passo 1.** Execute o comando:
+
+```bash
+stk publish stack
+```
+
+**Passo 2.** Selecione seu Estúdio e clique em **"Enter"**, ou informe o nome do Estúdio com a opção **`--studio`**.
+
+Exemplo:
+
+```yaml
+stk publish stack --studio my-personal-studio
+```

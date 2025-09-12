@@ -1,0 +1,139 @@
+---
+title: Metadata
+description: Check metadata details.
+---
+
+Metadata is an object created during a Plugin's execution. It contains several values that can assist in executing other processes or creating automation.
+
+```yaml 
+metadata:
+  inputs: Dict
+  global_inputs: Dict
+  computed_inputs: Dict
+  global_computed_inputs: Dict
+  filters: Dict
+  target_path: Path
+  component_path: Path
+```
+
+#### **`metadata.inputs`**: It is a dictionary with the processed inputs.
+
+> The **global_inputs**, **computed_inputs** and **global_computed_inputs** inputs type show the same behavior as the **inputs**. The main difference is that each one contains its respective data.
+
+Check an example below:
+
+```yaml
+# Plugin/Hook example
+hooks:
+  ...
+  commands:
+  - ping -c 4 {{ inputs.ipv4 }}
+  # ou
+  - ping -c 4 {{ ipv4 }}
+```
+
+>The **ipv4** input is requested during hook execution. It interpolates before executing the command.  
+
+The processed inputs are also added to the object body.  
+
+Check an example below:
+
+```yaml
+metadata.inputs.varname
+metadata.varname
+
+# If you are running inside the Jinja template, the metadata term is omitted.
+
+{{ inputs.varname }}
+{{ varname }}
+```
+
+#### **`metadata.target_path`: Local path to execute a Plugin**.  
+
+Check an example below:
+
+```yaml 
+# Example in a Plugin/Hook
+hooks:
+  ...
+  commands: |
+  kubectl apply -f {{ target_path }}/deployment/main.yaml
+```
+
+>The **target_path** delivers the current execution folder, for example:  
+>**`'/home/linus/scheduler'`**.
+
+#### **`metadata.component_path`: Plugin source path. It is the location where the Plugin is stored**.
+
+Check an example below:
+
+```yaml 
+# Example in a Plugin/Hook
+hooks:
+  ...
+  commands:
+    windows: |
+      call "{{ component_path }}\scripts\my-another.bat"
+    linux: |
+      bash "{{ component_path }}/scripts/my-another.sh"
+```
+
+> The **`component_path`** helps keep your binaries and your scripts organized in your **Plugin**. And it also delivers a simple way to link, to execute later.  
+
+## **Advanced Metadata**
+
+You can use metadata in more advanced features.  
+
+The **`target_path`** and **`component_path`** values are objects of type [**`Path`**](https://docs.python.org/3/library/pathlib.html). In these cases, you can use the properties and methods of that object in the context of execution. Check the example below:
+
+```yaml 
+# Plugin/Hook example
+hooks:
+  ...
+  commands: |
+  # projects size
+  du -sh {{ stack_path.parent }}
+```
+
+### **Hooks**
+
+Metadata are used in **`Declarative Hooks`** scenarios. For example, you can use the **`type: run-script`** here, check below:  
+
+```yaml 
+hooks:
+  - type: run-script
+    ...
+    script: my-custom-script.py
+```
+
+```python
+# my-custom-script.py
+import json
+from templateframework.metadata import Metadata
+
+def run(metadata: Metadata):
+    with open(f"{metadata.target_path}/package.json") as f:
+      data = json.load(f)
+
+    if data["license"] == "MIT":
+      print("license ok")
+    else:
+      print("license error, please set MIT license at package.json")
+      exit(1)
+
+    return metadata
+```
+
+### **Methods and properties available via metadata in a script**
+
+Method/Property  | Description
+--------- | ------ 
+**`metadata.all_inputs()`**  |All processed inputs from **Plugins**.|  
+**`metadata.inputs`** | Inputs dictionary. |
+**`metadata.global_inputs`**  | Dictionary of **`global inputs`**. |
+**`metadata.global_computed_inputs`**  | Dictionary of **`global computed inputs`**.|  
+**`metadata.target_path`**  | Path where the Plugin is running. |  
+**`metadata.component_path`**  | Plugin Path (**`~/.stk/stacks/my-stack/`**). |
+**`metadata.filters`**  | Contains string filters integrated into Jinja Templates. |  
+**`metadata.group_id_folder(str)`**  | Replace **`.`** with **`/`** |
+**`metadata.to_unidecode(str)`**  |Removes the Latin characters for ANSII (eg. áçhó -> acho). |  

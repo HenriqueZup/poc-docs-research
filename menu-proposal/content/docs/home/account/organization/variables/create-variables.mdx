@@ -1,0 +1,79 @@
+---
+title: Criar Variáveis da Conta
+description: Como criar variáveis da Conta na StackSpot.
+---
+
+> Nesta seção, você encontrará um guia sobre a criação de variáveis.
+
+<br/>
+
+Na StackSpot, há três momentos em que diferentes pessoas precisam configurar respostas para entradas (inputs) de Plugins e Actions:
+
+1. Ao **configurar Contextos de Stacks** para uma Conta ou Workspace;
+2. Ao **criar Plugins e Actions**;
+3. Ao aplicar Plugins e utilizar Actions para **criar Aplicações e Infraestruturas** dentro do Workspace.
+
+Muitas vezes, as respostas para esses inputs são repetitivas, o que faz com que as pessoas desenvolvedoras precisem escrever as mesmas informações várias vezes, resultando em erros e perda de tempo. Para resolver esse problema, existem as **Variáveis da Conta**.
+
+## **O que são Variáveis da Conta?**
+
+**Variáveis da Conta** são respostas de inputs pré-configuradas por Account Holders ou Administradores da Conta. Elas podem ser de dois tipos:
+
+1. [**Variáveis Oficiais da StackSpot**](create-use/create-content/plugin/create-plugin.mdx#usar-variáveis-stackspot-como-inputs);
+2. **Variáveis da Conta** que você pode criar para a sua Conta.
+
+O conceito de **Variável da Conta** envolve o uso de um **nome amigável para referenciar um valor que pode ser reutilizado** em várias partes da StackSpot. Ao usar uma variável, as pessoas desenvolvedoras têm um único lugar para atualizar esses valores, facilitando mudanças que afetam vários Plugins e Actions.
+
+### **Atributos de uma Variável da Conta**
+
+Uma Variável da Conta contém os seguintes atributos:
+
+- **Nome:** define o nome da variável, que deve sempre seguir o padrão MACRO_CASE.
+- **Descrição:** explica o propósito da variável para fornecer contexto à pessoa usuária.
+- **Tipo:** tipo de input que aceita dados de texto.
+- **Valor:** o valor atribuído à variável. O valor da variável pode ser editado, mas o nome não. Se você quiser que o valor seja fixo, pode defini-lo como **mandatório**.
+
+## **Como criar Variáveis da Conta**
+
+### **Pré-requisitos**
+
+- [**Você deve ter permissão de Account Holder ou Account Admin para prosseguir**](home/account/organization/access-management/roles.mdx).
+
+### **Passo a passo**
+
+:::danger Atenção!
+
+**Nunca use dados sensíveis em suas variáveis**. Para informações como senhas, [**use o input do tipo `password`**](create-use/create-content/yaml-files/inputs.mdx#input-do-tipo-password) ou um serviço externo de armazenamento de credenciais.
+
+:::
+
+**Passo 1.** Acesse diretamente link do [**Portal da Conta**](http://myaccount.stackspot.com); ou após fazer [**login no Portal StackSpot**](https://app.stackspot.com/), clique no **seu avatar de perfil**;
+
+**Passo 2.** Selecione a opção **'Organização'** no menu exibido; 
+
+**Passo 3.** No menu principal do Portal da Conta, selecione o produto StackSpot EDP e clique em **'Variáveis'**; 
+
+**Passo 4.** Depois, clique em **'Criar Variável'**;
+
+**Passo 5.** Agora, configure sua nova variável preenchendo os seguintes campos:
+
+- **Nome da Variável:** Dê um nome à variável para que ela possa ser identificada.
+
+:::warning Atenção!
+
+- O nome da variável deve seguir o padrão **MACRO_CASE**. Isso significa que todas as letras devem ser maiúsculas e separadas por um sublinhado. Exemplo: `NOME_APLICACOES`.
+- O nome da variável não pode usar o prefixo **STK**. Somente as variáveis oficiais da StackSpot podem usar este prefixo.
+
+:::
+
+- **Valor:** Defina o valor da variável. Caso queira que este valor não seja alterado quando a variável for utilizada, marque o checkbox **'Mandatório'**.
+- **Descrição:** Descreva para que serve a variável.
+
+**Passo 4.** Clique em **'Salvar'**.
+
+Pronto, sua variável foi criada com sucesso.
+
+## **Próximos Passos**
+
+- [**Gerenciar Variáveis**](home/account/organization/variables/manage-variables.mdx)
+- [**Utilizar Variáveis da Conta para configurar Contextos**](home/account/organization/configure-context-account.mdx)

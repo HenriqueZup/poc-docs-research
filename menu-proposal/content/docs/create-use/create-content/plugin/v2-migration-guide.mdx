@@ -1,0 +1,812 @@
+---
+title: (Descontinuado) Migrar Plugin v1 para v2
+description: Como migrar Plugins v1 para v2.
+---
+
+> Nesta seção, você encontra um guia de como migrar um Plugin v1 para o v2.
+
+<br/>
+
+:::danger Atenção!
+
+Este guia de migração da versão do manifesto de Plugins foi **descontinuado**. [**Acesse o novo guia para atualizar os seus Plugins e Actions para a nova versão v3 do manifesto**](home/stk-cli/migrate-manifest.mdx).
+
+:::
+
+## **Por que mudou**
+
+Com a atualização dos Plugins v1 para v2, você pode criar recursos do mesmo tipo, como:
+
+- Disponibilizar o mesmo recurso mais de uma vez por Plugin de Aplicação (app) ou de Infraestrutura (infra), por meio de Connection Interfaces.
+
+- Gerar a Connection Interface para Plugins de Infraestrutura com o de/para de um arquivo Terraform para a StackSpot, e sem alterar o arquivo **`.tf`**.
+
+- Usar mais de uma Connection Interface do mesmo tipo.
+
+:::info Informações Complementares
+
+- É possível continuar usando a v1 dos Plugins. Você consegue aplicar e fazer o deploy de Plugins v1 com os comandos do STK CLI (stk apply plugin, stk deploy), mas **não pode mais publicar novas versões** dele sem fazer a migração.
+
+- Os Plugins v1 que utilizam Connection Interface ainda funcionam, porém com limitações. E não podem ser atualizados sem a migração para a v2.
+
+:::
+
+## **Mudanças**
+
+Confira o que mudou:
+
+1. Implementação de **`Alias`** (apelidos) para as Connection Interfaces geradas e requeridas pelos Plugins.
+2. Implementação de **`Alias`** para criação de Aplicação de Plugins permitindo usar o mesmo recurso mais de uma vez.
+3. O parâmetro **`--environment`** foi alterado para **`--env`** ou **`-e`**.
+4. Implementação do mapeamento das variáveis de output do Terraform para a StackSpot, agora é possível usar um output com as opções **“`From: <terraform.output>`”** e **“`to: connection-interface-type.output`”**.
+5. Novo campo de runtime para Plugins de Infraestrutura:
+
+```yaml
+runtime:
+  environment:
+    - terraform-1-3
+```
+
+:::warning Atenção!
+
+Se você receber um erro de não autorização (http status 403) na pipeline, será preciso gerar [**novas Credenciais de Serviço**](home/account/organization/service-credential.mdx) com as permissões atualizadas. 
+
+:::
+
+6. Mudança do parâmetro **`Link`** para **`Links`**.
+
+7. Atualização da Runtime Engine. Essa atualização implementa mudanças para suportar a nova versão v2 do esquema de Plugins e seus impactos no deploy de aplicações.
+
+## **Principais diferenças**
+
+Diversos campos foram alterados do esquema v1 para o esquema v2 dos Plugins, confira a seguir os campos alterados:
+
+- **`schema-version`**, teve seu valor alterado de `v1` para `v2`;
+- **`runtime`**: Novo campo adicionado na versão do esquema `v2`, informa metadados específicos para a Engine de Runtimes. **Obrigatório** apenas para Plugins de Infraestrutura;
+- **`requires.connection-interface`**, passou de uma lista de nomes dos tipos de Connection Interface para o atributo **`connections`**. O novo atributo conta com duas novas opções:
+  - **`type`**: Nome do tipo da Connection Interface;
+  - **`alias`**: Nome alternativo para o tipo da Connection Interface. Agora permite que você utilize mais de uma vez a mesma Connection Interface.
+- **`generates.connection-interface`**, passou de uma lista de nomes dos tipos de Connection Interface para o atributo **`connections`**. O novo atributo conta com as opções:
+  - **`type`**: Nome do tipo da Connection Interface;
+  - **`alias`**: Nome alternativo para o tipo da Connection Interface. Agora permite que você utilize mais de uma vez a mesma Connection Interface.
+  - **`outputs.from`**: Nome do output do recurso do seu arquivo Terraform;
+  - **`outputs.to`**: Nome do output da Connection Interface definida, equivalente ao recurso do arquivo Terraform;
+- **`link`**, o parâmetro foi alterado para **`links`**.
+
+:::warning Atenção!
+
+- O campo **`generates`**, **`runtime`** e **`links`** são exclusivos para os Plugins de Infraestrutura;
+- As opções **`from`** e **`to`** do campo **`outputs`** são **Obrigatórias** se a Connection Interface definida possuir outputs.
+
+:::
+
+### **Plugin na versão v1**
+
+```yaml
+// old-line
+schema-version: v1
+kind: plugin
+metadata:
+  name: some-kebab-case-name
+  description: some description
+  display-name: Some display name
+  version: 1.0.1
+  picture: images/plugin.png
+spec:
+  type: infra
+  release-notes: docs/release-notes-1.mdx
+  about: docs/about.mdx
+  usage: docs/usage.mdx
+  implementation: docs/implementation.mdx
+  requirements: docs/requirements.mdx
+  repository: https://github.com/stack-spot/something
+  compatibility:
+    - python
+  technologies:
+    - Api
+  requires:
+// old-start  
+    connection-interface:
+      - ecs-task-conn
+// old-end      
+  generates:
+// old-start  
+    connection-interface:
+      - aws-iam-role-conn
+    link:
+// old-end    
+      - name: Link
+        url: http://www.stackspot.com
+        type: static
+```
+
+### **Plugin na versão v2**
+
+```yaml
+// new-line
+schema-version: v2
+kind: plugin
+metadata:
+  name: some-kebab-case-name
+  description: some description
+  display-name: Some display name
+  version: 1.0.1
+  picture: images/plugin.png
+spec:
+  type: infra
+  release-notes: docs/release-notes-1.mdx
+  about: docs/about.mdx
+  implementation: docs/implementation.mdx
+  requirements: docs/requirements.mdx
+  repository: https://github.com/stack-spot/something
+  compatibility:
+    - python
+  technologies:
+    - Api
+// new-line-start    
+  runtime:
+    environment:
+      - terraform-1-4
+// new-line-end      
+  requires:
+// new-line-start   
+    connections:
+      - type: ecs-task-conn
+        alias: my-ecs-task-conn
+// new-line-end         
+  generates:
+// new-line-start    
+    connections:
+    - type: aws-iam-role-conn
+      alias: sqs-access-iam-role
+      outputs:
+        - from: sqs-access-iam-role-arn
+          to: arn
+    links:
+// new-line-end     
+      - name: Link
+        url: http://www.stackspot.com
+        type: static
+```
+
+## **Migrar o seu Plugin**
+
+A conversão de um Plugin é manual. Para migrar da v1 para v2, você precisa **alterar a versão do `schema-version`**.
+
+Confira os passos para migrar o Plugin:
+
+:::warning Atenção!
+
+- Se o Plugin não requer nenhuma Connection Interface, a única ação a ser feita é mudar de v1 pra v2.
+- Nos Plugins de App é possível requerer uma Connection Interface, você só não poderá gerá-las.
+
+- O campo **`generates`**, **`runtime`** e **`links`** são exclusivos para os Plugins de Infraestrutura;
+- As opções **`from`** e **`to`** do campo **`outputs`** são **Obrigatórias** se a Connection Interface definida possuir outputs.
+:::
+
+### **Passo 1**
+
+Altere a versão do esquema de v1 para v2:
+
+```yaml
+schema-version: v2 
+```
+
+### **Passo 2**
+
+1. Se o seu Plugin possuir Connection Interfaces, adicione ao nome do tipo da Connection Interface a opção **`- type`**.
+2. Adicione o campo **`alias`** e um valor para cada uma.
+
+> Se for um Plugin de Infraestrutura, verifique se as Connection Interfaces possuem outputs. Caso possuam, adicione o campo **`outputs`** e preencha as opções **`from`** e **`to`** de cada uma.
+
+### **Passo 3**
+
+Se o seu Plugin possuir o campo **`link`**, altere para **`links`**.
+
+Confira o De/Para a seguir:
+
+**De:**
+
+```yaml
+spec:
+  type: infra
+  release-notes: docs/release-notes-1.mdx
+  about: docs/about.mdx
+  usage: docs/usage.mdx
+  implementation: docs/implementation.mdx
+  requirements: docs/requirements.mdx
+  repository: https://github.com/stack-spot/something
+  compatibility:
+    - python
+  technologies:
+    - Api
+  requires:
+// old-start  
+    connection-interface:
+      - ecs-task-conn
+// old-end      
+  generates:
+// old-start  
+    connection-interface:
+      - aws-iam-role-conn
+    link:
+// old-end    
+      - name: Link
+        url: http://www.stackspot.com
+        type: static
+```
+
+**Para:**
+
+```yaml
+spec:
+  type: infra
+  release-notes: docs/release-notes-1.mdx
+  about: docs/about.mdx
+  implementation: docs/implementation.mdx
+  requirements: docs/requirements.mdx
+  repository: https://github.com/stack-spot/something
+  compatibility:
+    - python
+  technologies:
+    - Api
+// new-line-start    
+  runtime:
+    environment:
+      - terraform-1-4
+// new-line-end      
+  requires:
+// new-line-start   
+    connections:
+      - type: ecs-task-conn
+        alias: my-ecs-task-conn
+// new-line-end         
+  generates:
+// new-line-start    
+    connections:
+    - type: aws-iam-role-conn
+      alias: sqs-access-iam-role
+      outputs:
+        - from: sqs-access-iam-role-arn
+          to: arn
+    links:
+// new-line-end     
+      - name: Link
+        url: http://www.stackspot.com
+        type: static
+```
+<!-- 
+**3.** O atributo **`spec.requires.connections[n].alias`** permite definir o nome da variável que contém a Connection Interface no template. Isso é útil para acessar essa Connection Interface.
+
+Confira o De/Para das versões:
+
+#### **v1**
+
+```yaml
+schema-version:v1 
+kind: plugin 
+metadata: 
+  name: lambda-new-endpoint 
+  description: Add new endpoint to an existing Lambda API.  
+  display-name: Endpoint para Lambda  #required
+  version: 1.0.0  
+  picture: plugin.png  
+spec: 
+  type: app   
+  compatibility: 
+    - python
+  about: docs/about.mdx  #optional 
+  usage: docs/usage.mdx  #optional 
+  implementation: docs/implementation.mdx  
+  requirements: docs/requirements.mdx     
+  repository: https://github.com/stack-spot/environments-runtime-stack  
+  technologies: 
+    - Api
+  release-notes: docs/release-notes-{{version}}.mdx 
+  requires: #optional
+    connection-interface: 
+      - lambda-conn             # studio)
+  inputs: #optional
+    - label: Type name of your resource #required
+      name: resource 
+      type: text 
+      required: true 
+      default: Client 
+      pattern: '([A-Z][a-z]+)+' 
+      help: 'Inform your resource name (e.g.: Client)' 
+    - label: Choose http method of new endpoint
+      name: method
+      type: select
+      items:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - PATCH
+      default: GET
+      required: true
+      help: 'Inform the method of the endpoint (e.g.: post or delete)'
+```
+
+#### **v2**
+
+```yaml
+// highlight-start  
+schema-version: v2
+// highlight-end 
+kind: plugin
+metadata:
+  name: lambda-new-endpoint 
+  display-name: Endpoint para Lambda  #required
+  description: Add new endpoint to an existing Lambda API. 
+  version: 1.0.0
+  picture: plugin.png
+spec:
+  type: app
+  compatibility:
+    - python
+  about: docs/about.mdx
+  implementation: docs/implementation.mdx
+  release-notes: docs/release-notes-1.0.0.mdx
+  requirements: docs/requirements.mdx
+  technologies: # Ref: https://docs.stackspot.com/create-use/create-content/yaml-files/plugin-yaml/#technologies
+    - Api
+// highlight-start
+  requires: 
+    connections:
+      - type: aws-api-gateway-conn
+        alias: alias-test
+      - type: aws-cloud-front-conn
+        alias: alias-test2
+      - type: aws-api-gateway-conn
+        alias: same-conn-alias-test1
+// highlight-end  
+  inputs:
+    - label: Type name of your resource
+      name: resource
+      type: text
+      required: true
+      default: Client
+      pattern: '([A-Z][a-z]+)+'
+      help: 'Inform your resource name (e.g.: Client)'
+    - label: Choose http method of new endpoint
+      name: method
+      type: text
+      items:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - PATCH
+      default: GET
+      required: true
+      help: 'Inform the method of the endpoint (e.g.: post or delete)'
+```
+-->
+
+### **Plugins de Infraestrutura**
+
+No Plugin do tipo Infra, você precisa fazer uma configuração específica e adicionar os novos atributos:
+
+**Atributo** | **Descrição** |
+--------- | ------
+`spec.runtime.environment` | Obrigatório em Plugins de Infra |
+`spec.requires.connections[n].alias` | Opcional
+`spec.generates.connections[n].alias`| Obrigatório  |
+`spec.generates.connections[n].outputs[n].from` | Obrigatório apenas no objeto. A lista pode ser vazia.
+`spec.generates.connections[n].outputs[n].to`| Obrigatório apenas no objeto. A lista pode ser vazia. |
+
+Confira mais detalhes sobre cada um:
+
+#### 1. **`spec.runtime.environment`**
+
+Permite definir a configuração limitada a ser usada durante uma execução do deploy. Isso conforme definido no Run da configuração do ambiente. Se algum dado não é informado, Runtime utiliza os valores default durante a execução do deploy desse Plugin. 
+
+- **terraform:** representa qual Terraform será usado. Suporta as versões **1-3**, **1-4** e **1-5**. Valor default: **1-3**. 
+- **aws-cli-2:** indica qual a versão do CLI da AWS. Suporta a versão **2**. Valor default: **2**.
+- **git-2:** representa qual a versão do Git. Suporta a versão **2**. Valor default: **2**. 
+
+```yaml
+spec:
+  type: infra
+  release-notes: docs/release-notes-1.mdx
+  about: docs/about.mdx
+  implementation: docs/implementation.mdx
+  requirements: docs/requirements.mdx
+  repository: https://github.com/stack-spot/something
+  compatibility:
+    - python
+  technologies:
+    - Api
+// new-line-start    
+  runtime:
+    environment:
+      - terraform-1-5
+      - aws-cli-2
+      - git-2
+// new-line-end      
+```
+
+#### 2. **`spec.requires.connections[n].alias`**
+
+Permite definir o nome da variável que contém a Connection Interface no template. É útil para acessar a Connection Interface.
+
+```yaml
+spec:
+  type: infra
+  release-notes: docs/release-notes-1.mdx
+  about: docs/about.mdx
+  implementation: docs/implementation.mdx
+  requirements: docs/requirements.mdx
+  repository: https://github.com/stack-spot/something
+  compatibility:
+    - python
+  technologies:
+    - Api
+  runtime:
+    environment:
+      - terraform-1-4
+// new-line-start        
+  requires:
+    connections:
+      - type: ecs-task-conn
+        alias: my-ecs-task-conn
+// new-line-end         
+  generates:  
+    connections:
+    - type: aws-iam-role-conn
+      alias: sqs-access-iam-role
+      outputs:
+        - from: sqs-access-iam-role-arn
+          to: arn
+    links:
+      - name: Link
+        url: http://www.stackspot.com
+        type: static      
+```
+
+#### 3. **`spec.generates.connections[n].alias`**
+
+Permite definir um nome amigável para dar dicas aos usuários sobre o uso da Connection Interface. O **`alias`** é usado para ajudar os criadores a escolherem a Connection Interface correta e remover a ambiguidade quando houver mais de uma com o mesmo tipo.
+
+```yaml
+spec:
+  type: infra
+  release-notes: docs/release-notes-1.mdx
+  about: docs/about.mdx
+  implementation: docs/implementation.mdx
+  requirements: docs/requirements.mdx
+  repository: https://github.com/stack-spot/something
+  compatibility:
+    - python
+  technologies:
+    - Api
+  runtime:
+    environment:
+      - terraform-1-4
+  requires:
+    connections:
+      - type: ecs-task-conn
+        alias: my-ecs-task-conn
+// new-line-start    
+  generates:  
+    connections:
+    - type: aws-iam-role-conn
+      alias: sqs-access-iam-role
+// new-line-end       
+      outputs:
+        - from: sqs-access-iam-role-arn
+          to: arn
+    links:
+      - name: Link
+        url: http://www.stackspot.com
+        type: static
+```
+
+#### 4. **`spec.generates.connections[n].outputs[n].from` e `spec.generates.connections[n].outputs[n].to`**
+
+Permite selecionar qual output de Terraform deve ser escrito em cada atributo da Connection Interface.
+
+Exemplo:
+
+```yaml
+spec:
+  type: infra
+  release-notes: docs/release-notes-1.mdx
+  about: docs/about.mdx
+  implementation: docs/implementation.mdx
+  requirements: docs/requirements.mdx
+  repository: https://github.com/stack-spot/something
+  compatibility:
+    - python
+  technologies:
+    - Api
+  runtime:
+    environment:
+      - terraform-1-4
+  requires:
+    connections:
+      - type: ecs-task-conn
+        alias: my-ecs-task-conn
+// new-line-start    
+  generates:  
+    connections:
+    - type: aws-iam-role-conn
+      alias: sqs-access-iam-role
+      outputs:
+        - from: sqs-access-iam-role-arn
+          to: arn
+// new-line-end            
+    links:
+      - name: Link
+        url: http://www.stackspot.com
+        type: static
+```
+
+<!-- 
+### **Confira o De/Para**
+
+#### **De:**
+
+```yaml
+schema-version:v1 
+kind: plugin 
+metadata: 
+  name: lambda-new-endpoint 
+  description: Add new endpoint to an existing Lambda API.  
+  display-name: Endpoint para Lambda  
+  version: 1.0.0  
+  picture: plugin.png  
+spec: 
+  type: app   
+  compatibility: 
+    - python
+  about: docs/about.mdx  
+  usage: docs/usage.mdx  
+  implementation: docs/implementation.mdx  
+  requirements: docs/requirements.mdx     
+  repository: https://github.com/stack-spot/environments-runtime-stack  
+  technologies: 
+    - Api
+  release-notes: docs/release-notes-{{version}}.mdx 
+  requires: 
+    connection-interface: 
+      - lambda-conn             
+  inputs: 
+    - label: Type name of your resource 
+      name: resource 
+      type: text
+      required: true 
+      default: Client 
+      pattern: '([A-Z][a-z]+)+' 
+      help: 'Inform your resource name (e.g.: Client)' 
+    - label: Choose http method of new endpoint
+      name: method
+      type: select
+      items:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - PATCH
+      default: GET
+      required: true
+      help: 'Inform the method of the endpoint (e.g.: post or delete)'
+```
+
+#### **Para:**
+
+> A diferença é a parte destacada.
+
+```yaml
+// highlight-start
+schema-version: v2
+// highlight-end  
+kind: plugin
+metadata:
+  name: new-test-infra
+  display-name: new-test-infra
+  description: teste plugin infra
+  version: 1.0.0
+  picture: plugin.png
+spec:
+  type: infra
+  compatibility:
+    - python
+  about: docs/about.mdx
+  implementation: docs/implementation.mdx
+  release-notes: docs/release-notes-1.0.0.mdx
+  requirements: docs/requirements.mdx
+  technologies: # Ref: https://docs.stackspot.com/create-use/create-content/yaml-files/plugin-yaml/#technologies
+    - Api
+  // highlight-start  
+  runtime:
+    environment:
+      - terraform-1-4
+      - aws-cli-2
+      - git-2
+  requires:
+    connections:
+      - type: aws-cloud-front-conn
+        alias: alias-1
+  generates:
+    connections:
+      - type: aws-api-gateway-conn
+        alias: alias-2
+// highlight-end  
+  inputs:
+    - label: Type name of your resource
+      name: resource
+      type: text
+      required: true 
+      default: Client
+      pattern: '([A-Z][a-z]+)+'
+      help: 'Inform your resource name (e.g.: Client)'
+    - label: Choose http method of new endpoint
+      name: method
+      type: text
+      items:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - PATCH
+      default: GET
+      required: true
+      help: 'Inform the method of the endpoint (e.g.: post or delete)'
+```
+-->
+## **Usar Connection Interface**
+
+Na versão **`v1`** era necessário editar o seu arquivo Terraform seguindo uma sintaxe específica para que a Connection Interface pudesse acessar os outputs do seu Terraform.
+
+A nova versão melhorou a experiência de uso, agora é necessário apenas identificar os outputs do seu Terraform e preencher o output da Connection Interface que você definiu. 
+
+### **Uso na versão v1**
+
+Considere a Connection Interface **`aws-iam-role-conn`** em seu `plugin.yaml`. Você deve editar o seu arquivo Terraform (por exemplo: `output.tf`) da seguinte maneira:
+
+Seguindo a sintaxe a seguir:  
+**`"<connection-interface-type>__{{<connection-interface-type__CONNECTOR>}}__<resource-name>"`**
+
+De:
+
+```bash title="./output.tf"
+output "sqs-access-iam-role-arn" {
+  description = "ARN of IAM role"
+  value       = module.iam_assumable_role_admin.iam_role_arn
+}
+```
+
+O arquivo deve ficar:
+
+```bash title="./output.tf"
+# "<connection-interface-type>__{{<connection-interface-type__CONNECTOR>}}__<resource-name>"
+output "aws-iam-role-conn__{{aws-iam-role-conn__CONNECTOR}}__iam_role_arn" {
+  description = "ARN of IAM role"
+  value       = module.iam_assumable_role_admin.iam_role_arn
+}
+```
+
+### **Usar na versão v2**
+
+Considere a Connection Interface **`aws-iam-role-conn`** em seu `plugin.yaml`. Você deve mapear os outputs do seu arquivo Terraform (por exemplo: `output.tf`) da seguinte maneira:
+
+1. No seu arquivo Terraform, identifique o nome do output:
+
+```bash title="./output.tf"
+#  "Output name to use into 'outputs.from' field of your plugin.yaml file"
+output "sqs-access-iam-role-arn" {
+  description = "ARN of IAM role"
+  value       = module.iam_assumable_role_admin.iam_role_arn
+}
+```
+
+2. No arquivo do seu Plugin (`plugin.yaml`):
+
+- Adicione o nome identificado no Terraform no campo **`from`**;
+- Adicione o output da Connection Interface no campo **`to`** que equivale ao atributo **`value`** que você identificou no seu Terraform;
+
+Confira como o seu Plugin deve ficar após mapear o output:
+
+```yaml
+spec:
+  type: infra
+  release-notes: docs/release-notes-1.mdx
+  about: docs/about.mdx
+  implementation: docs/implementation.mdx
+  requirements: docs/requirements.mdx
+  repository: https://github.com/stack-spot/something
+  compatibility:
+    - python
+  technologies:
+    - Api
+  runtime:
+    environment:
+      - terraform-1-4
+  requires:
+    connections:
+      - type: ecs-task-conn
+        alias: my-ecs-task-conn
+  generates:  
+    connections:
+    - type: aws-iam-role-conn
+      alias: sqs-access-iam-role
+// new-line-start       
+      outputs:
+        - from: sqs-access-iam-role-arn
+          to: arn
+// new-line-end            
+    links:
+      - name: Link
+        url: http://www.stackspot.com
+        type: static
+```
+<!-- 
+#### **De:**
+
+```bash
+output "aws-s3-conn__{{aws_s3_conn__CONNECTOR}}__arn" {   
+  value = module.s3-{{ inputs.app_name }}.bucket_arn}
+output "aws-s3-conn__{{aws_s3_conn__CONNECTOR}}__bucket_name" {    
+  value = "{{ bucket_name }}"}
+```
+
+#### **Para:**
+
+```bash
+resource "aws_s3_bucket" "aws-deploy-s3" {  
+  bucket = "{{bucket_name}}"}
+  output "aws-s3-gen-alias" {  
+    value       = aws_s3_bucket.aws-deploy-s3.arn }
+    output "aws-s3-gen-alias" {  
+      value       =  aws_s3_bucket.aws-deploy-s3.id}
+```
+
+Confira o YAML:
+
+```yaml
+generates:   
+  connections:     
+    - type: aws-s3-conn       
+      alias: aws-s3-gen-alias        
+      outputs:          
+        - from: aws-s3-gen-alias-arn            
+          to: arn          
+        - from: aws-s3-gen-alias-bucket_name            
+          to: bucket_name
+```
+-->
+
+Para mais detalhes, confira a [**a seção para mapear outputs de uma Connection Interface com os outputs do seu arquivo Terraform**](create-use/create-content/plugin/create-plugin.mdx#mapear-outputs-de-um-arquivo-terraform).
+
+Confira os [**Outputs das Connections Interfaces**](create-use/connections/connection-interface.mdx).
+
+### **Usar atributo `alias`**
+
+O uso de **`alias`** permite que você defina um nome alternativo para o tipo das Connections requeridas ou geradas no seu Plugin. Com isso, ao aplicar um Plugin, esses nomes alternativos removem o problema de duplicidade de recursos no seu Plugin, evitando comportamentos inesperados no momento do deploy da aplicação.
+
+Ou seja, você pode usar mais de uma vez o mesmo tipo de Connection sem que um recurso sobrescreva o outro e sem se preocupar com a ordem em que foram declarados.
+
+Confira o uso do **`alias`**:
+
+- Comportamento de alias para Plugins de app **não é obrigatório**. Você ainda pode informar usando a flag **`--alias`**. Se não for informado um valor, o alias é gerado automaticamente.  
+
+- Para Plugins de Infra, a pergunta sobre o alias ainda existe, mas para facilitar o uso, o campo já vem preenchido com um valor gerado automaticamente, você pode alterar se quiser.
+
+Para mais detalhes, confira os exemplos na seção de [**plugin.yaml**](create-use/create-content/yaml-files/plugin-yaml.mdx#specrequiresconnectionsnalias).
+
+### **Executar deploy**
+
+Em um processo de deploy, você pode aplicar um Plugin v1 apenas:
+
+- Se os Plugins já foram configurados como apenas Plugins de Infra;
+- Se for o primeiro deploy do projeto, caso contrário não será possível executar o Plugin v1 na nova versão do Runtime devido a restrições do arquivo **`terraform.tfstate`**.
+
+Para mais detalhes, confira a seção de [**Runtimes**](deployment/runtime-engine/getting-started-runtime.mdx).
+
+## **Próximos Passos**
+
+- Confira mais detalhes sobre as mudanças de [**Connection Interface**](create-use/connections/connection-interface.mdx).
+- Aprenda mais sobre os [**Plugins v2**](create-use/create-content/plugin/plugins.mdx).
+- Confira um exemplo de como [**criar Infraestrutura com deploy por Plugin no STK CLI**](home/stackspot/examples/app-and-infra/example-create-infra.mdx).

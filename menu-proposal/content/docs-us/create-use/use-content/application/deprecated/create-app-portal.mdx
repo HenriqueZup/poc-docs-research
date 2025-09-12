@@ -1,0 +1,281 @@
+---
+title: "Create Application via Portal"
+sidebar_position: 2
+description: How to create Applications via Portal.
+--- 
+
+:::danger  
+
+This content is being deprecated. [**Learn how to Create an Application via Portal**](create-use/use-content/application/create-app-portal.md).
+
+:::
+
+## **Requirements**
+
+- You must be **logged in to** your StackSpot Account.
+- Access a [**Studio**](create-use/studio/create-studio.md).  
+- You need a [**Stack and a Starter**](create-use/create-content/stacks/create-stack.md).
+- You must have [**environments on your account**](home/account/organization/create-env.md)
+- [**Must have configured the Deployment via Self-Hosted to set up and connect the environments in the Cloud Account**](deployment/deploy/overview.md)
+- You must have [**your SCM configured**](home/account/organization/scm-integration/index.md) (Your **Account administrator** is responsible for this configuration).
+- If your account is Enterprise and the administrator decides that users should **manage access to <Tooltip text="Source code management (SCM) tracks changes to a code repository, keeping a record of alterations and assisting in managing conflicts that arise when integrating updates from different contributors.">SCM</Tooltip> via Personal Access Token (PAT) individually**. You must configure it in [**'External Connections'**](home/account/profile/external-connections.md).
+
+<br/>
+
+:::caution
+
+**If you still need to meet the above requirements, stop following this guide and click the link for the missing requirements.**
+
+::: 
+
+<br/>
+
+
+## **Create an Application via StackSpot Portal**
+
+Follow the steps below:
+
+**Step 1.** Log in to the [**StackSpot EDP Portal**](https://app.stackspot.com/en/login);   
+
+**Step 2.** Click the **'Create'** button and select the **'Application'** option;  
+
+:::warning
+
+- If the administrator of your Account **has not configured the SCM**, you will not be able to proceed. For more details, [**check the Configure SCM section**](home/account/organization/scm-integration/index.md).
+
+- If the administrator of your Account decides that users must **manage SCM access individually via PAT (Personal Access Token)**, you need to configure it in [**'External Connections'**](home/account/profile/external-connections.md).
+
+:::
+
+**Step 3.** Select the **Workspace** where you want to create the Application;
+
+**Step 4.** Select a **Stack**, a **Stack version** and a **Starter**, a predefined template with the specifications of a set of Plugins. Click **'Next'**;  
+
+:::info
+
+You must apply all the Plugins from the Starter you selected in the Application.
+
+:::
+
+**Step 5.** At the **'Create Application'** screen, add your Application information:
+
+- **Name**;
+- **Description**.
+
+> The Application name has a **60-character** limit.
+
+**Step 6.** On the **'Source Code Repository'** screen, choose the repository to create your application. There are two ways:  
+
+1. **Create a repository from scratch**: The repository creation will only be available if an Action is linked to this step in the Workflow.
+
+See an example of a form to create a repository:
+Provide the information:
+  - **Name**: Repository name, i.e. the application.  
+  - **Visibility**: The repository visibility. It can be public or private on GitHub.  
+  - **Description**: Describe what your application is for.
+
+> The inputs in this section may vary depending on the configured Workflow. For example, your Organization may have pre-configured Actions with inputs different from those shown in this example.
+
+<br/>
+
+> You can only edit this step **if the Account Holder allows it**.
+
+<br/>
+
+2. **Use an existing repository**: Provide the information:
+  - **URL**: The URL of the repository.  
+
+:::warning
+
+If other Actions are configured in the Before stage prior to accessing the Plugins, they will be displayed as sequential steps in the flow, allowing you to provide the necessary information at each step.
+
+:::
+
+**Step 7.** In the next steps, you will **apply the Plugins** to your Application.
+
+To do this, **configure each existing Plugin on the screen** by filling in the **input fields** (they may vary according to each Plugin). To set it up, **click on the down arrow icon** to the right of the Plugin, as in the image below:
+
+> [**To learn more about the input configuration rules, see the Input Configuration section**](create-use/use-content/configure-inputs.md)
+
+
+<br/>
+
+<img src="/img/print-create-app-1-eng.png" alt="Screenshot of the plugin configuration page during the application creation process. The image shows input fields and options to select and configure the required plugins." title="print create app1" width="500px" /> <br/><br/>
+
+:::warning
+
+If the Plugin you want to apply to your Application contains the flag **`single-use`**, you won't be able to use it more than once. 
+
+<br/>
+
+- **Example:**
+
+To provision S3 Buckets for your Application, you must apply the Infra Plugin twice since your Application requires two distinct S3 Buckets: one for storing images and another for storing logs. If the Plugin has a single-use restriction, you can only apply it once, forcing you to choose between creating a Bucket for images or one for logs. This limitation requires decisive action regarding which functionality to prioritize.
+
+:::
+
+#### **Important information about some inputs that may show up**
+
+  - **Plugin's ID:** This field **names the Plugin usage** and indicate its purpose in the application, as Plugins **can be applied more than once**. It comes automatically filled in, like in the image below, but you can edit it. To do this, click on the field and edit the text.
+  **The Plugin's ID is immutable once configured. If you want to edit this name, this is the only time you can.**
+
+<br/>
+
+<img src="/img/alias-plugin-name-create-app.png" alt="Alias field in the Plugin configuration" title="alias plugin name create app" width="500px" /> 
+
+<br/>
+
+  - If the Plugin you are applying has **`inputs-envs`** configured in the YAML file, you can parameterize the values based on the environment. In the Portal, you will find the option labeled **'Set values by environment.'** Select this option and configure the inputs according to your desired environment.
+
+  - **In the 'Name resources to use later' field**: If the Plugin you selected was created with **Schema v.2** and has a [**generated Connection Interface**](create-use/connections/index.md), you must name it here.
+
+  - **In the 'Required Resources' field**: If the Plugin you selected was created with **Schema v.2** and **requires** a [**Connection Interface**](create-use/connections/index.md), you must select one here. To do this, click on the input field.
+
+See the image below for an example of this field for **Plugins created with Schema v.2**:
+
+<br/>
+
+![](/img/create-app-infra-resource-required-v2.png)
+
+<br/>
+
+A list of **provisioned Connection Interfaces** should appear. You have two options:
+
+1. Choose one;  
+2. **Select another Plugin** to generate the required Connection Interface. Click **Add connection from a Plugin.**.
+
+On the right side of the screen, you will see a list of the Plugins in the Stack you selected that generate the same type of **connection**. Select the Plugin you want. Repeat the process as necessary.
+
+:::caution 
+
+If the Plugin was created using **Schema v3**, the text in the input fields for generated or required Connection Interfaces is **defined by the person who developed the Plugin**. Therefore, these texts may vary and **do not follow a fixed standard**.
+
+In case of doubts, refer to the **specific documentation of the Plugin** for more details.
+:::
+
+
+**Step 8.** If you need to add more Plugins to your Application, click **'Add Plugins'**.
+
+A list of Plugins from the Stack you have selected will appear on the right side of the screen. Select the Plugins you want to apply, click **'Add Plugins'**, and repeat the configuration process from the step above.
+
+**Step 9.** After setting up all the Plugins, Click **'Continue'**;
+
+:::info
+
+- A tag indicates if you need to change anything for each Plugin you add. The tag turns green when everything is correct, and the **setup is complete'**.
+
+- If the contexts are defined, some or all variables will already be filled out. Also, when variables are mandatory, you can't change them.
+
+:::
+
+- **Step 9.1** If the configured Workflow includes Actions in the "After" stage, you may see additional steps. These steps will require you to provide specific information about the Actions set up in the flow.
+
+**Step 10.** Review the information in your Application. You can also edit if necessary by clicking **'Edit'**;
+
+**Step 11.** Click **'Run'** to upload the Application to the repository.
+
+:::warning
+
+- The **Application's infrastructure deployment** is only performed at this point, if your organization has [**configured the deployment via Runtime Self-Hosted**](deployment/deploy/self-hosted-runtime.md).  
+
+- You must **deploy the Application itself** through your pipeline and execute the **deployment registration on the StackSpot EDP Platform** to track the logs on the [**Activities**](deployment/manage/activities.md) screen. 
+
+Check the process in the [**Application Deployment Registration section**](deployment/deploy/register-app-deployment.md).
+
+:::
+
+:::info  
+
+- When you create the Application through the Portal, it is **automatically registered** in the Workspace.
+- The commit/push of the code is done in the **Git repository you added** during setup.
+
+:::
+
+## **Edit the Application's name and description on the StackSpot Portal**
+
+Even after deployment, you can edit the name and description of your application on the StackSpot Platform. To do this, follow the steps below:
+
+**Step 1.** Log in to the [**StackSpot EDP Portal**](https://app.stackspot.com/pt/login) and click **'Applications'** in the main menu on the homepage;  
+
+**Step 2.** Find and select your Application to open its dashboard. Then, go to the **'Settings'** section in the Application menu;  
+
+**Step 3.** You can see basic information about your application, such as its name and description. To edit them, click the **'Edit' button**, as in the image below:
+
+<br/>
+
+<img src="/img/rename-app.png" alt="Screenshot of the application settings section. The 'Edit' button is highlighted with a red outline to draw attention." title="rename app" width="500px" /> <br/><br/>
+
+Make the changes and click **'Save'**. 
+
+You've edited your Application.
+
+
+## **Error when creating an Application**
+
+<br/>
+
+> You will learn how to re-run the **'Create App Workflow'** in case of an error. This process is **only possible within the StackSpot EDP Portal**.
+<br/>
+
+When you create an Application and click **'Run'** to upload the Application to the repository, you **start a [Workflow](home/workspace/configure-workflow.md)**. Workflows define the order Actions will be executed, for example, to upload an Application to a repository.
+
+If this Workflow **returns an error**, the creation of the Application will be interrupted. You'll need to check what's wrong and **rerun the Workflow** to create the Application properly.
+
+Follow the steps below to rerun your workflow:
+
+<br/>
+
+**Step 1.** Within the Workspace, after you start to create your Application, click on the window that shows up on the left bottom of the page after you click on **'Run'**. Then, click on **'View details'**. 
+
+<br/>
+
+:::info
+
+If you **closed your browser** or **went somewhere else**, this journey starts in your Application  **'Activities'** page:
+
+1. Go to your Workspace;  
+2. Click on **'Applications'** in the left side menu and select your Application;  
+3. Within your Application, click on **'Activities'** in the left side menu;  
+4. Select the Workflow you want to review and on the error to expand it;  
+5. Within the log, click on the button **'Back to review'**;    
+6. Continue from the **'Step 3'** below.
+
+:::
+
+<br/>
+
+**Step 2.** In the **'Execute'** page, click on **'Back to review'**
+
+<br/> 
+
+**Step 3.** Check if there is something wrong and edit by clicking on the **'Edit'** button or going back to the creation steps by clicking on the **'Return'** button;
+
+<br/>
+
+**Step 4.** Save your changes and click on the **'Commit'** button again.
+
+<br/>
+
+:::warning
+
+If an error occurs, repeat the process.
+
+:::
+
+<br/>
+
+## **Next steps**
+
+:::danger 
+
+After creating your Application or Infrastructure, you need to deploy it. The steps for this may vary based on your organization's pipeline configuration. 
+
+For more information, contact the account administrator or the person responsible for configuring the self-hosted environment.
+
+:::
+
+
+- Manage how you [**run Actions in your Application**](create-use/use-content/application/actions-application.md).
+- [**Register your Application's deployment via pipeline**](deployment/deploy/register-app-deployment.md).
+- [**Manage and monitor your Application**](deployment/manage/activities.md).
+- To **destroy** your Application [**see the Deploy section**](deployment/deploy/register-app-destroy.md).

@@ -1,0 +1,61 @@
+---
+title: Comandos de Workspace
+description: Lista de comandos para Workspace.
+---
+
+> Nesta seção, você encontra a lista de comandos de Workspace.
+
+<br/> 
+
+>Comando   | Descrição
+>--------- | ------
+>[**stk exit workspace**](#stk-exit-workspace) | Encerra o uso de um Workspace.
+>[**stk use workspace**](#stk-use-workspace) | Acessa em um Workspace.
+>[**stk list workspace**](#stk-list-workspace) | Lista todos os Workspaces disponíveis para a sua conta.
+
+### **stk exit workspace**
+
+O comando **`stk exit workspace`** finaliza a sessão ativa em um Workspace. Após executar o comando, todas as ações a seguir terão apenas o escopo local em sua máquina.
+
+#### **Uso**
+
+```bash
+stk exit workspace
+```
+
+___
+
+### **stk use workspace**
+
+O comando **`stk use workspace`** permite você acessar um Workspace. Para acessar os Workspaces disponíveis, faça o login no STK CLI pelo comando [**stk login**](home/stk-cli/commands/general-commands.mdx#stk-login).
+
+#### **Uso**
+
+```bash
+stk use workspace [NAME]
+```
+
+:::info
+Para trocar de Workspace, execute novamente o comando **`stk use workspace`** informando o nome de outro Worskpace que você deseja usar.
+:::
+
+#### **Parâmetros**
+
+| **Opções** | **Descrição** | **Exemplo** |
+| ----------- | ----------- | --- |
+| `NAME`  | Nome do Workspace que você deseja acessar. Se nenhum nome for informado, uma lista de Workspaces disponíveis será exibida no terminal para que você escolha um Workspace. | <pre>stk use workspace my-workspace-slug</pre> |
+| `-h`, `--help` | Exibe a ajuda do comando e sai. | <pre>stk use workspace --help</pre> |
+
+___
+
+### **stk list workspace**
+
+O comando **`stk list workspace`** lista uma tabela com todos os Workspaces disponíveis para a sua conta. Para visualizar os Workspaces, faça o login no STK CLI pelo comando [**stk login**](home/stk-cli/commands/general-commands.mdx#stk-login).
+
+#### **Uso**
+
+```bash
+stk list workspace
+```
+
+___

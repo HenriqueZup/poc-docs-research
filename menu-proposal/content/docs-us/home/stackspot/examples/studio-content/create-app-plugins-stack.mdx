@@ -1,0 +1,529 @@
+---
+title: Create an App Plugins and a Stack
+sidebar_position: 1
+description: Example of how to create an Application Plugin and a Stack.
+---
+
+> In this section, you will find an example to assist you in creating Application Plugins.
+
+<br/>
+
+## **Introduction**
+
+- **Intermediate level**
+
+This document provides a practical example of creating Plugins in StackSpot. For more detailed information, see the [**full Plugins documentation**](create-use/create-content/plugin/plugins.md).  
+
+## **Before You Begin**  
+
+This guide aims to provide instructions for **creating, testing locally, and publishing Plugins**, as well as creating a Stack and a Starter in StackSpot.  
+
+The example includes the creation and publication of two Plugins:  
+
+- A Plugin that generates an HTML page with a customizable header and title via input.  
+- A Plugin that integrates a table displaying product data from the [DummyJson Products API](https://dummyjson.com/products).  
+
+It then demonstrates how to use these Plugins to create and publish a Stack and a Starter.  
+
+**Key Steps:**  
+
+1. [Create a Plugin](#1-create-a-plugin)  
+2. [Create a Stack and Add Plugins](#2-create-a-stack-and-add-plugins)  
+3. [Create a Starter](#3-create-a-starter)  
+
+### **Prerequisites**  
+
+Make sure you meet the following prerequisites before starting:  
+
+- [**An active StackSpot account**](https://app.stackspot.com/login);  
+- [**STK CLI installed**](home/stk-cli/install.md);  
+- [**Permission to create content**](home/account/organization/access-management/roles.md).  
+
+
+## **1. Create a Plugin**  
+
+**Step Summary:**  
+
+1. Create **Plugin A**, which generates an HTML page with a customizable header and title via input.  
+2. Test **Plugin A** locally.  
+3. Develop **Plugin B**, which integrates a table displaying product data from the [DummyJson Products API](https://dummyjson.com/products).  
+4. Test **Plugin B** locally.  
+5. Publish both Plugins in the StackSpot Studio.  
+
+### **Step 1. Create an empty directory**
+
+Create a project directory. In your terminal, execute:
+
+```bash
+mkdir test-html
+```
+
+Access the directory **in your usual IDE**. Execute the command:
+
+```bash
+cd test-html
+```
+
+### **Step 2. Create Plugin A**
+
+Plugin A generates an HTML page with a customizable header and title.
+
+1. In your IDE, execute:
+
+```bash
+stk create plugin base-html-plugin
+```
+
+2. Answer the questions on your terminal. Follow the example below:
+
+- **Add repository**: `no`. The answer here is **no**. In this tutorial, you will create Plugins in your **local environment**.
+- **Plugin type**: **`app`**
+- **Version**: `0.0.1`
+- **Plugin description**: `Plugin to generate a base HTML project`.
+- **Required connection interfaces**: `no` and press **`Enter`**.
+
+You've created Plugin A and a folder structure within the directory.  See below the default structure of a StackSpot Plugin:
+
+```bash title="/test-html"
+├── base-html-plugin
+│   ├── docs
+│   │   ├── en-us
+│   │   │   └── docs.md
+│   │   └── pt-br
+│   │       └── docs.md
+│   ├── plugin.yaml
+
+```
+
+:::info
+
+In this example, the `test` folders are not included, so they are not shown in the code snippet above.  
+::: 
+
+### **Step 3. Edit Plugin A Inputs**
+
+Complete Plugin A information to work as the HTML base. Clone the StackSpot repository:
+
+```bash
+git clone https://github.com/stack-spot/demo-html-plugins.git
+```
+
+It contains the following folders:
+
+```bash title="/demo-html-plugins"
+├── demo-html-plugins
+│   ├── LICENSE
+│   ├── README.md
+│   ├── base-html-plugin
+│   │   ├── plugin.yaml
+│   │   └── templates
+│   └── dummy-json-plugin
+```
+
+- Open the **base-html-plugin** folder and then go to **templates**. See below:
+
+```bash title="/demo-html-plugins"
+── base-html-plugin
+│   ├── docs
+│   │   ├── en-us
+│   │   │   └── docs.md
+│   │   └── pt-br
+│   │       └── docs.md
+│   ├── plugin.yaml
+│   ├── templates
+# new-line-start
+│   │   ├── README.md
+│   │   ├── css
+│   │   │   └── index.css
+│   │   ├── index.html
+│   │   ├── js
+│   │   │   └── jquery-3.6.4.min.js
+│   │   └── resource
+│   │       └── stackspot-logo.svg
+│   └── tests
+│       └── test-case-apply-00
+│           ├── expected
+│           │   └── README.md
+│           ├── target
+│           └── test-case.yaml
+├── demo-html-plugins
+# new-line-end
+```
+
+Follow the instructions:
+
+1. Copy the contents (all the folders and files) inside the **`templates`** folder (from the repo you cloned) to the Plugin A's **`templates`** folder.
+
+The folder should look:
+
+```bash title="/test-html"
+
+── base-html-plugin
+│   ├── docs
+│   │   ├── en-us
+│   │   │   └── docs.md
+│   │   └── pt-br
+│   │       └── docs.md
+│   ├── plugin.yaml
+# new-line-start
+│   ├── templates
+│   │   ├── README.md
+│   │   ├── css
+│   │   │   └── index.css
+│   │   ├── index.html
+│   │   ├── js
+│   │   │   └── jquery-3.6.4.min.js
+│   │   └── resource
+│   │       └── stackspot-logo.svg
+│   └── index.html
+# new-line-end
+```
+
+3. In the **plugin.yaml file**, edit your **HTML page**. Replace the **`Inputs`** content with the code below:
+
+```yaml
+inputs:
+   - label: HTML page title
+     name: title
+     type: text
+     required: true
+     default: Training - StackSpot
+     help: 'Inform the title of the HTML page generated'
+```
+
+### **Step 4. Apply the Plugin A locally**
+
+Apply the Plugin A to test it locally. Follow the instructions:
+
+1. Create an empty directory inside the test-html directory:
+
+<br/>
+
+> The folder will **generate your HTML page** after applying the Plugins.
+
+<br/>
+
+Execute the command:
+
+```bash
+mkdir example-project
+```
+
+Access the new directory, execute the commando:
+
+```bash
+cd example-project
+```
+
+3. Apply Plugin A to generate the base page. Execute the command below with the path to the Plugin A directory:
+
+```bash
+stk apply plugin <directory_path_pluginA>
+```
+
+See below an example of a directory path:
+
+**/Users/username/test-html/base-html-plugin**
+
+:::warning  
+
+If an error occurs:  
+
+- Check if the directory path you provided is correct; or  
+- Make sure you’re not inside a Workspace when running this command. If you are, use `stk exit workspace` to exit and try the command again.  
+
+::: 
+
+<br/>
+
+4. Answer **"Yes (Y)"** to the question in the STK CLI:  
+
+`? The current folder is not part of a StackSpot project. Do you still want to apply the plugin? (Y/n)`
+
+5. In the **example-project** directory, see the folder structure:
+
+```bash title="/example-project"
+├── example-project
+│   ├── .stk
+│   ├── css
+│   ├── js
+│   ├── resource
+│   ├── plugin.yaml
+├── stackspot-logo.svg
+├── index.html
+```
+
+<br/>
+
+> You can now view the base of your HTML page by navigating to the directory above on your computer. For example, on Mac, using Finder; on Windows, using Windows Explorer.
+
+### **Step 5. Create Plugin B**
+
+Plugin B **integrates a table with product data** from [**API - DummyJson Products**](https://dummyjson.com/products). This Plugin also:
+
+- Enables the customization of columns displayed in the table.
+- It has [**Hooks**](create-use/create-content/declarative-hooks/index.md) for manipulating files using snippets.
+
+Follow the instructions to **create Plugin B**:
+
+In your terminal, inside the **IDE**, go to the **`test-html` directory** and execute the following command:
+
+```bash
+stk create plugin dummy-json-plugin
+```
+
+2. Answer the questions on your terminal:
+
+<br/>
+
+- **Add a git repository:** `no`
+- **Add remote**:  `no`. The answer here is **no**. In this tutorial, you will only create in your **local environment**.
+- **Plugin description**: `Plugin to integrate a data table into the HTML base`
+- **Version**: `0.0.1`
+- **Plugin type**: `app`
+- **Required connection interfaces**: `no` and press **`Enter`**.*.
+
+### **Step 6. Edit the Plugin B content**
+
+Complete the Plugin information **so that it works**. Use the repository created by StackSpot that you’ve already cloned, **`demo-html-plugins`**.
+
+1. **Copy two contents** from this file:
+
+- The entire folder named **`Snippets`**;
+- The **`Templates`** content folder.
+
+
+```bash
+├── demo-html-plugins
+│   ├── LICENSE
+│   ├── README.md
+│   ├── base-html-plugin
+│   │   ├── plugin.yaml
+│   │   └── templates
+│   └── dummy-json-plugin
+│       ├── plugin.yaml
+# new-line-start
+│       ├── snippets
+│       │   ├── import-css.txt
+│       │   ├── import-js.txt
+│       │   └── table.txt
+# new-line-end
+│       └── templates
+# new-line-start
+│           ├── css
+│           │   └── ListProducts.css
+│           └── js
+│               └── {{table_id}}Action.js
+# new-line-end
+```
+
+2. **Paste the contents inside the Plugin B** folder: **`dummy-json-plugin`**. After that, **delete the README** file in the **`Templates`** folder.
+
+:::warning 
+
+There must be **only one Templates folder** within your Plugin.  
+:::
+
+<br/>
+
+3. Configure the **`plugin.yaml`** file and add hooks to the Plugin. Paste the code below into the **`inputs`** section:
+
+```yaml
+  inputs:
+    - label: Name of the table that will be generated
+      name: table_id
+      type: text
+      required: true
+      default: product-list
+      help: Enter the name of the table that will be generated in the HTML page
+    - label: Table columns separated by ';'
+      name: column_list
+      type: text
+      default: ID;TITLE;DESCRIPTION
+      required: true
+      help: Enter the number of columns of the table that will be generated
+    - label: Table attributes separated by ';' (respectively of the inserted columns)
+      name: attr_list
+      type: text
+      default: id;title;description
+      required: true
+      help: Enter the column attributes in the same order as entered in the
+        column_list field.
+  hooks:
+    - type: edit
+      trigger: before-render
+      path: index.html
+      changes:
+        - search:
+            string: </body>
+            insert-before:
+              snippet: snippets/table.txt
+            when:
+              not-exists: <table id="{{table_id}}">
+    - type: edit
+      trigger: before-render
+      path: index.html
+      changes:
+        - search:
+            string: </html>
+            insert-before:
+              snippet: snippets/import-js.txt
+            when:
+              not-exists: ./js/{{table_id}}Action.js
+    - type: edit
+      trigger: before-render
+      path: index.html
+      changes:
+        - search:
+            string: </head>
+            insert-before:
+              snippet: snippets/import-css.txt
+            when:
+              not-exists: css/ListProducts.css
+```
+
+<br/>
+
+:::tip  
+
+Check if the **`plugin.yaml`** file indentation is correct.
+::: 
+
+Plugin B is edited.
+
+### **Step 7. Apply Plugin B**
+
+Apply Plugin B to generate the table. Apply to the same directory created in Step 1.
+
+Follow the instructions:
+
+1. Go to the directory created on [**Step 4**](#step-4-apply-plugin-a). Execute the command:
+
+```bash
+cd example-project
+```
+
+2. Apply Plugin B with the absolute path to the Plugin B directory, run the command:
+
+```bash
+stk apply plugin <plugin-B-directory_path>
+```
+<br/>
+
+> Enter the path **without the keys**.
+
+<br/>
+
+:::info
+See below an example of a directory path:
+
+**/Users/username/test-html/dummy-json-plugin**
+:::
+
+3. Then answer the questions in the terminal:
+
+- **? Name of the table that will be generated (product-list)**:
+- **? Table columns separated by ';' (ID;TITLE;DESCRIPTION)**: .
+- **? Table attributes separated by ';' (respectively of the one entered in the columns) (id; title; description)**: press Enter.
+
+After that, the output should be:
+
+```bash
+Plugin <plugin-B-directory_absolute_path> applied.
+```
+
+Check your HTML page updated with the table.
+
+:::tip
+The final result (after applying the Plugins) is in the directory of the generated project, in this case, in the **`example-project`**. You will find an **index.html** file. Open your browser to see the result.
+
+To access it, enter the directory through your computer. For example, if you use MAC, it would be through Finder; for Windows, it would be through Windows Explorer.
+:::
+
+### **Step 8. Publish the Plugin A and B**
+
+The entire process up to this point was done locally.  
+Now, to access your Plugins within a Studio on the StackSpot EDP Portal, publish Plugin A first, then Plugin B.
+
+1. Go to Plugin A's root directory and execute:
+
+```bash
+stk publish plugin --studio studio-slug-name
+```
+
+<br/>
+
+> In StackSpot, [**Slugs**](create-use/studio/slugs.md) are unique IDs for Accounts, Studios, Stacks, and Plugins, and they are part of StackSpot URLs. You can find a Studio's slug on its dashboard in the StackSpot Portal.
+
+<br/>
+
+2. Access Plugin B's directory and execute:
+
+```bash
+stk publish plugin --studio studio-slug-name
+```
+
+You published Plugin A and Plugin B. Find them in your Studio.
+
+## **2. Create a Stack and add Plugins to it**
+
+Create a Stack and add Plugins A and B to it.
+
+1. Go to your Studio on the [**StackSpot Platform**](https://app.stackspot.com/login);
+2. Click on the **'Create'** button and select **'Stack'**; 
+3. Provide information: the Studio, add a name and a description to your Stack.
+4. Click **‘Create Stack’**.
+
+Now, add the Plugins:
+
+- Click the Stack you just created.
+- Click on the **‘Add Plugins’** button.
+- Choose Plugins A and B and click **‘Add Plugins’**.
+
+:::warning 
+
+**Do not publish your Stack yet!** 
+Wait until you create the Starter in the next step. If you publish it before creating the Starter, you will need to generate a new version of the Stack. 
+
+:::
+
+## **3. Create a Starter**
+
+The [**Starters**](home/stackspot/main-concepts.md) are useful for Stack creators to define common combinations of Plugins within the Stack and create "ready-made recipes" for the most common combinations within the Stack. You can add as many Plugins as you want to it.  
+
+[**To learn more, check out the Starters section**](create-use/create-content/stack/create-starter.md)
+
+Still in your Stack:
+
+1. Navigate to the **'Starter'** tab;
+
+2. Click the **‘Create Starter’** button;
+
+3. Now you must choose **which type of Starter** you will create. For this example, select **'App Starter'**;
+
+4. Add a **Slug** and a **description** for your Starter and click **‘Continue’**;
+
+6. Now, add the Plugins you just created to your Starter. Click **‘Add Plugins’**;
+
+:::caution 
+**The order in which you add the Plugins is important.** Select **Plugin A** first, the HTML base. Then **Plugin B dummy-json**.  
+:::
+
+7. Click **‘Next’**, then **‘Finish’**.
+
+You have created and published Plugins and created a Stack with a Starter using the STK CLI.
+
+## **4. Publish Stack**
+
+To make your Stack and Starter visible and available for use within the Studio, you need to publish it. Follow the instructions:
+
+1. Access your Stack;  
+2. Click **'Publish'**;  
+3. Select the **version type**;  
+4. Add the **version number**;  
+5. Click **'Publish new version of the Stack'**.
+
+
+## **What are the next steps?**
+
+- [**Create an Action that commits and pushes content to your GitHub repository. Then, you publish your Stack in the StackSpot Portal**](home/stackspot/examples/studio-content/create-action.md).

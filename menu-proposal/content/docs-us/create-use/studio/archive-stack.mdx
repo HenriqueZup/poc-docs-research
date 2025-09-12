@@ -1,0 +1,125 @@
+---
+title: Stack Archiving
+description: Understand the rules for archiving a Stack in StackSpot.
+---
+
+## **Introduction**
+
+In StackSpot EDP, Stack archiving is used when you need to discontinue usage, hide, or remove a version of a Stack. This may occur for security, compliance, or enhanced management efficiency.
+
+The discontinuation levels for this type of content in the StackSpot EDP Portal are organized as follows:
+
+1. [**Content Deprecation**](create-use/studio/deprecate-unpublish-delete.md) and discontinuation notice;  
+
+2. Archiving and usage restriction for new actions;  
+
+3. [**Deletion**](create-use/studio/deprecate-unpublish-delete.md): complete removal from StackSpot EDP.   
+
+<br/>
+
+When a Stack version is archived, it does not impact the content published or the Applications and Infrastructures created with it, but certain restrictions apply. Refer to the details in the table below:
+
+| **Action** | **After Archiving** | 
+|---| ---|
+| Use in the first deployment (per environment) of Infra Plugins that are part of the archived Stack version. | ❌ |
+| Use in redeploys (per environment) of Infra Plugins that are part of the archived Stack version. | ✔️ |
+| Visible in the StackSpot EDP Portal and CLI. | ❌ |
+| Use in the creation or update of new Applications or Infrastructures. | ❌ |
+| Apply of Plugin or Action. | ❌ |
+| Use in the STK Workflow. | ❌ |
+| Creation of a new Stack version from an archived version. | ✔️ |
+| Update of Stack documentation. | ✔️ |
+
+> When a Stack is archived, it can no longer be used for new creations but continues to function normally in everything that has already been created and deployed with the archived Stack.
+
+## **Steps**
+
+When archiving a Stack, you can also archive a version that has already been marked as deprecated in the StackSpot EDP.
+
+Before archiving a Stack, it must first be deprecated, following the specific discontinuation levels of content in the StackSpot EDP Portal. Follow the steps below:
+
+
+### **Option 1: Through the Version Manager**
+
+**Step 1.** Access your Studio and then click on the Stack;
+
+**Step 2.** In the row of the Stack version you want to deprecate and archive, click the **'More options'** button;
+
+**Step 3.** Now click the **'Manage version'** button and then click the **'More options'** button;
+
+**Step 4.** Click the **'Deprecate Stack version'** button;
+
+**Step 5.** Fill in the following fields:
+
+- Select a **reason** for deprecation:  
+    - Lack of maintenance  
+    - Lack of security  
+    - Bugs  
+    - 
+    
+- In **'Archive selected Stack version'**, check the box **'I would also like to archive the selected version'**. 
+
+Now write **'CONFIRM'** in the blank box.
+
+**Step 6.** Click the **'Confirm action'** button.
+
+Done, you have **deprecated** and **archived** a Stack version. 
+
+### **Option 2: Through the Usage Insights section** 
+
+**Step 1.** Access your Studio and then click on the Stack you want to archive a version of;
+
+**Step 2.** Click on the **'Usage Insights'** section;
+
+**Step 3.** In the row of the Stack version you want to deprecate and archive, click the **'More options'** button;
+
+**Step 4.** Fill in the following fields:
+
+- Select a **reason** for deprecation:  
+    - Lack of maintenance  
+    - Lack of security  
+    - Bugs  
+    - Others
+
+- In **'Archive selected Stack version'**, check the box **'I would also like to archive the selected version'**.
+
+- Now write **'CONFIRM'** in the blank box.
+
+**Step 5.** Click the **'Confirm action'** button.
+
+Done, you have **deprecated** and **archived** a Stack version.
+
+:::warning Attention!
+
+It is not possible to deploy to a new environment an Infrastructure or Application that uses an archived Stack version, even if it has been previously deployed in another environment.
+
+<br/>
+
+To deploy in this situation, you must first **update the Stack version**. Follow the steps below:
+
+**Step 1.** Access your Application's code (**`stk.yaml`**);
+
+**Step 2.** Run the command [**`stk update plugin`**](home/stk-cli/commands/plugin-commands.md#stk-update-plugin), specifying the new Stack version. Check the example below:
+
+```bash
+stk update plugin studio/stack@4.0.0/plugin
+```
+
+- `studio`: Studio where the Stack was published.
+- `stack@4.0.0`: New Stack version.
+- `plugin`: Plugin associated with the Stack.
+
+<br/>
+
+Check an example of the update in **`stk.yaml`**:
+
+```yaml  
+- name:
+   stack@v4/plugin@version
+```
+
+Done, now you can update an Infrastructure or Application that has an associated Stack version.
+
+<br/>
+
+> You must run the **`stk update plugin`** command for each Stack Plugin referenced in the **`stk.yaml`**.

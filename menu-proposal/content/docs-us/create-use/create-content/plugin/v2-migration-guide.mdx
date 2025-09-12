@@ -1,0 +1,561 @@
+---
+title: (Deprecated) Migrate Plugins v1 to v2
+description: How v1 Plugins to v2.
+---
+
+> In this section, you will find a guide on how to migrate your v1 Plugins to v2 ones.
+
+<br/>
+
+:::danger
+
+This Plugin manifest version migration guide has been **deprecated**. [**Visit the new guide to update your Plugins and Actions to the new v3 manifest version**](home/stk-cli/migrate-manifest.md).
+
+:::
+
+## **Why Change**
+
+StackSpot updated Plugins v1 to v2, now you can create resources of the same type, like:
+
+- Make the same resource available more than once on Applications Plugin (app) or de Infrastructure (infra) via Connection Interfaces.
+- Generate Connection Interface for Infrastructure Plugins with From/to a Terraform file for StackSpot. You can do that without changing the **`.tf`** file.
+- Use more than one Connection Interface of the same type..
+
+:::info
+
+- You can keep using v1 Plugins. You can apply and deploy them with STK CLI commands (stk apply Plugin, stk deploy), but **it is only possible to publish new versions** by migrating them.
+
+- The v1 Plugins that have Connection Interface still work. But with some limitations: you can update without migrating to v2.
+
+:::
+
+## **Changes**
+
+There are some changes that will affect you. Check what changed below:
+
+1. New **`Alias`** to Connection Interfaces generated and required by Plugins.  
+2. New **`Alias`** to create Application Plugins allowing the same resource more than once.  
+3. The **`--environment`** parameter has been changed to **`--env`** or **`-e`**.  
+4. You can add new mapping of Terraform output variables for StackSpot. Now you can use output with the options: **"As is:`<terraform.output>`"** > **To: "`connection-interface-type.output`"**.  
+5. New runtime field:
+
+```yaml
+runtime:
+  environment:
+    - terraform-1-3
+```
+
+:::warning
+
+If you receive a non-authorization error (HTTP status 403) in the pipeline, you have to generate a [**new Service Credentials**](home/account/organization/service-credential.md) with the updated permissions.
+
+:::
+
+6. Change from **`Link`** to **`Links`**.
+
+7. Runtime Engine Update. This update implements changes to support the new version v2 of the Plugins scheme and its impact on application deployment.
+
+## **Main changes**
+
+The v2 Plugins schema changed several fields from the v1 schema. Here are the changes:
+
+- The **`schema-version`** field was changed from `v1` to `v2`;
+- A new field called **`runtime`** was added in the `v2` schema version. It provides specific metadata for the Runtime Engine, and **is required** for Infrastructure Plugins only;
+- The **`requires.connection-interface`** field was moved from a list of Connection Interface type names to the **`connections`** attribute. The new attribute has two new options:
+  - **`type`**: The name of the Connection Interface type;
+  - **`alias`**: It is an alternative name for the Connection Interface type. It allows you to use the same Connection Interface more than once.
+- The **`generates.connection-interface`** field was also moved to the **`connections`** attribute. The new attribute has the following options:
+  - **`type`**: The name of the Connection Interface type;
+  - **`alias`**: An alternative name for the Connection Interface type. It allows you to use the same Connection Interface more than once;
+  - **`outputs.from`**: The name of the resource output from your Terraform file;
+  - **`outputs.to`**: The name of the output of the defined Connection Interface, equivalent to the resource in the Terraform file;
+- The **`link`** parameter was changed to **`links`**.
+
+
+
+:::warning
+
+- The **`generates`**, **`runtime`** and **`links`** fields are exclusive to Infrastructure Plugins.
+
+- The **`from`** and **`to`** options of the **`outputs`** fields are **Required** if the defined Connection Interface has outputs.
+
+:::
+
+### **v1 Plugin version**
+
+```yaml
+// old-line
+schema-version: v1
+kind: plugin
+metadata:
+  name: some-kebab-case-name
+  description: some description
+  display-name: Some display name
+  version: 1.0.1
+  picture: images/plugin.png
+spec:
+  type: infra
+  release-notes: docs/release-notes-1.md
+  about: docs/about.md
+  usage: docs/usage.md
+  implementation: docs/implementation.md
+  requirements: docs/requirements.md
+  repository: https://github.com/stack-spot/something
+  compatibility:
+    - python
+  technologies:
+    - Api
+  requires:
+// old-start  
+    connection-interface:
+      - ecs-task-conn
+// old-end      
+  generates:
+// old-start  
+    connection-interface:
+      - aws-iam-role-conn
+    link:
+// old-end    
+      - name: Link
+        url: http://www.stackspot.com
+        type: static
+```
+
+### **v2 Plugin version**
+
+```yaml
+// new-line
+schema-version: v2
+kind: plugin
+metadata:
+  name: some-kebab-case-name
+  description: some description
+  display-name: Some display name
+  version: 1.0.1
+  picture: images/plugin.png
+spec:
+  type: infra
+  release-notes: docs/release-notes-1.md
+  about: docs/about.md
+  implementation: docs/implementation.md
+  requirements: docs/requirements.md
+  repository: https://github.com/stack-spot/something
+  compatibility:
+    - python
+  technologies:
+    - Api
+// new-line-start    
+  runtime:
+    environment:
+      - terraform-1-4
+// new-line-end      
+  requires:
+// new-line-start   
+    connections:
+      - type: ecs-task-conn
+        alias: my-ecs-task-conn
+// new-line-end         
+  generates:
+// new-line-start    
+    connections:
+    - type: aws-iam-role-conn
+      alias: sqs-access-iam-role
+      outputs:
+        - from: sqs-access-iam-role-arn
+          to: arn
+    links:
+// new-line-end     
+      - name: Link
+        url: http://www.stackspot.com
+        type: static
+```
+
+## **Migrate your Plugin**
+
+You migrate Plugins manually. To migrate a Plugin v1 to v2, you need to **change the `schema-version`**.
+
+Follow the steps to migrate the two types of Plugin below:
+
+:::warning
+
+- If a Plugin does not require any Connection Interface, the only action required is to change from v1 to v2.
+
+- App Plugins can request a Connection Interface but cannot generate them.
+
+- The **`generates`**, **`runtime`** and **`links`** fields are exclusive to Infrastructure Plugins.
+
+- The **`from`** and **`to`** options of the **`outputs`** fields are **Required** if the defined Connection Interface has outputs.
+:::
+
+### **Step 1**
+
+Change the schema version from v1 to v2:
+
+```yaml
+schema-version: v2 
+```
+
+### **Step 2**
+
+1. If your plugin has Connection Interfaces, add the **`-type`** option to the Connection Interface type name;
+2. Add the **`alias`** field and a value for each.
+
+<br/>
+
+> If it is an Infrastructure Plugin, check if the Connection Interfaces have outputs. If so, add the **`outputs`** field and fill in the **`from`** and **`to`** options for each one.
+
+### **Step 3**
+
+If your plugin has the **`link`** field, change it to **`links`**.
+
+Check out the From and To below:
+
+**From:**
+
+```yaml
+spec:
+  type: infra
+  release-notes: docs/release-notes-1.md
+  about: docs/about.md
+  usage: docs/usage.md
+  implementation: docs/implementation.md
+  requirements: docs/requirements.md
+  repository: https://github.com/stack-spot/something
+  compatibility:
+    - python
+  technologies:
+    - Api
+  requires:
+// old-start  
+    connection-interface:
+      - ecs-task-conn
+// old-end      
+  generates:
+// old-start  
+    connection-interface:
+      - aws-iam-role-conn
+    link:
+// old-end    
+      - name: Link
+        url: http://www.stackspot.com
+        type: static
+```
+
+**To:**
+
+```yaml
+spec:
+  type: infra
+  release-notes: docs/release-notes-1.md
+  about: docs/about.md
+  implementation: docs/implementation.md
+  requirements: docs/requirements.md
+  repository: https://github.com/stack-spot/something
+  compatibility:
+    - python
+  technologies:
+    - Api
+// new-line-start    
+  runtime:
+    environment:
+      - terraform-1-4
+// new-line-end      
+  requires:
+// new-line-start   
+    connections:
+      - type: ecs-task-conn
+        alias: my-ecs-task-conn
+// new-line-end         
+  generates:
+// new-line-start    
+    connections:
+    - type: aws-iam-role-conn
+      alias: sqs-access-iam-role
+      outputs:
+        - from: sqs-access-iam-role-arn
+          to: arn
+    links:
+// new-line-end     
+      - name: Link
+        url: http://www.stackspot.com
+        type: static
+```
+
+### **Infrastructure Plugins**
+
+If you have Infrastructure Plugins, you need to make a specific configuration and add new attributes to it, check below:
+
+**Attribute** | **Description** |
+--------- | ------
+`spec.runtime.environment` | Mandatory on Infra Plugins |
+`spec.requires.connections[n].alias` | Optional
+`spec.generates.connections[n].alias`| Mandatory  |
+`spec.generates.connections[n].outputs[n].from` | Mandatory only in the object. The list can be empty.
+`spec.generates.connections[n].outputs[n].to`| Mandatory only in the object. The list can be empty. |
+
+Check more details about each one of them:
+
+#### 1. **`spec.runtime.environment`**
+
+It defines the limited configuration to use while executing a deployment. This is according to the Run configuration in your environment. If any data is not entered, Runtime uses the default values when deploying this Plugin.
+
+- **terraform:** It represents which Terraform will be used. Supported versions: **1-3, 1-4 and 1-5**. Default value: **1-3**.
+- **aws-cli-2:** It indicates which AWS CLI version is. Supported versions: **2**. Default value: **2**.
+- **git-2:** It indicates which Git version is. Supported versions: **2**. Default value: **2**.
+
+```yaml
+spec:
+  type: infra
+  release-notes: docs/release-notes-1.md
+  about: docs/about.md
+  implementation: docs/implementation.md
+  requirements: docs/requirements.md
+  repository: https://github.com/stack-spot/something
+  compatibility:
+    - python
+  technologies:
+    - Api
+// new-line-start    
+  runtime:
+    environment:
+      - terraform-1-5
+      - aws-cli-2
+      - git-2
+// new-line-end      
+```
+
+#### 2. **`spec.requires.connections[n].alias`**
+
+Defines the variable name that contains the Connection Interface in the template. It is useful to access the Connection Interface.
+
+```yaml
+spec:
+  type: infra
+  release-notes: docs/release-notes-1.md
+  about: docs/about.md
+  implementation: docs/implementation.md
+  requirements: docs/requirements.md
+  repository: https://github.com/stack-spot/something
+  compatibility:
+    - python
+  technologies:
+    - Api
+  runtime:
+    environment:
+      - terraform-1-4
+// new-line-start        
+  requires:
+    connections:
+      - type: ecs-task-conn
+        alias: my-ecs-task-conn
+// new-line-end         
+  generates:  
+    connections:
+    - type: aws-iam-role-conn
+      alias: sqs-access-iam-role
+      outputs:
+        - from: sqs-access-iam-role-arn
+          to: arn
+    links:
+      - name: Link
+        url: http://www.stackspot.com
+        type: static      
+```
+
+#### 3. **`spec.generates.connections[n].alias`**
+
+It defines a friendly name. It help the users understand Connection Interface's usage. The **`alias`** is used for creators to choose the right Connection Interface and remove ambiguity when there is more than one Connection Interface of the same type.
+
+```yaml
+spec:
+  type: infra
+  release-notes: docs/release-notes-1.md
+  about: docs/about.md
+  implementation: docs/implementation.md
+  requirements: docs/requirements.md
+  repository: https://github.com/stack-spot/something
+  compatibility:
+    - python
+  technologies:
+    - Api
+  runtime:
+    environment:
+      - terraform-1-4
+  requires:
+    connections:
+      - type: ecs-task-conn
+        alias: my-ecs-task-conn
+// new-line-start    
+  generates:  
+    connections:
+    - type: aws-iam-role-conn
+      alias: sqs-access-iam-role
+// new-line-end       
+      outputs:
+        - from: sqs-access-iam-role-arn
+          to: arn
+    links:
+      - name: Link
+        url: http://www.stackspot.com
+        type: static
+```
+
+#### 4. **`spec.generates.connections[n].outputs[n].from` and `spec.generates.connections[n].outputs[n].to`**
+
+It selects which Terraform output you must write in each Connection Interface attribute.
+
+Example:
+
+```yaml
+spec:
+  type: infra
+  release-notes: docs/release-notes-1.md
+  about: docs/about.md
+  implementation: docs/implementation.md
+  requirements: docs/requirements.md
+  repository: https://github.com/stack-spot/something
+  compatibility:
+    - python
+  technologies:
+    - Api
+  runtime:
+    environment:
+      - terraform-1-4
+  requires:
+    connections:
+      - type: ecs-task-conn
+        alias: my-ecs-task-conn
+// new-line-start    
+  generates:  
+    connections:
+    - type: aws-iam-role-conn
+      alias: sqs-access-iam-role
+      outputs:
+        - from: sqs-access-iam-role-arn
+          to: arn
+// new-line-end            
+    links:
+      - name: Link
+        url: http://www.stackspot.com
+        type: static
+```
+
+## **Use the Connection Interface**
+
+In version v1, you had to edit your Terraform file following a specific syntax so that the Connection Interface could access your Terraform outputs.
+
+The new version has improved the user experience. Now, you must identify your Terraform outputs and fill in the Connection Interface output you defined.
+
+### **Use in version v1**
+
+Consider the **`aws-iam-role-conn`** Connection Interface in your `plugin.yaml`. You must edit your Terraform file (e.g., `output.tf`) as follows:
+
+Using the following syntax:  
+**`"<connection-interface-type>__{{<connection-interface-type__CONNECTOR>}}__<resource-name>"`**
+
+From:
+
+```bash title="./output.tf"
+output "sqs-access-iam-role-arn" {
+  description = "ARN of IAM role"
+  value       = module.iam_assumable_role_admin.iam_role_arn
+}
+```
+
+The file should be like:
+
+```bash title="./output.tf"
+# "<connection-interface-type>__{{<connection-interface-type__CONNECTOR>}}__<resource-name>"
+output "aws-iam-role-conn__{{aws-iam-role-conn__CONNECTOR}}__iam_role_arn" {
+  description = "ARN of IAM role"
+  value       = module.iam_assumable_role_admin.iam_role_arn
+}
+```
+
+### **Use in version v2**
+
+Consider the **`aws-iam-role-conn`** Connection Interface in your **`plugin.yaml`**. To map the outputs of your Terraform file (e.g. `output.tf`), you must do the following:
+
+1. In your Terraform file, identify the name of the output:
+
+```bash title="./output.tf"
+#  "Output name to use into 'outputs.from' field of your plugin.yaml file"
+output "sqs-access-iam-role-arn" {
+  description = "ARN of IAM role"
+  value       = module.iam_assumable_role_admin.iam_role_arn
+}
+```
+
+2. In your Plugin file (`plugin.yaml`):
+
+- Add the name identified in Terraform in the **`from`** field;
+- Add the output of the Connection Interface in the **`to`** field that is equivalent to the **`value`** attribute that you identified in your Terraform;
+
+Here is an example of how your Plugin should look after mapping the output:
+
+```yaml
+spec:
+  type: infra
+  release-notes: docs/release-notes-1.md
+  about: docs/about.md
+  implementation: docs/implementation.md
+  requirements: docs/requirements.md
+  repository: https://github.com/stack-spot/something
+  compatibility:
+    - python
+  technologies:
+    - Api
+  runtime:
+    environment:
+      - terraform-1-4
+  requires:
+    connections:
+      - type: ecs-task-conn
+        alias: my-ecs-task-conn
+  generates:  
+    connections:
+    - type: aws-iam-role-conn
+      alias: sqs-access-iam-role
+// new-line-start       
+      outputs:
+        - from: sqs-access-iam-role-arn
+          to: arn
+// new-line-end            
+    links:
+      - name: Link
+        url: http://www.stackspot.com
+        type: static
+```
+
+For more details, see the [**the section for mapping outputs from a Connection Interface with the results from your Terraform file**](create-use/create-content/plugin/create-plugin.md#mapping-the-iac-outputss).
+
+See the [**Outputs of Connections Interfaces**](create-use/connections/connection-interface.md).
+
+### **Use `alias` attribute**
+
+The **`alias`** allows you to define another name for the type of connections required or generated in your Plugin. The alias removes the problem of resource copy in your Plugin when applying it and avoids unexpected behavior when deploying the application.
+
+In other words, you can use the same type of connection more than once. You don't need to worry about one resource overwriting the other and the order in which they were declared.
+
+See how to use the **`alias`**:
+
+- The alias is not mandatory for App Plugins, but you can still define it using the **`-alias`** flag. If you do not determine a value, the alias will generate one automatically.  
+
+- For Infra Plugins, the alias is still required. But the field is already filled with a default value to make it easier to use. You can change this value later if you want.
+
+For more details, check more examples in the  [**plugin.yaml page**](create-use/create-content/yaml-files/plugin-yaml.md#specrequiresconnectionsnalias).
+
+### **Run Deployments**
+
+In a deployment process, you can apply v1 Plugins:
+
+- If the Plugins are configured as Infra Plugins;
+- If it is your project's first deployment. If not, you cannot apply a v1 Plugin in the new Runtime version due to the **`terraform.tfstate`** restrictions.
+
+For more details, go to the [**Runtimes section**](deployment/runtime-engine/getting-started-runtime.md).
+
+## **Next Steps**
+
+- See more details about the changes on [**Connection Interface**](create-use/connections/connection-interface.md).
+- Learn more about [**v2 Plugins**](create-use/create-content/plugin/plugins.md).
+- See an example on [**Create Infrastructure and deploy via Plugins in STK CLI**](home/stackspot/examples/app-and-infra/example-create-infra.md)

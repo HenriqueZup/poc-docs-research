@@ -1,0 +1,52 @@
+---
+title: Workflow Insights
+description: Understand how StackSpot Workflow Insights works.
+---
+
+> In this section, you will find details about StackSpot Workflow Insights.
+
+<br/>
+
+With the addition of StackSpot Workflow, [**the Insights menu available in your Studio**](create-use/studio/insights.md) now displays data related to Workflow content in StackSpot.
+
+## **Viewing Insights**
+
+To access the Insights screen, follow these steps:
+
+**Step 1.** Access the StackSpot EDP Portal;  
+**Step 2.** Click the **Studios** menu;  
+**Step 3.** In the **‘Content’** section of your Studio, click the **‘Workflows’** tab to view the Workflows published in your Studio;  
+**Step 4.** Click the Workflow for which you want to view Insights;   
+**Step 5.** Click the **‘Usage Insights’** menu.  
+
+<br/>
+
+The "Usage Insights" screen will display three tabs with the following information:
+
+### **'Stacks' Tab**
+
+In this tab, you see a list of all Stacks that contain the Workflow you selected in the Studio.
+
+| **Name** | **Linked Versions** |  
+| ---      | ---                |  
+| List with the name of each Stack that contains the Workflow. | Number of Workflow versions linked to this Stack. |
+
+When you click on a Stack in the list, the following information is displayed:
+
+| **Workflow Version** | **Stack Version** |  
+| ---                  | ---              |  
+| List of each Workflow version linked to the Stack. Example: `1.0.2`, `1.0.3`, `1.0.4`. | List of each Stack version linked to each Workflow version. Example: `1.2.0`, `1.3.0`, `1.4.0`. You also have access to action buttons to view details or deprecate the Workflow version. |
+
+### **'Workflows' Tab**
+
+In this tab, you see all Workflows that use the Workflow you selected. The Workflows are displayed in a list with the following information:
+
+| **Name** | **Type** | **Linked Versions** |  
+| ---      | ---      | ---                |  
+| List of the name of each Workflow that uses the selected Workflow. | The type of each Workflow using the selected Workflow. | Number of Workflow versions linked to the selected Workflow. |
+
+When you click on a Workflow, you will see the linked versions and action buttons to view details of each linked version.
+
+### **'Unused' Tab**
+
+In this tab, you see all versions of the selected Workflow that are not being used by any other [**StackSpot Content**](home/stackspot/glossary.md#content), Application, or Infrastructure. In the list, you will find the unused version along with action buttons to view details, deprecate, or unpublish the Workflow version.

@@ -1,0 +1,207 @@
+---
+title: run
+---
+
+> In this section, you will find: Reference of a Declarative Hook of the run type.
+
+<br/>
+
+Declarative Hooks of the **`run`** type are used to execute commands. Some interesting examples of their use are:
+
+- Install dependencies on the project;
+- Execute commands from some tool that is part of the Plugin;
+- Execute configurations through shell or batch scripts.
+
+Check below a simple example of a Declarative Hook of the type **`run`**:
+
+```yaml 
+hooks:
+  - type: run
+    trigger: before-input
+    commands:
+      - echo hello from before-input!
+      - echo you can define multiple commands in a run hook!
+```
+
+When applying the Template/Plugin that defines this Declarative Hook, before asking for the input parameters, the console shows the following sentences:
+
+- **`hello from before-input!`**
+- **`you can define multiple commands in a run hook!`**.
+
+It is possible to use conditional operators with the parameter **`conditions`** in a Hook, check the example below:  
+
+```yaml
+name: my-plugin
+description: Describe your plugin explaining its purpose
+types:
+  - app
+spec:
+  inputs:
+    - label: Deseja instalar as dependências?
+      type: bool
+      name: install_dependencies
+  hooks:
+    - type: run
+      trigger: after-render
+      commands: 
+        - echo Instalando dependências
+        - npm install
+      condition:
+        variable: install_dependencies
+        operator: "=="
+        value: true
+```
+
+In this example, the **`input`** of type boolean asks the user person to install dependencies. In this case, the **`condition`** causes the Hook to be executed if the answer is true ( operator **`==`** and value **`true`**). Only then will the **`npm install`** commands be executed to install the dependencies. 
+
+You can define different commands per operating system. Check the example below:
+
+```yaml 
+hooks:
+  - type: run
+    trigger: before-input
+    working-dir: "{{project_name}}/some/dir"
+    linux:
+      - echo hello from before-input on linux!
+    windows:
+      - cmd /C echo hello from before-input on windows!
+    mac:
+      - echo hello from before-input on mac!
+```
+
+In this case, when applying the Template/Plugin, the message in the console will differ for each operating system. The supported operating systems are:
+
+- **`linux`**
+- **`mac`**
+- **`windows`**
+
+:::caution 
+Command chaining and output redirection operators (**|, ||, &&, &, >, >>, ;**) are not supported and are interpreted as strings when executed.
+:::
+
+## **Windows** `run` command**
+
+To run other applications via `run` in **Windows**, use one of the examples below:
+
+1. Using the **`cmd`**. In this case, it opens an extra CMD window when the plugin is being applied, but then is closed automatically.
+
+```yaml 
+hooks:
+  - type: run
+    trigger: after-render
+    working-dir: "{{project_name}}/some/dir"
+    linux:
+      - npm install
+    windows:
+      - cmd /c npm install
+    mac:
+      - npm instal
+```
+
+
+2. Call the **npm** binary directly, here npm is executed in the same window:
+
+```yaml 
+hooks:
+  - type: run
+    trigger: after-render
+    working-dir: "{{project_name}}/some/dir"
+    linux:
+      - npm install
+    windows:
+      - npm.cmd install
+    mac:
+      - npm instal
+```
+
+
+## **Available Actions of the `run` Declarative Hook**  
+
+### **`trigger:`** 
+Field to define triggers that inform the moment at which command execution should occur.
+
+**`before-input`**:   
+It executes the hook commands before receiving the input parameters from the user person.
+
+```yaml 
+trigger: before-input
+``` 
+
+**`before-render`**:   
+Executes the hook commands before the Template generates files in the project. 
+
+```yaml 
+trigger: before-render
+```
+
+**`after-render`**:   
+Executes the hook commands after the Template generates files in the project. 
+
+```yaml 
+trigger: after-render
+```
+___
+
+### **`working-dir:`(Optional)** 
+
+Allows you to define a directory relative to the project root where commands will be executed. When not entered, commands will be executed in the project root. In the **`working-dir`** field you can use Jinja expressions, for example:
+
+```yaml 
+working-dir: "{{project_name}}/some/dir"
+```
+___
+
+### **`commands:`** 
+
+Allows you to define one or more commands to be executed.
+
+```yaml 
+commands: 
+  - echo hello from before-input!
+  - echo you can define multiple commands in a run hook!
+```  
+
+To use the commands in **Windows**, the **CMD** tool must be run by the **`cmd /c`** argument. Check out an example below:
+
+```yaml 
+commands: 
+  - cmd /c echo hello from before-input!
+  - cmd /c echo you can define multiple commands in a run hook!
+```
+
+___
+
+### **`linux:`(Optional)** 
+
+Allows you to define one or more commands, specifying the execution on Linux systems.
+
+```yaml 
+linux:
+  - npm install
+```
+
+___
+
+### **`windows:`(Optional)**
+
+Allows you to define one or more commands, specifying the execution on Windows systems.  
+
+```yaml 
+windows: 
+  - cmd /c npm install
+```
+
+___
+
+### **`mac:`(Optional)**
+
+Allows you to define one or more commands, specifying execution on macOS systems.  
+
+```yaml 
+mac:
+  - npm install
+```
+
+:::caution
+In Declarative Hook actions **`run`**, command chaining and output redirection operators (**|, ||, &&, &, >, >>, ;**) are not supported and are interpreted as strings when executed.  
+:::

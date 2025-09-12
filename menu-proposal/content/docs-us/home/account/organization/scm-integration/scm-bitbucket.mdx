@@ -1,0 +1,115 @@
+---
+title: BitBucket
+description: Integrate SCM with the BitBucket provider
+---
+
+> This section shows you how to integrate SCM with BitBucket using StackSpot Workflow.
+
+<br/>
+
+To connect your <Tooltip text="Source code management (SCM) tracks changes in a code repository, keeps a record of modifications, and helps manage conflicts when merging updates from different contributors.">SCM</Tooltip> to StackSpot, start by **creating a dedicated repository in your organization for pipelines**. Once you set up your pipelines, you can trigger them remotely via API, passing the required input data for each workflow.
+
+## **Prerequisites**
+
+- You need a premium [**BitBucket**](https://bitbucket.org/product) account.
+- Enable two-step verification in your BitBucket account. To do this, go to:
+  - **'BitBucket Personal Settings > Two-step verification' > 'Enable'**
+- **Create a repository/pipelines**. To integrate SCM with StackSpot, you must create a repository to generate your **Pipelines**.
+
+### **Set up your BitBucket Workspace OAuth consumer keys**
+
+**Step 1.** In BitBucket, go to **"Workspace Settings > OAuth consumers"**.
+
+**Step 2.** Click **'Add consumer'** and fill in these **required** fields:
+
+- **Name**
+- **Callback URL** and/or **URL**
+- Enable **"This is a private consumer"**
+- Under **"Permissions"**, select:
+
+**Projects**  
+[x] Write  
+[x] Admin  
+
+**Repositories**  
+[x] Write  
+[x] Admin  
+
+**Pipelines**  
+[x] Edit variables  
+
+When finished, click **"Save"**.
+
+:::info
+
+You can delete the OAuth consumer configuration after you finish setting up the pipelines.
+
+:::
+
+## **Automatically set up pipelines (Recommended)**
+
+> Complete the following steps using the [**STK CLI**](home/stk-cli/install.md)
+
+**Step 1.** Run these commands:
+
+1. If you have an active Workspace, exit it with:
+
+```bash
+stk exit workspace
+```
+
+2. After exiting the Workspace, run the Workflow with:
+
+```bash
+stk run workflow stackspot-core/stackspot-setup-scm@3
+```
+
+**Step 2.** The terminal will ask for your SCM provider. Select **bitbucket**.
+
+**Step 3.** Answer the following prompts in the terminal:
+
+- **Organization/Workspace Name**: Enter your BitBucket username.
+- **Repository Name**: Enter your repository name.
+- **Project Name**: Enter your project name.
+
+> If you don’t have a project yet, go to your BitBucket account menu and click **'Create' > 'Create a project'**.
+
+- **Personal Access Token**: Enter the Personal Access Token you generated in BitBucket.
+- **The repository to setup scm already exists? (Y/n)**: Answer 'Y' if the SCM configuration repository already exists, or 'n' if it does not.
+- **Want to do the setup in main branch or create a pull request? (Y/n)**: Answer 'Y' to create a pull request and specify the **Target branch**, or 'n' to keep the setup in the 'main' branch.
+
+**Step 4.** Check your BitBucket repository under **'Repository details'**. You’ll see the pipelines already configured. The variables are also created—you can find them in **'Repository variables'**.
+
+Now, you need to integrate SCM in the [**StackSpot Portal**](https://app.stackspot.com/login). Follow these steps:
+
+## **Integrate BitBucket with StackSpot**
+
+**Step 1.** Go directly to the [**Account Portal**](http://myaccount.stackspot.com), or after logging in to the [**StackSpot Portal**](https://app.stackspot.com/), click your profile avatar.
+
+**Step 2.** Select **'Organization'** from the menu.
+
+**Step 3.** In the Account Portal menu, select the StackSpot EDP product and click **’SCM’**. Then click **'Configure SCM Integration'**.
+
+**Step 4.** In **Select a provider**, choose **BitBucket**.
+
+**Step 5.** For **Authentication method**, select **PAT (Personal Access Token)** and fill in:
+
+- **User:** Your BitBucket username
+- **Token:** The Personal Access Token you [**generated earlier**](#set-up-your-bitbucket-workspace-oauth-consumer-keys)
+
+**Step 6.** In **Workflow Configuration**, choose how your organization will manage SCM access. **Disable** the option **'Will the organization manage SCM access via User PAT?'**:
+
+- **Enabled:** Each user manages access to GitHub via PAT (Personal Access Token) or GitHub App.
+- **Disabled:** The company manages access to GitHub.
+
+:::info
+
+If you enable this option, each account member must set up their own [**SCM Access**](home/account/profile/external-connections.md).
+
+:::
+
+**Step 7.** In **Workflow URL**, enter the URL of the repository you created with the pipelines so StackSpot knows where your workflow is. For example: **`https://bitbucket.org/my-username/my-repo-runner-actions`**.
+
+**Step 8.** You’ll be taken to the **Review** screen. Check your details and click **'Integrate with StackSpot'**.
+
+You’re all set—your configuration is complete.

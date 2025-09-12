@@ -1,0 +1,117 @@
+---
+title: Inputs Scope
+description: Information about the available scopes for Workflow inputs.
+---
+
+All input types now have the **`scope`** parameter. This parameter defines a usage scope for Workflow inputs. The scope of an input is also valid for all its sub-inputs.
+
+:::danger 
+
+Inputs of type **`generated-connection`** and **`required-connection`** only support the scopes **`hidden`** or **`default`**. If they are used as sub-inputs, the parent input must necessarily have the **`hidden`** or **`default`** scope.
+
+:::
+
+See the details below:
+
+## **Hidden**
+
+This scope identifies parameters required for the Workflow, Action, or Plugin that need to be validated, but will not be requested directly from the user.
+
+Inputs with the **`hidden`** scope must be provided via the command line or environment variable during Workflow execution.
+
+Consider the following example. A text input is used to send the Git token to an Action that will perform repository cloning:
+
+```yaml
+spec:
+  inputs:
+   - type: text
+     name: github_token
+     scope: hidden
+     label: "Github token"
+   ... other inputs ...
+  jobs:
+    - id: git_clone
+      steps:
+        - type: action
+          id: git_clone_action
+          name: stackspot/git-clone@1
+          inputs:
+             credentials: {{ github_token }}
+             ... other inputs ...
+```
+
+When running the Workflow, you must provide the **`github_token`** input as a command-line parameter as follows:
+
+-  **`--github_token "token value"`**
+
+If the input with the hidden scope is not provided correctly, the STK CLI will not prompt for the input, and the workflow will not execute.
+
+## **Default** 
+
+The **`default`** scope maintains the same behavior as inputs in Actions and Plugins for the Workflow. When the **`scope`** parameter is not defined for a Workflow input, the input scope will have the **`default`** value.
+
+```yaml
+spec:
+  inputs:
+   - type: text
+     name: github_token
+     scope: default # if not declared
+     label: "Github token"
+   ... other inputs ...
+  jobs:
+    - id: git_clone
+      steps:
+        - type: action
+          id: git_clone_action
+          name: stackspot/git-clone@1
+          inputs:
+             credentials: {{ github_token }}
+             ... other inputs ...
+```
+
+## **Env**  
+
+The **`env`** scope sets the Workflow input to behave as an environment input. The input will behave the same as the env-inputs for Plugins, allowing you to set a different value for the Workflow input according to the environments available in your Workspace.  
+[**For more details, see the Inputs-envs page.**](create-use/create-content/yaml-files/inputs-envs.md)
+
+```yaml
+spec:
+  inputs:
+   - type: text
+     name: github_token
+     scope: env
+     label: "Github token"
+   ... other inputs ...
+  jobs:
+    - id: git_clone
+      steps:
+        - type: action
+          id: git_clone_action
+          name: stackspot/git-clone@1
+          inputs:
+             credentials: {{ github_token }}
+             ... other inputs ...
+```
+
+## **Deploy**
+
+The **`deploy`** scope indicates that the input will only be requested [**in the `deploy` type Workflows**](create-use/create-content/workflow/explanation/workflow-types.md).
+
+```yaml
+spec:
+  inputs:
+   - type: text
+     name: image
+     scope: deploy
+     label: "ECR Image"
+   ... other inputs ...
+  jobs:
+    - id: git_clone
+      steps:
+        - type: action
+          id: git_clone_action
+          name: stackspot/git-clone@1
+          inputs:
+             credentials: {{ github_token }}
+             ... other inputs ...
+```

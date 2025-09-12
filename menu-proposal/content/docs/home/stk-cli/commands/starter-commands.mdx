@@ -1,0 +1,110 @@
+---
+title: Comandos de Starter
+description: Lista de comandos para gerenciar Starters.
+---
+
+> Nesta seção você aprenderá mais sobre os comandos do Starter.
+
+<br/>
+
+
+>Comando | Descrição
+>-------- | ------
+>[**stk create starter**](#stk-create-starter) | Cria um Starter em uma Stack com o STK CLI.
+>[**stk list starter**](#stk-list-starter) | Lista todos os Starters dentro de um Workspace.
+>[**stk validate starter**](#stk-validate-starter) | Valida a estrutura de um Starter para ser publicado na Stack.
+
+### **stk create starter**
+
+O comando **`stk create starter`** cria uma estrutura básica de um Starter. Para saber mais sobre a estrutura do Starter, [**confira como criar o Starter no STK CLI**](create-use/create-content/stack/create-stack-starter-cli.mdx#create-starter-via-stk-cli).
+
+:::info Informação Adicional
+
+A opção `-o`, `--target` permite definir um nome de pasta diferente para criar o conteúdo do Starter. Se a pasta não existir, ela será criada.
+
+Se você não usar a opção `-o` ou `--target`, o nome da pasta do conteúdo do Starter será o mesmo que você deu ao criar o seu Starter.
+
+:::
+
+#### **Uso**
+
+**Sintaxe**
+
+```bash
+stk create starter [NAME]
+```
+
+**Exemplo**
+
+```bash
+stk create starter my-starter-name
+```
+
+#### **Parâmetros**
+
+| **Opções** | **Descrição** | **Exemplo** |
+| ----------- | ----------- | --- |
+| `-d, --description` | A descrição do seu Starter | <pre>stk create starter my-starter-name --description "My Starter description"</pre> |
+| `-r, --remote` | URL Git definida como repositório origin. Se utilizado, o campo NAME do Starter será definido pelo nome do repositórioGit. | <pre>stk create starter my-starter-name --remote https://github.com/MyGitHubOrg/my-repository</pre> |
+| `-sgi, --skip-git-init` | Não será inicializado um repositório Git. | <pre>stk create starter my-starte-name --skip-git-init</pre> |
+| `-q, --non-interactive` | Inputs que não forem informados não serão perguntados, retornando um erro se um input obrigatório não for fornecido. | <pre>stk create starter my-starter-name --non-interactive</pre> |
+| `-o, --target` | A opção `-o`, `--target` permite definir um nome de pasta diferente para criar o conteúdo do Starter. Se a pasta não existir, ela será criada. Se você não usar a opção `-o` ou `--target`, o nome da pasta do conteúdo do Starter será o mesmo que você deu ao criar o seu Starter. | <pre>stk create starter my-starter-name --description "My Starter description" --target home/user/documents/my-stacks</pre> |
+| `-t, --type` | O tipo do Starter: 'app' | <pre>stk create starter --type app</pre> |
+| `-h, --help` | Exibe a ajuda do comando e sai. | <pre>stk create starter --help</pre>|
+
+___
+
+### **stk list starter**
+
+O comando **`stk list starter`** lista no terminal os Starters disponíveis. Você tem duas opções:
+
+1. Listar Starters de um Workspace disponíveis para a sua conta. Nesse caso, você deve estar dentro de um Workspace, para isso, execute o comando [**stk use workspace**](home/stk-cli/commands/workspace-commands.mdx#stk-use-workspace) antes de listar os Starters.
+
+2. Listar Starters fora de um Workspace. Aqui, você precisa informar o Estúdio e a Stack que você quer depois que executar o comando.
+
+> Você tem acesso ao nome, tipo, descrição do Starter. E também avisa se tem Starter ou conteúdo depreciado com a tag `'deprecated'`.
+
+#### **Uso**
+
+```bash
+stk list starter 
+```
+
+#### **Parâmetros**
+
+| **Opções** | **Descrição** | **Exemplo** |
+| ----------- | ----------- | --- |
+| `-stu`, `--studio` | Filtra e exibe a listagem dos Starters por Estúdio | <pre>stk list starter --studio studio-name</pre> |
+| `-sta`, `--stack` | Filtra e exibe a listagem dos Starters por Stack | <pre>stk list starter --stack stack-name</pre>|
+| `-t`, `--type [app/infra]` | Filtra os Starter por tipo. Os valores aceitos são 'app' ou 'infra'. |  <pre>stk list starter --type infra</pre> | 
+| `-h`, `--help` | Exibe a ajuda do comando e sai. | <pre>stk list starter --help</pre> |
+
+___
+
+### **stk validate starter**
+
+O comando **`stk validate starter`** valida a estrutura do seu Starter e os seus componentes. Os arquivos ignorados em seu `.gitignore` não serão validados.
+
+#### **Uso**
+
+**Sintaxe**
+
+```bash
+stk validate starter
+```
+
+**Exemplo**
+
+Dentro da pasta do seu Starter, execute o comando:
+
+```bash
+stk validate starter
+```
+
+#### **Parâmetros**
+
+| **Opções** | **Descrição** | **Exemplo** |
+| ----------- | ----------- | --- |
+| `-v, --verbose` | Apresenta a validação com mais detalhes. | <pre>stk validate starter --verbose</pre> |
+| `-h, --help` | Exibe a ajuda do comando e sai. | <pre>stk validate starter --help</pre>|
+

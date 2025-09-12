@@ -1,0 +1,217 @@
+---
+title: Create and deploy an Infrastructure
+sidebar_position: 5
+description: Example of how to create and deploy an Infrastructure.
+---
+
+> In this section, you will find how to use infrastructures plugins to create an Infrastructure and deploy it.
+
+<br/>
+
+## **Introduction**
+
+- **Intermediate level**
+
+This is only an example on how to create an Infrastructure, [**for more details to create your Infra, see the Infrastructure page**](create-use/use-content/infra/infrastructure.md).
+
+This example assists you in creating and deploying an Infrastructure with StackSpot STK CLI. You will **use**:
+
+The **S3 CloudFront Stack** you created in the [**second Creator’s guide**](home/stackspot/examples/studio-content/create-infraplugin.md) to create an Infrastructure that can be used by an Application to be deployed.
+
+- The S3 CloudFront Stack includes  **Infra Plugins** designed to construct the infrastructure required for deployment and accessibility of HTML content.
+
+Now, proceed with the instructions below to accomplish this.
+
+## **Before you begin**
+
+To use this example, first, you will need to:
+
+1. Develop two Infra Plugins to generate an infrastructure. Use the [**Create Infra Plugins Guide**](home/stackspot/examples/studio-content/create-infraplugin.md).
+
+<<<<<<< HEAD
+2. Create a Stack incorporating the Infra Plugins from the [**Infra Plugin example**](examples/studio-content/create-infraplugin.md);
+=======
+2. Create a Stack incorporating the Infra Plugins from the [**Infra Plugin example**](home/stackspot/examples/studio-content/create-infraplugin.md#2-create-a-stack-and-add-the-infra-plugins-to-it);
+>>>>>>> 70581080ddb95197611fad98d6b53ed27a1d4024
+
+3. You **must add the Stack to a Workspace** to create, register, and deploy the Infrastructure with StackSpot.
+
+## **Requirements**
+
+- Create a StackSpot **account**;
+- [**Ensure you have permission to use the content**](home/account/organization/access-management/roles.md);
+- [**Install STK CLI**](home/stk-cli/install.md);
+- **Login** to your account on the **STK CLI**. Execute the command:
+
+```bash
+stk login
+```
+
+### **Step 1. Create an empty directory**
+
+Generate a project directory by executing the following command in your terminal:
+
+```bash
+mkdir demo-infra
+```
+
+**Access this directory** in your preferred **IDE**, such as Visual Studio Code.
+
+### **Step 2. Create the Infrastructure**
+
+1. **Access the Workspace** where you incorporated the steps and added the **s3-cloudfront Stack** from the [**Create Infra Plugins example**](home/stackspot/examples/studio-content/create-infraplugin.md) mentioned at the beginning.
+
+You will use it to create and register the Infrastructure. In your IDE terminal, execute the command:
+
+```bash
+stk use workspace
+```
+
+Then, select the appropriate Workspace.
+
+:::warning
+Infrastructure registration and deployment are only possible using Plugins within a Workspace.
+:::
+
+2. To create the Infrastructure, execute the command:
+
+```bash
+stk create infra demo-infra
+```
+
+:::tip
+ What's the difference between creating an Application and an Infrastructure?
+ 
+- When you create an Application, you need a Starter within the Stack.
+
+- When you create an Infrastructure, there's no need for a Starter, just a Stack.
+
+:::
+
+Then answer the questions on your terminal as follows:
+
+```bash
+? Name your Infrastructure demo-infra
+? Do you want to init a git repository? No
+? Infrastructure description:  (Describe your Infrastructure explaining its purpose) Create bucket s3 with CloudFront distribution
+? Select the studio: select the studio where you created the Stack
+? Select the stack: s3-cloudfront-stack
+? Select the stack version: 1.0.0
+? Select the desired infra plugins: done (2 selections)
+> Selected infra plugins to be applied:
+   - bucket-s3-plugin@0.0.1
+   - cloudfront-plugin@0.0.1
+```
+<br/>
+
+> In the last question **`? Select the desired infra plugins:`** Both plugins will already be selected to be applied. So just press `enter`. 
+In other cases, you can select one Plugin to apply at a time. 
+
+<br/>
+
+- Now, apply the Bucket S3 Plugin:
+
+> When the question `? Name the usage of the plugin` appears, press enter.
+
+<br/> 
+
+- Then, answer the questions on your terminal:  
+
+```
+? Name the connector for 'bucket-s3-plugin-conn (aws-s3-conn)': demo-infra-tw-01-conn
+? Type name of your bucket demo-infra-tw-01
+```
+
+<br/> 
+
+> When you name the connector, you are naming the Connection Interface.
+> When you name the Bucket S3, you give the Plugin an Alias.
+
+<br/> 
+
+
+- Now, apply the CloudFront Plugin and answer the questions on your terminal:
+
+> When the question `? Name the usage of the plugin` appears, just press enter.
+
+<br/> 
+
+> In this scenario, the CloudFront Plugin recognizes that a preceding Plugin generated a required Connection Interface. Select:
+
+```bash
+? Choose a connector for 'aws-s3-conn (bucket-s3-cloudfront-conn)': demo-infra-tw-01-conn (local)
+? Type name of your resource  (Client)  > Press enter
+? Choose http method of new endpoint GET > Press enter
+```
+
+You successfully created Infrastructure 'demo-infra'! 
+
+Within your project's folder, only the **`stk yaml`** file will exist.
+
+### **Step 3. Access your project’s directory and register your Infrastructure**
+
+Register your Infrastructure in a Workspace to make it available on StackSpot. Follow the instructions:
+
+1. Enter your project’s directory by running the command:
+
+```bash
+cd demo-infra
+```
+
+2. Register your Infrastructure:
+
+```bash
+stk register infra
+```
+
+Answer the following questions:
+
+```bash
+? Repository URL: add your repository 
+? Base branch: main
+```
+
+**Infrastructure registered successfully.**
+
+:::info
+Check if your Infrastructure was added to the Workspace:
+
+1. Access the [**StackSpot EDP Portal**](https://app.stackspot.com/login); 
+2. Go to your Workspace;
+3. Click **‘Infrastructure’**;
+4. Confirm if your Shared Infra is there. 
+:::
+
+### **Step 4. Deploy your Infrastructure**
+
+:::caution
+You will only be able to deploy if you:
+
+- [**Configured AWS Cloud account**](home/workspace/config-cloud-account.md) or [**Configured Azure Cloud account**](home/workspace/config-cloud-account-azure.md);
+- [**Have access to a Cloud account**](home/account/organization/access-management/roles.md);
+- [**Created environments in your account StackSpot.**](home/account/organization/create-env.md).
+:::
+
+To deploy your Infrastructure, run the following command:
+
+```bash
+stk deploy infra -v <infra-version> -e <environment-name> -w
+```
+
+> `-v` indicates the Shared Infra's version;
+> `-e` indicates the environment you want to deploy;
+> `-w` indicates that you want to watch the deployment.
+ 
+Done! You started your Infrastructure deployment.
+
+- The deployment starts with the Bucket S3 Plugin because it generates a connection that the CloudFront Plugin will use. 
+- StackSpot registers the deployment in the Infrastructure’s page on the Portal. 
+- After its deployment, you will see the Connection Interfaces generated by your Infrastructure on the StackSpot EDP Portal. 
+
+:::info
+If you prefer, [see the steps to create an Infrastructure **via the StackSpot EDP Portal**.](create-use/use-content/infra/infrastructure.md)
+::: 
+
+## **What can you do next?**
+
+- [**See how to create an Application and deploy it**](home/stackspot/examples/app-and-infra/create-deploy-app.md)

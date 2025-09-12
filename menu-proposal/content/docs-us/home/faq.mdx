@@ -1,0 +1,528 @@
+---
+title: FAQ
+description: Frequently Asked Questions.
+---
+
+> In this section, you will find frequently asked questions and answers about StackSpot.
+
+## **Concepts and Usage**
+
+### **Is the Platform open source?**
+
+The Platform offers two versions: an enterprise version and a personal version.
+- The Enterprise version requires users to connect with our sales team and undergo a formal contract process.- In the Personal version, users can create an account using their GitHub login to access limited features. For example, users cannot set up Single Sign-On (SSO). Currently, no open-source version is available, as hosting the Platform independently is not supported. We are developing StackSpot Essentials, which is expected to be a community/open-source version by the end of the year.
+
+### Is StackSpot accessible?
+
+[**See more details on the StackSpot EDP page**](home/stackspot/about_edp.md).
+
+### **What is Content? Does StackSpot develop it?**
+
+Content is any piece created using the StackSpot Engine framework.
+- Content can be Stacks, Starters, Plugins, Actions, and Links. You can reuse it.
+The developers create content in the [**Studios**](create-use/studio/intro-studio.md).In the Workspace, you can:
+- Use content developed in the Studios.- Create Shared Applications and Infrastructures.
+
+See more details:
+
+- [**How to create an Application**](create-use/use-content/application/index.md).- [**How to create an Infrastructure**](create-use/use-content/infra/infrastructure.md).
+
+### **Will there be an option to integrate StackSpot through the API?**
+
+For specific StackSpot features, customers can directly connect to the API to easily integrate with other tools they already use. This is possible if a customer uses a developer portal and needs access to information on Stacks, Plugins, Actions, and links within their Portal. The Portal has authentication and token management within the StackSpot Portal.
+
+### **Which SCMs does StackSpot integrate with?**
+
+It integrates with GitHub, Bitbucket, Azure DevOps Repos, and GitLab.
+
+### **I am a software house and want only one account linked to some SCM accounts. Is it possible?**
+
+It is only possible to link one StackSpot account to one SCM account.
+
+### **What is a Workspace?**
+
+It's where you can use the content created in a Studio. Workspace is a workplace where you can develop Applications and Infrastructure. It all depends on what you want and which context you need.Workspace is where you can set up a Cloud Provider.
+For more details, see the [**About Workspaces section**](home/workspace/about-workspace.md).
+
+### **When I have access to an account, can I automatically see all of its Workspaces?**
+
+In the [**StackSpot Platform**](https://app.stackspot.com/login). 
+Once you're in an account, you can see all its Workspaces. However, to use a Workspace, you must be part of a **group associated with it**.
+On the other hand, in the **STK CLI**, you can **only view** the Workspaces to which **you are associated**.
+
+See more details:
+
+- [**About Workspace**](home/workspace/about-workspace.md)
+
+### **What can a Developer role do in a Workspace?**
+
+If the person is part of the Workspace, they will be able to:
+
+- Create Applications and Infrastructure.- Define Stack contexts.
+They can only view what is in a Workspace if they are outside it.
+
+See more details:
+
+- [**Roles and Permissions**](home/account/organization/access-management/roles.md ).
+- [**About Workspaces**](home/workspace/about-workspace.md).
+
+### **Can I create Applications and Infrastructures outside a Workspace?**
+
+No. To create and deploy an Application or Infrastructure, you **must be inside a Workspace**. You also need to use the content (Plugins, Stacks, Starters, etc.) available in it.
+
+### **When should I publish a new Plugin and Stack version?**
+
+You should publish a new version whenever you change something in the Stack or Plugin.
+
+For more information, see the following pages:
+
+- [**Publish new version of Plugin**](create-use/create-content/plugin/publish-plugin.md)
+- [**Publish new version of Stack**](create-use/create-content/stack/create-stack.md)
+
+### **What is a Starter?**  
+
+It is a set of predefined Stack Plugins. You can apply them using the **`stk create app`** command. When you use a Starter, you can make an App and apply a Plugin package with one STK CLI command.
+
+A Starter helps creators define the most common Plugin combinations in a Stack. This predefined package accelerates the process of creating projects.
+See the [**How to create and add a Starter to a Stack guide**](create-use/create-content/stack/create-stack.md) page for more information.
+
+### **Can Starters be versioned?**
+
+Yes, you can version Starters according to a Stack. To create a new version, you must create a new Stack version.
+
+For more information, see the [**How to create and add a Starter in Stack guide**](create-use/create-content/stack/create-stack.md).
+
+### **What is a Context?**
+
+Contexts are sets of values used to define content settings in StackSpot. They have three levels:
+
+- Account
+- Workspace
+- Application
+
+If you configure it at the Account level, it overwrites values set in a Workspace. Then, it overwrites values set in Applications. For example:
+The input values you define at your account level can be mandatory or suggestions. After you set a value as required, you cannot change it within the Workspace or Application.
+
+The input values you define in your Account level can be mandatory or suggestions. After you set a value as required, you cannot change it within the Workspace or Application.
+
+See more details about Contexts in the [**Configure Contexts guide**](home/account/organization/configure-context-account.md).
+
+### **How do I configure a Context in my Stack?**
+
+To set up a Context in your Stack, add it to your Workspace and define the inputs.
+- See the detailed step-by-step at [**Add Stack to Workspace guide**](home/workspace/stacks-and-context/setup-context.md).
+
+### **What does the `stk-validate-app` command validates?**
+
+The **`stk-validate-app`** command validates an Application structure. Execute this command inside your Application's folder. The command:
+
+- Validates the Application structure;
+- Removes empty folders;
+- Ignore files and folders that you do not want when you finish developing your Application.
+
+For more information, see the [**STK CLI Commands section**](home/stk-cli/commands/index.md).
+
+### **How do I create and publish a Plugin?**
+
+Follow the steps to create and publish Plugins:
+
+- [**Create Plugin**](create-use/create-content/plugin/create-plugin.md).
+- [**Publish Plugin**](create-use/create-content/plugin/publish-plugin.md).
+
+### **How can I check my logs?**
+
+The logs are on the **.stk** folder in your **/user/.stk/logs** user.
+
+### **How can I apply a Plugin locally?**
+
+Execute the command:
+
+```bash
+stk apply plugin <local path>
+```
+
+On Windows:
+
+```bash
+stk apply plugin 'plugin-complete-path'
+```
+
+### **Does the STK CLI login happen only on the default browser?**
+
+Logging in via STK CLI always redirects you to your default browser.
+
+### **How does the Search Engine work on the StackSpot Platform?**
+
+StackSpot's search engine is a tool that allows you to objectively search for the content you want on the Platform using semantic searches.
+The system uses artificial intelligence to extract the context of your search and group information together, even if the results differ from what you searched for.
+For example, if you search for "Java" without related content, the search will return the closest possible results.
+
+-------
+
+### **Can I check STK CLI error logs on the screen?**
+
+Yes, use: **`export HTTP_ENABLE_DEBUG=true`**
+
+### **How to create a version for a Plugin in a Stack?**
+
+> You need to be on a team in a Studio and have permission to edit.
+
+<br/>
+
+Follow the instructions:
+
+1. On SKT CLI, execute the **`stk publish`** command with the new Plugin version. Add the right plugin.yaml version.
+
+2. Access the StackSpot Portal. Click on **'Studio > Stack'**;
+
+3. On your Stack, click on the **' New Version'** button;
+
+4. On the left side menu, select the Plugin (app or infra);
+
+5. Click on the **'Add Plugin'** button and select the new version;
+
+6. Publish your Stack.
+
+### **How to add a new Plugin version in a Starter (versioning the Starter)?**
+
+> You need to be on a team within a Studio and have permission to edit.
+
+<br/>
+
+Follow the instructions:
+
+1. On SKT CLI, execute the **`stk publish`** command with the new Plugin version. Add the right plugin.yaml version.
+
+2. Access the StackSpot Portal. Click on **'Studio > Stack'**;On your Stack, click on the **'New Version'** button;
+
+3. On the left side menu, select the Plugin (app or infra);
+
+4. Click on the **'Add Plugin'** button and select the new version;
+
+5. Return to the Stack and select the Starter;
+
+6. Remove the Plugin with the previous version;
+
+> If the Starter has only one Plugin, it will be deleted. In this case, you need to create a new Starter.
+
+<br/>
+
+7. Add the Plugin with the current version. Now, publish your Stack.
+
+## **Pipelines**
+
+### **Can I use StackSpot with my current pipeline?**
+
+As a client, you can link your pipelines to StackSpot, including GitHub Actions, Bitbucket Pipelines, Azure Pipelines, and GitLab CI/CD. If you choose not to integrate directly via APIs, you can use the CLI within a runner to carry out the tasks for StackSpot during the pipeline's execution.
+
+### **Does StackSpot replace my current pipeline?**
+
+No, it complements your pipeline. The applications created with StackSpot follow the client's standard CI/CD pipeline. Currently, StackSpot supports pipelines through its SCMs, such as GitHub Actions, Bitbucket Pipelines, Azure Pipelines, and, in the future, GitLab CI/CD.If users exclusively use Plugins for Applications or pure code, they only need to connect to StackSpot when they require context configured in the Workspace. If the user does not require this feature, connecting is unnecessary.If a client uses Plugins for infrastructure to abstract the cloud and Terraform, they must use our Runtime module. In this case, they need to add a step in their pipeline to connect with StackSpot and use the functionality.
+
+---
+
+## **Service Catalog**
+
+### **When trying to upload an OpenAPI standard file, it does not appear for me to select. What's the issue?**
+
+Check if the file has the **`.yaml`**, **`.yml`**, or **`.json`** extension.
+
+### **When creating a Gateway API, it requests a URL. Where do I get this URL?**
+
+Contact the person responsible for your organization. They can provide you with the Gateway URL.
+
+### **I have created a Product, but it does not appear in the Catalog for my Partner**
+
+You created a product as a Draft, and now you need to publish it in the Catalog for others to view.
+
+### **I have created an API, but it does not appear in the Catalog for my Partner**
+
+You created an API as a Draft, and now you must publish it in the Catalog for others to view.
+
+### **I can't view my API or Product in the Catalog, even after publishing it**
+
+You can check the Service Catalog by environment. When you access it, you must select the environment in which the API or Product was published.
+
+### **I have registered my Partners, but how will they be notified to access the Partner Portal?**
+
+The Partners receive an email invitation to access the Portal, set a password, and log in.
+
+### **I am trying to request access to an API, but I can't select my consuming application**  
+
+You cannot request access to an API when there is already one in progress. Check the generated credentials in the API Credential menu.
+
+### **I have requested access to an API. How will I know that it worked?**  
+
+When the client's administrator grants access, you will receive an email about it. Another way to follow up is to check if the credentials were generated on the API screen in the API Credential menu. If it doesn't work, don't hesitate to contact the Administrator.
+
+### **I received an email telling me I can access the API but still can't access it through my application. What can I do?**  
+
+In this case, you can contact your Administrator to see what happened.
+
+------
+---
+title: FAQ
+displayed_sidebar: setupSidebar
+sidebar_position: 88
+sidebar_custom_props: 
+  icon: Question
+---
+
+> In this section, you will find frequently asked questions and answers about StackSpot.
+
+## **Concepts and Usage**
+
+### **Is the Platform open source?**
+
+The Platform offers two versions: an enterprise version and a personal version.
+- The Enterprise version requires users to connect with our sales team and undergo a formal contract process.- In the Personal version, users can create an account using their GitHub login to access limited features. For example, users cannot set up Single Sign-On (SSO). Currently, no open-source version is available, as hosting the Platform independently is not supported. We are developing StackSpot Essentials, which is expected to be a community/open-source version by the end of the year.
+
+### Is StackSpot accessible?
+
+[**See more details on the StackSpot Accessibility page**](home/stackspot/accessibility.md).
+
+### **What is Content? Does StackSpot develop it?**
+
+Content is any piece created using the StackSpot Engine framework.
+- Content can be Stacks, Starters, Plugins, Actions, and Links. You can reuse it.
+The developers create content in the [**Studios**](create-use/studio/intro-studio.md).In the Workspace, you can:
+- Use content developed in the Studios.- Create Shared Applications and Infrastructures.
+
+See more details:
+
+- [**How to create an Application**](create-use/use-content/application/index.md).- [**How to create an Infrastructure**](create-use/use-content/infra/infrastructure.md).
+
+### **Will there be an option to integrate StackSpot through the API?**
+
+For specific StackSpot features, customers can directly connect to the API to easily integrate with other tools they already use. This is possible if a customer uses a developer portal and needs access to information on Stacks, Plugins, Actions, and links within their Portal. The Portal has authentication and token management within the StackSpot Portal.
+
+### **Which SCMs does StackSpot integrate with?**
+
+It integrates with GitHub, Bitbucket, Azure DevOps Repos, and GitLab.
+
+### **I am a software house and want only one account linked to some SCM accounts. Is it possible?**
+
+It is only possible to link one StackSpot account to one SCM account.
+
+### **What is a Workspace?**
+
+It's where you can use the content created in a Studio. Workspace is a workplace where you can develop Applications and Infrastructure. It all depends on what you want and which context you need.Workspace is where you can set up a Cloud Provider.
+For more details, see the [**About Workspaces section**](home/workspace/about-workspace.md).
+
+### **When I have access to an account, can I automatically see all of its Workspaces?**
+
+In the [**StackSpot Platform**](https://app.stackspot.com/login). 
+Once you're in an account, you can see all its Workspaces. However, to use a Workspace, you must be part of a **group associated with it**.
+On the other hand, in the **STK CLI**, you can **only view** the Workspaces to which **you are associated**.
+
+See more details on the pages:
+
+- [**About Workspace**](home/workspace/about-workspace.md)
+- [**Roles and Permissions**](home/account/organization/access-management/roles.md)
+
+### **What can a Developer role do in a Workspace?**
+
+If the person is part of the Workspace, they will be able to:
+
+- Create Applications and Infrastructure.- Define Stack contexts.
+They can only view what is in a Workspace if they are outside it.
+
+See more details:
+
+- [**Roles and Permissions**](home/account/organization/access-management/roles.md).
+- [**About Workspaces**](home/workspace/about-workspace.md).
+
+### **Can I create Applications and Infrastructures outside a Workspace?**
+
+No. To create and deploy an Application or Infrastructure, you **must be inside a Workspace**. You also need to use the content (Plugins, Stacks, Starters, etc.) available in it.
+
+### **When should I publish a new Plugin and Stack version?**
+
+You should publish a new version whenever you change something in the Stack or Plugin.
+
+For more information, see the following pages:
+
+- [**Publish new version of Plugin**](create-use/create-content/plugin/publish-plugin.md)
+- [**Publish new version of Stack**](create-use/create-content/stack/create-stack.md)
+
+### **What is a Starter?**  
+
+It is a set of predefined Stack Plugins. You can apply them using the **`stk create app`** command. When you use a Starter, you can make an App and apply a Plugin package with one STK CLI command.
+
+A Starter helps creators define the most common Plugin combinations in a Stack. This predefined package accelerates the process of creating projects.
+See the [**How to create and add a Starter to a Stack guide**](create-use/create-content/stack/create-stack.md) page for more information.
+
+### **Can Starters be versioned?**
+
+Yes, you can version Starters according to a Stack. To create a new version, you must create a new Stack version.
+
+For more information, see the [**How to create and add a Starter in Stack guide**](create-use/create-content/stack/create-stack.md).
+
+### **What is a Context?**
+
+Contexts are sets of values used to define content settings in StackSpot. They have three levels:
+
+- Account
+- Workspace
+- Application
+
+If you configure it at the Account level, it overwrites values set in a Workspace. Then, it overwrites values set in Applications. For example:
+The input values you define at your account level can be mandatory or suggestions. After you set a value as required, you cannot change it within the Workspace or Application.
+
+The input values you define in your Account level can be mandatory or suggestions. After you set a value as required, you cannot change it within the Workspace or Application.
+
+See more details about Contexts in the [**Configure Contexts guide**](home/account/organization/configure-context-account.md).
+
+### **How do I configure a Context in my Stack?**
+
+To set up a Context in your Stack, add it to your Workspace and define the inputs.
+- See the detailed step-by-step at [**Add Stack to Workspace guide**](home/workspace/stacks-and-context/setup-context.md).
+
+### **What does the `stk-validate-app` command validates?**
+
+The **`stk-validate-app`** command validates an Application structure. Execute this command inside your Application's folder. The command:
+
+- Validates the Application structure;
+- Removes empty folders;
+- Ignore files and folders that you do not want when you finish developing your Application.
+
+For more information, see the [**STK CLI Commands section**](home/stk-cli/commands/index.md).
+
+### **How do I create and publish a Plugin?**
+
+Follow the steps to create and publish Plugins:
+
+- [**Create Plugin**](create-use/create-content/plugin/create-plugin.md).
+- [**Publish Plugin**](create-use/create-content/plugin/publish-plugin.md).
+
+### **How can I check my logs?**
+
+The logs are on the **.stk** folder in your **/user/.stk/logs** user.
+
+### **How can I apply a Plugin locally?**
+
+Execute the command:
+
+```bash
+stk apply plugin <local path>
+```
+
+On Windows:
+
+```bash
+stk apply plugin 'plugin-complete-path'
+```
+
+### **Does the STK CLI login happen only on the default browser?**
+
+Logging in via STK CLI always redirects you to your default browser.
+
+### **How does the Search Engine work on the StackSpot Platform?**
+
+StackSpot's search engine is a tool that allows you to objectively search for the content you want on the Platform using semantic searches.
+The system uses artificial intelligence to extract the context of your search and group information together, even if the results differ from what you searched for.
+For example, if you search for "Java" without related content, the search will return the closest possible results.
+
+-------
+
+### **Can I check STK CLI error logs on the screen?**
+
+Yes, use: **`export HTTP_ENABLE_DEBUG=true`**
+
+### **How to create a version for a Plugin in a Stack?**
+
+> You need to be on a team in a Studio and have permission to edit.
+
+<br/>
+
+Follow the instructions:
+
+1. On SKT CLI, execute the **`stk publish`** command with the new Plugin version. Add the right plugin.yaml version.
+
+2. Access the StackSpot Portal. Click on **'Studio > Stack'**;
+
+3. On your Stack, click on the **' New Version'** button;
+
+4. On the left side menu, select the Plugin (app or infra);
+
+5. Click on the **'Add Plugin'** button and select the new version;
+
+6. Publish your Stack.
+
+### **How to add a new Plugin version in a Starter (versioning the Starter)?**
+
+> You need to be on a team within a Studio and have permission to edit.
+
+<br/>
+
+Follow the instructions:
+
+1. On SKT CLI, execute the **`stk publish`** command with the new Plugin version. Add the right plugin.yaml version.
+
+2. Access the StackSpot Portal. Click on **'Studio > Stack'**;On your Stack, click on the **'New Version'** button;
+
+3. On the left side menu, select the Plugin (app or infra);
+
+4. Click on the **'Add Plugin'** button and select the new version;
+
+5. Return to the Stack and select the Starter;
+
+6. Remove the Plugin with the previous version;
+
+> If the Starter has only one Plugin, it will be deleted. In this case, you need to create a new Starter.
+
+<br/>
+
+7. Add the Plugin with the current version. Now, publish your Stack.
+
+## **Pipelines**
+
+### **Can I use StackSpot with my current pipeline?**
+
+As a client, you can link your pipelines to StackSpot, including GitHub Actions, Bitbucket Pipelines, Azure Pipelines, and GitLab CI/CD. If you choose not to integrate directly via APIs, you can use the CLI within a runner to carry out the tasks for StackSpot during the pipeline's execution.
+
+### **Does StackSpot replace my current pipeline?**
+
+No, it complements your pipeline. The applications created with StackSpot follow the client's standard CI/CD pipeline. Currently, StackSpot supports pipelines through its SCMs, such as GitHub Actions, Bitbucket Pipelines, Azure Pipelines, and, in the future, GitLab CI/CD.If users exclusively use Plugins for Applications or pure code, they only need to connect to StackSpot when they require context configured in the Workspace. If the user does not require this feature, connecting is unnecessary.If a client uses Plugins for infrastructure to abstract the cloud and Terraform, they must use our Runtime module. In this case, they need to add a step in their pipeline to connect with StackSpot and use the functionality.
+
+---
+
+## **Service Catalog**
+
+### **When trying to upload an OpenAPI standard file, it does not appear for me to select. What's the issue?**
+
+Check if the file has the **`.yaml`**, **`.yml`**, or **`.json`** extension.
+
+### **When creating a Gateway API, it requests a URL. Where do I get this URL?**
+
+Contact the person responsible for your organization. They can provide you with the Gateway URL.
+
+### **I have created a Product, but it does not appear in the Catalog for my Partner**
+
+You created a product as a Draft, and now you need to publish it in the Catalog for others to view.
+
+### **I have created an API, but it does not appear in the Catalog for my Partner**
+
+You created an API as a Draft, and now you must publish it in the Catalog for others to view.
+
+### **I can't view my API or Product in the Catalog, even after publishing it**
+
+You can check the Service Catalog by environment. When you access it, you must select the environment in which the API or Product was published.
+
+### **I have registered my Partners, but how will they be notified to access the Partner Portal?**
+
+The Partners receive an email invitation to access the Portal, set a password, and log in.
+
+### **I am trying to request access to an API, but I can't select my consuming application**  
+
+You cannot request access to an API when there is already one in progress. Check the generated credentials in the API Credential menu.
+
+### **I have requested access to an API. How will I know that it worked?**  
+
+When the client's administrator grants access, you will receive an email about it. Another way to follow up is to check if the credentials were generated on the API screen in the API Credential menu. If it doesn't work, don't hesitate to contact the Administrator.
+
+### **I received an email telling me I can access the API but still can't access it through my application. What can I do?**  
+
+In this case, you can contact your Administrator to see what happened.
+
+------

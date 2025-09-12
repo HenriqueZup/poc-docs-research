@@ -1,0 +1,333 @@
+---
+title: Create Custom Extensions
+description: How to create custom extensions for StackSpot EDP.
+---
+
+> In this section, you will find the steps to create Customizable Extensions.
+
+## **Introduction**
+
+In the StackSpot context, a Customizable Extension enables you to create a new page within the StackSpot EDP Portal. The platform provides an SDK that facilitates the development of personalized pages that are fully integrated into the StackSpot EDP environment.
+
+The Extension facilitates integration with other tools, providing a centralized and personalized experience for developers.
+
+:::warning 
+
+- The client is solely responsible for the implementation and management of the Extension.    
+- If StackSpot identifies a security incident related to an Extension, it may be deactivated at any time.
+
+:::
+
+A customizable extension can be created at two levels:
+
+**Organization**: This allows everyone within an Account to view the registered extension.
+
+**Workspace**: The extension will be published across all Workspaces.
+
+The individual responsible for the Organization must create and publish the extension in the StackSpot Portal. Once published, the extension will be accessible from the Organization's main or Workspace menu and can be utilized accordingly.
+
+## **Requirements**
+
+### **Required Libraries**
+
+To build a StackSpot extension, you need the following libraries:
+
+- **React**    
+- [**Citric**](https://www.npmjs.com/package/@citric/core?activeTab=readme): [**StackSpot's design system**](https://citric-docs.stackspot.com/?path=/docs/home--docs).  
+- [**Portal Theme**](https://www.npmjs.com/package/@stack-spot/portal-theme): theme for the Design System.  
+- [**Portal Translate**](https://www.npmjs.com/package/@stack-spot/portal-translate): internationalization mechanism.  
+- [**React Query**](https://www.npmjs.com/package/@tanstack/react-query): global network state manager.  
+- **Styled Components**: for styling components.
+
+:::info 
+
+The **Portal Translate**, **React Query**, and **Styled Components** libraries must be included in the project, but **their use is optional**.
+
+:::
+
+### **Recommended Libraries**
+
+
+- [**Citron Navigator**](https://www.npmjs.com/package/@stack-spot/citron-navigator): If your extension has multiple pages, use the Citron Navigator, an internally developed navigator for React.
+
+- [**Portal Components**](https://www.npmjs.com/package/@stack-spot/portal-components): A collection of components utilized by all StackSpot Portals built on Citric. Use this library only if you require specific components.
+
+## **Install the SDK**
+
+The Extension is a **React** application with **Typescript** that runs as a **client application** or **client-side** (runs in the user's browser). If you provide the necessary authentication, the Extension can interact with the StackSpot API to retrieve some information from your StackSpot EDP account or any service.
+
+To create the project, install the StackSpot STK [**`@stack-spot/portal-extension`**](https://www.npmjs.com/package/@stack-spot/portal-extension?activeTab=readme):
+
+In your terminal, execute the following command:
+
+**pnpm (recommended)**
+
+```bash title="Recommended installation"
+pnpm add @stack-spot/portal-extension
+```
+
+**npm or yarn**
+
+```bash
+npm i @stack-spot/portal-extension
+```
+
+```bash
+yarn add @stack-spot/portal-extension
+```
+
+> StackSpot [**provides a sample Extension project**](https://github.com/stack-spot/edp-extension-sample).
+
+## **Using the SDK**
+
+### **Expose your project as an Extension**
+
+To use your application in StackSpot, you must expose your project as a StackSpot Extension. To do this, configure your application's entry point file as shown in the example below (e.g., **`App.tsx`**):
+
+```ts title="App.tsx"
+import { StackspotExtension } from '@stack-spot/portal-extension'
+
+export const App = () => (
+  <StackspotExtension>
+    {/* Your content goes here */}
+  </StackspotExtension>
+)
+```
+
+:::danger 
+
+To create Extensions, you must have the [**Account Holders and Account Admins permission**](home/account/organization/access-management/permissions.md).
+
+:::
+
+### **Display Modal Content**
+
+In the example below, modals and right panels load other views from this application. To support multiple, use the [React Navigator (Citron Navigator](#bibliotecas-recomendadas).
+
+```ts
+import { StackspotExtension } from '@stack-spot/portal-extension'
+import { Button } from '@citric/core'
+import { alert, confirm, showModal, showRightPanel } from '@stack-spot/portal-extension'
+export const App = () => (
+  <StackspotExtension>
+    <Button
+      onClick={() => alert({
+        title: 'Alert',
+        subtitle: 'This is an alert!',
+      })}
+    >
+      Show alert
+    </Button>
+    <Button
+      onClick={async () => {
+        const answer = await confirm({
+          title: 'Confirm',
+          subtitle: 'Do you confirm?',
+        })
+        console.log(answer ? 'confirmed' : 'canceled')
+      }}
+    >
+      Show confirm
+    </Button>
+    <Button
+      onClick={() => showModal({
+        title: 'My modal',
+        subtitle: 'This is an example of modal',
+        path: '/path-to-modal',
+      })}
+    >
+      Show modal
+    </Button>
+    <Button
+      onClick={() => showRightPanel({
+        title: 'My panel',
+        subtitle: 'This is an example of right panel',
+        path: '/path-to-right-panel',
+      })}
+    >
+      Show floating side panel on the right
+    </Button>
+  </StackspotExtension>
+)
+```
+
+### **Display toasters**
+
+```ts
+import { StackspotExtension } from '@stack-spot/portal-extension'
+import { Button } from '@citric/core'
+import { showToaster } from '@stack-spot/portal-extension'
+
+export const App = () => (
+  <StackspotExtension>
+    <Button onClick={() => showToaster({ message: 'Hello World' })}>
+      Show an info toast
+    </Button>
+    <Button onClick={() => showToaster({ message: 'Oops! An error.', type: 'error' })}>
+      Show an error toast
+    </Button>
+  </StackspotExtension>
+)
+```
+
+### **Create context menus**
+
+Using the Extension, you can create a contextual menu for your page. This menu appears as a right sidebar, located next to the main section menu.
+
+:::warning 
+
+Menu limitations:
+
+- An Extension cannot modify the sections menu (main menu).
+
+- The menu is structured according to a predefined template, which means users cannot create custom designs. It must adhere to a specific format.
+
+- Only full-page extensions can alter the menu. If the Extension is loaded as a widget by the parent, the contextual menu will not be displayed.
+
+:::
+
+To create the menu, use **`showMenu`**(options). See the example below:
+
+```ts
+import { showMenu } from '@stack-spot/portal-extension'
+import { root } from 'navigation'
+
+showMenu({
+  options: [
+    {
+      label: 'Digital Store',
+      children: [
+        { label: 'Home', href: root.$link(), active: true },
+        { label: 'Issues', href: root.issues.$link() },
+        { label: 'Management', href: root.management.$link() },
+      ]
+    },
+    {
+      label: 'External Links',
+      open: false,
+      children: [
+        { label: 'Stackspot', href: 'https://www.stackspot.com', target: '_blank' },
+        { label: 'Zup', href: 'https://www.zup.com.br', target: '_blank' },
+        { label: 'Google', href: 'https://www.google.com', target: '_blank' },
+        { label: 'Microsoft', href: 'https://www.microsoft.com' },
+        { label: 'Apple', href: 'https://www.apple.com' },
+      ]
+    },
+  ]
+})
+```
+
+The contextual menu supports a set of features. [**For more details, see the `MenuSectionContent` type in its type definitions**](https://github.com/stack-spot/portal-extensions/blob/main/packages/commons/src/menu-types.ts).
+
+When the menu is displayed, it changes if **`showMenu`** is called again with a different value. The menu will close if the user navigates away from the Extension page or if you explicitly invoke **`closeMenu()`**.
+
+### **Make requests to the StackSpot API**
+
+The Portal Extension cannot access the user's access token and cannot make direct requests to the StackSpot API. Instead, you must import and use a network client from the SDK.
+
+For more information on using the API, retrieving data from users logged into StackSpot, and previewing the Extension, [**visit the SDK page**](https://www.npmjs.com/package/@stack-spot/portal-extension?activeTab=readme).
+
+## **Create Extension in the Portal**
+
+**Step 1.** Access the [**StackSpot Account Portal**](https://myaccount.stackspot.com/) and click on the **'Organization'** menu.
+
+**Step 2.** In the **'StackSpot EDP'** section, navigate to the **'Extensions'** subsection;
+
+**Step 3.** Click the **'Create Extensions'** button;
+
+**Step 4.** Fill in the following fields:
+
+- **Name**
+
+> A slug is suggested when the name field is filled in. If you want to change the slug, click the **'Edit'** button.
+
+- **Level**: Choose between **Organization** or **Workspace**.
+
+- **Description**: This is an optional field.
+
+- **File**: Upload, in zip format, the file that will be your Extension.
+
+> This file will go through a security scan. If it is not within the security policy, it may be deleted.
+
+<br/>
+
+**Step 5.** Click the **'Create'** button.
+
+![](/img/create-extension.png)
+
+
+<br/>
+
+Done, your Extension has been created. Now you need to activate it.
+
+### **Activate or deactivate an Extension**
+
+#### **Activate an Extension**
+
+To **activate** an Extension, follow these steps:
+
+**Step 1.** In the row of the Extension you created and want to activate, click the icon that indicates more options;
+
+**Step 2.** Click the **'Activate'** button.
+
+![](/img/activate-extension.png)
+
+
+<br/>
+
+Done, you have activated an Extension. Now it can be used in StackSpot.
+
+---
+
+#### **Deactivate an Extension**
+
+To **deactivate** an Extension, follow these steps:
+
+**Step 1.** In the row of the Extension you want to deactivate, click the icon that indicates more options;
+
+**Step 2.** Click the **'Deactivate'** button.
+
+Done, you have deactivated an Extension.
+
+---
+
+### **Edit an Extension**
+
+You can edit an Extension while it is active, but **the slug cannot be changed**. To edit, follow these steps:
+
+**Step 1.** In the row of the Extension you want to edit, click the icon that indicates more options;
+
+**Step 2.** Click the **'Edit'** button;
+
+**Step 3.** In **'Edit extension'**, edit one or more fields:
+
+- Name  
+- Level  
+- Description  
+- Replace file
+
+**Step 4.** To finish editing, click the **'Edit'** button;
+
+![](/img/edit-extension.png)
+
+
+<br/>
+
+Done, you have edited an Extension.
+
+---
+
+### **Remove an Extension**  
+
+You can remove an Extension, but all versions will also be removed from StackSpot EDP. To do this, follow these steps:
+
+**Step 1.** Click the options icon in the row of the Extension you wish to remove; 
+
+**Step 2.** Click the **'OK'** button to confirm the removal.
+
+![](/img/remove-extension.png)
+
+
+<br/>
+
+Done, you have removed an Extension from the Portal.

@@ -1,0 +1,63 @@
+---
+title: Deprecate, Unpublish and Delete Content
+description: See the deprecate, unpublish and delete rules on StackSpot.
+---
+
+> In this section, you'll find the rules and differences between deprecating, unpublishing and deleting content in StackSpot.
+
+## **Deprecation**  
+
+Deprecation occurs when published content (such as Stacks, Plugins, Actions, and Starters) needs updated information and newer, more up-to-date versions are available.
+
+Instead of deleting outdated content, you can **deprecate** it. After deprecation, the deprecated content remains usable within StackSpot.
+
+### **Who can deprecate content**  
+
+Anyone with an Action type **DEPRECATE** in the StackSpot resource (such as Studio, Plugin, Action, etc.) can deprecate content.
+
+### **Content that can be deprecated**  
+
+- A version of a Plugin
+- A version of an Action
+- A version of a Stack
+- A version of a Plugin within a Stack's version  
+  - In this case, the Stack will receive a tag indicating the content's deprecation.
+- A version of an Action within a Stack's version  
+  - Similarly, the Stack will receive a tag indicating the content's deprecation.
+- A Starter within a Stack's version
+
+### **Effects of deprecation**  
+
+StackSpot will notify users who utilize the deprecated content via email and display a warning message when they attempt to use it.
+
+---
+
+## **Deletion and Unpublishing**  
+
+The main difference between deletion and unpublishing is that deletion removes the content from its usage (such as a Plugin within a Stack). In contrast, unpublishing makes the content entirely unavailable, causing it to cease to exist.
+
+### **Who can delete or deprecate**  
+
+Anyone who owns or belongs to a team within the Studio where the content is published can delete or deprecate content.
+
+### **Rules for deletion and unpublishing**  
+
+- You cannot delete or unpublish the version of a Plugin, Starter, or Action that is required by other content.
+- Versions of Plugins or Actions that are shared on the StackSpot Hub cannot be deleted or unpublished.
+- Deleting or unpublishing a version of a Plugin or Action currently used in one or more Workspaces is not allowed.
+- You cannot delete or unpublish the version of a Plugin or Action used in one or more Stacks.  
+- If you delete only one version of a Plugin or Action, you effectively delete the entire Plugin or Action. This rule also applies to Starters and Stacks.
+
+### **Content that can be deleted or unpublished**  
+
+- Plugin version
+- Action version
+- Stack version
+- [**See how to remove a Plugin version within a Stack version**](create-use/create-content/plugin/plugin-version.md#remove-a-plugin-from-a-stack-optional)
+- [**See how to delete an Action version within a Stack version**](create-use/create-content/action/add-action-stack.md#delete-the-version-of-an-action-in-a-stack)
+- Starter
+- Studio
+
+### **Effects of deletion or unpublishing**  
+
+When content is deleted or unpublished, it becomes inaccessible and cannot be viewed or used in StackSpot.

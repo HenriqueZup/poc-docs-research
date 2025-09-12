@@ -1,0 +1,217 @@
+---
+title: Workflow Commands
+description: List of commands for Workflow.
+---
+
+> In this section, you will find the list of Workflow commands.
+
+<br/>
+
+>Command   | Description
+>--------- | ------
+>[**stk create workflow**](#stk-create-workflow) | Creates a basic structure for a Workflow and the **`workflow.yaml`** file.
+>[**stk list workflow**](#stk-list-workflow) | Lists all Workflows registered in an active Workspace or Studio.
+>[**stk publish workflow**](#stk-publish-workflow) | Publishes your Workflow to a Studio in the StackSpot EDP Portal.
+>[**stk resume workflow**](#stk-resume-workflow) | Starts the execution of Workflows that are suspended.
+>[**stk run workflow**](#stk-run-workflow) | Runs a Workflow of type **`reusable`**.
+>[**stk validate workflow**](#stk-validate-workflow) | Validates the structure of a Workflow.
+
+<br/>
+
+### **stk create workflow**
+
+The **`stk create workflow`** command creates a basic structure for a Workflow.
+
+#### **Usage**
+
+To create a Workflow, run the command below and provide a name for the Workflow. Fill in the Workflow data in the terminal or provide them directly in the command line:
+
+```bash
+stk create workflow WORKFLOW-NAME --description "DESCRIPTION TEXT" --type deploy/rollback/starter/reusable --target "./PATH/TO/OTHER/FOLDER" --non-interactive
+```
+
+Example:
+
+```bash
+stk create workflow sqs-workflow-config --description "AWS SQS queue configuration" --type deploy --target "localUser/Documents/infra-workflows" --non-interactive
+```
+
+#### **Parameters**
+
+| **Options** | **Description** | **Example** |
+| ----------- | -------------- | ----------- |
+| `-d`, `--description TEXT` | Text to describe the Workflow and its purpose. | <pre>stk create workflow workflow-name --description "Workflow Description"</pre> |
+| `-o`, `--target TEXT` | The `-o`, `--target` option sets the directory path where the Workflow will be added. Otherwise, the Workflow is created in the current folder. | <pre>stk create workflow my-workflow --target "home/user/Documents"</pre> |
+| `-t`, `--type TEXT` | Defines the Workflow type. Available types are `deploy, rollback, starter, reusable`. | <pre>stk create workflow workflow-name --description "Workflow Description" --type reusable</pre> |
+| `-q`, `--non-interactive` | Does not prompt the user for missing input parameters and returns an error if a required parameter was not provided. | <pre>stk create workflow workflow-name --description "Workflow Description" --type reusable --non-interactive</pre> |
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk create workflow --help</pre> |
+___
+
+### **stk list workflow**
+
+The **`stk list workflow`** command lists all Workflows from a Studio or Workspace. If you are in an active Workspace, the Workflows from this Workspace will be listed; otherwise, you must provide a Studio name to list its Workflows.
+
+#### **Usage**
+
+#### **To list Workflows from a Workspace:**
+
+1. First, access a Workspace with the command:
+
+```bash
+stk use workspace WORKSPACE-NAME
+```
+
+2. List the Workflows from the active Workspace:
+
+```bash
+stk list workflow
+```
+
+#### **To list Workflows from a Studio:**
+
+1. Make sure you are not in an active Workspace, run the following command:
+
+```bash
+stk exit workspace
+```
+
+2. Run the following command, providing the Studio name (Studio slug):
+
+```bash
+stk list workflow --studio STUDIO-NAME
+```
+
+#### **Parameters**
+
+| **Options** | **Description** | **Example** |
+| ----------- | -------------- | ----------- |
+| `-stu`, `--studio TEXT` | Filters the Workflows by the Studio name (Studio slug). | <pre>stk list workflow --studio techwriters-studio</pre> |
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk list workflow --help</pre> |
+___
+
+### **stk publish workflow**
+
+The **`stk publish workflow`** command publishes a Workflow to a Studio on the StackSpot EDP platform.
+
+#### **Usage**
+
+Inside the Workflow folder, run the following command and provide the Studio name (Studio slug) where the Workflow will be published:
+
+```bash
+stk publish workflow --studio STUDIO-NAME --verbose
+```
+
+Example:
+
+```bash
+stk publish workflow --studio techwriters-studio --verbose
+```
+
+#### **Parameters**
+
+| **Options** | **Description** | **Example** |
+| ----------- | -------------- | ----------- |
+| `-s`, `--studio` | Studio name (Studio slug) to publish the Workflow. | <pre>stk publish workflow --studio techwriters-studio</pre> |
+| `-v`, `--verbose` | Enables verbose logging of the Workflow publishing steps in the terminal. | <pre>stk publish workflow --studio techwriters-studio --verbose</pre> |
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk publish workflow --help</pre> |
+___
+
+### **stk resume workflow**
+
+The **`stk resume workflow`** command starts the execution of a paused or suspended Workflow.
+
+A Workflow is "paused" in a pipeline until it is identified and automatically executed by the STK CLI using the **`stk resume workflow`** command. For local executions, the **`stk resume workflow`** command must be run manually.
+
+Suspended Workflows (status **`suspend`**) are Workflows that have their execution paused by the "Approval" mechanism. This occurs when one of the Workflow steps requires approval from an Account or Workspace administrator to continue execution. The **`stk resume workflow`** command is triggered after the Workflow step is approved.
+
+#### **Usage**
+
+Run the following command and provide the Workflow ID:
+
+```bash
+stk resume workflow WORKFLOW-ID
+```
+
+For local executions, provide the ID and the Workflow folder path:
+
+```bash
+stk resume workflow WORKFLOW-ID --path "./Documents/workflows-stk/"
+```
+
+:::tip 
+
+The **Workflow ID** is obtained from the terminal log after its execution.
+
+:::
+
+#### **Parameters**
+
+| **Options** | **Description** | **Example** |
+| ----------- | -------------- | ----------- |
+| `-p`, `--path TEXT` | Path to the folder of a local Workflow that is in execution. | <pre>stk resume workflow WORKFLOW-ID --path "./Documents/workflows-stk/"</pre> |
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk add action --help</pre> |
+___
+
+### **stk run workflow**
+
+The **`stk run workflow`** command runs Workflows of type **`reusable`**.
+
+#### **Usage**
+
+To run a Workflow of type **`reusable`**, run the following command:
+
+Syntax:
+
+```bash
+stk run workflow WORKFLOW-NAME|PATH/TO/WORKFLOW --inputs-json '{"input_1": "value", "input_2": "value"}' --non-interactive --report-status --env ENVIRONMENT-NAME
+```
+
+Example:
+
+```bash
+stk run workflow documentation-wf-reusable --inputs-json '{"input_1": "value", "input_2": "value"}' --non-interactive --report-status --env dev
+```
+
+Local Workflow execution:
+
+```bash
+stk run workflow /Documents/Workflows/documentation-wf-reusable --inputs-json '{"input_1": "value", "input_2": "value"}' --non-interactive --report-status --env stg
+```
+
+#### **Parameters**
+
+| **Options** | **Description** | **Example** |
+| ----------- | -------------- | ----------- |
+| `-i`, `--inputs-json TEXT` | Provides input values for the Workflow in JSON format. | `stk run workflow documentation-wf-reusable --inputs-json '{"input_1": "value", "input_2": "value"}' --non-interactive --report-status --env prod` |
+| `-e`, `--env TEXT` | Name of the environment (environment slug) where the Workflow will run. Required when the **`reusable`** Workflow interacts with resources from other Workflows of type `deploy` and `rollback`. | `stk run workflow documentation-wf-reusable --inputs-json '{"input_1": "value", "input_2": "value"}' --non-interactive --report-status --env dev` |
+| `-q`, `--non-interactive` | Does not prompt the user for missing input parameters and returns an error if a required parameter was not provided. | `stk run workflow documentation-wf-reusable --inputs-json '{"input_1": "value", "input_2": "value"}' --non-interactive --report-status --env dev` |
+| `-r`, `--report-status` | Sends the Workflow execution report to the activity history of the current Application or Infrastructure that is using the Workflow. | `stk run workflow documentation-wf-reusable --inputs-json '{"input_1": "value", "input_2": "value"}' --report-status` |
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk run workflow --help</pre> |
+___
+
+### **stk validate workflow**
+
+The **`stk validate workflow`** command checks the structure of the **`workflow.yaml`** file and displays a log in the terminal with any errors found in your Workflow. This command is also automatically executed before publishing a Workflow and will block publishing if any errors are found.
+
+#### **Usage**
+
+To validate the structure of your Workflow, run the following command inside the Workflow folder:
+
+```bash
+stk validate workflow --studio STUDIO-NAME --verbose
+```
+
+Example:
+
+```bash
+stk validate workflow --studio techwriters-studio --verbose
+```
+
+#### **Parameters**
+
+| **Options** | **Description** | **Example** |
+| ----------- | -------------- | ----------- |
+| `-v`, `--verbose` | Enables verbose logging of the Workflow structure validation steps in the terminal. | <pre>stk validate workflow --studio techwriters-studio --verbose</pre> |
+| `-s`, `--studio` | Studio name (Studio slug) to validate the current Workflow based on information from a previously published Workflow version. | <pre>stk validate workflow --studio techwriters-studio</pre> |
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk validate workflow --help</pre> |
+___

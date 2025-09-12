@@ -1,0 +1,138 @@
+---
+title: Visão Geral
+description: Conheça mais sobre o Deploy.
+---
+
+> Nesta seção, você encontra a introdução de Deploy.
+
+<br/>
+
+import FlowChart from '@site/src/components/MdxComponents/FlowChart';
+
+<FlowChart steps={[
+  { title: 'Configurar Conta', link: 'home/account/intro-account.mdx' },
+  { title: 'Configurar Deploy', link: 'deployment/deploy/overview.mdx', default: true },
+  { title: 'Criar Conteúdo', link: 'create-use/create-content/getting-started.mdx' },
+  { title: 'Usar Conteúdo', link: 'create-use/use-content/quickstart.mdx' },
+]} />
+
+## **Visão Geral**
+
+O deploy na StackSpot EDP consiste em duas partes: 
+
+1. [**Fazer o deploy da infraestrutura da sua Aplicação utilizando Runtime via Self-Hosted**](deployment/deploy/self-hosted-runtime.mdx): o Self-Hosted adiciona ao seu Workflow as etapas para fornecer recursos de nuvem usando a orquestração do Deploy Engine com os runners da sua organização. Por enquanto, o Self-Hosted oferece suporte apenas ao serviço **GitHub Actions**. 
+2. **Fazer o deploy da Aplicação propriamente dita**, utilizando sua **própria Pipeline CI/CD** e executar o [**registro do deploy no Portal da StackSpot EDP**](deployment/deploy/register-app-deployment.mdx). 
+
+<br/>
+
+:::caution Cuidado! 
+Caso a sua Conta se inclua nas condições a seguir: 
+
+1. **Contas Enterprise criadas antes de 2024**.
+
+O deploy ainda pode ser feito via **Engine de Deploy da StackSpot EDP**.
+
+Para conferir informações sobre esse modelo de deploy, [**confira a seção StackSpot Deploy Engine**](deployment/runtime-engine/intro-runtime-engine.mdx). 
+:::
+
+<br/>
+
+À seguir confira os principais conceitos de Deploy: 
+
+## **Principais conceitos**
+
+### **Runtime**
+
+Um Runtime representa todos os recursos de Infraestrutura (computação, armazenamento, rede e segurança), necessários para executar uma aplicação em uma Nuvem.
+
+### **Aplicação**
+
+Um projeto desenvolvido para resolver um problema de negócio, materializado como código-fonte em um repositório Git. As configurações do app são armazenadas no arquivo stk.yaml.
+
+> Aplicação é composta por Plugins de App e Infra.
+
+### **Infraestrutura**
+
+Projeto desenvolvido para provisionar e operar recursos da Nuvem. A criação é a partir de um Plugin de Infra, diretamente para recursos de Cloud, como S3 bucket e RDS database, por exemplo.
+
+> Uma Infraestrutura é composta por Plugins de Infra.
+
+### **Connection Interface**
+
+Uma **Connection Interface** define um conjunto de atributos necessários para se conectar a recursos de Cloud, que são provisionados durante o deploy de um Plugin. Por exemplo, uma Connection Interface pode representar o host de uma instância RDS ou o caminho de um bucket S3.
+
+Cada Connection Interface está associada a um tipo específico (**Connection Interface Type**), que estabelece um contrato com uma lista de atributos obrigatórios.
+
+Esses atributos podem ser usados como inputs em outros Plugins, facilitando a integração e reutilização das conexões.
+
+### **Connection Interface Type**
+
+Um **Connection Interface Type** define um contrato que especifica os outputs que uma Connection Interface, provisionada por meio de um Plugin de Infraestrutura, deve seguir.
+
+> A implementação desse Plugin de Infraestrutura deve respeitar esse contrato para garantir que os recursos provisionados durante o deploy da Aplicação ou da Infraestrutura no Workspace possam ser compartilhados corretamente.
+
+### **Deploy**
+
+**Deploy** significa implantar, disponibilizar para uso ou colocar uma Aplicação no ar. **Por exemplo**: transferir arquivos da sua máquina para um servidor, que pode ser um ambiente de homologação ou produção.
+
+**Na StackSpot**, o deploy realizado na plataforma **provisiona os recursos de infraestrutura** da Aplicação no ambiente desejado. Já o deploy da Aplicação em si deve ser feito através da sua própria Pipeline.
+
+Na StackSpot EDP, o **deploy é realizado via Self-Hosted**: O Self-Hosted adiciona ao seu Workflow as etapas necessárias para provisionar recursos de nuvem, utilizando a orquestração do Deploy Engine com os runners da sua organização. Atualmente, o Self-Hosted oferece suporte exclusivamente ao **GitHub Actions**.
+
+Após realizar o deploy na StackSpot, você pode monitorá-lo diretamente pela plataforma, na tela de [**Atividades**](deployment/manage/activities.mdx) da Aplicação ou Infraestrutura. Através dessa tela, é possível visualizar logs, identificar e corrigir erros, além de realizar rollback, se necessário.
+
+### **Conta na Nuvem e Provedor**
+
+Uma conta na nuvem (cloud) representa uma conta de nuvem pública, identificada por um provedor. Essa conta é apenas um registro usado para usado para identificar onde fazer o deployment de projetos de App ou Infra.
+
+Além disso, as contas na nuvem podem ser conectadas ou desconectadas das contas do StackSpot, e anexadas ou desanexadas em um ou mais ambientes dentro de Workspaces. 
+
+Atualmente, o provedor suportado pela StackSpot é: **`aws`**.
+
+
+### **Run e Tasks**
+
+Uma **`run`** representa qualquer uma operação executada em Deploy Engine, como um deploy, destroy ou rollback, por exemplo. Cada **`run`** é feita de forma assíncrona e retorna um ID que pode ser usado para verificar o próprio status posteriormente. Uma **`run`** é composta por um conjunto de **`tasks`**. 
+
+Os tipos de **`run`** são:
+
+- Deploy  
+- Rollback  
+- Destroy  
+
+Os status são:
+
+- Running (Em execução)
+- Succeeded (Bem-sucedido)
+- User error (Erro de usuário)
+- Runtime error (Erro no Deploy)
+- Aborted (Quando o usuário cancela o run manualmente). Atualmente, este status é **exclusivo** para o runner de [**Self-Hosted**](deployment/deploy/self-hosted-runtime.mdx). 
+
+Uma **`run task`** representa uma operação específica relacionada a um **`run`**. Uma **`run task`** está diretamente ligada ao deploy de Plugins.  
+
+Os tipos de **`run task`** são:  
+
+- IAC: cria uma IaC para um Plugin.
+- Deploy: faz o deploy de um Plugin.
+- Destroy
+
+Os status do **`run task`** são:  
+
+- Pending (Pendente)
+- Ready to run (Pronto para o run)
+- Running (Em execução)
+- Succeeded (Bem-sucedido)
+- Failed (Falhou)
+- Internal Error (Erro interno)
+- Aborted (Abortado)
+
+----
+
+## **Próximos passos**
+
+Agora que você teve uma visão geral de Deployment na StackSpot, siga para a configuração inicial, provisionamento e operação de Aplicações em Cloud.
+
+- [**Saiba mais sobre Self-hosted**](deployment/deploy/self-hosted-runtime.mdx);
+- [**Configure e utilize o Self-hosted**](deployment/deploy/self-hosted-runtime.mdx);
+- [**Configure o comando de registro de deploy de Aplicação na sua pipeline**](deployment/deploy/register-app-deployment.mdx);
+- [**Configure Webhook para registrar atividades do repositório da sua Aplicação na tela de Atividades**](deployment/manage/activities.mdx).

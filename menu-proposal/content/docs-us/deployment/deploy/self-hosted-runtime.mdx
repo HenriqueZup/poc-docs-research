@@ -1,0 +1,65 @@
+---
+title: About Self-Hosted
+description: How to configure and use a Self-Host in your deployment pipeline.
+---
+
+In this section, you will find how to configure and use a Self-Host in your deployment pipeline.
+
+<br/>
+
+import FlowChart from '@site/src/components/MdxComponents/FlowChart';
+
+<FlowChart steps={[
+  { title: 'Account Configuration', link: 'home/account/intro-account.md' },
+  { title: 'Deployment Configuration', link: 'deployment/deploy/overview.md', default: true  },
+  { title: 'Create Content', link: 'create-use/create-content/getting-started.md' },
+  { title: 'Use Content', link: 'create-use/use-content/quickstart.md' },
+]} />
+
+## **Introduction**
+
+StackSpot EDP provides a solution for organizations that have security restrictions and need to use their own cloud accounts to deploy Applications.
+
+The platform allows all deployment processes to be executed in Organization-managed infrastructure, ensuring that information and artifacts, such as **tfstate** files and **IaC (Terraform)** files, remain within the customer's account. This deployment method is called **Self-Hosted Runtime**.
+
+The Self-Hosted Runtimes **adds steps to your Workflow** for provisioning cloud resources, **using your organization's runners**. Currently, Self-Hosted supports only **GitHub Actions**.
+
+The deployment process consists of executing four actions in your pipeline on GitHub Actions:
+
+1. Orchestrate all inputs to create the cloud resources;
+2. Generate the IaC (Terraform) code;
+3. Deploy the IaC (Terraform) code;
+4. Destroy resources (Terraform).
+
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<ThemedImage
+  alt={`Diagram with the title Customer Environment (self-hosted runner). Just below it is the first topic named STK deploy - watch (STK CLI) which leads to a box named Runtime Manager API. Below it is a second topic named Orchestrate, which leads to a box named Runtime Workers. From the second topic there are two types of third topics: one called Provision Cloud Resources which leads to a top box named Customer AWS Account; and another called Store / retrieve IaC, where the latter leads to the fourth topic Store / retrieve TF State, which leads to a box named StackSpot AWS Accounts.`}
+  sources={{
+    light: useBaseUrl('/img/Desk-Systemcontext1-EN-Light.png'),
+    dark: useBaseUrl('/img/Desk-Systemcontext1-EN-Dark.png'),
+  }}
+/>
+
+<ThemedImage
+  alt={`Diagram with the title Customer Environment (self-hosted runner). Just below it is the first topic named Customer GitHub repository CI/CD Pipeline which leads to the first topic named Execute, and leads to a box named Runtime GitHub Actions. Then comes the second topic named Pull Images which leads to another box named Docker Registry. The third box named Ask redirects to a box named Runtime Manager API, which is within the StackSpot Environment domain. It then links to the fourth topic named Provision Cloud Resources + Store / retrieve IaC + TF State, which leads to the last box named Customer AWS Accounts.`}
+  sources={{
+    light: useBaseUrl('/img/Desk-Systemcontext2-EN-Light.png'),
+    dark: useBaseUrl('/img/Desk-Systemcontext2-EN-Dark.png'),
+  }}
+/>
+
+<ThemedImage
+  alt={`Diagram showing how CI/CD pipelines work with StackSpot and Self-Hosted. On the right-hand side of the diagram is a text box with the title With StackSpot. Then, still in the same text box, there are four sentences organized in a vertical sequence: Configure STK CLI, Login (STK CLI), Use Workspace (STK CLI) and Deploy (STK CLI + Runtime). An arrow pointing to the right separates the first text box from the second. The second text box has the title With Self-Hosted. Below the title are six sentences also organized in a vertical sequence: Configure STK CLI, Login (STK CLI), Use Workspace (STK CLI), Deploy Plan (STK CLI), Get tasks (Runtime Action) and Execute tasks (Runtime Action). The last three phrases are linked by an arrow that leads to the phrase Customization Possibility.`}
+  sources={{
+    light: useBaseUrl('/img/Desk-CI-CDPipelines-EN-Light.png'),
+    dark: useBaseUrl('/img/Desk-CI-CDPipelines-EN-Dark.png'),
+  }}
+/>
+
+## **Next Steps**
+
+- [**Configure and use Self-hosted**](deployment/deploy/use-self-hosted/index.md);
+- [**Configure the Application deployment registration command in your pipeline**](deployment/deploy/register-app-deployment.md);
+- [**Configure Webhook to register repository activities of your Application on the Activities section**](deployment/manage/activities.md).

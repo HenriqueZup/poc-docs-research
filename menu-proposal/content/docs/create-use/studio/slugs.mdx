@@ -1,0 +1,147 @@
+---
+title: Slug
+description: Entenda mais sobre os os identificadores únicos, Slugs.
+---
+
+> Nesta seção, você encontra o que são os identificadores únicos na StackSpot.
+
+<br/>
+
+## **Sobre**
+
+Na StackSpot, **os Slugs são identificadores únicos** para as Contas, Estúdio, Stacks e Plugins. Eles compõem as URLs da StackSpot e são utilizados para facilitar o uso e identificação dentro da plataforma.
+
+Os Slugs também auxiliam no compartilhamento de recursos importantes e na identificação das Contas, Estúdio, Stacks e Plugins que são utilizados e compartilhados.
+
+Quando configurados, os Slugs atribuem às URLs dos recursos um "nome" que identifica cada Conta, Estúdio, Stack e Plugin. A URL gerada pode ser facilmente utilizada para o uso e compartilhamento do recurso em todos os canais da StackSpot.
+
+Confira a estrutura de cada Slug:
+
+### **Conta**
+
+O Slug para a Conta fica no **primeiro caminho** do endereço da URL após o hostname da StackSpot (stackspot.com).
+
+Exemplo:
+
+```bash
+# hostname       / path 1   
+stackspot.com/account-slug
+```
+
+:::caution Cuidado!
+Toda Conta deve possuir um Slug como identificador único. [**Consulte a seção Slugs Criar Slugs para mais informações**](#criar-slug) e respeite os nomes reservados da StackSpot.
+:::
+
+### **Estúdio**
+
+O Slug para o Estúdio fica no **primeiro caminho** do endereço da URL após o hostname da StackSpot (stackspot.com).
+
+Exemplo:
+
+```bash
+# hostname        / path 1         / 
+stackspot.com/studio-slug
+```
+
+:::caution Cuidado!
+
+Todo Estúdio precisa ter um Slug como identificador único dentro da sua Conta. Slugs de Estúdio devem ser criados seguindo as regras na seção [**'Criar Slugs'**](#criar-slug) e respeitando nomes reservados da StackSpot.
+
+:::
+
+### **Plugin**
+
+O Slug para o Plugin fica no **segundo caminho** do endereço da URL após o hostname da StackSpot (stackspot.com). Antes você precisa adicionar o slug do seu Estúdio.
+
+Exemplo:
+
+```bash
+# hostname        / path 1         /  path 2   
+stackspot.com/studio-slug/plugin-slug
+```
+
+### **Stack**
+
+O Slug para a Stack fica no **segundo caminho** do endereço da URL após o hostname da StackSpot (stackspot.com). Antes você precisa adicionar o slug do seu Estúdio.
+
+Exemplo:
+
+```bash
+# hostname        / path 1           /  path 2  
+stackspot.com/studio-slug/stack-slug
+```
+
+:::caution Cuidado!
+Toda Stack deve possuir um Slug como identificador único dentro da seu Estúdio. Slugs de Stacks devem ser criados seguindo as regras na seção [**'Criar Slugs'**](#criar-slug) e respeitando nomes reservados da StackSpot.
+:::
+
+### **Action**
+
+O Slug para a Action fica no **segundo caminho** do endereço da URL após o hostname da StackSpot (stackspot.com). Antes você precisa adicionar o slug do seu Estúdio.
+
+Exemplo:
+
+```bash
+# hostname        / path 1         /  path 2    
+stackspot.com/studio-slug/action-slug
+```
+
+:::caution Cuidado!
+Toda Action deve possuir um Slug como identificador único dentro do seu Estúdio. [**Slugs de Action devem ser criados seguindo as regras na seção criar Slugs**](#criar-slug) e respeitando nomes reservados da StackSpot.
+:::
+
+## **Criar Slug**
+
+### **Antes de criar os Slugs**
+
+Você precisa seguir algumas regras para que os Slugs sejam criados de forma padronizada e sem erros.
+
+Os Slugs são criados e utilizados para compor a URL dos conteúdos, portanto [**devem seguir as sugestões da RFC3986**](https://datatracker.ietf.org/doc/html/rfc3986), que especifica padrões para criação de URLs, evitando conflitos ao utilizá-las.
+
+### **Regras de criação de Slug**
+
+:::caution Cuidado!
+
+Os slugs na StackSpot são únicos; você não pode usar um slug que já existe.
+
+:::
+
+Para criar Slugs, para qualquer propósito (Conta, Stack, Estúdio), siga as especificações:
+
+1. Possuir no mínimo 3 caracteres;
+2. Possuir no máximo 30 caracteres;
+3. Os três primeiros caracteres não conter nenhum caractere especial (hífen);
+4. Seguir a convenção Kebab Case `(^[a-z0-9-]{3,30})([a-z0-9]+)*$`;
+5. Não terminar com nenhum caractere especial;
+6. Todos os caracteres em caixa baixa (minúsculas);
+7. [**Respeitar os nomes reservados para uso da StackSpot**](#nomes-reservados).
+
+Caracteres normais válidos:
+
+(a-z): `abcdefghijklmnopqrstuvwxyz`
+
+Caracteres especiais válidos:
+
+(hífen): `a-b-c-d-e`
+
+### **Nomes reservados**
+
+Alguns nomes de Slugs são de uso exclusivo da StackSpot. A lista a seguir informa os nomes que não estão disponíveis para você utilizar em Contas, Stacks e Estúdios.
+
+| **Nomes de Slugs indisponíveis** |
+| :---: |
+| `login` |
+| `download` |
+| `studios` |
+| `enterprise` |
+| `workspaces` |
+| `settings` |
+| `plugins` |
+| `actions` |
+| `components` |
+| `tasks` |
+| `packages` |
+| `invite` |
+| **stackspot** |
+| **zup** |
+| **stk** |

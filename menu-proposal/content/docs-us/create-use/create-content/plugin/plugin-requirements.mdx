@@ -1,0 +1,337 @@
+---
+title: Requirements to apply Plugins
+description: How to set up requirements Plugins in your project.
+---
+
+## **Plugins as requirements**
+
+Plugins are a crucial component in StackSpot projects. When applying, you can use some options in the Plugins configuration file to have better control over them.  
+
+Both the Starters and the Plugins can utilize resources to manage and configure the usage of Plugins in your Studio. This way, you can only apply the Plugin if you meet all the requirements specified in the **`plugin.yaml`** and **`starter.yaml`** file.
+
+## **How to configure requirements to apply a Plugin**
+
+### **Required Plugin**
+
+The **`requires`** option in a Plugin allows you to define other resources as mandatory requirements when someone uses the Plugin. 
+
+The **`requires`** is defined in the configuration file **`plugin.yaml`**  at the **`spec:`** section. Where you can add:
+
+- Actions
+- Plugins
+
+:::warning
+
+Only Plugins of type **app** can require other Plugins. For Infrastructure Plugins, [**you must use Connection Interfaces to define features as required for your Infrastructure Plugin**](create-use/connections/connection-interface.md).
+
+:::
+
+```yaml title="Plugin example. This is an example to demonstrate Plugins fields and values. Do not use these values in your project."
+schema-version: v3 #required
+kind: plugin #required
+metadata:
+  name: ecs-service #required
+  description: Plugin to create an ECS server #required  
+  display-name: Esc Service  #optional
+  version: 1.0.0  #required
+// new-line  
+spec:
+  type: app/infra   #required #accepted values: app or infra
+  compatibility: #optional
+    - python
+  docs: #optional
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md  
+  runtime: #required if the plugin is type: infra
+    environment: # required for infra Plugins
+      - terraform-1-4
+      - aws-cli-2-2
+  single-use: false #optional #accepted values: true or false
+  justification: "Justification text" # required
+// new-line-start  
+  requires: #optional
+    actions:
+// new-line-end    
+      - my-studio-slug/my-action-or-plugin-slug 
+// new-line      
+    plugins:
+      - my-studio/single-use-app-plugin
+      - my-studio/terraform-aws-elasticache-redis
+      - my-studio/sqs-create-plugin
+      - studio/plugin
+  inputs:
+    - label: Select the connection for ecs-task-creator-placeholder
+      type: required-connection
+      name: ecs-task-creator-placeholder
+      connection-interface-type: ecs-task-conn  
+    - label: Select the connection for ec2-alb-creator-placeholder
+      type: required-connection
+      name: ec2-alb-creator-placeholder
+      connection-interface-type: ec2-alb-conn
+    - label: Select the connection for ec2-alb-creator-placeholder2
+      type: required-connection
+      name: ec2-alb-creator-placeholder2
+      connection-interface-type: ec2-alb-conn       
+```
+
+To add other Plugins as requirements. See the following syntax:
+
+```yaml
+plugins: 
+  - studio-slug/plugin-name
+```
+
+Example:
+
+You have a Studio called **my-aws-studio** and want to define the following Plugins as mandatory in the current Plugin you are creating. You should fill in the Plugin field as follows:
+
+```yaml title="This is an example. The values of Studios and Plugins don't exist. Do not use this example in your projects."
+plugins:
+  - my-aws-studio/terraform-aws-elasticache-plugin
+  - my-aws-studio/aws-bucket-s3-plugin
+```
+
+### **Required Action**
+
+[**Same as the Required Plugin**](#required-plugin), you can add Actions as requirements for the Plugin usage.
+
+Add the Actions according to the following syntax:
+
+```yaml
+requires: 
+  actions:
+    - my-studio-slug/my-action-name
+```
+
+Example:
+
+You want the Plugin you are developing to require a specific Action. Add the Action in the same way the Plugin:
+
+```yaml
+requires:
+  actions:
+    - my-workflow-studio/github-workflow-setup-action
+```
+
+### **Required Connection**
+
+To specify a Connection as requirement for the Plugin usage, follow the syntax below:
+
+```yaml
+inputs:
+  - label: Input text to select a Connection # "Select the connection for my-conn"
+    type: required-connection # Use that input type to require a Connection
+    name: Your connection name # my-conn
+    connection-interface-type: The Connection type 
+```
+
+Example:
+
+```yaml
+inputs:
+  - label: Select the connection for bucket-project-logs
+    type: required-connection
+    name: bucket-project-logs
+    connection-interface-type: aws-s3-conn
+```
+
+To know more about available Connections type, [**see the StackSpot Connections Interface**](create-use/connections/connection-interface.md).
+
+## **Plugin Governance**
+
+See below the options for you to set up the Plugin governance.
+
+### **Project justification usage**
+
+In some Studios, [**Studio Governance is enabled by the administrator**](create-use/studio/governance.md). This means that if you want to publish your Plugin or Action, you are required to justify it to the Studio manager.
+
+To do this, add a justification text in your Plugin or Action by including the **"justification"** option in the **"spec"** section. Fill in the justification text with a clear and concise reason why you want to publish the content.
+
+Remember, failure to justify may result in the content being rejected. So, make sure you include a compelling reason for why the content should be published.
+
+Here's an example of how the syntax should look like:
+
+```yaml
+schema-version: v3 #required
+kind: plugin #required
+metadata:
+  name: ecs-service #required
+  description: Plugin to create an ECS server #required  
+  display-name: Esc Service  #optional
+  version: 1.0.0  #required
+spec:
+  type: app/infra   #required #accepted values: app or infra
+  compatibility: #optional
+    - python
+  docs: #optional
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md  
+  runtime: #required if the plugin is type: infra
+    environment: # required for infra Plugins
+      - terraform-1-4
+      - aws-cli-2-2
+  single-use: false #optional #accepted values: true or false
+// new-line  
+  justification: "Justification text" # required
+```
+
+### **Single usage Plugin**
+
+The **`single-use`** option ensures that a Plugin is applied only once in an Application or Shared-Infrastructure, making it easier to manage.
+
+The **`single-use`** option can be configured with a true or false value. Set this option to true in the **spec** section to enable the single-use behavior.
+
+Example: 
+
+```yaml
+schema-version: v3 #required
+kind: plugin #required
+metadata:
+  name: ecs-service #required
+  description: Plugin to create an ECS server #required  
+  display-name: Esc Service  #optional
+  version: 1.0.0  #required
+spec:
+  type: app/infra   #required #accepted values: app or infra
+  compatibility: #optional
+    - python
+  docs: #optional
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md  
+  runtime: #required if the plugin is type: infra
+    environment: # required for infra Plugins
+      - terraform-1-4
+      - aws-cli-2-2
+// new-line      
+  single-use: true #optional #accepted values: true or false
+```
+
+### **Use Plugin in StackSpot's project only**
+
+The **"stk-project-only"** option in the Plugins allows you to specify that a Plugin can only be used in projects already created in StackSpot. It is not allowed to convert external projects into StackSpot projects using this option.  
+
+To enable this rule for your Plugin, set the **`stk-project-only`** to **`true`** when creating it. 
+
+Example:
+
+```yaml title="Plugin example. This is an example to demonstrate Plugins fields and values, do not use these values in your project."
+schema-version: v3 #required
+kind: plugin #required
+metadata:
+  name: ecs-service #required
+  description: Plugin to create an ECS server #required  
+  display-name: Esc Service  #optional
+  version: 1.0.0  #required
+spec:
+  type: app/infra   #required #accepted values: app or infra
+  compatibility: #optional
+    - python
+  docs: #optional
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md  
+  runtime: #required if the plugin is type: infra
+    environment: # required for infra Plugins
+      - terraform-1-4
+      - aws-cli-2-2
+  single-use: false #optional #accepted values: true or false
+  justification: "Justification text" # required
+// new-line  
+  stk-projects-only: true #required #accepted values: true or false
+  requires: #optional
+    actions:
+      - my-studio-slug/my-action-or-plugin-slug 
+    plugins:
+      - my-studio/single-use-app-plugin
+      - my-studio/terraform-aws-elasticache-redis
+      - my-studio/sqs-create-plugin
+      - studio/plugin
+```
+
+### **Allow Infrastructure Plugin to be applied in Apps**
+
+The **app-allowed** option is available only for the Infrastructure Plugins. This option allows an Infrastructure Plugin to be applied to an Application.
+
+Set the option as **true** to enable the Plugin to be applied in an Application. If it stays as **false**, the Infrastructure Plugin can only be applied to Infrastructures.
+
+Example:
+
+```yaml title="Plugin example. This is an example to demonstrate Plugins fields and values, do not use these values in your project."
+schema-version: v3 #required
+kind: plugin #required
+metadata:
+  name: ecs-service #required
+  description: Plugin to create an ECS server #required  
+  display-name: Esc Service  #optional
+  version: 1.0.0  #required
+spec:
+  type: infra   #required #accepted values: app or infra
+  compatibility: #optional
+    - python
+  docs: #optional
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md  
+  runtime: #required if the plugin is type: infra
+    environment: # required for infra Plugins
+      - terraform-1-4
+      - aws-cli-2-2
+  single-use: false #optional #accepted values: true or false
+  justification: "Justification text" # required
+  stk-projects-only: true #required #accepted values: true or false
+// new-line  
+  app-allowed: true #it only exists if the plugin is type: infra #accepted values: true or false
+  inputs: #optional
+  - label: Input label
+    name: Input name
+    type: text
+    required: true
+    default: Input default value
+    pattern: '([A-Z][a-z]+)+'
+    help: 'Insert any text'         
+```
+
+## **How to configure required Plugins into a Starter**
+
+The Starter is the component that determines which plugins will be used in building your Application or Infrastructure. You can specify the required and optional Plugins in the Plugin list for both types of Starter (app and infra).
+
+To add required or optional Plugins, follow the syntax provided below:
+
+```yaml title="This is an example to demonstrate Starter's fields and values, do not use these values in your project."
+plugins:
+  required:
+    - name: studio-slug/plugin-name@[semantic-version]
+  optional:
+    - name: studio-slug/plugin-name@v[semantic-version]
+```
+
+The **`@[semantic-version]`** is te semantic version value of your Plugin. Eg.: **`example-studio/app-plugin-basic@1.0.0`** 
+
+In the **`starter.yaml`** file, add the list of **required** and **optional** Plugins as the example below:
+
+- **required:** Add the mandatory Plugins for creating the Application when using a Starter.  
+- **optional:** Add the Plugins that will be used to create the Application but are not essential for its creation when using Starter.  
+
+```yaml title="Starter example. This is an example to demonstrate Starter's fields and values, do not use these values in your project."
+schema-version: v1 #required
+kind: starter #required
+metadata: #required
+   name: basic-starter #required
+   description: basic-starter #required
+spec: #required
+   type: app #required # accepted values of type: app or infra
+   docs: #required at least one language
+     en-us: docs/en_us/docs.md
+     pt-br: docs/pt_br/docs.md
+// new-line-start     
+   plugins: #required
+     required: #required
+       - name: example-studio/app-plugin-basic@0.0.1
+     optional:
+       - name: example-studio/app-plugin-basic-02@0.0.1
+// new-line-end       
+```
+
+:::warning
+
+**All required Plugins** listed in the Starter must be published and added to your Stack.
+
+:::

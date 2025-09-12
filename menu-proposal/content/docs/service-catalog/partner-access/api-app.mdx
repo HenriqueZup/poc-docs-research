@@ -1,0 +1,82 @@
+---
+title: Criar API direto em uma Aplicação
+description: Saiba como criar uma API.
+---
+
+> Nesta seção, você encontra como criar uma API no Workspace e publicá-la no Catálogo de Serviços.
+
+<br/>
+
+### Criar API
+
+Para criar uma API a partir de uma Aplicação, siga os passos:
+
+**Passo 1.** Acesse o Dashboard do seu Workspace, dentro do Portal da StackSpot;
+
+**Passo 2.** Já no Dashboard da Aplicação, clique no botão **'Criar'**, no canto inferior esquerdo da tela. Em seguida, clique em **'Aplicação'**;
+
+**Passo 3.** Escolha uma [**Stack**](create-use/create-content/stack/stacks.mdx) e um [**Starter**](create-use/create-content/stack/create-starter.mdx);
+
+Em seguida, clique em **'Próximo'**;
+
+**Passo 4.** Na tela de **'Informação da Aplicação'**, preencha os campos:  
+
+- Nome;
+- Breve Descrição;
+
+Depois, clique no botão **'Próximo passo'**;
+
+**Passo 5.** Na tela de **'Repositório de Código Fonte'**, selecione uma das opções:
+
+- Criar Repositório: nesta opção você também precisa escolher a visibilidade que a sua Aplicação terá.
+- Já tenho um repositório:, insira a URL do repositório que você quer usar.
+
+Em seguida, clique em **'Próximo passo'**;
+
+**Passo 6.** Em **'Definição de API'**, você precisa:
+
+- Fazer o upload de um arquivo com o padrão OpenAPI (com extensão **`.yaml`**, **`.yml`** ou **`.json`**).  
+- Nomear e descrever a API.
+- Associar o Swagger a um ou mais ambientes disponíveis e incluir a URL Gateway de cada um deles.
+
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<ThemedImage
+  alt="Docusaurus themed image"
+  sources={{
+    light: useBaseUrl('/img/api-app-5.png'),
+    dark: useBaseUrl('/img/api-app-5-light.png'),
+  }}
+/>
+
+É possível fazer esta definição depois de ter criado a API. Para isso, clique em **'Pular Etapa'** e depois de criar a Aplicação, acesse a Configuração dela.
+
+Para continuar, clique em **'Próximo'**;
+
+**Passo 7.** Revise o resumo das configurações. Se estiver tudo certo, clique em **'Commit'**.
+
+### **Publicar a API no Catálogo**
+
+Siga as instruções:
+
+1. Acesse a subseção de **'API'**;
+2. Clique na API que você criou;
+3. Em seguida, clique em **'Publicar API'**.
+
+
+<ThemedImage
+  alt="Docusaurus themed image"
+  sources={{
+    light: useBaseUrl('/img/publish-api.png'),
+    dark: useBaseUrl('/img/publish-api-light.png'),
+  }}
+/>
+
+Pronto, você publicou uma API no Catálogo.
+
+Para remover uma API publicada, clique em **'Reverter'** e, logo em seguida, em **'Reverter API'**.
+
+## **Leia também**
+
+- [**FAQ**](home/faq.mdx)

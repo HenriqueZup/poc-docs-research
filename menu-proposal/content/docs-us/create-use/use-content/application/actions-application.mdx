@@ -1,0 +1,94 @@
+---
+title: Run Actions in Applications and Shared Infra
+description: How to run Actions.
+---
+
+> In this section, you will find a guide on how to run Actions.
+
+<br/>
+
+## **Context**
+
+When you create an [**Application**](create-use/use-content/application/index.md) or a [**Infrastructure**](create-use/use-content/infra/infrastructure.md), you can run the Actions configured in the [**context**](home/workspace/about-workspace.md#context) of your Account and Workspace.
+
+You can run Actions during the deployment or after that when your application infrastructure has already been deployed, and you have resources, such as a Dynamo DB.
+
+The Actions execute activities on provisioning resources on  [**Infrastructure Plugins**](create-use/create-content/plugin/create-plugin.md).
+
+See an example:
+
+- Run an Action to back up a Dynamo DB the Application generated.
+
+## **Run Actions**
+
+Follow the steps below:
+<br/>
+
+> You will follow the steps below [**on the StackSpot Platform**](https://app.stackspot.com/login).
+
+<br/>
+
+**Step 1.** Go to your Workspace and click on the **'Applications'** section;
+
+**Step 2.** Select an Application from the list you want to run Actions;
+
+**Step 3.** Below the Workspace name and the **'Environments*'** field, click to see the Environments list. Select one to run the Actions in your Application;
+
+After that, you can choose two options:
+
+**Option 1.** Execute in the **'Actions'** section;
+**Option 2.** Execute from the **'Plugins'** section.
+
+Check the two options below:
+
+### Option 1. Run Actions via the **'Actions'** section
+
+**Step 1.** Click **'Actions'** in the Application's side menu. You will find the Application's Infra Plugins with a list of Actions you can run.
+
+**Step 2.** Choose an Action from the list and click **'Run'**;
+
+> Inside each Action, you can view the name and description. Check the Connections Interfaces linked to the resources you want to run the Action.
+
+<br/>
+
+**Step 3.** Fill out the Action's parameters list and click the **'Next'** button.
+
+> Parameters serve as the inputs for actions. Whether they are mandatory or optional depends on whether they have been configured in the Workspace Context. **If they are mandatory, you can keep them.**
+
+<br/>
+
+**Step 4.** On the Review screen, review the information and click **'Run'**;
+
+**Step 5.** You will receive the Action's execution status and its responses. Check if it failed or not.
+
+You have run an Action on your Application or Infrastructure.
+
+### Option 2. Run Actions via the **'Plugins'** section
+
+> You will follow the steps below [**on StackSpot Platform**](https://app.stackspot.com/login).
+
+<br/>
+
+**Step 1.** Click **'Plugins'** in the Application side menu;
+
+**Step 2.** Click **'App Infra'**;
+
+**Step 3.** Select the Infra Plugin you want to execute the Action, for example, RDS Postgres.
+
+**Step 4.** In the Plugin section, select the **'Actions'** tab;
+
+**Step 5.** Choose an Action from the list and click on the **'Run'** button;
+
+> Inside each Action, you will view the name and description. Check the Connections Interfaces linked to the resources you want to run the Action;
+
+<br/>
+
+**Step 6.** Fill in the Action's parameters list and click the **'Next'** button.
+
+> Parameters function as the input for actions and may have been configured in the Workspace Context. Their requirement status can vary, being either mandatory or optional. **If they are mandatory, you can keep them.**
+
+<br/>
+
+**Step 7.** On the Review screen, review the information and click **'Run'**;
+
+**Step 8.** You will receive the Action's execution status and its responses. Check if it failed or not.

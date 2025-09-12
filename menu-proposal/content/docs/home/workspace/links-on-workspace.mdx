@@ -1,0 +1,82 @@
+---
+title: Links no Workspace
+description: Como gerenciar links no Workspace.
+---
+
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+> Nesta seção, você encontra: Como como adicionar, excluir e gerenciar Links no Workspace.
+
+Você pode inserir ferramentas externas a um Workspace por meio de Links.
+
+Existem dois tipos de links que você pode adicionar aos Workspaces:
+
+- [**Links estáticos**](#adicionar-links-estáticos-ao-seu-workspace): Os links estáticos aparecem no início do dashboard do Workspace e redirecionam o usuário para a URL da ferramenta que você adicionou.
+Além disso, os links estáticos adicionados ao seu Workspace também ficam **disponíveis** dentro de todas as **Aplicações e Infraestruturas** que já foram criadas dentro dele.
+
+- [**Links incorporados**](#adicionar-link-incorporado-no-workspace): Permitem adicionar links externos que podem ser **visualizados como painéis** e podem incrementar o seu Workspace. Você pode adicionar, por exemplo, tabelas do Google, gráficos do Grafana, Prometheus, Splunk, entre outros.
+
+Confira os passos para adicionar cada um dos tipos de links ao seu Workspace.
+
+## **Adicionar Links estáticos ao seu Workspace**
+
+> Os passos a seguir são feitos no [**Portal da StackSpot**](https://app.stackspot.com/login).
+
+**Passo 1.** Dentro da sua conta, acesse o Workspace que você quer adicionar um Link;
+
+**Passo 2.** No dashboard, na barra do nome do Workspace, clique no botão à direita com símbolo de **Adicionar**;
+
+**Passo 3.** Preencha os campos com as informações. Confira um exemplo:
+
+- **'Nome do link'**: Service Now;
+- **'URL'**: `https://www.servicenow.com.br`;
+- **Logo**: Adicione uma imagem demonstrativa. **É opcional**.
+
+**Passo 4.** Clique no botão **'Adicionar link'**.
+
+Pronto, você adicionou um Link ao seu Workspace.
+
+## **Apagar um link estático**
+
+Confira os passos:
+
+**Passo 1.** No Dashboard do seu Workspace, clique com o botão direito do seu mouse no Link que você quer apagar;
+
+**Passo 2.** Um seletor com opções de **'Copiar o link'** ou **'Deletar o link'** deve aparecer. Clique em **Deletar**;
+
+:::info Informação Adicional
+
+- Você **não pode editar** um link. Caso precise alterar algum, primeiro apague-o e depois adicione um novo.
+
+::: 
+
+## **Adicionar link incorporado no Workspace**
+
+Confira uma imagem:
+
+<ThemedImage alt="Print da tela do Portal com botão de adicionar link incorporado" width="auto" sources={{ light: useBaseUrl('/img/embedded-link-light-pt-br.png'), dark: useBaseUrl('/img/embedded-link-dark-pt-br.png'), }} />
+
+Siga as instruções:
+
+1. Acesse o seu Workspace [**no Portal da StackSpot EDP**](https://app.stackspot.com/login);
+
+2. No Dashboard do Workspace, clique em **‘Adicionar link incorporado’**;
+
+Na tela, adicione:
+
+- **Nome do Link:** (Obrigatório)
+
+- **URL do Link:** (Obrigatório)
+
+> Certifique-se que o link que você adicionar pode ser renderizado em um iframe.
+
+- **Link logo** (Opcional)
+
+Pronto, os links estão disponíveis para as pessoas usuárias desse Workspace.
+
+:::info Informação Adicional
+
+Para editar ou remover o link que você adicionou, clique no botão **'Mais Opções'** (**'...'**) do lado direito e faça sua alteração.
+
+:::

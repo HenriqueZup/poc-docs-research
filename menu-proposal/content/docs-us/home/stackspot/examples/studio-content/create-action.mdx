@@ -1,0 +1,213 @@
+---
+title: Create a Commit Action
+sidebar_position: 2
+description: Example of how to create an Action that commits on GitHub.
+---
+
+> In this section, you will find how to create an Action that commits on GitHub using the STK CLI.
+
+<br/>
+
+## **Introduction**
+
+- **Beginners level**
+
+This is an example of how to create an Action, [**to create your own Action, see the Actions page**](create-use/create-content/action/actions.md).
+
+### **Requirements**
+
+- Have a [**StackSpot account**](https://app.stackspot.com/login)
+- Install [**STK CLI**](home/stk-cli/install.md)
+- [**Permission to create content**](home/account/organization/access-management/permissions.md).
+- **Login** to your StackSpot Account. Execute the command below in your terminal: 
+
+```bash
+stk login
+```
+
+## **Create an Action**
+
+Summary of steps:
+
+- [1. Create an Action using the command **`stk create action name-action`**](#passo-1-criar-a-action).
+- [two. Edit the **`action.yaml`** file with the inputs](#passo-2-editar-os-inputs-no-actionyaml).
+- [3. Edit **`action.yaml`** with a ready-made script (add/commit/push)](#step-3-clone-the-repository-to-test-the-action).
+- [4. Test the Action](#step-4-execute-the-action-locally-in-your-repository).
+- [5. Publish the Action in the Studio/Workspace](#step-5-publish-the-action-in-your-studio)
+- [6. Execute the Action remotely](#step-6-add-the-action-to-stack).
+
+### **Step 1. Create the Action**
+
+In your terminal, or IDE of choice, run the command below: 
+
+```bash
+stk create action
+```
+
+Answer the command questions in your terminal:
+
+- **Name your action:** Enter a name for your Action.
+- **Do you want to init a git repository (Y/n):** Option to start a Git repository in the Action folder. For this example, respond by typing **'n'** not to start a Git repository.
+- **Action description:** Enter text describing your Action.
+- **Version: (0.0.1)** Enter the desired version number for your Action. It must be in semantic format as in the example previously filled in in the "0.0.1" terminal.
+- **Select the action type:** Select the type of Action you want to create. For this example, select the type **'Shell'**
+- **Do you want to add a Required Connection? (Y/n):** Option to add a Connection Interface as required in the Action. For this example, respond by typing **'n'** not to add a Connection Interface.
+
+> You must use the **'add a Requirede Connection'** option, if you want the Action to **interact with any infrastructure resource or Cloud resource** during its execution. To learn more about Connections Interfaces [see documentation](create-use/connections/connection-interface.md).
+
+<br/>
+
+After answering the questions, you will receive confirmation on the terminal that the Action has been created, as in the example below:
+
+```bash
+? Name your action: commit-push-action
+? Do you want to init a git repository (Y/n): no
+? Action description: This Action commit and push your changes into GitHub.
+? Version: (0.0.1)
+? Select the action type: Shell
+? Do you want to add a Required Connection? (Y/n): no
+- Action commit-push-action succesfully created!
+```
+
+:::warning
+The Action created **is just a minimally functional basic model**. For the next steps, **edit all files** and options with the examples presented or with the parameters you want your Action to execute.
+:::
+
+### **Step 2. Edit the Action inputs in action.yaml**
+
+The Action is created with previously filled example inputs. You need to edit the **`action.yaml`** file to edit and add the inputs that will be used by your Action script.
+
+- Access the Action folder you created and edit the entries in the **action.yaml** file:
+
+> The inputs below are just an example and are part of the guide to creating an action that commits/pushes on GitHub. [**You can create your own Action by following this guide**](create-use/create-content/action/run-action.md).
+
+```yaml
+inputs:
+     - label: Personal Access Token
+       name: pat
+       type: password
+     - label: Organization Name
+       name: org_name
+       type: text
+     - label: Repository Name
+       name: repo_name
+       type: text
+     - label: Commit message
+       name:message
+       type: text
+```
+
+For **each type of Action**, there are options where you must enter the **commands or scripts** that must be executed by the Action. The **example** below demonstrates the commands that can be executed in the **Shell-type Action**. You can use them in your Action or type the Shell commands you want:
+
+Learn more about how to fill in the fields for each Action type in [**Action Types**](create-use/create-content/action/actions.md)
+
+```yaml
+    requirements-check:
+       - check command:
+           linux: |
+             git --version
+           mac: |
+             git --version
+           windows: |
+             git --version
+         info: "Git not installed"
+```
+
+:::info
+
+This section of the Action Shell is used to display the **info** text in the terminal when an error occurs in this command.
+
+:::
+
+- Add the commands to your **action.yaml** file according to your operating system. The following code snippet is just an example, you can use it or type any commands you want:
+
+```yaml
+     script:
+       linux: |
+         git add .
+         git commit -m "{{message}}"
+         git push https://{{pat}}@github.com/{{org_name}}/{{repo_name}}
+       mac: |
+         git add .
+         git commit -m "{{message}}"
+         git push https://{{pat}}@github.com/{{org_name}}/{{repo_name}}
+       windows: |
+         git add .
+         git commit -m "{{message}}"
+         git push https://{{pat}}@github.com/{{org_name}}/{{repo_name}}
+```
+
+> The example adds, commits and uploads your changes to a remote repository.
+
+:::tip
+
+Check the indentation. If an error occurs, it is probably for this reason.
+The script field has two tabs.
+
+:::
+
+### **Step 3. Run the Action locally**
+
+To run the Action locally as a test, run the command below with the Action folder path:
+
+```bash
+stk run action <path-of-your-actions-folder>
+```
+
+Example:
+
+```bash
+stk run action /Users/myteam/workspace/demo-action/commit-push-action
+```
+
+Or go into the Action folder and run the command:
+
+```bash
+stk run action .
+```
+
+At this point, the Action will present as questions the inputs you added to your **`action.yaml`** file. You must answer the questions to continue. Consider the example inptus presented previously and answer them:
+
+
+```bash
+? Personal Access Token: add your PAT token
+? Organization Name: add your repository name
+? Repository Name: add your repo name
+? Commit message: commit-test
+```
+
+### **Step 4. Publish the Action in your Studio**
+
+> It is not mandatory to add a Git repository to publish your Action.
+
+Run the command in your Action folder and enter the name of your Studio:
+
+```bash
+stk publish action
+```
+
+You can also enter the name of the Studio directly in the terminal with the option **`--studio`**, see below:
+
+```bash
+stk publish action --studio my-studio-name
+```
+
+### **Step 5. Add the Action to the Stack**
+
+Follow the steps:
+
+1. [**On the StackSpot Portal**](https://app.stackspot.com/login), access your Studio;
+2. Click on the Stack you created previously. In the left side menu, click on **‘Actions’**.
+3. In the top menu, click on **‘Add Actions’** and choose your Action;
+
+## **Step 6. Publish your Stack**
+
+Now you need to publish your Stack:
+
+1. Access your Studio on [**StackSpot Portal**](https://app.stackspot.com/login);
+2. In the left side menu, click on **‘Stacks’**;
+3. Click the **'Publish'** button;
+
+You **created an Action** and **published the Stack** in the [**First Steps: Creator section.**](create-use/create-content/getting-started.md)
+
+Your content is available for use by you or someone else.

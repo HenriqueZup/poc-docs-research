@@ -1,0 +1,410 @@
+---
+title: "(Deprecated) GitHub"
+sidebar_position: 2
+description: Configure your SCM integration with GitHub.
+sidebar_custom_props:
+  icon: Github
+---  
+
+:::danger
+
+We are discontinuing this content. [**Check out the new configuration using StackSpot Workflow**](home/account/organization/scm-integration/index.md).
+
+:::
+
+> In this section, you will learn how to configure your SCM integration with GitHub.
+
+<br/>
+
+You can integrate your <Tooltip text="Source code management (SCM) tracks changes to a code repository, keeping a record of alterations and assisting in managing conflicts that arise when integrating updates from different contributors.">SCM</Tooltip> with StackSpot remotely via pipeline CI/CD. StackSpot has 4 workflows available to execute:
+
+1. Create Application;
+2. Create Infrastructure;
+3. Apply Plugins;
+4. Run Actions.
+
+## **Requirements**
+
+### **1. Repository for the pipelines**
+
+The first step to integrating SCM with StackSpot is to **have your organization's repository for pipelines**. When defined, you can remotely request them via API, informing your input data for each flow.
+
+> You can use an existing one or create a new one.Check it out here [**how to create a repository on GitHub**](https://docs.github.com/pt/get-started/quickstart/create-a-repo).
+
+### **2. Generate the Personal Access Token on GitHub**
+
+- **You need to have writing permission on the workflow repository to follow the next steps**
+
+You need to generate a PAT on GitHub. Follow the instructions:
+
+1. Access your [**GitHub**](https://github.com/) account and login;
+2. On the top right menu, click on your photo and then on **'Settings'**;
+3. On the left side menu, at the end of the menu, click on **'Developer Settings'**;
+4. On the left side menu, click on **'Personal Access Tokens'** then on the same menu, click on the option **'Tokens Classic'**;
+5. Within the section, on the left of the page, locate and click on the button **'Generate new Token'** and select the option **'Generate new Token (classic)'**;
+6. The form **"New personal access token (classic)"** is loaded, then fill in the field **'Note'** with the description of the token purpose. Then click the **"Expiration"** button and select or set an expiration date for your token;
+7. Then, in the **"Select scopes"** section, check the following checkboxes in sequence:
+
+- All **"repo"** options:
+  - **repo:statusAccess**;
+  - **repo_deployment**;
+  - **public_repo**;
+  - **repo:invite**;
+  - **security_events**.
+- The option **"workflow"**;
+- The **"write:packages"** option.
+
+As in the image below:
+
+<img src="/img/github-pat-permissions.png" alt="Imagem com as permissões 'repo, workflow e write:packages selecionadas'" title="PAT scope" width="500" />
+
+:::info
+The scopes may depend on the activities your company needs to perform. So, select all the ones that are necessary for you.
+:::
+
+8. At the bottom of the page click on the **'Generate Token'** button. The generated code will be displayed temporarily, copy and save the generated code.
+
+9. **(Optional)** If your organization has login via **SSO** (*Single Sign On*) configured, authorize your Token in your organization:
+
+- On GitHub, go to **'Settings'** and then **'Developer Settings'** and in your token, click on **'Configure SSO'**:
+
+<img src="/img/authorize-sso.gif" title="Authorize SSO" alt="Page located in the Settings/ Developer Settings > Personal access tokens (classic) menu that demonstrates the option to authorize SSO on the token." width="500px" />
+
+Then, check if your token was authorized as per the example below:
+
+<img src="/img/check-sso-auth.png" title="Check SSO" alt="Page located in the Settings/ Developer Settings > Personal access tokens (classic) menu to consult the authorized token." width="500px" />
+
+Then, check if your token was authorized.
+
+For more information about the Personal Access Token, see [**GitHub documentation**](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token).
+
+## **Configure pipelines automatically (Recommended)**
+
+> You will follow the steps below via [**STK CLI**](home/stk-cli/install.md).
+> To automatically create pipelines, you need a repository. [**Check how to create a GitHub repository**](https://docs.github.com/en/get-started/quickstart/create-a-repo).
+
+<br/>
+
+**Step 1.** Run the following command:
+
+```bash
+stk run action stackspot-core/setup-scm
+```
+
+**Step 2.** The terminal asks what your SCM provider is. Select the **GitHub** option.
+
+**Step 3.** Answer the following questions:
+
+- **Personal Access Token**: Enter the Personal Access Token previously generated on GitHub.
+- **Organization name:** Enter your GitHub username.
+- **Repository Name:** Enter the name of the repository you created to run StackSpot Workflows.
+
+:::info
+If the specified repository exists and the **`main`** branch also exists in it, a **Pull Request** will be created for **`main`**.
+If the repository does not exist, the Action creates the repository and the **`main`** branch.
+:::
+
+:::warning
+The **token user** and the **Personal Access Token** itself must have permission to write to the organization's repository. If the repository does not exist, you must add permission to create repositories.
+:::
+
+:::tip
+In some SCMs, the **Project Name** and **Repository Name** can mean the same thing. Check below how to identify in the URL:
+
+`https://github.com/[GITHUB-USERNAME]/[REPOSITORY-NAME]`
+
+Example:
+`https://github.com/stack-spot/stackspot-workflows-action`
+:::
+
+For more information, [**see GitHub's documentation**](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#como-criar-um-personal-access-token-classic).
+
+> This is not the Personal Access Token from [**StackSpot Platform**](https://app.stackspot.com/login).
+
+>- **Create a repository**: This option appears in the terminal if the Action does not find any repository, you must enter the option **Yes** to create a new repository. If you answer **No** the Action will be closed.
+
+<br/>
+
+You've executed the Action.
+
+Check your GitHub Repository. In the Actions section. You will see **'StackSpot workflow dispatch'** configured.
+
+In your GitHub project settings, the Webhook is already configured.
+
+> If the setup was successful, the next step is to [**integrate GitHub with your StackSpot account**](#integrate-github-with-stackspot).
+> If it was not possible to complete the configuration automatically, follow the steps below to carry out the entire configuration manually:
+
+## **Create the repository and pipelines manually**
+  
+**Step 1.** On your [**STK CLI**](home/stk-cli/install.md) terminal execute the commands:
+
+```bash
+mkdir <repo-name>
+cd <repo-name>
+mkdir .github
+cd .github
+mkdir workflows
+```
+
+Check an example:
+
+```bash
+mkdir repo-runner-actions
+cd repo-runner-actions
+mkdir .github
+cd .github
+mkdir workflows
+```
+
+**Step 2.** Create the **"middle-flow.yml"** file on the **".github/workflows"** path with the following:
+
+```yaml title=".github/workflows/middle-flow.yml"
+name: Stackspot workflow dispatch
+run-name: ${{ inputs.correlation_id }}
+on: 
+  workflow_dispatch:
+    inputs:
+      correlation_id:
+        description: Correlation id
+        required: true
+      workflow_name:
+        description: Workflow path
+        required: true
+      secrets:
+        description: Secrets info (json)
+        required: true
+      api_inputs:
+        description: Workflow inputs (json)
+        required: true
+jobs:
+  run:
+    name: Run workflow ${{ github.event.inputs.workflow_name }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Running ${{ inputs.workflow_name }}
+        run: |
+          secret_stk_login=$(echo '${{ inputs.secrets }}' | jq -cr '.cli_token')
+          execution_id=$(echo '${{ inputs.api_inputs }}' | jq -cr '.execution_id')
+
+          http_code=$(curl -s -o script.sh -w '%{http_code}' https://workflow-api.v1.stackspot.com/workflows/$execution_id --header "Authorization: Bearer $secret_stk_login";)
+          if [[ "$http_code" -ne "200" ]]; then
+              echo "------------------------------------------------------------------------------------------"
+              echo "---------------------------------------- Debug Starting ----------------------------------"
+              echo "------------------------------------------------------------------------------------------"
+
+              echo "HTTP_CODE:" $http_code
+              echo "RESPONSE_CONTENT:"
+              cat script.sh
+              exit $http_code
+
+              echo "------------------------------------------------------------------------------------------"
+              echo "---------------------------------------- Debug Ending ------------------------------------"
+              echo "------------------------------------------------------------------------------------------"
+          else
+              chmod +x script.sh
+
+              echo "------------------------------------------------------------------------------------------"
+              echo "---------------------------------------- Starting ----------------------------------------"
+              echo "------------------------------------------------------------------------------------------"
+
+              bash script.sh
+
+              echo "------------------------------------------------------------------------------------------"
+              echo "----------------------------------------  Ending  ----------------------------------------"
+              echo "------------------------------------------------------------------------------------------"
+
+          fi
+```
+
+**Step 3.** Commit the changes running the commands:
+
+```bash
+git init
+git remote add origin https://github.com/<github-username>/<repository-name>.git
+git add .
+git commit -m "Setup Runner"
+git push
+```
+
+See an example:
+
+```bash
+git init
+git remote add origin https://github.com/my-organization/repo-runner-actions.git
+git add .
+git commit -m "Setup Runner"
+git push
+```
+
+:::tip
+In some SCMs, the **Project Name** and **Repository Name** can mean the same thing. Check below how to identify those fields in the URL:
+
+`https://github.com/[GITHUB-USERNAME]/[REPOSITORY-NAME]`
+
+Example:
+`https://github.com/stack-spot/stackspot-workflows-action `
+:::
+
+**Step 4.** Set up a Webhook in the repository you created. Follow the instructions below:
+
+1. Access your [**GitHub**](https://github.com/) account and login;
+2. On the top right menu, click on your photo and then on **'Your repositories'**;
+3. Click on the repository created to run the pipelines and then, on the top menu, click on **'Settings'**;
+4. On the left side menu, click on **Webhooks** and then on the **Add webhook** button;
+5. Fill in the fields with the following information:
+- **Payload:** Fill in the address: `https://workflow-api.v1.stackspot.com/workflows/github/callback`;
+- **Content type:** Select the `application/json` option;
+- **Secret:** --- (Do not fill in);
+- **SSL Verification:** Check the option **'Enable SSL verification'**;
+- **Which events would you like to trigger this webhook?** Select the answer **'Let me select individual events'**:
+   - A checkbox list will be loaded, check the **'Workflow runs'** option;
+6. Check the option **'Active'**;
+7. Finally, click the **'Add webhook'** button.
+
+<br/>
+
+![](/img/example-webhook-scm-integration.png)
+
+> If the setup was successful, the next step is to [**integrate GitHub with your StackSpot account**](#integrate-github-with-stackspot).
+
+## **Integrate GitHub with StackSpot**
+
+> You will follow the steps below [**on StackSpot Platform**](https://app.stackspot.com/login).
+
+### **Configure via GitHub PAT (Personal Access Token)**
+
+**Step 1.** Go directly to the [**Account Portal**](http://myaccount.stackspot.com); or after [**logging into the StackSpot Portal**](https://app.stackspot.com/), click on your **profile avatar**.
+
+**Step 2.** Select the **'Organization'** option from the displayed menu;
+
+**Step 3.** In the Account Portal main menu, select the StackSpot EDP product and click on **'SCM'**. Then click on **'Configure SCM Integration'**;
+
+**Step 4.** On the **'Select a provider'** field, choose Github;
+
+**Step 5.** On **Authentication method**, select **PAT (Personal Access Token)**. Fill out the fields:
+
+- **Username:** Your username on Github;
+- **Token:** Use the Personal Access Token [**you generated before**](#2-generate-the-personal-access-token-on-github).
+
+
+**Step 6.** In **'Workflow configuration'** choose how your organization wants to manage the SCM access. Answer the **'Will the organization manage access to the SCM via User PAT?'** question:
+
+- **Enable** the button next to the phrase. This is for the user to manage access to the SCM via PAT (Personal Access Token).
+- **Disable** button: This is for the organization to manage the SCM access.
+
+:::info
+
+By enabling this button, your account members must configure their individual [**SCM Access**](home/account/profile/external-connections.md). 
+
+:::
+
+**Step 7.** On the **Workflow URL**, add the created repository with the pipelines so Stackspot can identify where your workflow is configured.
+ For example: **`https://github.com/my-organization/repo-runner-actions`**.  
+
+**Step 8.** Check the **Review** screen. Check your information and click on **'Integrate with Stackspot'**.
+
+You configuration is complete.
+
+Find below the steps for both options:
+
+---
+
+### 1. Configure via GitHub App
+
+**Before you begin:**
+
+You must **create a GitHub App** if you don't have one. To learn how to create it, access [**GitHub official documentation**](https://docs.github.com/en/apps/creating-github-apps/setting-up-a-github-app/creating-a-github-app).
+
+:::warning
+
+On GitHub, after creating the App, grant the following access:
+
+1. Access the menu [**'Settings > Developer settings > GitHub Apps'**](https://github.com/settings/apps/);
+
+2. Locate your App and click the **'Edit'** button;
+
+3. Click on the **'Permissions & events'** menu and then, **'Repository permissions'** menu;
+
+4. In the action list, grant **'Read and write'** permission to the items below and save the changes:
+
+- **Contents**;
+- **Pull requests**.
+
+<br/>
+
+<img src="/img/github-app-repo-permissions.gif" alt="GitHub App page" title="GitHub App repository permissions" width="500px"/>
+
+<br/><br/>
+
+If your App creates workflows, you need to grant **'Read and write'** permission to **'Workflows'**:
+
+<br/>
+
+<img src="/img/github-app-allow-workflow.png" title="App Workflows permission" alt="GitHub Apps page" width="500px"/>
+
+<br/><br/>
+
+If your App needs to access Actions to manipulate workflows, workflow runs or artifacts, you need to grant **'Read and write'** permission to **'Actions'**:
+
+<br/>
+
+<img src="/img/github-app-allow-actions.png" title="App Actions permission" alt="GitHub Apps Page" width="500px"/>
+
+<br/><br/>
+
+> **You must grant access to each resource that your App needs.**
+
+After installing the App in your Account or Organization, select the repositories you want to work with StackSpot.
+
+1. On GitHub, access the menu [**'Settings > Applications'**](https://github.com/settings/installations);
+
+2. Locate your App and click the **'Configure'** button;
+
+3. In the **'Repository access'** menu, check the **'Only select repositories'** option and select the repositories you want to work with StackSpot.
+
+<br/>
+
+<img src="/img/github-app-selected-repos.png" alt="Página de integrações do GitHub" title="Applications repository selection" width="500px"/>
+
+:::
+
+After you create it, follow the steps below:
+
+**Step 1.** Go directly to the [**Account Portal**](http://myaccount.stackspot.com); or after [**logging into the StackSpot Portal**](https://app.stackspot.com/), click on your **profile avatar**.
+
+**Step 2.** Select the **'Organization'** option from the displayed menu;
+
+**Step 3.** In the Account Portal main menu, select the StackSpot EDP product and click on **'SCM'**. Then click on **'Add SCM Integration'**;
+
+**Step 4.** On the **Select a provider** section, choose **GitHub**;
+
+**Step 5.** On **Authentication method**, select **GitHub APP**. Fill out the fields with the information below:
+
+- **AppID**: Application ID. For example, **`145236`**.
+- **InstallerID**: APP installation ID, found at the end of the URL, for example, URL:`https://github.com/settings/installations/88969132`, the **InstallerID** will be the value: **`88969132`** .
+
+:::tip
+You can access the information your need to fill out the GitHub App fields. Check:
+
+- **For users:** Go to **Settings > Applications > Your GitHub App**. Find the information on the side menu options: **General, Permissions & Events, Install App, Advanced e Optional features**.
+
+- **For organizations:** Go to **Settings > Installed GitHub Apps**. Find the information on the side menu options: **General, Permissions & Events, Install App, Advanced e Optional features**.
+:::
+
+**Step 6.** Upload the **`.pem`** file of the **Private Key** and click on **'Next Step'**;
+
+**Step 7.** In **'Workflow configuration'** disable the **'Will the organization manage access to the SCM via User PAT?'** option.
+
+
+:::info
+
+By enabling this button, your account members must configure their individual [**SCM Access**](home/account/profile/external-connections.md). 
+
+:::
+
+**Step 8.** On the **Workflow URL**, add the created repository with the pipelines so StackSpot can identify where your workflow is configured.
+ For example: **`https://github.com/my-organization/repo-runner-actions`**.
+
+**Step 9.** You will see a **Review** screen. Check the details and click on **'Integrate with StackSpot'**;
+
+Your configuration is complete.

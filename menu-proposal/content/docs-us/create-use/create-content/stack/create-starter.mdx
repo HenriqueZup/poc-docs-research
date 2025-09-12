@@ -1,0 +1,202 @@
+---
+title: Create, Deprecate or Delete a Starter
+description: Learn how to create a Starter.
+---
+
+> In this section, you will find a guide on how to create Starters.
+
+<br/>
+
+A [**Starter**](home/stackspot/main-concepts.md) is a tool for content creators to define common Plugin combinations in Stacks, addressing specific use cases. You can include multiple Plugins in a Starter.
+
+There are two types of Starter: 
+
+- **App Starter:** a combination of App Plugins. 
+- **Infra Starter:** a combination of Infra Plugins. 
+
+A Starter is akin to a "recipe," blending pre-defined and applied Plugin specifications. This integration occurs when you execute the [**stk create app**](home/stk-cli/commands/application-commands.md#stk-create-app) command enabling the creation of a project with a set of Plugins through a single command.
+
+Currently, you can only add app Plugins to a Starter.
+
+
+<br/>
+
+See below how to:
+
+- [**Create a Starter within a Stack**](#how-to-create-a-starter-in-your-stack);
+- [**Remove Plugins from a Starter**](#remove-a-version-of-a-plugin-in-a-starter);
+- [**Delete a Starter from a Stack**](#delete-a-starter-from-a-stack);
+- [**Deprecate a Starter from a Stack**](#deprecate-the-version-of-a-starter-in-a-stack).
+
+## **How to create a Starter in your Stack**
+
+To create and add a Starter to your Stack, follow the steps below:
+
+### **Requirements**
+
+- You must belong to a [**Studio**](create-use/studio/intro-studio.md);
+- A [**Stack**](create-use/create-content/stack/create-stack.md) created with type [**App Plugins**](create-use/create-content/plugin/create-plugin.md) and/or **Infra Plugins**.
+
+:::warning
+
+- The Starter name is limited to **60 characters**.
+
+:::
+
+### Steps
+
+**Step 1.** Log in to the [**StackSpot Platform**](https://app.stackspot.com/login) and access the **'Studios'**;
+
+**Step 2.** Select the Studio you want to create the Starter;
+
+**Step 3.** Click **'Stacks'** tab and click the Stack for Starter creation;
+
+:::warning
+
+If the Stack is already published, create a new version before Starter creation. Click **'Create new version'** within the Stack and proceed.
+
+:::
+
+**Step 4**. Click **'Starter'** tab. Then, click **'Create starter'** button;
+
+**Step 5**. Select the type of Starter: **App Starter** or **Infra Starter**.
+
+**Step 6**. On **'Basic information'** provide the following information:
+
+- **Slug (Starter name)**: Add a name for your Starter.  
+- **Description**: Describe your Starter.  
+
+Click on the **'Continue'** button;
+
+**Step 7**. On **'Plugins'**, add the Plugins you want to include in the Starter. Click **"Add Plugins'**;
+
+> Select Plugins from the Studio, Account and Insert Qualifier.
+
+:::warning
+
+Check the order in which the Plugins are added to the Starter as it defines the apply sequence of the Plugins during the creation of an Application or Infrastructure. This sequence configuration can only be changed while the Stack is in `Draft` mode. In case of Plugins that are built to require other Plugins, the least dependent ones come first in the apply order whereas the ones that are the most dependent come later.
+
+:::
+
+:::tip   
+Starters of type App accept Plugins of type App and of type Infra, but with the flag **app allowed true** set in the Plugin's yaml. 
+:::
+
+
+> If a Plugin that will be added to the Starter has other Plugins required, you will need to add them to the Stack and Starter before continuing.   
+
+
+After selecting the Plugins, click **'Add Plugins'**;
+
+**Step 8.** Confirm the order of Plugins using the numbers beside them and define whether a Plugin will have optional application or not. After verification, click **'Continue'**;
+
+> When adding a Plugin in Starter that uses the [**range template**](create-use/create-content/plugin/plugin-version.md), choosing a specific version of the Plugin will not be possible.  
+
+:::warning  
+Check the order in which you are adding Plugins to the Starter. This order defines how you apply the Plugin in the Stack. You can only change it while the Stack is in Draft.
+:::
+
+**Step 9** **'Review'** the Starter information and click **'Save'**.
+
+![](/img/create-starter.gif)
+
+You added a Starter to your Stack.  
+
+---
+
+## **Remove Plugin Version from Starter**  
+
+You can remove the version of a Plugin in a Starter, but only when the **Stack version is in draft**. Follow the steps below:
+
+**Step 1.** Log in to the [**StackSpot Platform**](https://app.stackspot.com/login) and access the **Studios**;
+
+**Step 2.** Select the Studio with your Stack and Starter;
+
+**Step 3.** In the main tab of the Studio, click **'Stacks'** and choose the Stack containing the version of Starter with the Plugins to remove;
+
+**Step 4.** Click on the **'Starters'** tab and go to Starter. Inside it, click on the **'trash'** icon next to the Plugins you want to remove from Starter;  
+
+**Step 5.** Click **'Save'**.
+
+You removed a Plugin from your Starter.
+
+---
+
+## **Delete Starter from Stack**
+
+:::tip
+
+For more information, [**access the deletion rules page**](create-use/studio/deprecate-unpublish-delete.md).
+
+:::
+
+You can only delete a Starter if the Stack is in **'Draft'**.
+
+Follow the steps:
+
+**Step 1.** Log in to the [**StackSpot Platform**](https://app.stackspot.com/login) and access the **'Studios'**;
+
+**Step 2.** Select the Studio with your Stack and Starter;
+
+**Step 3.**  In the main Studio tab, click **'Stacks'** and choose the Stack containing the Starter to delete;
+
+**Step 4.** Within the **'Starters'** section, click Starter to delete;
+
+**Step 5.** Within the Starter click **'Settings'**;
+
+**Step 6.** At the bottom of the page, click **'Delete Starter'** and fill in the field with the **slug** of the Starter;
+
+**Step 7.** To finish, click on the button **'Confirm removal'**. 
+
+You deleted the Starter from your Stack.
+
+![](/img/delete-starter.gif)
+
+---
+
+## **Deprecate Starter Version in Stack**  
+
+:::tip
+
+For more information, [**access the deprecation rules page**](create-use/studio/deprecate-unpublish-delete.md).
+
+:::
+
+You can also deprecate a Starter version, deprecating indicates using that version is not the best option.
+
+To deprecate a Starter version, follow the rules below:
+
+1. You must have permission to deprecate content.
+2. You must belong to the Studio or Stack; the Starter version will be deprecated.
+
+**Step 1.** Log in to the [**StackSpot Platform**](https://app.stackspot.com/login) and access **'Studios'**;
+
+**Step 2.** Select the Studio that has your Stack and Starter;
+
+**Step 3.** In the main tab of the Studio, click **'Stacks'** and choose the Stack containing the Starter to deprecate;
+
+**Step 4.** Within the **'Starters'** tab, select the Starter to deprecate;
+
+**Step 5**. Within the Starter click **'Settings'**;
+
+**Step 5.** Then click **'Deprecate Starter'** button;
+
+**Step 6.** Fill out the following fields:
+
+- **Reasons** to deprecate:
+    - Lack of Maintenance;  
+    - Security Issues;  
+    - Bugs;  
+    - Other
+
+- The **slug** of the Starter to deprecate.
+
+To continue, click on the **'Deprecate Starter'** button.
+
+You deprecated a version of the Starter.
+
+![](/img/deprecate-starter.gif)
+
+## **Next Steps**
+
+- See how to [**create Aplications**](create-use/use-content/application/index.md).

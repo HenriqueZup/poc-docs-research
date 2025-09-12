@@ -1,0 +1,340 @@
+---
+title: Permission Endpoints
+description: Learn details about Role Endpoints.
+---
+
+This feature includes endpoints related to activities you can perform for [**Permission management**](home/account/organization/access-management/permissions.md) within the StackSpot EDP Platform.
+
+| Method | Endpoint          | Description          | Parameters                          | Responses     |
+|--------|-------------------|--------------------|-------------------------------------|---------------|
+| GET    | /scim/Permissions | Get All Permissions | X-Tenant-Id: string (header)        | 200: OK       |
+| POST   | /scim/Permissions | Create Permission  | X-Tenant-Id: string (header), body: Create Permission | 201: Created |
+| GET    | /scim/Permissions | Get All Permissions   | X-Tenant-Id: string (header)                                                                 | 200: OK       |
+| POST   | /scim/Permissions | Create a new permission | X-Tenant-Id: string (header), body: Create Permission (body, required, schema: domain.CreatePermission) | 201: Created  |
+| PUT    | /scim/Permissions/\{id} | Update Permissions | X-Tenant-Id: string (header), body: Update Permission (body, required, schema: domain.UpdatePermission) | 200: OK       |
+| DELETE | /scim/Permissions/\{id} | Delete Permission  | X-Tenant-Id: string (header)                                                                 | 204: No Content |
+| PATCH  | /scim/Permissions/\{id} | Patch Operation Permission | X-Tenant-Id: string (header), body: Update Permission (body, required, schema: domain.PermissionPatchOperation) | 200: OK       |
+
+
+## Response Definitions 
+
+### domain.CreatePermission
+
+| Field       | Type                                  | Required |
+|-------------|---------------------------------------|-------------|
+| client_id   | string                                | No         |
+| description | string                                | No         |
+| name        | string                                | Yes         |
+| statements  | array of object (properties: actions, resource) | Yes         |
+
+### domain.PermissionAttributes
+
+| Field       | Type  | Required |
+|-------------|-------|-------------|
+| client_id   | string| No         |
+| created_at  | string| No         |
+| description | string| No         |
+| id          | string| No         |
+| name        | string| Yes         |
+| statements  | array | Yes         |
+
+### domain.PermissionDomain
+
+| Field      | Type  | Required |
+|------------|-------|-------------|
+| attributes | object| Yes         |
+| externalID | object| No         |
+| id         | string| Yes         |
+| meta       | object| Yes         |
+| schemas    | array | Yes         |
+
+### domain.PermissionPageDomain
+
+| Field        | Type  | Required |
+|--------------|-------|-------------|
+| resources    | array | Yes         |
+| totalResults | integer| Yes        |
+
+### domain.PermissionPatchOperation
+
+| Field      | Type  | Required |
+|------------|-------|-------------|
+| Operations | array | Yes         |
+| schemas    | string| Yes         |
+
+### domain.UpdatePermission
+
+| Field       | Type   | Required |
+|-------------|--------|-------------|
+| client_id   | string | No         |
+| description | string | No         |
+| name        | string | Yes         |
+| statements  | array  | Yes         |
+
+## **Example Response** 
+
+### **`GET /tenant-id/scim/Permissions Get all Permissions`**
+
+Here you find an example of the API response for the endpoint **`GET /tenant-id/scim/Permissions Get all Permissions`**
+
+### Request: 
+
+```
+GET /tenant-id/scim/Permissions Get all Permissions
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 200: {
+    "Resources": [
+        {
+            "description": "Scim Sample Resource",
+            "id": "cda6be66-ea32-4188-8f6a-0f7d14068de8",
+            "meta": {
+                "resourceType": "Permission",
+                "created": "2024-04-18T20:33:47Z",
+                "location": "Permissions/cda6be66-ea32-4188-8f6a-0f7d14068de8",
+                "version": "1"
+            },
+            "name": "Scim Sample Resource",
+            "schemas": [
+                "urn:ietf:params:scim:schemas:core:2.0:Permission"
+            ],
+            "statements": null
+        }
+    ],
+    "itemsPerPage": 100,
+    "schemas": [
+        "urn:ietf:params:scim:api:messages:2.0:ListResponse"
+    ],
+    "startIndex": 1,
+    "totalResults": 1
+}
+````
+
+### **`POST /tenant-id/scim/Permissions Create Permissions`**
+
+Here you find an example of the API response for the endpoint **`POST /tenant-id/scim/Permissions Create Permissions`**
+
+### Request: 
+
+```
+POST /tenant-id/scim/Permissions Create Permissions
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 201: {
+    "description": "Permission description",
+    "id": "df7aff1a-d61c-48d7-8263-71d9f8bd2df1",
+    "meta": {
+        "resourceType": "Permission",
+        "created": "2024-05-31T13:02:37Z",
+        "location": "Permissions/df7aff1a-d61c-48d7-8263-71d9f8bd2df1",
+        "version": "1"
+    },
+    "name": "scim-permission",
+    "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:Permission"
+    ],
+    "statements": null
+}
+````
+
+### **`GET /tenant-id/scim/Permissions/\{id} Get Permission By Id`**
+
+Here you find an example of the API response for the endpoint **`GET /tenant-id/scim/Permissions/{id} Get Permission By Id`**
+
+### Request: 
+
+```
+GET /tenant-id/scim/Permissions/{id} Get Permission By Id
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 201: {
+    "description": "Permission Description",
+    "id": "0d906beb-d038-489b-99b5-621e184d8bb0",
+    "meta": {
+        "resourceType": "Permission",
+        "created": "2024-05-24T20:29:33Z",
+        "location": "Permissions/0d906beb-d038-489b-99b5-621e184d8bb0",
+        "version": "1"
+    },
+    "name": "permission-name",
+    "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:Permission"
+    ],
+    "statements": [
+        {
+            "resource": {
+                "id": "16eab887-364a-4006-a9e2-82b1f652f23f",
+                "name": "Example Resource",
+                "slug": "resource-slug",
+                "type": {
+                    "id": "bb73d7ab-e2c9-4b91-86e2-bb5047e34820",
+                    "name": "type-name",
+                    "slug": "slug",
+                    "actions": null,
+                    "description": "",
+                    "created_at": "0001-01-01T00:00:00Z"
+                },
+                "description": "Teste de criação de produtos \n",
+                "created_at": "2024-01-03T22:45:42.864932Z"
+            },
+            "actions": [
+                {
+                    "id": "8fb5d7bd-de19-441b-98cd-ff679cced4f3",
+                    "name": "scim-action-example",
+                    "description": "Action Description",
+                    "created_at": "2024-04-30T20:30:03.899548Z"
+                }
+            ]
+        }
+    ]
+}
+````
+
+### **`PUT /tenant-id/scim/Permissions/\{id} Update Permission`**
+
+Here you find an example of the API response for the endpoint **`PUT /tenant-id/scim/Permissions/{id} Update Permission`**
+
+### Request: 
+
+```
+PUT /tenant-id/scim/Permissions/{id} Update Permission
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 200: {
+    "description": "Permission Description",
+    "id": "0d906beb-d038-489b-99b5-621e184d8bb0",
+    "meta": {
+        "resourceType": "Permission",
+        "created": "2024-05-24T20:29:33Z",
+        "location": "Permissions/0d906beb-d038-489b-99b5-621e184d8bb0",
+        "version": "1"
+    },
+    "name": "permission-name",
+    "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:Permission"
+    ],
+    "statements": [
+        {
+            "resource": {
+                "id": "16eab887-364a-4006-a9e2-82b1f652f23f",
+                "name": "Example Resource",
+                "slug": "resource-slug",
+                "type": {
+                    "id": "bb73d7ab-e2c9-4b91-86e2-bb5047e34820",
+                    "name": "type-name",
+                    "slug": "slug",
+                    "actions": null,
+                    "description": "",
+                    "created_at": "0001-01-01T00:00:00Z"
+                },
+                "description": "Teste de criação de produtos \n",
+                "created_at": "2024-01-03T22:45:42.864932Z"
+            },
+            "actions": [
+                {
+                    "id": "8fb5d7bd-de19-441b-98cd-ff679cced4f3",
+                    "name": "scim-action-example",
+                    "description": "Action Description",
+                    "created_at": "2024-04-30T20:30:03.899548Z"
+                }
+            ]
+        }
+    ]
+}
+````
+### **`DELETE /tenant-id/scim/Permissions/\{id} Remove Permission`**
+
+Here you find an example of the API response for the endpoint **`DELETE /tenant-id/scim/Permissions/\{id} Remove Permission`**
+
+### Request: 
+
+```
+DELETE /tenant-id/scim/Permissions/\{id} Remove Permission
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 204: NO BODY RESPONSE
+````
+
+### **`PATCH /tenant-id/scim/Permissions/\{id} Update Action With Patch operation`**
+
+Here you find an example of the API response for the endpoint **`PATCH /tenant-id/scim/Permissions/\{id} Update Action With Patch operation`**
+
+### Request: 
+
+```
+PATCH /tenant-id/scim/Permissions/\{id} Update Action With Patch operation
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 200:{
+    "description": "Permission Description",
+    "id": "0d906beb-d038-489b-99b5-621e184d8bb0",
+    "meta": {
+        "resourceType": "Permission",
+        "created": "2024-05-24T20:29:33Z",
+        "location": "Permissions/0d906beb-d038-489b-99b5-621e184d8bb0",
+        "version": "1"
+    },
+    "name": "permission-name",
+    "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:Permission"
+    ],
+    "statements": [
+        {
+            "resource": {
+                "id": "16eab887-364a-4006-a9e2-82b1f652f23f",
+                "name": "Example Resource",
+                "slug": "resource-slug",
+                "type": {
+                    "id": "bb73d7ab-e2c9-4b91-86e2-bb5047e34820",
+                    "name": "type-name",
+                    "slug": "slug",
+                    "actions": null,
+                    "description": "",
+                    "created_at": "0001-01-01T00:00:00Z"
+                },
+                "description": "Teste de criação de produtos \n",
+                "created_at": "2024-01-03T22:45:42.864932Z"
+            },
+            "actions": [
+                {
+                    "id": "8fb5d7bd-de19-441b-98cd-ff679cced4f3",
+                    "name": "scim-action-example",
+                    "description": "Action Description",
+                    "created_at": "2024-04-30T20:30:03.899548Z"
+                }
+            ]
+        }
+    ]
+}
+````
+

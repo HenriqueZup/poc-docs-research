@@ -1,0 +1,101 @@
+---
+title: Destroy or Delete Infrastructure via Portal
+description: How to delete or destroy Infrastructures via the StackSpot Portal.
+---
+
+> In this section, you will find a guide on how to destroy or delete your Infrastructure via the Portal.
+
+<br/>
+
+## **Destroy an Infrastructure**
+
+In StackSpot EDP, destroying an Infrastructure is an **irreversible** action and can only be performed in one environment at a time.
+
+The destruction of an Infrastructure can only occur when there is no Connection Interface in the environment shared with other Infrastructures. If this happens, StackSpot will display the Connection Interfaces with their respective environments and Infrastructures.
+
+:::warning 
+
+- Through the **'Check Connection Interfaces'** button, it is possible to check which Workspace is using the Connection Interface shared with the Application or Infrastructure. This button **is only displayed when there is a deploy** in any environment.
+
+
+- To destroy an Infrastructure, you must have the **`shared_infra:destroy`** permission.
+
+:::
+
+To destroy an Infrastructure, follow these steps:
+
+**Step 1.** Access your Workspace and then click on the Infrastructure you want to destroy;
+
+**Step 2.** Now, click on the **'Settings'** subsection;
+
+**Step 3.** Click the **'Destroy Infrastructure'** button;
+
+**Step 4.** Fill in the following information:
+
+- Branch: Select the branch where the Infrastructure you want to destroy is located.
+- Type the word **'DESTROY'**.
+
+**Step 5.** Click the **'Destroy Infrastructure'** button.
+
+Once the Infrastructure destruction workflow is complete, a Pull Request (PR) will be created in the Infrastructure repository. This PR removes the Plugins from the Infra YAML file. 
+
+The destruction process will end once you merge this PR and deploy the updated infrastructure
+
+:::danger
+
+It is not possible to delete an Infrastructure without first destroying the deployments in each environment.
+
+:::
+
+## **Delete an Infrastructure**
+
+In StackSpot EDP, deleting an Infrastructure can only occur when there are no deployments made in any environment of an App or Infra. Additionally, deletion is an **irreversible** action.
+
+When an Infrastructure is deleted, the following actions are also executed by StackSpot EDP:
+
+- The Infrastructure is removed from the Workspace.
+- Plugins associated with the Infrastructure are also removed/unlinked.
+- The Infrastructure name is appended with the suffix **`_deleted`**, for example, `my-app-name-deleted`.
+
+:::warning 
+
+To delete an Infrastructure, you must have the **`shared_infra:delete`** permission.
+
+:::
+
+### **Requirements**
+
+You can only delete an Infrastructure created in the Workspace when:
+
+1. There is no [**Connection Interface**](create-use/connections/connection-interface.md) being used by another Application or Infrastructure in StackSpot.
+
+2. There is no **deployment running**, i.e., if the Status is **'running'** in [**Activities**](deployment/manage/activities.md).
+
+3. If the deployment of your Infrastructure was done using [**self-hosted**](deployment/deploy/self-hosted-runtime.md), you must:
+
+    - **Remove the infra-type Plugins** from your Infrastructure. To do this, use the command [**`stk remove plugin`**](home/stk-cli/commands/plugin-commands.md);
+    - Then, perform an **empty deployment**, i.e., with the **`infra` Plugins** removed;
+
+<br/>
+
+With this, you push an **empty version** to StackSpot EDP, allowing you to delete your Infrastructure via the StackSpot EDP Portal.
+
+To delete an Infrastructure, follow these steps:
+
+:::warning 
+
+Before deleting your Infrastructure, ensure there are no active deployments on it. This is because when an Infrastructure is deleted, all associated deployments are also deleted.
+
+:::
+
+**Step 1.** Log in to the [**StackSpot EDP Portal**](https://app.stackspot.com/pt/login) and click **'Infrastructures'**;
+
+**Step 2.** Find and select your Infrastructure to access its dashboard;
+
+**Step 3.** In the main menu of the Infrastructure, click on the **'Settings'** section;
+
+**Step 4.** Click the **'Delete Infrastructure'** button at the bottom of the screen;
+
+**Step 5.** Type the word **“DELETE”** and then click the **'Delete Infrastructure'** button.
+
+Done, you've deleted your Infrastructure.

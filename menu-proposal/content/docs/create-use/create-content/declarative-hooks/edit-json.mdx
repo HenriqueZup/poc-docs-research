@@ -1,0 +1,211 @@
+---
+title: edit-json
+---
+
+> Nesta seção, você encontra: Referência de um Hook Declarativo do tipo edit-json.
+
+<br/>
+
+Um Hook Declarativo do tipo **`edit-json`** define alterações feitas em arquivos JSON existentes. Confira um exemplo de definição de um Hook Declarativo do tipo **`edit-json`**:
+
+```yaml 
+name: "hook-edit-json"
+description: Test edit-json in hooks
+types:
+  - app
+spec:
+  inputs:
+    - label: Just a text
+      type: text
+      name: json_body
+    - label: Just a Tag
+      type: text
+      name: json_tag
+  hooks:
+    - type: edit-json
+      trigger: after-render
+      path: package.json
+      indent: "\t"
+      encoding: utf-8
+      changes:
+        - jsonpath: "$.scripts"
+          update:
+            value: |
+              {
+              "test": "ola 123",
+              "ola": "como vai você"
+              }
+        - jsonpath: "$"
+          remove:
+            - name: private
+            - name: devDependencies
+        - jsonpath: "$.log"
+          clear: true
+```
+
+## **Ações Disponíveis**
+
+### **`path:`**   
+Define o caminho do arquivo que será editado. O caminho pode ser composto por expressões [**Jinja**](https://jinja.palletsprojects.com/en/3.1.x/).
+
+```yaml 
+path: package.json
+```
+___
+### **`trigger:`**   
+Campo para definir gatilhos que informam o momento em que a edição de arquivos deve ocorrer.  
+
+**`before-input`**:   
+Executa o Hook Declarativo antes de receber os parâmetros de entrada da pessoa usuária.
+
+```yaml 
+trigger: before-input
+``` 
+
+**`before-render`**:   
+Executa o Hook Declarativo antes do Template gerar arquivos no projeto.
+
+```yaml 
+trigger: before-render
+
+```
+
+**`after-render`**:   
+Executa o Hook Declarativo após o Template gerar arquivos no projeto.
+
+```yaml 
+trigger: after-render
+```
+___
+
+### **`enconding:`**   
+Define o tipo de encoding a ser gravado no arquivo, e aceita os formatos [`ascii, utf-8, utf-16`]. O valor padrão é o `utf-8`.
+
+```yaml 
+encoding: utf-8
+``` 
+___
+
+### **`indent:`**   
+Define o(s) caractere(s) ou número de espaços para a indentação do documento gerado. O valor padrão de espaços é `2`. 
+
+```yaml 
+indent: "\t"
+``` 
+___
+
+### **`changes:`**   
+É uma lista de ações de edição que serão executadas na ordem em que aparecem. E o seu bloco tem como **obrigatório** o parâmetro **`jsonpath`**.  
+
+:::info
+Durante o processo de pesquisa no atributo **`changes`**, todos os nós que correspondem aos critérios (atributo **`jsonpath`**) são alterados de uma só vez. Você pode fazer várias alterações em um arquivo apenas usando expressões.
+
+Confira algumas expressões aceitas:
+
+<details>
+<summary><strong>Confira as expressões detalhadas</strong></summary>
+
+| **Expressão** | **Descrição** |
+| :---: | :---: |
+| `@` | Define o objeto do elemento atual. |
+| `$` | Define o objeto do elemento raiz. | Exemplo |
+| `()` | Esta é uma expressão de script, usando o mecanismo de script subjacente. |
+| `[início:fim]` | Retorna uma cópia de parte de um array de um subarray criado entre as posições inicial e final (final não está incluído) de um array original. |
+| `?()` | Aplica o filtro à expressão do script. |
+| `[]` | Este é um operador filho que foi usado em expressões. |
+| `..` | Esta é uma descida recursiva. |
+| `*` | É usado em elementos de objeto independentemente de usar seus nomes. |
+| `[]` | Em json e javascript, é o operador do array nativo. |
+| `[,]` | O caminho Json nos permite um conjunto de índices e nomes de array. |
+
+</details>
+:::
+
+#### **`jsonpath:`**   
+Permite inserir a linguagem de busca do JSON. O seu uso é **Obrigatório**.  
+
+```yaml 
+changes:
+  - jsonpath: "$.packages.version"
+    ...
+```  
+
+> Se necessário, consulte o [**Suporte do jsonpath**](https://github.com/h2non/jsonpath-ng#jsonpath-syntax)  
+
+É possível interpolar os valores do campo `xpath` com [**Jinja**](create-use/create-content/yaml-files/jinja.mdx):
+
+```yaml
+hooks:
+  - type: edit-json
+    trigger: after-render
+    path: package.json
+    indent: "\t"
+    encoding: utf-8
+    changes:
+      - jsonpath: "$.scripts[?name = '{{INTERPOLAR-INPUT-AQUI}}']"
+        update:
+          value: |
+            {
+            "test": "ola 123",
+            "ola": "como vai você"
+            }
+```
+
+**`update:`**   
+Altera ou acrescenta um item dentro de um resultado de um **`jsonpath`**. Os campos disponíveis são **`value`** ou **`snippet`**.  
+
+**`value`**   
+Recebe o valor para ser adicionado ao JSON.  
+
+```yaml 
+  update:
+    value: "qa"
+```  
+
+**`snippet`**   
+Recebe o snippet para ser adicionado ao JSON.  
+
+```yaml 
+update:
+    snippet: snippets/fragment.json
+```  
+
+**`remove:`**   
+Remove um elemento de dicionário. O campo disponível é o **`name`**. 
+
+**`name:`**   
+Recebe o nome do elemento a ser removido do dicionário JSON. É possível interpolar os valores do campo `name` com [**Jinja**](create-use/create-content/yaml-files/jinja.mdx).
+
+```yaml 
+- jsonpath: "$.scripts"
+  remove:
+    - name: prepare
+```
+
+**`clear:`**
+Remove todo o conteúdo do nó JSON, dado o contexto do **`jsonpath`**. Os valores aceitos são `true` ou `false`.
+
+```yaml 
+  - jsonpath: "$.devDependencies"
+    clear: true
+```
+
+#### **`when:`** 
+Ação condicional que avalia se a inserção será efetivada. A opção disponível é **`not-exists`**, que recebe o texto ou arquivo para serem avaliados pela condição.
+
+**`not-exists:`**   
+Checa se os valores informados nos campo **`value`** existem no arquivo. Caso exista, as ações **`update`**, **`remove`** e **`clear`**  não serão efetivadas. 
+
+```yaml
+hooks:
+  - jsonpath: "$.some"
+    update:
+      value: |
+        {
+          "not-existing": {
+            "item": 2
+          }
+        }
+    when:
+      not-exists: "$.some.not-existing"
+```

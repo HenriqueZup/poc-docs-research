@@ -1,0 +1,80 @@
+---
+title: Access Token
+sidebar_position: 2
+description: Profile Personal Token information and Access Token (PAT) information.
+---
+
+> In this section, you will find information about Profile Personal Token and Access Token (PAT).
+
+<br/>
+
+At this stage of Account customization, you need to make the following settings: 
+
+<!--
+## 1. Enable or disable the Personal Profile Token
+
+StackSpot collaborates with various services to manage Applications and Infrastructures.
+
+The Profile Personal Token is a means to execute services securely in StackSpot with your user password. It ensures authentication in environments where authentication is necessary.
+
+It is **mandatory to use** the personal token to create **Infrastructure** services, manage **Application**, and execute **Actions**.  
+Enabling the Profile Personal Token [**on the Portal**](https://app.stackspot.com/login) **allows StackSpot to create a token** with your user profile to authenticate services and APIs.
+
+Authentication lasts for 20 minutes, and you need to execute all Actions within this time limit. If it exceeds, the token expires, the Action doesn’t work, and you must re-run the Action to generate a new token.
+-->
+
+## **Generate the Personal Access Token (PAT) keys**
+
+StackSpot generates for you, as a user, an Access Token or PAT (Personal Access Token). This allows you to run StackSpot's services using a **`client id`** and a **`client key`**.
+
+This type of authentication makes it possible to keep a session active with a configurable expiration time. You need to use STK CLI via the command line, for example, in CI/CD pipelines.
+You need these credentials to run some commands, for example, in a Pipeline via the command line in the [**STK CLI**](home/stk-cli/index.md).
+
+To configure, follow the instructions below:
+
+## **Steps**
+
+To authenticate, get the keys from the StackSpot Platform and use them on the command line with the [**`stk login` command in your pipeline**](home/stk-cli/commands/general-commands.md). Follow the steps below:
+
+**Step 1.** Access the [**Account Portal**](http://myaccount.stackspot.com) directly; or after [**logging into the StackSpot Portal**](https://app.stackspot.com/), click on your **profile avatar**.
+
+**Step 2.** Select the **'My Profile'** option from the displayed menu;
+
+**Step 3.** In the Account Portal main menu, click **'Access Token'**;
+
+**Step 4.** **Now you need to generate the Personal Access Token (PAT) keys** to be provided in the command line along with the **`stk login`** command in your pipeline.
+
+Click the **'Generate Tokens'** button, and you're done! A screen will display the following information:
+
+- **`Client ID`**;
+- **`Client Key`**;
+- Realm; and
+- An example of how to use these values
+
+These details are shown only once. **Copy and save them in a secure place.**
+
+You can now use the information to [**authenticate via the terminal**](#authenticate-via-command-line).
+
+:::warning  
+
+- PATs are generated per user. If you generate a new PAT, your previous one becomes invalid.
+- Generating a new PAT does **not** affect other users’ tokens in your organization.
+- The session expires after **20 minutes**.
+
+:::
+
+## **Authenticate via Command Line**
+
+To authenticate, run the following command in your terminal or pipeline, replacing the placeholders with your actual values:
+
+```bash
+stk login --client-id <ID> --client-key <KEY> --realm <REALM>
+```
+
+> Execute the command above without the **< >** keys.
+
+:::tip
+
+You need to authenticate each time you want to automate a process using StackSpot.
+
+:::

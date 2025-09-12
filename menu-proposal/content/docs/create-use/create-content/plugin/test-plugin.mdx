@@ -1,0 +1,747 @@
+---
+title: Testar Plugins
+description: Confira como criar e executar casos de testes para os seus Plugins.
+---
+
+> Nesta seção, você encontra um guia de como criar e executar casos de testes para seus Plugins.
+
+<br/>
+
+## **Visão geral**
+
+### **O que são testes de Plugin**
+
+Os testes de Plugins permitem que você crie um ou mais testes unitários para o seus Plugins. Os **testes garantem que os Plugins tenham o comportamento esperado em sua utilização**, como arquivos gerados e tipo correto dos dados em inputs.
+
+Quando você cria um Plugin com o comando **`stk create plugin`**, dentro dos arquivos gerados você encontra uma **estrutura de pastas de teste** e é nela onde acontece os testes unitários. 
+
+Essa estrutura começa com o diretório chamado **`/tests`** (uma pasta chamada `/tests`) e outros arquivos, confira que tanto para Plugins de App, quanto para Plugins de Infra: 
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs groupId="test-plugin">
+  <TabItem value="app" label="Plugin de Aplicação" default>
+  
+  <img src="/img/test-plugin-mode-app.png" alt="Captura de tela do Visual Studio Code mostrando a estrutura de pastas de um Plugin de Aplicação. As pastas e arquivos visíveis são: docs (contendo subpastas en-us e pt-br com arquivos .mdx), templates (contendo arquivos de template), e o arquivo plugin.yaml na raiz." title="Plugin mode app" width="500px"/>
+
+  </TabItem>
+  <TabItem value="deploy" label="Plugin de infraestrutura">
+  
+  <img src="/img/test-plugin-mode-deploy.png" alt="Infrastructure Plugin type folder" title="Plugin mode deploy" width="500px"/>
+
+  </TabItem>
+</Tabs>
+
+### **Pastas utilizadas nos testes**
+
+À seguir você encontra detalhes sobre cada pasta e seus objetivos: 
+
+#### **Pasta tests/**
+
+Dentro do Plugin, a pasta **`tests/`** contém os casos de testes do Plugin. Dentro de cada caso de teste, duas pastas são obrigatórias: 
+
+- A pasta **`expected`**; e 
+- A **`target`** 
+
+Confira:
+
+#### **expected/**
+
+A pasta **`expected/`** deve conter todos os arquivos esperados após a aplicação do Plugin de Aplicação ou Infraestrutura, com exceção do arquivo **`stk.yaml`** (gerado durante a criação de uma Aplicação ou Infraestrutura).
+
+#### **target/**
+
+A pasta **`target/`** deve conter a Aplicação ou Infraestrutura. Ela deve possuir a pasta **`.stk`** e dentro dela o arquivo **`stk.yaml`**.
+
+### **Arquivos dos casos de teste**
+
+Cada caso de teste possui um manifesto no formato **`.yaml`** chamado **`test-case.yaml`** que carrega as informações necessárias para testar o seu Plugin.
+
+Confira:
+
+<Tabs groupId="test-plugin">
+<TabItem value="app" label="Caso de teste de Aplicação" default>
+
+  
+```yaml title="test-case.yaml modo 'apply'"
+schema-version: v2
+kind: test
+// new-line-start
+spec:
+  type: plugin
+  mode: apply
+  inputs: {}
+  inputs-envs: {}
+// new-line-end    
+```
+
+</TabItem>
+<TabItem value="deploy" label="Caso de teste de Infraestrutura">
+
+
+```yaml title="test-case.yaml modo 'deploy'"
+schema-version: v2
+kind: test
+// new-line-start
+spec:
+  type: plugin
+  mode: deploy
+  environment: production
+  inputs: {}
+  inputs-envs: {}
+// new-line-end    
+```
+
+</TabItem>
+</Tabs>
+
+### **Campos do arquivo test-case.yaml**
+
+Confira detalhes sobre cada campo dentro do arquivo test-case.yaml: 
+
+#### **`spec:`**
+
+- **mode:** Define o **tipo do caso de teste**, os valores aceitos são: **`apply`** ou **`deploy`**. O **modo apply** é para os casos de testes de Plugins aplicados em **Aplicações**. O **modo deploy** são casos de teste de Plugins de Infraestrutura que geram ou são aplicados uma **Infraestrutura**.
+
+:::info Informação Adicional
+
+Ao criar Plugins de Infraestrutura, duas estruturas de testes são geradas:
+
+<br/>
+
+-  Uma no modo '**`apply`**'; e 
+-  Outra no modo '**`deploy`**'. 
+
+<br/>
+
+Pois Plugins de Infraestrutura também podem aplicar alterações em uma Aplicação além de gerar as peças de infraestrutura.
+
+:::
+
+- **environment:** Apenas para testes no modo **deploy**. Define o ambiente utilizado no teste, os valores aceitos são **`production`** e **`development`**.
+
+:::warning Atenção!
+
+O ambiente definido em **`environment`** não corresponde a nenhum ambiente produtivo ou de desenvolvimento real. Tratam-se de ambientes isolados de uso exclusivo dos testes de Plugin.
+
+::: 
+
+- **inputs** Lista com nomes dos inputs do seu Plugin (valor '**`name:`**');  
+- **inputs-envs:** Lista com nomes dos inputs-envs do seu Plugin (valor '**`name:`**'). Configure o **environment** para **`development`** para validar os inputs-envs;   
+
+## **Criar casos de teste manualmente**
+
+:::info
+
+Se você criou um **novo Plugin**, você **não precisa** criar a estrutura a seguir. Pule para os passos de como [**preencher o seu caso de teste**](#preencher-teste-do-plugin).
+
+:::
+
+### **Antes de começar**
+
+A estrutura básica de um caso de teste é gerada automaticamente ao criar um Plugin. Para **Plugins existentes que não possuem casos de teste**, você deve criar manualmente essa estrutura e preencher os arquivos dos casos de testes. Confira a seguir:
+
+Dentro da pasta do seu Plugin:
+
+1. Crie a pasta **`tests`**;
+2. Dentro da pasta **tests**, crie a pasta com o nome do seu caso de teste, por exemplo, **"test-case-001"**;
+3. Dentro do seu caso de teste:
+
+- Crie o arquivo **`test-case.yaml`** e cole o conteúdo em seu arquivo de test:
+
+<Tabs>
+<TabItem value="app-plugin" label="Para Plugins de Aplicação" default>
+
+
+```yaml title="test-case.yaml content"
+schema-version: v2
+kind: test
+spec:
+  type: plugin
+// new-line  
+  mode: apply
+  inputs: {}
+  inputs-envs: {}
+```
+
+</TabItem>
+<TabItem value="infra-plugin" label="Para Plugins de Infraestrutura">
+
+
+```yaml title="test-case.yaml content"
+schema-version: v2
+kind: test
+spec:
+  type: plugin
+// new-line-start  
+  mode: deploy
+  environment: production
+// new-line-end  
+  inputs: {}
+  inputs-envs: {}
+```
+
+</TabItem>
+</Tabs>
+
+4. Crie as pastas **expected** e **target**.
+
+### **Preencher teste do Plugin**
+
+Com a estrutura de testes em seu Plugin pronta, adicione os arquivos e preencha os inputs do seu Plugin:
+
+#### 1. Adicione os arquivos do Plugin no caso de teste
+
+- **Na pasta '/target'**: Adicione nesta pasta uma cópia da pasta **.stk** contendo o arquivo **`stk.yaml`** da sua Aplicação ou Infraestrutura;
+- **Na pasta '/expected'**: Adicione nesta pasta uma cópia de todos os arquivos que são gerados pelo seu Plugin para gerar uma Aplicação, Infraestrutura ou adicionar novos recursos em uma Aplicação ou Infraestrutura existente, com exceção do arquivo **`.stk/stk.yaml`**.
+
+:::info Informação Adicional
+
+Para Plugins de Aplicação, copie todos os arquivos da pasta **/templates** do seu Plugin para a pasta **/expected** do teste. Para Plugins de Infraestrutura, copie todos os arquivos da pasta **/templates-deploy** do seu Plugin para a pasta **/expected** do teste.
+
+::: 
+
+#### 2. **Preencha o arquivo `test-case.yaml`**
+
+No arquivo **`test-case.yaml`** do seu teste, confira os dados e preencha os inputs do seu teste de acordo com o tipo do Plugin.
+
+No campo **`spec:`** confira se as seguintes opções estão preenchidas:
+
+- A opção **`mode:`** deve ter o valor **`apply`**  para testes de Plugin de Aplicação ou o valor **`deploy`** para Plugins de Infraestrutura;
+- **Apenas para Plugins de Infraestrutura**, o **`test-case.yaml`** deve possuir no campo "**`spec:`**" a opção "**`environment:`**" com os valores **`production`** ou **`development`** preenchidos.
+
+#### **Preencher inputs**
+
+Considere um Plugin com os seguintes inputs:
+
+- O exemplo destaca os campos **`name:`** dos inputs que você deve adicionar ao caso de teste;
+
+```yaml
+spec:
+  # . 
+  # .
+  # . Other spec fields above...
+  inputs:
+    - label: Database name
+// old-line    
+      name: database_name
+      type: text
+      required: true
+```
+
+#### Preencher inputs e inputs-envs
+
+Considere um Plugin com os seguintes inputs e inputs-envs:
+
+- O exemplo destaca os campos **`name:`** dos inputs e inputs-envs que você deve adicionar ao caso de teste;
+- Também são destacados os valores que você pode testar para os inputs-envs.
+
+```yaml
+spec:
+  # . 
+  # .
+  # . Other spec fields above...
+  inputs:
+    - label: Database name
+// old-line    
+      name: database_name
+      type: text
+      required: true
+  inputs-envs:
+    - label: Database Type
+// old-line    
+      name: database_type
+      type: select
+      required: true
+      items:
+// old-start    
+        - Relational
+        - Relational PROD
+        - Non-Relational
+// old-end        
+    - label: Database
+// old-line    
+      name: database
+      type: select
+      required: true
+      items:
+// old-start      
+        - MySQL
+        - PostgreSQL
+        - SQL Server
+        - MongoDB
+// old-end         
+```
+
+O arquivo de teste preenchido deve ser como um dos exemplos, onde a sintaxe dos inputs devem ser:
+
+- **inputs**
+
+```yaml
+inputs:
+  input_name: "input value"
+```
+
+- **inputs-envs**
+
+```yaml
+inputs-envs:
+  input_name:
+    development: "input-env development value"
+    production: "input-env production value"
+```
+
+<Tabs>
+<TabItem value="apply-env" label="Plugin no modo 'apply'" default>
+
+```yaml title="./test-case-apply/test-case.yaml"
+schema-version: v2
+kind: test
+spec:
+  type: plugin
+  mode: apply
+// new-line-start  
+  inputs:
+    database_name: "customer-api-db"
+  inputs-envs:
+    database_type:
+      development: "Relational"
+      production: "Relational"
+    database:
+      development: "MySQL" 
+      production: "SQL Server"
+// new-line-end      
+```
+
+</TabItem>
+<TabItem value="deploy-env-dev" label="Plugin no modo 'deploy' e ambiente 'development'">
+
+```yaml title="./test-case-deploy-dev/test-case.yaml"
+schema-version: v2
+kind: test
+spec:
+  type: plugin
+  mode: deploy
+// new-line-start    
+  environment: development
+  inputs:
+    database_name: "customer-api-dev-db"
+  inputs-envs:
+    database_type:
+      development: "Relational"
+    database:
+      development: "MySQL"
+// new-line-end        
+```
+
+</TabItem>
+<TabItem value="deploy-env-prod" label="Plugin no modo 'deploy' e ambiente 'production'">
+
+```yaml title="./deploy-env-prod/test-case.yaml"
+schema-version: v2
+kind: test
+spec:
+  type: plugin
+  mode: deploy
+// new-line-start    
+  environment: production
+  inputs:
+    database_name: "customer-api-prod-db"
+  inputs-envs:
+    database_type:
+      production: "Relational"
+    database:
+      production: "SQL Server" 
+// new-line-end      
+```
+
+</TabItem>
+</Tabs>
+
+#### **Preencher `requires` e `generates` Connections**
+
+Se o seu Plugin gerar ou requerer Connections, você deve adicioná-las ao caso de teste. Considere os exemplos:
+
+<Tabs groupId="connections">
+<TabItem value="s3-req" label="Plugin que requer uma Connection" default>
+
+```yaml title="Plugin de Infraestrutura que requer um bucket s3"
+schema-version: v3
+kind: plugin
+metadata:
+  name: plugin-infra-req-s3
+  display-name: plugin-infra-req-s3
+  description: Plugin that requires S3
+  version: 0.0.1
+  picture: plugin.png
+spec:
+  type: infra
+  compatibility:
+    - python
+  docs: #optional
+    pt-br: docs/pt-br/docs.mdx
+    en-us: docs/en-us/docs.mdx
+  single-use: False
+  runtime:
+    environment:
+      - terraform-1-4
+      - aws-cli-2
+      - git-2
+  repository: https://github.com
+  technologies: # Ref: https://docs.stackspot.com/create-use/create-content/yaml-files/plugin-yaml/#technologies-1
+    - Api
+// old-start    
+  inputs:
+    - label: Connection interface for your aws-s3-req-alias
+      name: aws-s3-req-alias
+      type: required-connection
+      connection-interface-type: aws-s3-conn
+// old-end        
+  stk-projects-only: false  
+```
+
+</TabItem>
+
+<TabItem value="s3-gen" label="Plugin que gera uma Connection">
+
+```yaml title="Plugin de Infraestrutura que gera um bucket s3"
+schema-version: v3
+kind: plugin
+metadata:
+  name: plugin-infra-gen-s3
+  display-name: plugin-infra-gen-s3
+  description: Plugin to generate S3
+  version: 0.0.1
+  picture: plugin.png
+spec:
+  type: infra
+  compatibility:
+    - python
+  docs: #optional
+    pt-br: docs/pt-br/docs.mdx
+    en-us: docs/en-us/docs.mdx
+  single-use: False
+  runtime:
+    environment:
+      - terraform-1-4
+      - aws-cli-2
+      - git-2
+  technologies: # Ref: https://docs.stackspot.com/create-use/create-content/yaml-files/plugin-yaml/#technologies-1
+    - Api
+  stk-projects-only: false
+  inputs:
+  // old-start  
+    aws-s3-gen-alias:
+      selected: my-selected-s3
+      outputs:
+        arn: "my-s3-aws-arn"
+        bucket_name: "my-s3-aws-bucket-name"
+// old-end   
+```
+
+</TabItem>
+</Tabs>
+
+O arquivo de teste preenchido deve ser como um dos exemplos, onde a sintaxe das Connections devem ser:
+
+<Tabs groupId="connections">
+<TabItem value="s3-req" label="Requires Connection no modo 'apply'" default>
+
+
+```yaml
+inputs:
+  input_name:
+    selected: input-an-alias-name
+    outputs:
+      output_name1: "output_name"
+      output_nameN: "output_name"
+```
+
+Exemplo:
+
+```yaml
+schema-version: v2
+kind: test
+spec:
+  type: plugin
+  mode: apply
+// new-line-start 
+  inputs:
+    aws-s3-req-alias:
+      selected: my-selected-s3
+      outputs:
+        arn: "my-s3-aws-arn"
+        bucket_name: "my-s3-aws-bucket-name"
+// new-line-end         
+  inputs-envs: {} 
+```
+
+</TabItem>
+
+<TabItem value="requires-deploy" label="Requires Connection no modo 'deploy'">
+
+
+```yaml
+inputs:
+  input_name:
+    selected: input-an-alias-name
+    outputs:
+      output_name1: "output_name"
+      output_nameN: "output_name"
+```
+
+Exemplo:
+
+```yaml
+schema-version: v2
+kind: test
+spec:
+  type: plugin
+  mode: deploy
+// new-line-start 
+  inputs:
+    aws-s3-req-alias:
+      selected: my-selected-s3
+      outputs:
+        arn: "my-s3-aws-arn"
+        bucket_name: "my-s3-aws-bucket-name"
+// new-line-end         
+  inputs-envs: {} 
+```
+
+</TabItem>
+
+<TabItem value="s3-gen" label="Generates Connection no modo 'apply'" default>
+
+```yaml
+inputs:
+  input_name:
+    selected: input-an-alias-name
+    outputs:
+      output_name1: "output_name"
+      output_nameN: "output_name"
+```
+
+Exemplo:
+
+```yaml
+schema-version: v2
+kind: test
+spec:
+  type: plugin
+  mode: apply
+  inputs:
+// new-line-start  
+    aws-s3-gen-alias:
+      selected: my-selected-s3
+      outputs:
+        arn: "my-s3-aws-arn"
+        bucket_name: "my-s3-aws-bucket-name"
+// new-line-end            
+  inputs-envs: {}
+```
+
+</TabItem>
+
+<TabItem value="generates-deploy" label="Generates Connection no modo 'deploy'">
+
+
+```yaml
+inputs:
+  input_name:
+    selected: input-an-alias-name
+    outputs:
+      output_name1: "output_name"
+      output_nameN: "output_name"
+```
+
+Exemplo:
+
+```yaml
+schema-version: v2
+kind: test
+spec:
+  type: plugin
+  mode: deploy
+// new-line-start   
+  inputs:
+    my_new_s3: 
+      selected: aws-s3-gen-alias
+      outputs: 
+        s3_name: my-new-s3
+        s3_arn: my-arn
+// new-line-end          
+  inputs-envs: {}
+```
+
+</TabItem>
+</Tabs>
+
+#### **Preencher outputs com listas e objetos**
+
+Confira um exemplo de como você pode preencher um caso de teste com outputs de Connections com objetos, lista de objetos e lista de string:
+
+```yaml
+schema-version: v2
+kind: test
+spec:
+  type: plugin
+  mode: deploy
+  inputs:
+    nlb_name: "my-nlb"
+    nlb_type: "application"
+    region: sa-east-1
+    owner_team_email: "myemail@org.com"
+    tech_team_email: "myteam@org.com"
+    aws-vpc-req-alias:
+      selected: my-vpc
+      // new-line-start
+      outputs:
+        azs: # string list
+          - my-azs-1
+          - my-azs-2
+        default_vpc: # vpc object
+          id: "my-default-vpc-id"
+          arn: "my-default-vpc-arn"
+          cidr_block: "my-default-vpc-cidr"
+        private_subnets: # list of subnets objects
+          - id: "my-private-subnets-id"
+            arn: "my-private-subnets-arn"
+            cidr_block: "my-private-subnets-cidr"
+            name: "my-private-subnets-name"
+          - id: "my-second-private-subnets-id"
+            arn: "my-second-private-subnets-arn"
+            cidr_block: "my-second-private-subnets-cidr"
+            name: "my-second-private-subnets-name"
+        public_subnets: # list of subnet object
+          - id: "my-public-subnets-id"
+            arn: "my-public-subnets-arn"
+            cidr_block: "my-public-subnets-cidr"
+            name: "my-public-subnets-name"
+        vpc: # vpc object
+          id: "my-vpc-id"
+          arn: "my-vpc-arn"
+          cidr_block: "my-vpc-cidr"     
+      // new-line-end       
+  inputs-envs: {}   
+  generates: {}
+```
+
+## **Executar testes**
+
+Os testes são **executados dentro da pasta do seu Plugin**. Para executar os testes, **acesse a pasta do seu Plugin** e execute os comandos de acordo com os testes que você deseja executar:
+
+### **Executar todos os testes do Plugin**
+
+Execute o comando:
+
+```bash
+stk test plugin 
+```
+
+<AsciinemaPlayer src="/videos/stk-test-plugin1.cast" autoplay="1" loop="1" />
+
+### **Executar um teste específico do Plugin**
+
+Execute o comando de teste informando o nome da pasta do teste:
+
+```bash
+stk test plugin [test-case-name]
+```
+
+<AsciinemaPlayer src="/videos/stk-test-plugin2.cast" autoplay="1" loop="1" />
+
+### **Executar testes com o filtro '--mode'**
+
+Você pode executar os testes com a opção **`--mode`** para filtrar os testes de acordo com o modo em que ele foi configurado. Você define o filtro informando o valor **`apply`** ou **`deploy`**:
+
+```bash
+stk test plugin --mode deploy/apply
+```
+
+<AsciinemaPlayer src="/videos/stk-test-plugin3.cast" autoplay="1" loop="1" />
+
+## **Cenários de erros e testes ignorados**
+
+Durante a execução dos casos de teste é importante que você identifique de forma rápida os erros encontrados nos seus Plugins. Confira a seguir os erros mapeados e cenários onde o seu Plugin precisa de ajustes.
+
+Clique nos itens para abrir o conteúdo:
+
+<details>
+  <summary><strong>Erros mapeados</strong></summary>
+  <ul>
+    <li><strong>Código:</strong> <code>STK_MESSAGE_BUSINESS_EXCEPTION_FOLDER_HAS_NO_TESTS_FOLDER_ERROR</code></li>
+     <p><strong>Cenário:</strong> Quando não encontrou a pasta tests;</p>
+    <li><strong>Código:</strong> <code>STK_MESSAGE_BUSINESS_EXCEPTION_TEST_PLUGIN_NO_TESTS_FOUND_WITH_APPLY_MODE_ERROR</code></li>
+     <p><strong>Cenário:</strong> Quando não encontrou testes com o modo apply no manifesto do test-case.yaml;</p>
+    <li><strong>Código:</strong> <code>STK_MESSAGE_BUSINESS_EXCEPTION_TEST_PLUGIN_NO_TESTS_FOUND_WITH_DEPLOY_MODE_ERROR</code></li>
+     <p><strong>Cenário:</strong> Quando não encontrou testes com o modo deploy no manifesto do test-case.yaml;</p>
+    <li><strong>Código:</strong> <code>STK_MESSAGE_BUSINESS_EXCEPTION_TEST_PLUGIN_NO_TESTS_FOUND_WITH_TEST_NAME_ERROR</code></li>
+     <p><strong>Cenário:</strong> Quando não encontrou casos de teste com o nome desejado;</p>
+    <li><strong>Código:</strong> <code>STK_MESSAGE_BUSINESS_EXCEPTION_TEST_PLUGIN_NO_TESTS_FOUND_ERROR</code></li>
+     <p><strong>Cenário:</strong> Quando não encontrou testes na pasta tests;</p>
+    <li><strong>Código:</strong> <code>STK_MESSAGE_BUSINESS_EXCEPTION_MISSING_REQUIRED_INPUTS_ERROR</code></li>
+     <p><strong>Cenário:</strong> Quando o(s) input(s) requerido(s) não constam no manifesto do caso de teste (test-case.yaml);</p>
+    <li><strong>Código:</strong> <code>STK_MESSAGE_BUSINESS_EXCEPTION_TEST_PLUGIN_INVALID_PLUGIN_MANIFEST_ERROR</code></li>
+     <p><strong>Cenário:</strong> Quando não foi possível converter o manifesto do Plugin (Plugin.yaml), pois é inválido;</p>
+    <li><strong>Código:</strong> <code>STK_MESSAGE_BUSINESS_EXCEPTION_OPTION_DEPLOY_MODE_ONLY_TO_INFRA_PLUGIN_TYPE_ERROR</code></li>
+     <p><strong>Cenário:</strong> Quando utilizado option --mode deploy para Plugin com tipo diferente de infra.</p>
+  </ul>    
+</details>
+
+
+<details>
+  <summary><strong></strong>Testes ignorados</summary>
+  <ul>
+    <li>Quando não existe a pasta target no diretório do caso de tests;</li>
+    <li>Quando a pasta target não contém o manifesto de App/Infra (.stk/stk.yaml);</li>
+    <li>Quando a pasta target contém o manifesto de app/infra inválido (.stk/stk.yaml);</li>
+    <li>Quando não existe a pasta expected no diretório do caso de teste;</li>
+    <li>Quando a pasta expected está vazia;</li>
+    <li>Quando o manifesto do caso de teste (test-case.yaml) é inválido;</li>
+    <li>Quando não foi possível converter o manifesto do caso de teste (test-case.yaml);</li>
+    <li>Quando cenário de teste contém --mode: deploy para Plugin do tipo app.</li>
+  </ul>
+</details>
+
+<details>
+  <summary><strong>Falha de testes durante aplicação do Plugin</strong></summary>
+  <ul>
+    <li>Quando o(s) input(s) requerido(s) não constam no manifesto do caso de teste (test-case.yaml);</li>
+    <li>Quando o(s) input(s) não segue o pattern do regex do input;</li>
+    <li>Quando acontece algum erro inesperado durante a aplicação do Plugin;</li>
+  </ul>
+</details>
+
+<details>
+  <summary><strong>Falha de testes na validação dos arquivos gerados</strong></summary>
+  <ul>
+    <li>Quando o Plugin aplicado gerou um arquivo não esperado;</li>
+    <li>Quando o Plugin aplicado gerou uma pasta não esperada;</li>
+    <li>Quando o Plugin aplicado não gerou uma pasta esperada;</li>
+    <li>Quando o Plugin aplicado não gerou um arquivo esperado;</li>
+    <li>Quando acontece alguma falhar inesperada durante a validação dos arquivos gerados.</li>
+  </ul>
+</details>
+
+<details>
+  <summary><strong>Falha de testes na validação do conteúdo dos arquivos gerados</strong></summary>
+  <ul>
+    <li>Quando o Plugin aplicado gerou uma linha com conteúdo diferente do esperado;</li>
+    <li>Quando o Plugin aplicado gerou menos linhas do que o esperado;</li>
+    <li>Quando o Plugin aplicado gerou mais linhas do que o esperado.</li>
+  </ul>
+</details>
+
+## **Próximos passos**
+
+<br/>
+
+import CustomDocCard from '@site/src/components/MdxComponents/CustomDocCard';
+import CustomDocCardList from '@site/src/components/MdxComponents/CustomDocCardList';
+
+<CustomDocCardList>
+  <CustomDocCard title="Crie o seu Estúdio" description="Confira o guia para criar um Estúdio." link="/create-use/studio/create-studio.mdx" />
+  <CustomDocCard title="Publique o seu Plugin" description="Confira o passo a passo para publicar um Plugin em seu Estúdio." link="/create-use/create-content/plugin/publish-plugin.mdx" />
+</CustomDocCardList>

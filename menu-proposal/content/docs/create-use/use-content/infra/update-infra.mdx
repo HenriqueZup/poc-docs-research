@@ -1,0 +1,60 @@
+---
+title: Atualizar Infraestrutura via Portal
+description: Aprenda como atualizar um Plugin de Infraestrutura via Portal da StackSpot
+  EDP.
+---
+
+Você pode atualizar um Plugin de Infraestrutura no Portal StackSpot EDP se sua conta estiver conectada ao GitHub, GitLab ou Azure.
+
+:::danger Atenção!
+
+Dependendo das políticas do seu provedor de Cloud, ao atualizar ou remover campos, os recursos da Infraestrutura podem ser destruídos e depois recriados.
+
+A StackSpot EDP não identifica quais recursos serão afetados, então é importante estar ciente de que alguns dados podem ser perdidos.
+
+:::
+
+## **Pré-requisitos**
+
+Somente usuários com as permissões **`application:update`** e **`shared_infra:update`** podem realizar a seguinte atualização.
+
+Para atualizar o Plugin de Infraestrutura, acesse o Portal da StackSpot EDP e siga os seguintes passos: 
+
+**Passo 1.** [**Faça login no Portal StackSpot EDP**](https://app.stackspot.com/login) e acesse o Workspace. Clique na aba **‘Infraestrutura’**;
+
+**Passo 2.** Escolha a sua **‘Infraestrutura‘**. Na seção Plugins, clique na subseção **‘Infraestrutura‘**; 
+
+**Passo 3.** Clique no botão **‘Atualizar Infraestrutura‘**;
+
+![](/img/update-infra.png)
+
+**Passo 4.** Selecione a branch onde a Infraestrutura que será atualizada está localizada;
+
+**Passo 5.** Dê um nome à branch que será criada com as alterações dos Plugins da sua Infraestrutura. Um Pull Request será criado dessa branch para a branch escolhida no passo 4. Clique em **‘Próximo’**;
+
+**Passo 6.** Na próxima tela, você terá acesso a todos os Plugins existentes na branch.
+- Altere os valores desejados de cada Plugin.
+- **Opcional:** Você pode alterar a versão da Stack, e a última versão disponível do Plugin será exibida.
+
+:::info Informação Adicional
+
+ Ao alterar a versão, observe que novos campos podem ser adicionados ou campos existentes podem ser removidos em um Plugin. Confira as labels no Portal:
+
+- **Nova:** novos campos adicionados.
+- **Modificada:** campos que foram alterados.
+
+:::
+
+> Você pode alterar os valores e versões dos Plugins, mas **não é possível adicionar ou remover Plugins**.
+> Você pode atualizar Plugins depreciados, mas não é possível atualizar Plugins arquivados.
+
+**Passo 7.** Clique em **‘Próximo’** e revise as alterações.
+Os valores modificados ou removidos estarão destacados no Portal. 
+
+**Passo 8.** Clique em **Atualizar e criar Pull Request**.
+
+- A StackSpot EDP criará automaticamente um Pull Request (PR) da branch do passo 4 no seu repositório GitHub, GitLab ou Azure.
+
+- Verifique se o Pull Request foi criado corretamente e inclui todas as alterações feitas. Se tudo estiver correto, aprove o Pull Request para que o merge seja realizado na branch. As alterações serão aplicadas assim que o deploy dessa branch for executado.
+
+Pronto, agora, faça o deploy da nova versão da Infraestrutura para aplicar as alterações feitas nesta página.

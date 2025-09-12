@@ -1,0 +1,28 @@
+---
+title: Gatilhos e condicionais para Jobs e Steps
+description: Informações sobre os gatilhos e condicionais para Jobs e Steps de um
+  Workflow.
+---
+
+## **Criando gatilhos condicionais para Jobs e Steps**
+
+Para declarar um gatilho condicional em um Job ou Step, use o parâmetro e **`when`**:
+
+- **when:** recebe um input booleano, definido por uma expressão Jinja que deve retornar "true" para que o Job ou Step seja executado. Disponível para Jobs e Steps.
+
+```yaml title="Steps do tipo 'plugin', de um Workflow."
+steps:
+  - type: plugin
+    name: studio/optional_plugin@1
+    id: apply_optional_plugin
+    label: Apply optional plugin
+    when: "{{ boolean_input }}"
+    inputs:
+      some_plugin_input: "fixed_value"
+      other_plugin_input: "{{ text_input | lower }}"
+      input_from_other_job: "{{ outputs.some_job.some_action_execution.some_action_output }}"
+```      
+<!--    generated-connections:
+      s3_alias: "{{ some_s3_connection }}" -->
+
+Isto permite que um Job inteiro ou um Step seja ignorado na execução do Workflow, caso não cumpra alguma condição.

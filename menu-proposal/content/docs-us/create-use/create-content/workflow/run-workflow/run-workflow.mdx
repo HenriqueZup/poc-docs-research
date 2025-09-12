@@ -1,0 +1,55 @@
+---
+title: Run Workflow
+description: Learn how to run a Workflow in the STK CLI, locally or published in a
+  Studio.
+---
+
+> In this section, you will find how to run a Workflow in the STK CLI and whhat are the available parameters. 
+
+## **Requirements**
+
+- StackSpot CLI installed and updated.  
+- You need a local Workflow on your machine or access to a Studio with published Workflows.
+
+## **Running a Workflow**
+
+You have two options to select the Workflow you want to run using the STK CLI:
+
+- **Option 1.** Run a Workflow locally that has not yet been published. Provide the path to the Workflow folder in the following command:
+
+```bash title="Command to run a Workflow locally"
+stk run workflow User/Documents/Workflows/my-first-workflow
+```
+
+- **Option 2.** Run a Workflow published in a Studio. Specify the name of the Studio where the Workflow is published, see the following command:
+
+```bash title="Command to run a Workflow with Studio Qualifier"
+stk run workflow nome-studio/nome-workflow@versao
+```
+
+:::tip 
+
+StackSpot offers Workflows that you can utilize in your projects. [**Discover more about Workflows and other official resources on the StackSpot Native Content page**](create-use/use-content/native-content/index.md).
+
+:::
+
+Since execution occurs through the command line, you can specify all parameters directly in the command line rather than responding to prompts in the terminal.:
+
+```bash
+stk run workflow nome-studio/nome-workflow@versao --env <slug-ambiente> --report-status --input_1 valor --input_2 valor --inputs-json '{"input_1": "valor"}'
+```
+
+Check out the available parameters:
+
+- **name**: defines the name of the Workflow. It can be:  
+  - **studio-name/workflow-name@version**, for published Workflows.  
+  - **Path to a local YAML file**, for unpublished Workflows.  
+  - **Alias (alternative name) of a Workflow** registered in the **`stk.yaml`** file of the Application or Infrastructure.
+
+- **--env**: It specifies the environment slug. **Required for `deploy` Workflows**. Optional for the **`reusable`** type. Provides the StackSpot variables **`var.STK_ENV`** and **`var.STK_ENV_ID`**.
+
+- **--report-status**: It indicates whether STK CLI should report the execution status. If omitted, the execution is considered local. The status is reported only if the command is executed within an App or Infra and the **`var.STK_EXECUTION_ID`** variable is set.
+
+- **inputs**: It allows you to provide the inputs via the command line using the syntax: **`--input-name input-value`**. It follows the same input rules as Actions and Plugins.
+
+- **--inputs-json**: It allows you to provide inputs in JSON format, where the key is the input name and the value is the argument. It follows the same rules for **`inputs-json`** in Actions and Plugins. Syntax: **`--inputs-json {"input_name": "input value", "input_2": "input value2"}`**.

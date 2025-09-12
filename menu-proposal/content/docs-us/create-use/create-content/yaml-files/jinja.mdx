@@ -1,0 +1,528 @@
+---
+title: Using Jinja on StackSpot
+description: Learn how to use Jinja on StackSpot.
+---
+
+> In this section, you will find information about using the Jinja language.
+
+## **Jinja**
+
+The StackSpot engine uses the [**Jinja**](https://jinja.palletsprojects.com) language to allow Plugins to generate files based on user input parameters when creating an app or applying a Plugin.
+
+In addition to file generation, Jinja expressions can be used in Plugin configuration files, allowing great flexibility in defining settings based on user input.
+
+:::tip
+
+For security reasons, **Jinja** runs separately from your system in **Sandbox** mode. Depending on your usage, some expressions may not behave as expected. [**For more information about restrictions, see the official Jinja documentation**](https://jinja.palletsprojects.com/en/stable/sandbox/).
+
+:::
+
+## **Plugins rendering cycle**
+
+Before using Jinja, it's essential to understand how the Plugin rendering cycle works in StackSpot. Whenever a Plugin is applied to a project, either by the **`stk create app`** or **`stk apply plugin`** commands, the following sequence of steps occurs:  
+
+1. The configuration file (**`plugin.yaml`**) is loaded;
+2. Hooks with trigger **`before-input`** are executed;
+3. The inputs defined in the configuration are queried for the user;
+4. The **`computed-inputs`** are calculated;
+5. Hooks with trigger **`before-rendering`** are executed;
+6. Jinja templates contained in the Plugin's **`templates`** folder are rendered;
+7. Hooks with trigger **`after-render`** are executed;
+8. Merge files if they exist in the target.
+
+<br/>
+
+The input parameters entered by the user in step **3** are used as variables, they can be used in Jinja expressions both in the templates used for file generation and at some points in the Plugins configuration.
+
+## **Jinja's basic concepts**
+
+The Jinja language, like most template languages, allows, through specific tags in a text, a definition of expressions that are interpolated by the engine to render the final result.
+
+Jinja markup in text can be:
+
+- **`{{ ... }}`**, for expressions that will be rendered;
+- **`{% ... %}`**, for control structures;
+- **`{# ... #}`**, for comments.
+
+Check out a simple example of a Jinja template below:  
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>My Webpage</title>
+</head>
+<body>
+    {# print a Hello message for each name in names list #}
+    {% for name in names %}
+    <h1>Hello {{ name }}!</h1>
+    {% endfor %}
+</body>
+
+```
+
+When the variable **`name`** is given the values **`['John', 'Mary']`**, the template rendering should return the following result below:  
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>My Webpage</title>
+</head>
+<body>
+    <h1>Hello João!</h1>
+    <h1>Hello Maria!</h1>
+</body>
+```
+
+In short, when evaluated by StackSpot's template engine, Jinja's expressions and control structures are evaluated to produce the final result, either when generating files or configuring commands and Hooks in the Plugins' configuration files.
+
+### **Jinja expressions**
+
+Expressions must be enclosed within **`{{ ... }}`**, this indicates something that should be rendered by Jinja. Expressions can contain literal values, variables, calculations and complex expressions.
+
+> To learn more about all the Jinja expressions, check the [**Jinja documentation**](https://jinja.palletsprojects.com/en/3.1.x/templates/#expressions).
+
+Check out the following for a summary of Jinja's most relevant points for a **content creator at StackSpot**.
+
+### **Variables**  
+
+The most common use of Jinja expressions in StackSpot is to use the value of a variable in the rendered files. The variables present in the Jinja context come from the **`inputs`** in the Plugins configuration files asked of the user when applied to a project.
+
+For example, imagine that a Plugin has the following **`input`** defined in it's Yaml file:
+
+```yaml
+inputs:
+  - label: Enter your name 
+    type: text
+    name: name
+```
+
+The expression to render the name entered by the user in the input will be:
+
+```yaml
+{{ name }}
+```
+
+When applying the Plugin in question, in the applied project, the input will ask the user for their name. Generated files that contain the expression `{{ name }}`, will have the name typed in by the user rendered instead of the expression.  
+
+:::warning
+If the Jinja variable has a hyphen, for example, my-var, it can be an input variable, and it is called **\{\{inputs["my-var"]}}**. If it doesn't have a hyphen, it will be  **\{\{myvar}}** or **\{\{inputs.myvar}}**.
+:::
+
+### **Filters**
+
+Variables can be transformed using filters. The syntax for applying a filter to a variable is:
+
+```yaml
+{{ variable | filter }}
+```
+
+It is possible to apply more than one filter by chaining together several *pipes* ( `|` ), as in the example below:
+
+```yaml
+{{ variable | filter1 | filter2 }}
+```
+
+In the above example the variable value is modified by `filter1` and then modified by `filter2`.
+
+Check the example of the default `capitalize` filter:  
+This filter converts the entered name to the format where, the first letter is uppercase and the others are lowercase.
+
+`{{ name | capitalize }}`
+
+> For more information on Jinja's default filters, check the [**Jinja documentation**](https://jinja.palletsprojects.com/en/3.1.x/templates/#builtin-filters).
+
+In addition to Jinja's standard filters, StackSpot provides some useful filters for Stacks creators:
+
+- **`pascalcase`**: Converts strings to PascalCase format.
+- **`camelcase`**: Converts strings to camelCase format.
+- **`kebabcase`**: Converts strings to kebab-case format.
+- **`cobolcase`**: Converts strings to COBOL-CASE format.
+- **`snakecase`**: Converts strings to snake_case format.
+- **`macrocase`**: Converts strings to MACRO_CASE format.
+- **`group_id_folder`**: Converts strings by replacing "." with "/". This filter is useful for assembling folder names from Java names and packages.  
+- **`regex_replace`**: Return a copy of the value with all occurrences of a substring replaced with a new one. The first argument is the substring that should be replaced, the second is the replacement string.
+
+You can provide an optional third argument `count`, only the first occurrences of count will be replaced:
+
+```bash
+# {{ "string value" |regex_replace("substring pattern", "replacement string") }}
+{{ "Hello World"|regex_replace("Hello", "Goodbye") }}
+    -> Goodbye World
+
+# {{ "string value" |regex_replace("substring pattern", "replacement string", count) }}
+{{ "aaathree"|replace("a", "two", 2) }}
+    -> two, two, athree
+```
+
+You can use variables that contain the value to be replaced:
+
+Consider that the variable `hello_word` has the value `"dogs, cats, birds"`;
+
+```bash
+# {{ variable|regelex_replace('substring pattern', 'replacement string')}}
+{{ hello_world|regex_replace('birds', 'humans') }}
+    -> docs, cats, humans
+```
+
+The variable `hello_word` now has the value `"dogs, cats, humans"`.
+
+It is possible to use the regular expression groups in the replacement string in the replacement field:
+
+Consider that the variable `hello_word` has the value `'burger'`;
+
+```bash
+# {{ string value or variable | regex_replace(define group pattern, replacement string group)}}
+{{ hello_world|regex_replace('((\w+\s*)+)', 'cheese\1y') }}
+    -> cheeseburger
+```
+
+The variable `hello_word` now has the value `'cheeseburger'`.
+
+- **`from_json`**: Converts a string in JSON format into a *python dict*.
+
+Consider the JSON string:
+
+```json
+{
+   "input1": "value1"
+}
+```
+
+To use the Python dict in JINJA, you must access it as follows:
+
+```yaml
+{% set my_dict = json_input | from_json %}
+{{my_dict.input1}}
+```
+
+### **Control structures**
+
+:::warning
+
+The StackSpot portal does not support using Jinja control structures. Therefore, it is not guaranteed that all Jinja templates will be successfully executed in the browser.
+
+:::
+
+The control structures present in Jinja are the`if/elif/else/endif` and `for/else/endfor`.
+
+#### **Use the `if/elif/else/endif` structure**
+
+Commands of the **`if/elif/else/endif`** structure allow you to define blocks that will be rendered according to a condition. The example below illustrates the use of an `if` block to control the printing of part of a template:
+
+```bash
+{% if age >= 18 %}
+Would you like a drink?
+{% elif >= 5 %}
+Would you like a soft drink?
+{% else %}
+Would you like a juice?
+{% endif %}
+```
+
+In the above example, logic is implemented to determine the message that will be printed according to the value of the variable **`age`**.
+
+The comparison operators available in Jinja are:  
+
+- `==`: Compares the two operands, returning `true` if they are equal.
+- `!=`: Compares the two operands, returning `true` if they are different.
+- `>`: `true` if the operand on the left is larger than the operand on the right.
+- `>=`: `true` if the operand on the left is greater than or equal to the operand on the right.
+- `<`: `true` if the operand on the left is smaller than the operand on the right.
+- `<=`:  `true` if the operand on the left is less than or equal to the operand on the right.
+
+The following logical operators can be used in expressions:
+
+- `and`: Returns `true` if both left and right expressions are true.
+- `or`: Returns `true` if one of the expressions is true.
+- `not`: Denies the result of an expression.
+- `(expr)`: Group logical expressions.
+
+  
+> The `elif` and `else` blocks are optional, and you can use more than one `elif` block if you need to.
+
+
+#### **Use the `for/else/endfor` structure**
+
+The `for/else/endfor` commands allow you to define a repeating block for each element in a list as in the example below:
+
+```bash
+{% for name in names %}
+Hello {{ name }}!
+{% else %}
+No names given!
+{% endfor %}
+```
+
+In the example above, for each name in the **`names`** list a line with a salutation for the name entered will be rendered.
+
+If the list of names is empty the contents of the block after the **`else`** will be rendered.
+
+> The **`else`** block is optional and can be omitted if not needed.
+
+
+## **Using Jinja on StackSpot**
+
+### **Generation of files in Plugins**
+
+Jinja templates are text files containing expressions and variables interpolated by the engine to generate the final result. When creating a Plugin, a **`templates`** folder contains the Jinja templates that will be used to generate the files when the Plugin is used.
+
+The Plugin rendering click is executed when a user applies a Plugin or creates a new app. The Jinja templates present in each of the Plugins being applied are interpolated using the inputs entered by the user as variables that can be used in Jinja expressions in those files.
+
+Jinja expressions can also be used to define dynamic file and folder names based on user inputs.
+
+To illustrate the use of Jinja in file generation, consider a Plugin with the following structure:  
+
+```bash
+example-plugin/
+├── plugin.yaml
+└── templates
+    ├── file.txt
+    ├── example_folder
+    |   └── nested_file.txt
+    └── {{folder_name}}
+        └── {{file_name}}.txt
+```
+
+The Plugin configuration in the **`plugin.yaml`** file contains the definition of the inputs that will be asked of the user:  
+
+```yaml
+schema-version: v3
+kind: plugin
+metadata:
+  name: example-plugin
+  display-name: example-plugin
+  description: Example plugin
+  version: 0.0.1
+spec:
+  type: app
+  compatibility:
+    - python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  technologies: 
+    - Api
+  inputs:
+    - label: Folder name
+      type: text
+      name: folder_name
+    - label: File name
+      type: text
+      name: file_name
+    - label: Content
+      type: text
+      name: content
+```
+
+In the example above, you are asked for three inputs: **`folder_name`**, **`file_name`**, and **`content`**, which are strings.
+
+Notice in the Plugin structure that there is a folder called **`{folder_name}}`** and a **`{file_name}}.txt`** file that exemplifies how to use Jinja expressions to define folder and file names based on user inputs dynamically.  
+
+The contents of the **`{file_name}}.txt`** file will be:  
+
+```yaml
+Content: {{content}}
+```
+
+The **`file.txt`** and **`nested_file.txt`** files are empty and only illustrate that the entire file structure contained in the **`templates`** folder is generated after the Plugin is applied and can have as many files and folders as required.
+
+When applying the Plugin to an empty **`app`** folder, the STK CLI will ask for inputs as per the example below:  
+
+```bash
+$ cd app
+$ stk apply plugin -p ../example-plugin
+? The current folder doesn't seem to be the part of a StackSpot project. Do you still want to proceed applying the plugin? Yes
+? Folder name my-folder
+? File name my-file
+? Content my-content
+- Plugin example-plugin applied.
+```
+
+And the file structure generated will be:
+
+```bash
+app
+├── example_folder
+│   └── nested_file.txt
+├── example.txt
+├── file.txt
+├── my-folder
+│   └── my-file.txt
+└── stk.yaml
+```
+
+Note that the folder name and files containing Jinja expressions were interpolated with the values entered by the user in the inputs.
+
+The contents of the my-file.txt file after rendering will be:
+
+```yaml
+Content: my-content
+```
+
+Note that the contents of the file have been interpolated by the Jinja engine by replacing the expression **`{{content}}`** with the contents that were typed in by the user **`my-content`**.
+
+### **Jinja expressions in configuration files**
+
+In addition to file generation, Jinja expressions can be used in the configuration yaml of [**Plugins**](create-use/create-content/plugin/create-plugin.md).
+
+#### **Jinja expressions on computed inputs and global computed inputs**
+
+Jinja expressions can be used to calculate the [**computed-inputs** and **global-computed-inputs**](create-use/create-content/yaml-files/advanced-inputs.md) of Plugins, as per the example below:  
+
+```yaml
+schema-version: v3
+kind: plugin
+metadata:
+  name: example-plugin
+  display-name: example-plugin
+  description: Example plugin
+  version: 0.0.1
+spec:
+  type: app
+  compatibility:
+    - python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  technologies: 
+    - Api
+  inputs:
+    - label: Nome
+      type: text
+      name: nome
+
+  computed-inputs:
+      nome_uppercase: "{{nome | upper}}"
+
+  global-computed-inputs:
+      nome_lowercase: "{{nome | lower}}"
+```
+
+In the example above, the variables **`name_uppercase`** and **`name_lowercase`** are created using Jinja expressions that take the input **`name`** and apply filters to convert the typed name to uppercase and lowercase.
+
+#### **Jinja Expressions in Declarative Hooks**
+
+Jinja expressions can be used in some Declarative Hooks configurations and in the file snippets used by Hooks. The following are the attributes that accept Jinja expressions for each Hook type.
+
+- Declarative Hook of type **`run`**: Jinja expressions can be used in both **`command`** and **`workdir`** as per the example below:  
+
+```yaml
+    hooks:
+    - type: run
+        trigger: before-render
+        workdir: {{folder_name}}/{{nested_folder_name}}
+        command: echo "Hello {{name}}!"
+```
+
+- Declarative Hook of type **`edit`**: Jinja expressions can be used on the **`path`**, **`changes.search.string`**, **`changes.search.pattern`** attributes, at all points where **`value`** is used, and on the **`not-exists`** within a **`when`**, as per the example below:
+
+```yaml
+    - type: edit
+      trigger: after-render
+      path: src/{{some_input}}.txt
+      changes:
+        - insert:
+            line: 0
+            value: "{{another_input}}"
+            when:
+              not-exists: "{{another_input}}"
+        - search:
+            string: "{{example}}"
+            insert-before:
+              value: "using {{value}}"
+        - search:
+            pattern: {{pattern_to_search}}
+            replace-by:
+              value: bla
+```
+
+- Declarative hook of type **`edit-xml`**: Jinja expressions can be used in the **`path`** and any **`value`**, as shown in the example below:
+
+```yaml
+    - type: edit-xml
+      trigger: after-render
+      path: {{some_variable}}.xml
+      changes:
+        - xpath: .//dependency
+          append:
+            value: |
+              <a>{{some_variable}}</a>
+```
+
+- Declarative Hook of type **`edit-json`**: Jinja expressions can be used on **`path`** and any **`value`**, as per the example below:  
+
+```yaml
+    - type: edit-json
+      trigger: after-render
+      path: using-template.json
+      encoding: ascii
+      changes:
+        - jsonpath: "$.scripts"
+          update:
+            value: |
+              {
+                "{{ json_tag }}": "{{ json_value }}"
+              }
+```
+
+- Declarative Hook of type **`edit-yaml`**: Jinja expressions can be used on **`path`** and any **`value`**, as per the example below:  
+
+```yaml
+    - type: edit-yaml
+      trigger: after-render
+      path: using-template.yaml
+      encoding: ascii
+      changes:
+        - yamlpath: "$.scripts"
+          update:
+            value: |
+              {{ json_tag }}: {{ json_body }}
+```
+
+#### **Referencing Connection Interface in Terraform**
+
+##### **V.1**
+
+```yaml
+requires:
+  connection-interface:
+    - connection-interface-one 
+```
+
+In Terraform, attributes are referenced with the Connection Interface, according to the model:
+
+```bash
+{{connection_interface_one_CONNECTOR}}
+{{connection_interface_one_CONNECTOR_engine}}
+{{connection_interface_one_CONNECTOR_is_stackspot_fun}}
+```
+
+In V1, this model continues to work, but it is not recommended to use it in V2.
+
+##### **V2:**
+
+Now it is possible to access the attributes of the Connection Interfaces using a **`connection`**. You can also include an **`alias`** in the syntax. There are two ways to access the attributes:
+
+1. **Kebab case:** access using **`[  ] `** and a string, similar to a dictionary. Check the example:
+
+```yaml
+{{connections["connection-interface-one"].engine}}
+```
+
+2. **Snake case:** access the attributes by converting the Kebab to Snake case:
+
+```yaml
+{{connections.connection_interface_one.is_stackspot_fun}}
+```
+
+An extra option is to access via **Camel Case**. See the example:
+
+```yaml
+{{connections["connectionInterfaceOne"].engine}}
+```
+
+## **Next step**  
+
+Check out the section on using [**Metadata**](create-use/create-content/yaml-files/metadata.md) and learn where and how to use metadata when creating your Plugins.

@@ -1,0 +1,232 @@
+---
+title: edit
+---
+
+> In this section, you will find: Reference of a Declarative Hook of type edit.
+
+<br/>
+
+A Declarative Hook of the type **`edit`** defines changes made to existing files. Check below an example of definition of a Declarative Hook of the type **`edit`**:
+
+```yaml
+hooks: 
+  - type: edit
+    trigger: after-render
+    path: src/some-file.txt
+    changes:
+      - insert:
+          line: 0
+          value: "# Text inserted in first line\n\n"
+          when:
+            not-exists: "# Text inserted in first line"
+      - search:
+          string: "# Text inserted in first line"
+          insert-before:
+            snippet: snippets/insert-before-first-line.txt
+          when:
+            not-exists: "# Text inserted before first line"
+      - search:
+          pattern: (Text )inserted in( first line)
+          replace-by:
+            value: \1moved from\2
+          when:
+            not-exists: print(f"Hello {name}!")
+```
+
+## **Available Actions**
+
+### **`path:`** 
+Defines the path of the file that will be edited. The path can be composed of [**Jinja**](https://jinja.palletsprojects.com/en/3.1.x/) expressions.  
+
+```yaml 
+path: "./some/dir/{{file_name}}"
+```
+___
+### **`trigger:`** 
+Field to set triggers that inform the moment when file editing should occur.
+
+**`before-input`**:   
+Executes the Declarative Hook before receiving the input parameters from the user person.  
+
+```yaml 
+trigger: before-input
+```   
+
+**`before-render`**:   
+Executes the Declarative Hook before the Template generates files in the project.
+
+```yaml 
+trigger: before-render
+```  
+
+**`after-render`**:   
+Executes the Declarative Hook after the Template generates files in the project.
+
+```yaml 
+trigger: after-render
+```
+___
+### **`changes:`** 
+In this field is defined the type of action that will be done on the file, the options are **`insert`** and **`search`**.  
+
+#### **`insert:`** 
+Action that allows you to insert text into an existing file.
+
+**`line:`**   
+Defines the line of the file where the insertion will occur. The first line of the file corresponds to the index **`0`**. To make the insertion in the last line of the file, the index is **`-1`**.
+
+**`value:`**   
+Defines the text to be inserted in the line.  
+
+**`snippet:`**   
+Defines a file that contains the text to be inserted into the file. The insertion of the text will be in the file entered in the **`path`** field. 
+
+#### **`when:`** 
+Conditional action that evaluates if the insertion will take place. The available options are **`not-exists`** and **`not-exists-snippet`**, which receive the text or file to be evaluated by the condition.
+
+**`not-exists:`**   
+Checks whether the text entered in the **`value`** field exists in the file. If it exists, the **`insert`** action will not be performed.  
+
+**`not-exists-snippet:`**   
+Checks if the file content informed in the **`snippet`** field exists in the file. If it exists, the **`insert`** action will not take effect.  
+
+:::caution   
+You can use the two options, **`not-exists`** and **`not-exists-snippet`** together. That way, both conditions check if the contents of the file or text exist in the file entered in **`value`** and **`snippet`**. Only if in both results the text and file contents do not exist, the **`insert`** action will not take effect.
+:::        
+
+```yaml 
+hooks:
+  - type: edit
+  /
+  .
+  .
+  .
+  /
+  - insert:
+    line: 0
+    value: "# Text inserted in first line\n\n"
+    # or 
+    snippet: path/to/snippet.txt
+    when:
+      not-exists: "# Text inserted in first line"
+      # and/or
+      not-exists-snippet: path/to/snippet.txt
+```
+___
+### **`search:`** 
+The edit action searches for the first occurrence of the text in the file.
+
+**`string:`**   
+Defines the text that will be used to search the edited file.
+
+**`pattern:`**   
+Defines the pattern that will be used in the search.
+
+**`snippet:`**   
+Defines the file with the content that will be used in the search. 
+
+> The **`string`**, **`pattern`** and **`snippet`** attributes shall not be used together in the **`search`** action.  
+
+```yaml 
+  - search:
+    string: "# Text inserted in first line"
+    # or
+    pattern: (some)\s+(regular)\s+(expression)
+    # or
+    snippet: snippets/snippet.txt
+```  
+
+#### **`replace-by:`**   
+Replaces the first match of the text found in the search with the contents of **`snippet``** and **`value`**.  
+
+#### **`insert-before:`**   
+Inserts the **`value`** or **`snippet`** on the line before the line where the first match was found. 
+
+#### **`insert-after:`**  
+Inserts the **`value`** or **`snippet`** on the next line relative to the line where the first match was found.    
+
+:::warning
+Only one of the operations must be defined in the search.
+:::
+    
+```yaml 
+replace-by:
+  snippet: snippets/snippet.txt
+  # or  
+  insert-before:
+    value: some string
+  # or
+  insert-after:
+   snippet: snippets/snippet2.txt
+```
+
+**`snippet:`**   
+Defines a file that contains the text to be used when finding the first match in the file.  
+
+**`value:`**   
+Sets a string to be used when finding the first match in the file.  
+
+:::warning
+The **`value`** and **`snippet`** attributes must not be used together.  
+:::
+
+```yaml 
+  snippet: snippets/snippet.txt
+  # or
+  value: a string
+``` 
+#### **`when:`** 
+Conditional action that evaluates if the search will be performed. Available options are **`not-exists`** and **`not-exists-snippet`**, which receive the text or file to be evaluated by the condition.   
+
+**`not-exists:`**   
+Checks if the text entered in the **`value`** field exists in the file. If it exists, the **`search`** action will not be performed. 
+
+**`not-exists-snippet:`**   
+Checks if the file content informed in the **`snippet`** field exists in the archive. If it exists, the **`search`** action will not be performed. 
+
+### **Example of a Declarative Hook `edit` with the `insert` action**
+
+```yaml 
+hooks:
+  - type: edit
+    trigger: after-render
+    path: src/some-file.txt
+    changes:
+      - insert:
+          line: 0
+          value: "# Text inserted in first line\n\n"
+          when:
+            not-exists: "# Text inserted in first line"
+```
+
+### **Example of an `edit` Declarative Hook with the `search` options**
+
+```yaml 
+hooks:
+  - type: edit
+    trigger: after-render
+    path: src/some-file.txt
+    changes:
+      - search:
+          string: "# Text inserted in first line"
+          # or
+          pattern: (some)\s+(regular)\s+(expression)
+          # or
+          snippet: snippets/snippet.txt
+          replace-by:
+            snippet: snippets/snippet.txt
+            # or
+            value: \1 \2 \3
+          # or
+          insert-before:
+            snippet: snippets/snippet.txt
+            # or
+            value: a string
+          # or
+          insert-after:
+            snippet: snippets/snippet.txt
+            # or
+            value: a string
+          when:
+            not-exists: "# Text inserted before first line"
+```

@@ -1,0 +1,304 @@
+---
+title: Actions Endpoints
+description: Learn details about User Endpoints.
+---
+
+This feature includes endpoints related to activities you can perform for [**user action management**](home/account/organization/access-management/overview.md#principais-conceitos) within the StackSpot EDP Platform. 
+
+
+| Method | Endpoint      | Description      | Parameters                          | Responses     |
+|--------|---------------|----------------|-------------------------------------|---------------|
+| GET    | /scim/Actions | Get All Actions | X-Tenant-Id: string (header)        | 200: OK       |
+| POST   | /scim/Actions | Create Action | X-Tenant-Id: string (header), body: Create Action | 201: Created |
+| GET    | /scim/Actions/\{id}  | Get Action by ID | X-Tenant-Id: string (header)        | 200: OK   |
+| PUT    | /scim/Actions/\{id} | Update Action | X-Tenant-Id: string (header), body: Update Action (body, required, schema: domain.UpdateAction) | 200: OK   |
+| DELETE | /scim/Actions/\{id} | Delete Action       | X-Tenant-Id: string (header)                                                                 | 204: No Content |
+| PATCH  | /scim/Actions/\{id} | Update Partially | X-Tenant-Id: string (header), body: Update Action (body, required, schema: domain.ActionPatchOperation) | 200: OK |
+
+## Response Definitions
+
+### domain.Action
+| Field        | Type    | Required|
+|--------------|---------|------------|
+| active       | boolean |   sim      |
+| client_id    | string  |   sim      |
+| created_at   | string  |   sim      |
+| description  | string  |   sim      |
+| id           | string  |   sim      |
+| name         | string  |   sim      |
+
+### domain.ActionAttributes
+| Field        | Type    | Required|
+|--------------|---------|------------|
+| active       | boolean |    sim     |
+| client_id    | string  |    sim     |
+| created_at   | string  |   sim      |
+| description  | string  |   sim      |
+| id           | string  |   sim      |
+| name         | string  |   sim      |
+
+### domain.ActionDomain
+
+| Field       | Type                                  | Required|
+|-------------|---------------------------------------|------------|
+| attributes  | $ref: '#/definitions/domain.ActionAttributes' |  sim | 
+| externalID  | object (additionalProperties: true)   | sim | 
+| id          | string                                | sim | 
+| meta        | $ref: '#/definitions/domain.Meta'     | sim | 
+| schemas     | array of string                       | sim | 
+
+### domain.ActionPageDomain
+
+| Field        | Type                                  | Required|
+|--------------|---------------------------------------|-----------|
+| resources    | array of domain.ActionDomain          | Sim | 
+| totalResults | integer                               | Sim | 
+
+### domain.ActionPatchOperation
+
+| Field      | Type                                  | Required|
+|------------|---------------------------------------| ---------- | 
+| Operations | array of object (properties: op, path, value) | sim |
+| schemas    | string                                | sim | 
+
+### domain.CreateAction
+
+| Field       | Type    | Required |
+|-------------|---------|-------------|
+| client_id   | string  | Não         |
+| description | string  | Não         |
+| name        | string  | Sim         |
+
+## **Example Response**
+
+### **`GET/scim/Actions Get All Actions`** 
+
+Here you find an example of the API response for the endpoint **`GET/scim/Actions Get All Actions`**
+
+### Request: 
+
+```
+GET /tenant-id/scim/Actions Get all actions
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 200: {
+	Resources: [
+{
+            "active": false,
+            "client_id": null,
+            "description": "Action Description",
+            "displayName": "Action Example",
+            "id": "19d29238-4f59-4f96-b0fd-d246fe28a218",
+            "meta": {
+                "resourceType": "Action",
+                "created": "2024-04-12T18:07:55Z",
+                "location": "Actions/19d29238-4f59-4f96-b0fd-d246fe28a218",
+                "version": "1"
+            },
+            "schemas": [
+                "urn:ietf:params:scim:schemas:core:2.0:Actions"
+            ]
+        	}
+],
+"itemsPerPage": 100,
+    "schemas": [
+        "urn:ietf:params:scim:api:messages:2.0:ListResponse"
+    ],
+    "startIndex": 1,
+    "totalResults": 50
+}
+````
+
+### **`POST /tenant-id/scim/Actions Create Action`** 
+
+Here you find an example of the API response for the endpoint **`POST /tenant-id/scim/Actions Create Action`** 
+
+### Request: 
+
+```
+POST /tenant-id/scim/Actions Create Action
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 201: {
+    "active": false,
+    "client_id": null,
+    "description": "This is a test to create action",
+    "displayName": "scim-action-example",
+    "id": "e69b1a43-b85b-49b5-af5f-9f0eb3e14f4a",
+    "meta": {
+        "resourceType": "Action",
+        "created": "2024-05-31T12:37:41Z",
+        "location": "Actions/e69b1a43-b85b-49b5-af5f-9f0eb3e14f4a",
+        "version": "1"
+    },
+    "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:Actions"
+    ]
+}
+````
+
+### **`POST /tenant-id/scim/Actions Create Action`** 
+
+Here you find an example of the API response for the endpoint **`POST /tenant-id/scim/Actions Create Action`** 
+
+### Request: 
+
+```
+POST /tenant-id/scim/Actions Create Action
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 201: {
+    "active": false,
+    "client_id": null,
+    "description": "This is a test to create action",
+    "displayName": "scim-action-example",
+    "id": "e69b1a43-b85b-49b5-af5f-9f0eb3e14f4a",
+    "meta": {
+        "resourceType": "Action",
+        "created": "2024-05-31T12:37:41Z",
+        "location": "Actions/e69b1a43-b85b-49b5-af5f-9f0eb3e14f4a",
+        "version": "1"
+    },
+    "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:Actions"
+    ]
+}
+````
+
+### **`GET /tenant-id/scim/Actions/\{id}  Get Action By Id`** 
+
+Here you find an example of the API response for the endpoint **`GET /tenant-id/scim/Actions/\{id}  Get Action By Id`** 
+
+### Request: 
+
+```
+GET /tenant-id/scim/Actions/{id} Get Action By Id
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 200: {
+    "active": false,
+    "client_id": null,
+    "description": "This is a test to create action",
+    "displayName": "scim-action-teste-updated",
+    "id": "8fb5d7bd-de19-441b-98cd-ff679cced4f3",
+    "meta": {
+        "resourceType": "Action",
+        "created": "2024-04-30T20:30:03Z",
+        "location": "Actions/8fb5d7bd-de19-441b-98cd-ff679cced4f3",
+        "version": "1"
+    },
+    "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:Actions"
+    ]
+}
+````
+
+### **`PUT /tenant-id/scim/Actions/\{id} Update Action`** 
+
+Here you find an example of the API response for the endpoint **`PUT /tenant-id/scim/Actions/\{id} Update Action`** 
+
+### Request: 
+
+```
+PUT /tenant-id/scim/Actions/{id} Update Action
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 200: {
+    "active": false,
+    "client_id": null,
+    "description": "This is a test to create action",
+    "displayName": "scim-action-example-updated",
+    "id": "8fb5d7bd-de19-441b-98cd-ff679cced4f3",
+    "meta": {
+        "resourceType": "Action",
+        "created": "2024-04-30T20:30:03Z",
+        "location": "Actions/8fb5d7bd-de19-441b-98cd-ff679cced4f3",
+        "version": "1"
+    },
+    "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:Actions"
+    ]
+}
+````
+
+### **`DELETE /tenant-id/scim/Actions/\{id} Remove Action`** 
+
+Here you find an example of the API response for the endpoint **`DELETE /tenant-id/scim/Actions/\{id} Remove Action`** 
+
+### Request: 
+
+```
+DELETE /tenant-id/scim/Actions/\{id} Remove Action
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 204: NO BODY RESPONSE
+````
+
+### **`PATCH /tenant-id/scim/Actions/\{id} Update Action With Patch operation`** 
+
+Here you find an example of the API response for the endpoint **`PATCH /tenant-id/scim/Actions/\{id} Update Action With Patch operation`** 
+
+### Request: 
+
+```
+PATCH /tenant-id/scim/Actions/\{id} Update Action With Patch operation
+
+Header:
+Authorization: Bearer token
+```
+### Response: 
+
+````json
+Status-Code 200:{
+  "Operations": [
+    {
+      "op": "string",
+      "path": {
+        "attributePath": {
+          "attributeName": "string",
+          "subAttribute": "string",
+          "uriprefix": "string"
+        },
+        "subAttribute": "string",
+        "valueExpression": "string"
+      },
+      "value": {
+        "client_id": "string",
+        "description": "string",
+        "name": "string"
+      }
+    }
+  ],
+  "schemas": "string"
+}
+````

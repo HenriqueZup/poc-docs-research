@@ -1,0 +1,43 @@
+---
+title: Adicionar API a partir de uma Aplicação existente
+description: Informações sobre API em uma Aplicação.
+---
+
+> Nesta seção, você encontra como associar uma API em uma Aplicação criada.
+
+<br/>
+
+É possível adicionar uma API em uma Aplicação em execução. Ao associar uma API, você disponibiliza novos recursos e funcionalidades para os usuários da Aplicação.
+
+Confira as regras para alterar uma Aplicação:
+
+- **Nome:** não pode ser alterado porque existem muitos ambientes vinculados as APIs e com isso evitar alterações em ambientes de produção.
+- **Descrição:** não pode ser alterado.
+- **OpenAPi File:** pode ser alterado.
+- **Connection Interface:** se no cadastro ela não foi informada, ela virá em branco. Neste caso, é possível selecionar uma Connection Interface. Se a Connection Interface já foi informada no cadastro, esse campo não poderá ser alterado no momento.
+- **Gateway URL:** pode ser alterado.
+
+
+:::info Informação Adicional
+Se o ambiente foi selecionado durante a criação da Aplicação, a alteração será aplicada somente naquele ambiente.
+:::
+
+Confira os passos:  
+
+**Passo 1.** Dentro do seu Workspace, clique na seção de **'Configurações'** da sua Aplicação;
+
+**Passo 2.** Em **'Definições de API'**, clique em **'Editar'**;
+
+**Passo 3.** Faça o upload do **arquivo OpenAPI**. São permitidas as extensões **.yaml**, **.yml** e **.json**;
+
+Depois disso, insira a **URL do Gateway** e inclua a **Connection Interface** que você quer associar.
+
+> Neste passo é preciso incluir só uma URL do Gateway, porque a Aplicação já está em um ambiente específico.
+
+**Passo 4.** Clique em **'Salvar'.**
+
+Pronto, você adicionou uma API em uma Aplicação em execução.
+
+## **Leia também**
+
+- [**FAQ**](home/faq.mdx)

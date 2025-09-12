@@ -1,0 +1,607 @@
+---
+title: 'Get Started: Create'
+description: Guide to Getting Started with Creating Content on StackSpot.
+---
+
+import FlowChart from '@site/src/components/MdxComponents/FlowChart';
+
+<FlowChart steps={[
+  { title: 'Account Configuration', link: 'home/account/intro-account.md' },
+  { title: 'Deployment Configuration', link: 'deployment/deploy/overview.md' },
+  { title: 'Create Content', link: 'create-use/create-content/getting-started.md', default: true },
+  { title: 'Use Content', link: 'create-use/use-content/quickstart.md' },
+]} />
+
+## **1. Understand the Journey of Creating Content**
+
+The StackSpot EDP platform allows organizations to scale their technology standards effectively. Platform architects, who are also developers, create templates that embody these standards, known as content, in StackSpot. This content is structured into **Stacks**, **Plugins**, and **Actions**and published in Studios to ensure it is accessible throughout the organization.
+
+### **Creating Dynamic Templates with Jinja**
+
+Using Jinja expressions is crucial for creating dynamic templates for Plugins and scripts used in Actions. [**Mastering the basics of Jinja in StackSpot is essential**](create-use/create-content/yaml-files/jinja.md). You can incorporate Jinja expressions throughout your source code or script, enabling the inputs for Plugins and Actions to interact directly with the code during execution.
+
+### **Writing Your Code**
+
+Remember a few essential details when writing code for the StackSpot EDP platform. Design your code to adhere to established standards. See below other code writing possibilities:
+
+- You can create complete applications, minimal functional code that includes only crucial features, or code snippets that introduce new functionality or rules to existing applications. 
+
+- You can also create Terraform code templates for Infrastructure as Code (IaC).
+
+- For **Application Plugins**: Write and add your code and any files that should be generated when using the Plugin in the **templates** folder.
+
+- For **Infrastructure Plugins**: Write and add your code and any files that should be generated when using the Plugin in the **templates-deploy** folder.
+
+:::tip
+
+In addition to the **templates-deploy** and **templates** folders, you can use other files that interact with **Declarative Hooks**. However, these files will not be rendered when the Plugin is applied.
+
+:::
+
+- For **Actions**: Write and add the script in the root folder of the Action. To use files or scripts that can be executed or complement your Action type, create a folder named **templates** and add the desired files there.
+
+## **2. Start Creating Your Content**
+
+### **Step 1. Create or Verify Access to a Studio**
+
+1. [**Access the StackSpot platform**](https://app.stackspot.com/login) and log in with your organization's email.  
+2. [**Create your Studio or verify the Studio you have access to in the StackSpot Portal**](create-use/studio/create-studio.md).  
+3. [**Download the STK CLI**](home/stk-cli/install.md).  
+
+<br/>
+
+> If you already have the STK CLI installed, run the command **`stk upgrade`**:  
+>```bash
+>stk upgrade
+>```
+
+### **Step 2. Create Plugins**
+
+**Step 1.** Open your terminal and run the command:
+
+```bash
+stk create plugin plugin-name
+```
+
+Answer the questions in your terminal. The following answers are just examples:
+
+**- Initialize a Git repository:** Choose Yes (Y) or No (N) to add a local repository.
+
+**- Add remote:** Choose Yes (Y) or No (N). If yes, provide the URL of the remote repository.
+
+**- Plugin Description:** Describe your Plugin and explain its purpose.
+
+**- Explain why you are creating this content. If the Studio is under governance when you request publication, this explanation will help in the evaluation:** Add information about why you are creating this content.
+
+**- Add information about why you are creating this content.** Add a version number for your Plugin. Example: (0.0.1).
+
+**- Select the Plugin type:** App or Infra.
+
+**- Would you like to add a Required Connection?** No. To understand more about Connections, **see out the detailed guide**](create-use/connections/connection-interface.md).
+
+<br/>
+
+:::info  
+
+[**For more details, see the guide how to create your Plugin**](create-use/create-content/plugin/create-plugin.md)
+
+:::
+
+<br/>
+
+**Step 2**. Access the folder of the Plugin you just created and review the generated files:
+
+<Tabs groupId="plugin-folders">
+<TabItem value="app" label="Application Plugin" default>
+
+```bash title="/application-plugin-type"
+├── docs
+│   ├── en-us
+│   │   └── docs.md
+│   └── pt-br
+│       └── docs.md
+├── plugin.yaml
+├── templates
+│   └── README.md
+└── tests
+    └── test-case-apply-00
+        ├── expected
+        │   └── README.md
+        ├── target
+        └── test-case.yaml
+```
+
+</TabItem>
+<TabItem value="infra" label="Infrastructure Plugin" >
+
+```bash title="/infrastructure-plugin-type"
+├── docs
+│   ├── en-us
+│   │   └── docs.md
+│   └── pt-br
+│       └── docs.md
+├── plugin.yaml
+├── templates
+│   └── README.md
+├── templates-deploy
+│   └── README-deploy.md
+└── tests
+    ├── test-case-apply-00
+    │   ├── expected
+    │   │   └── README.md
+    │   ├── target
+    │   └── test-case.yaml
+    └── test-case-deploy-00
+        ├── expected
+        │   └── README-deploy.md
+        ├── target
+        └── test-case.yaml
+```
+
+</TabItem>
+</Tabs>
+
+**Step 3.** Open your **IDE** and review the **Plugin configuration file** (file **`plugin.yaml`**). You can **edit** the following information as needed:
+
+- The **metadata** field; and
+- The field within **spec**.
+
+### **Example of an Application Plugin**
+
+The following example is an AWS Lambda in Python. The purpose of this template is to establish a standard that allows an organization to:
+
+- Generate automated financial reports, such as daily balances or compliance reports.
+- Store the reports in **`.csv`** format in an AWS S3 Bucket.
+
+### **Application Plugin Template**
+
+```python title="my-plugin/templates/report_s3.py"
+import boto3
+import csv
+
+s3 = boto3.client('s3')
+
+def lambda_handler(event, context):
+    # Simulated data for the example
+    transactions = {{ transactions }}
+
+    # Generate the CSV
+    csv_file = '/tmp/{{ report_name }}.csv'
+    with open(csv_file, 'w', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=['id', 'amount', 'type'])
+        writer.writeheader()
+        writer.writerows(transactions)
+
+    # Upload to the S3 Bucket
+    s3.upload_file(csv_file, '{{ bucket_name }}', 'reports/{{ report_name }}.csv')
+
+    return {
+        'statusCode': 200,
+        'body': 'Report generated and uploaded to S3.'
+    }
+```
+
+In the above code, some variables were replaced with Jinja expressions, which are indicated by the syntax "`{{...}}`":  
+
+- **`{{ transactions }}`**;
+- **`{{ report_name }}`**;
+- **`{{ bucket_name }}`**.
+
+It indicates that the values are not directly defined in the code but will be dynamically substituted during the template rendering process.
+
+### **`plugin.yaml` File for the Application Plugin**
+
+You need to edit your Plugin. In the example below, **inputs** have been edited and added to capture the values that will be replaced in the **`report_s3.py`** template code.
+
+```yaml title="my-plugin/plugin.yaml"
+schema-version: v3
+kind: plugin
+metadata:
+  name: report-s3-plugin
+  display-name: Report S3 Plugin
+  description: Plugin to generate reports and upload them to S3
+  version: 1.0.0
+spec:
+  type: infra
+  compatibility:
+    - python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  single-use: False
+  runtime:
+    environment:
+      - python-3-9
+      - aws-cli-2
+      - git-2
+  technologies:
+    - Api
+  stk-projects-only: false
+  // new-line-start
+  inputs:
+    - label: Transactions data
+      name: transactions
+      type: textarea
+      required: true
+      help: 'Provide transaction data in JSON format (e.g., [{"id": 1, "amount": 100, "type": "deposit"}])'
+    - label: Report name
+      name: report_name
+      type: text
+      required: true
+      help: 'Provide the name of the report (e.g., daily_report)'
+    - label: Bucket name
+      name: bucket_name
+      type: text
+      required: true
+      help: 'Provide the name of the S3 bucket where the report will be uploaded'
+    - label: Select a Bucket s3
+      type: required-connection
+      name: {{ name }} # retrieves the value of a global input from another Plugin
+      connection-interface-type: aws-s3-conn  
+  // new-line-end 
+```
+
+:::tip
+
+- The example above produces code requiring an AWS S3 Bucket connection. [**Note that in this case, a required connection input type was used.**](create-use/create-content/yaml-files/inputs.md#input-of-type-required-connection).
+
+:::
+
+### **Infrastructure Plugin Example**
+
+The following is a Terraform code template that creates an AWS S3 Bucket. This template offers a faster, simpler, and standardized method for developers in an organization to deploy infrastructure using Plugins.
+
+### **Infrastructure Plugin IaC Template**
+
+```bash title="s3-bucket-plugin/templates-deploy/main.tf"
+provider "aws" {
+  region = "{{ aws_region }}"
+}
+
+resource "aws_s3_bucket" "{{ name }}" {
+  bucket = "{{ name }}"
+  acl    = "private"        # Sets the bucket as private
+
+  tags = {
+    Name        = "{{ name }}"
+    Environment = "Dev"
+  }
+}
+
+output "aws_s3_bucket_name" {
+  value = aws_s3_bucket.{{ name }}.bucket
+}
+
+output "aws_s3_bucket_arn" {
+  value = aws_s3_bucket.{{ name }}.arn
+}
+```
+
+In the IaC code shown above, the variables were replaced with Jinja expressions, which are identified by the "`{{...}}`" syntax.
+
+- **`{{ aws_region }}`**;
+- **`{{ name }}`**.
+
+This indicates that these values are not explicitly defined in the code but will be dynamically interpolated during the template rendering process.
+
+### **`plugin.yaml` File for the Infrastructure Plugin**
+
+You need to edit your Plugin. In the example below, **inputs** were edited and added to capture the values that will be replaced in the **`main.tf`** template code.
+
+```yaml
+schema-version: v3
+kind: plugin
+metadata:
+  name: s3-bucket-plugin
+  display-name: S3 Bucket Plugin
+  description: Plugin to create an S3 bucket
+  version: 1.0.0
+  picture: plugin.png
+spec:
+  type: infra
+  compatibility:
+    - terraform
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  single-use: False
+  runtime:
+    environment:
+      - terraform-1-4
+      - aws-cli-2
+      - git-2
+  technologies:
+    - AWS S3
+  stk-projects-only: false
+inputs:
+  - label: AWS Region
+    name: aws_region
+    type: select
+    required: true
+    items:
+      - us-east-1
+      - us-east-2
+      - us-west-1
+      - us-west-2
+      - sa-east-1
+    default: ["us-east-1"]   
+    help: 'Select an AWS region (e.g., us-east-1)'
+  - label: Bucket Name
+    name: name
+    type: text
+    required: true
+    global: true
+    help: 'Enter the name of the S3 bucket'
+  - label: Select the connection for your S3 Bucket
+    type: generated-connection
+    name: {{ name }} # uses the value of the global input 'name'
+    connection-interface-type: aws-s3-conn
+    outputs:
+      - from: aws_s3_bucket_name
+        to: bucket_name
+      - from: aws_s3_bucket_arn
+        to: arn
+```
+
+:::tip
+
+- The example above generates code to create a connection with an AWS S3 Bucket. [**Note that a generated-connection input type was used in this case.**](create-use/create-content/yaml-files/inputs.md#input-of-type-generated-connection).
+
+:::
+
+### **Step 3. Create an Action**
+
+Actions are automated processes created using Python or Shell scripts. These Actions enable scripts to use Jinja expressions, enhancing automation through dynamic inputs.
+
+**Step 1.** To create an Action, run the following command:
+
+```bash
+stk create action action-name
+```
+
+Similar to how you would use Plugins, respond to the questions in the terminal.
+
+**Step 2.** Access the Action folder and review the generated files:
+
+```bash
+action-name/
+├── action.yaml
+├── script.py
+├── docs/
+│   ├── pt-br/
+│   │   └── docs.md
+│   └── en-us/
+│       └── docs.md
+```
+
+**Step 3.** Launch your preferred IDE and modify the Action files. Refer to the examples provided below.
+
+### **Example of a Python Action**
+
+The following example is a Python script that runs a **lint** (a static code analysis tool) on Terraform code. This script should be part of an Action, providing a faster, simpler, and automated way for an organization's developers to analyze Terraform code.
+
+### **Action `script.py` File**
+
+When you create the Action, it generates the **`script.py`** file. Edit this file and write your code in it.
+
+:::danger
+
+Write the code inside the **`def run(metadata):`** The function shown in the example from the **`script.py`** file to interact with your account's metadata and inputs.
+
+```python showLineNumbers
+
+
+def run(metadata):
+    print(f"Hello {metadata.inputs.get('user_name')}!")
+
+```
+
+:::
+
+```python title="terraform-lint-action/script.py"
+from templateframework.metadata import Metadata
+import subprocess
+import sys
+
+def run(metadata: Metadata = None):
+    """
+    Runs lint for Terraform files in the specified directory.
+    """
+    # Retrieves the directory from the Action inputs
+    terraform_directory = "{{ inputs.terraform_directory | default('.') }}"
+
+    try:
+        # Checks if tflint is installed
+        result = subprocess.run(["tflint", "--version"], capture_output=True, text=True)
+        if result.returncode != 0:
+            print("Error: tflint is not installed or not in the PATH.")
+            sys.exit(1)
+        print(f"Using tflint version: {result.stdout.strip()}")
+
+        # Runs tflint in the specified directory
+        print(f"Running lint on Terraform files in the directory: {terraform_directory}")
+        lint_result = subprocess.run(["tflint", terraform_directory], capture_output=True, text=True)
+
+        # Displays the lint results
+        if lint_result.returncode == 0:
+            print("Lint completed successfully! No issues found.")
+        else:
+            print("Issues found during lint:")
+            print(lint_result.stdout)
+            print(lint_result.stderr)
+    except FileNotFoundError:
+        print("Error: tflint is not installed or not in the PATH.")
+        sys.exit(1)
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        sys.exit(1)
+```
+
+In the script code presented above, some variables were replaced with Jinja expressions, identified by the "`{{...}}`" syntax:
+
+- The variable value of **`terraform_directory`** was replaced with **`{{ inputs.terraform_directory | default('.') }}`**.
+
+This means these values are not directly defined in the code but will be dynamically interpolated (replaced) during the Action's execution.
+
+### **Action `action.yaml` File**
+
+You must edit your Action. In the following example, the **inputs** were edited and added to capture the values that will be replaced in the **`script.py`** file code.
+
+```yaml
+schema-version: v3
+kind: action
+metadata:
+  name: terraform-lint-action
+  display-name: Terraform Lint Action
+  description: Runs lint on Terraform files using TFLint.
+  version: 1.0.0
+spec:
+  type: python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  inputs:
+    - label: Directory with Terraform files
+      name: terraform_directory
+      type: text
+      required: true
+      default: "."
+      help: "Specify the directory where the Terraform files are located (default: .)"
+  python:
+    workdir: .
+    script: script.py
+```
+
+Here are some guidelines you will need to refer to when creating content in StackSpot:
+
+<br/>
+
+import CustomDocCard from '@site/src/components/MdxComponents/CustomDocCard';
+import CustomDocCardList from '@site/src/components/MdxComponents/CustomDocCardList';
+
+<CustomDocCardList>
+  <CustomDocCard title="Create Plugins" description="In this section, you will find a guide on how to create App and Infra Plugins." link="/create-use/create-content/plugin/create-plugin.md" />
+  <CustomDocCard title="Create Action" description="In this section, you will find a guide on how to create an Action using the STK CLI." link="/create-use/create-content/action/run-action.md" />
+  <CustomDocCard title="Use Declarative Hooks" description="In this section, you will find: How to define and what are the types of Declarative Hooks. How to execute conditionals of a Declarative Hook." link="/create-use/create-content/declarative-hooks/index.md" />
+  <CustomDocCard title="Configure .yaml Files for Actions and Plugins" description="In this section, you will find: the .yaml files for Plugins, Actions and other content configurations." link="/create-use/create-content/yaml-files/index.md" />
+  <CustomDocCard title="Use Variables" description="Variables in StackSpot provide storage and reuse of non-sensitive configuration information." link="/create-use/create-content/variables.md" />
+  <CustomDocCard title="Document your content" description="In this section, you will find the Markdown writing rules to create your content documentation." link="/create-use/studio/documentation.md" />
+  <CustomDocCard title="Create Plugin Test" description="Check out how to create unit tests for your Plugins." link="/create-use/create-content/plugin/test-plugin.md" />
+</CustomDocCardList>
+
+<br/>
+
+## **3. Publish Your Content**
+
+**Step 1.** Open your terminal and follow the [**steps to publish a Plugin**](create-use/create-content/plugin/publish-plugin.md).
+
+**Step 2.** [**Steps to publish an Action**](create-use/create-content/action/publish-action.md).
+
+## **4. Create a Stack in the StackSpot Portal**
+
+> [**You can create a Stack and Starter via STK CLI. Check out all the steps in the guide**](create-use/create-content/stack/create-stack-starter-cli.md).
+
+<br/>
+
+**Step 1.** [**Access the StackSpot EDP Portal**](https://app.stackspot.com/login). Click the **'Create'** button in the menu and select **'Stack'**;
+
+**Step 2.** First, **select the Studio** where you want to create the Stack and fill in the following fields:
+
+- **Stack Name**: Add a name for your Stack;
+- **Identifier (Slug)**: [**Add a slug**](create-use/studio/slugs.md) for the Stack. Once the Stack is published, this field cannot be changed;
+- **Description**: Briefly describe the purpose of your Stack;
+- **Logo**: Include a logo for your Stack. This is **optional**;
+- **Tags**: Add tags that can help classify your Stack.
+
+**Step 3.** Review the information and click the **'Create'** button.
+
+:::danger
+
+To document a Stack or Starter created on the StackSpot Platform, [**follow the steps to generate folders locally.**](create-use/studio/documentation.md)
+
+:::
+
+<br/>
+
+> The first version of your Stack has been generated but is not yet published. You need to add some content to it, such as a [**Plugin**](create-use/create-content/plugin/create-plugin.md), an [**Action**](create-use/create-content/action/run-action.md), or a [**Starter**](create-use/create-content/stack/create-starter.md).
+
+<br/>
+
+## [**5. Create a Starter**](create-use/create-content/stack/create-starter.md)
+
+**Step 1.** Still on the StackSpot platform, **access your Stack** and, within the **'Starters'** tab, click the **'Create a new starter'** button.
+
+**Step 2.** In **'Starter info'**, fill in the information:
+
+- **Slug (Starter Name)**: Add a name for your Starter.
+- **Description**: Briefly describe your Starter.
+
+Click **'Next'**.
+
+**Step 3.** In **'Add Plugins'**, add the Plugins you want to include in the Starter.
+
+> You can select Plugins that are in the Studio and the Account.
+
+<br/>
+
+Then click the **'Add Plugins'** button.
+
+:::caution 
+
+Check the order in which the Plugins are added to the Starter. This order defines their application in the Stack and can only be changed while the Stack is in Draft.
+
+:::
+
+**Step 4.** Review the order of the Plugins in the Starter and click the **'Next'** button. Review the information and click **'Finish'**.
+
+> For more information about Starters, [**see the Starter section**](create-use/create-content/stack/create-starter.md).
+
+<br/>
+
+## **6. Link Plugins and Actions to the Stack (optional)**
+
+> This is an **optional** step, but if you want to add more Plugins or link Actions, follow these steps:
+
+<br/>
+
+:::info 
+
+The **difference** between Actions and Plugins is as follows:
+
+- [**Actions**](create-use/create-content/action/actions.md) are like **ephemeral tasks** that perform a specific action, such as a **local automation**.  
+- [**Plugins**](create-use/create-content/plugin/plugins.md), on the other hand, generate **template files**.
+
+:::
+
+### **To Link Plugins**
+
+**Step 1.** Enter your Stack and click on Plugin;
+
+**Step 2.** Select the type of Plugin you want to add to the Stack:
+
+- **App Type:** Click the **'Add App Plugin'** button.
+- **Infra Type:** Click the **'Add Infra Plugin'** button.
+
+**Step 3.** In the right-hand sidebar of the page, choose the Plugins and click the **'Add Plugins'** button.
+
+### **To Link Actions**
+
+To publish your Stack:
+
+**Step 1.** In your Stack, navigate to the **'Actions'** subsection. Next, click on the **'Add action'** button located in the top-right corner of the screen.
+
+**Step 2.** In the screen that will appear on the right side, you can add Actions filtered by **'Available in Studio'** and **'Explore'**;  
+
+> Within the **'Explore'** tab, you can group Actions by Studio and select which **version** of the Action you want.
+
+**Step 3.** After selecting the Actions, click the **'Add Action'** button.
+
+## **7. Publish the First Stack**
+
+1. Access the StackSpot EDP Portal;  
+2. Click on the **'Stack'** section;
+3. Click the **'Publish'** button in the top-left corner of the screen.
+
+## **Next Steps**
+
+- [**You can use the content already available in your StackSpot Account to create Applications or Infrastructures**](create-use/use-content/quickstart.md).

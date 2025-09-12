@@ -1,0 +1,32 @@
+---
+title: Jobs Dependency
+description: Understand how job dependencies works within Workflows.
+---
+
+### **Creating dependencies between Workflow Jobs**
+
+Jobs in a Workflow are executed in parallel unless there are dependencies between them. If dependencies exist, they must be resolved before the jobs can be executed.
+
+To create a dependency between jobs in a Workflow, use the **`depends-on`** parameter. In this parameter, you should define a list of the other jobs that the current job depends on.
+
+- **depends-on:** List of other Jobs that the current Job depends on. Available only for Jobs.
+
+```yaml title="Workflow Job with dependency on another Job."
+Jobs:
+  - id: optional
+    label: Optional job
+    depends-on:
+      - some_job_id
+    when: "{{ boolean_input }}"
+```
+### **Workflow dependencies using the `targets` parameter**
+
+To use the **`targets`** option follow these rules:
+
+- Workflow with the **`infra`** target must have at least one **`infra`** type Plugin or another Workflow with the **`infra`** target. If there is no target, check the Plugins and Workflows in the Stack of the dependent Workflow. 
+
+- A Workflow with the **`app`** target must have at least one **`app`**type Plugin or another Workflow with the **`app`** target. If there is no target, check the Plugins and Workflows in the Stack of the dependent Workflow.  
+
+- Workflows of the **`reusable`** type can only depend on other Workflows of the **`reusable`** type.
+
+- Whenever a Workflow/s within this Workflow, have the **`targets`** parameter defined as **`app`** or **`infra`**, the Plugins in the Workflow must depend on a Plugin of the same type as the target.

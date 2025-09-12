@@ -1,0 +1,85 @@
+---
+title: Initial Setup
+description: Initial organization setup in the StackSpot EDP Account.
+---
+
+> In this section, you will find how to configure your organization in the StackSpot EDP Account.
+
+<br/>
+
+import FlowChart from '@site/src/components/MdxComponents/FlowChart';
+
+<FlowChart steps={[
+  { title: 'Account Configuration', link: 'home/account/intro-account.md', default: true },
+  { title: 'Deployment Configuration', link: 'deployment/deploy/overview.md'  },
+  { title: 'Create Content', link: 'create-use/create-content/getting-started.md' },
+  { title: 'Use Content', link: 'create-use/use-content/quickstart.md' },
+]} />
+
+<br/>
+
+This guide covers your organization’s initial setup in the StackSpot EDP Account.  
+It provides guidance on activating and configuring your organization's Account and Workspace. Follow the guides in the specified order:
+
+## **Requirement**
+
+[**You must have Account Holder permission to proceed**](home/account/organization/access-management/roles.md ).
+
+Follow the steps below:
+
+### **Step 1. Activate your Organizations Account**
+
+**1.** Access the [**StackSpot Account Portal**](http://myaccount.stackspot.com) and log in using your organization's email. 
+
+**2.** Afterward, you will receive an invitation to sign in and access the Account.
+
+**3.** After logging in, select the **'Organization'** option from the main menu to access the Organization settings.  
+
+> If you still need to get a StackSpot account, [**contact StackSpot and schedule a demo**](https://use.stackspot.com/book-demo-en-site).
+
+
+### **Step 2. Configure Single Sign-On (SSO)**
+
+Set up integration with your company's identity provider (IDP). It is necessary for any user logging in via your organization's SSO from the [**StackSpot Platform**](https://app.stackspot.com/login).
+
+[**Follow the SSO setup guide**](home/account/organization/sso-group-mapping/sso-configuration.md)
+
+### **Step 3. Integrate SCM (Source Code Management) into your Account**
+
+When using your own cloud account on StackSpot, you need to create environments. Environments enable you to create content within Workspaces, such as Applications, Infrastructures, and more.
+
+[**Follow the steps to Integrate your account's SCM**](home/account/organization/scm-integration/index.md)
+
+### **Step 4. Create Environments**
+
+Creating environments is essential when using your cloud account on StackSpot. Environments allow you to generate content within Workspaces, including Applications, Infrastructures, and more.
+
+[**Follow the steps to create environments**](home/account/organization/create-env.md)
+
+### **Step 5. Setup Deployment for your Organization** 
+
+You must configure a cloud account in StackSpot to deploy your Applications. You need to configure via Runtime Self-Hosted. To set it up, [**see the Runtime Self-Hosted configuration guide**](deployment/deploy/use-self-hosted/index.md). 
+
+
+:::caution  
+If your Account was **created before 2024**, deployments can still be done via the **StackSpot EDP Deploy Engine**.  
+
+You need to configure your Cloud Account within your Workspace. To see how to configure each provider, visit:  
+
+- [**Configure AWS Cloud Account**](home/workspace/config-cloud-account.md);  
+- [**Configure Azure Cloud Account**](home/workspace/config-cloud-account-azure.md).  
+
+For more information about this deployment model, [**check the StackSpot Deploy Engine section**](deployment/runtime-engine/intro-runtime-engine.md).  
+::: 
+
+### **Step 6. Create Permission Groups and Add Members to the Account**
+
+Now, create Groups to define the permissions for each member within your Account. Check out the guide on [**how to create groups**](home/account/organization/access-management/groups.md).
+
+You've completed the initial settings for your Account. Explore the following steps below:
+
+### **Next steps**
+
+- [**Create Studio**](create-use/studio/create-studio.md): The Studio is where your account members can create content in StackSpot, such as Plugins, Stacks, Starters, and Actions.
+- [**Create Workspace**](home/workspace/create-workspace.md): Workspaces are needed for using the content created in the Studio to develop Applications and Infrastructures.
+- [**Configure Context in Account**](home/account/organization/configure-context-account.md): Once your Account has Stacks created, you can configure **Contexts**. These are pre-configured values for Plugin inputs and other resources in a Stack to **standardize** or **speed up** the creation of Shared Applications and Infrastructures in StackSpot.

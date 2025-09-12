@@ -1,0 +1,39 @@
+---
+title: Compartilhar Recursos de Infraestrutura
+description: Como compartilhar recursos de Infraestrutura.
+---
+
+> Nesta seção, você encontra como compartilhar recursos de infraestrutura por meio de Connection Interfaces.
+
+<br/>
+
+Na StackSpot é possível compartilhar recursos de Infraestrutura através das **Connection Interfaces**.
+
+Confira como funciona:
+
+- **1.** Quando você criar um **Plugin de Infra**, você precisa escolher o Connection Interface Type. Isso é necessário para representar os recursos de Infraestrutura que serão provisionados no momento do deploy da Aplicação ou da Infraestrutura onde esse Plugin será aplicado.
+
+- **2.** Quando o deploy da Aplicação ou da Infraestrutura ocorre, os recursos de infraestrutura serão provisionados de acordo com as especificações dos Plugin de Infra aplicados no projeto.
+
+> Quando provisionar um Plugin de Infraestrutura com sucesso, o Deploy gera uma ou mais Connection Interface de acordo com o(s) Connection Interface Type(s) escolhido na hora de criar o Plugin, e [**configurados nos templates do Plugin**](create-use/connections/connection-interface.mdx).
+
+:::info Informação Adicional
+Connection Interfaces são representados por outputs armazenados no Contexto da Aplicação (se acontecer o deploy de uma Aplicação) ou no Contexto do Workspace (se for o deploy de uma Infraestrutura).
+
+:::
+
+- **3.** Você pode usar outputs de Connection Interface mapeados no contexto escolhido como inputs em Plugins de App ou de Infra. São [**configurados para recebê-los**](create-use/connections/connection-interface.mdx), ao aplicar esses Plugins no seus projetos.
+
+
+## **Reaproveitar recursos de Cloud na Aplicação**
+
+Na StackSpot é possível reaproveitar recursos de Cloud na Aplicação ou em outros recursos de Infra através das Connection Interfaces.
+
+Confira o funcionamento:
+
+1. Quando um Plugin de Infra é criado, ele deve respeitar o contrato de uma ou mais Connection Interface (que é basicamente um contrato que define parâmetros que precisam ser exportados pelo Plugin).  
+2. Ao ser aplicado com a flag de Deploy, o Plugin de Infra gera arquivos de IAC (por exemplo, arquivos Terraform), que têm configurações de outupts. Estes outputs precisam respeitar as Connection Interfaces.
+3. Quando os arquivos de IAC são provisionados, os outputs de Connection Interfaces são salvos em dois lugares:  
+    - **Aplicação de Infra**: os outputs são salvos no Contexto de Workspace.  
+    - **Aplicação de App**: são salvos no Contexto da Aplicação.
+4. Quando novos Plugins forem aplicados na Aplicação, eles poderão usar os outputs de Connection Interface como inputs de Plugins. Ou seja, poderão **reaproveitar os recursos de Cloud provisionados**.

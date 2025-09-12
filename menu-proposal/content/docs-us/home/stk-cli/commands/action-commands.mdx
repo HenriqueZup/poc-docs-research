@@ -1,0 +1,240 @@
+---
+title: Action Commands
+sidebar_position: 4
+description: List of commands to manage Actions.
+---
+
+> In this section, you will learn more about the Action's commands.
+
+<br/>
+
+
+>Command   | Description
+>--------- | ------
+>[**stk add action**](#stk-add-action) | Adds an Action to a Stack.
+>[**stk create action**](#stk-create-action) | Creates the basic structure for you to develop an Action.
+>[**stk list action**](#stk-list-action) | Lists all Actions within a Workspace.
+>[**stk publish action**](#stk-publish-action) | Publishes an Action on StackSpot.
+>[**stk run action**](#stk-run-action) | Executes an Action.
+>[**stk validate action**](#stk-validate-action) | Validates the structure of an Action.
+
+### **stk add action**
+
+The **`stk add action`** command adds an Action to a Stack.
+
+#### **Usage**
+
+To add an Action to a Stack, run the command inside a Stack folder:
+
+```bash
+stk add action [STUDIO-SLUG]/[STACK-NAME-AND-VERSION]/[ACTION-NAME]
+```
+
+Example:
+
+```bash
+stk add action techwriters-studio/documentation-stack@2.1.0/markdown-lint-action
+```
+
+#### **Parameters**
+
+| **Options** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-o`, `--target` | The option `-o`, `--target` defines the path of the Stack directory where the Action will be added. Otherwise, the command must be executed within the Stack folder. | <pre>stk add action my-studio/my-stack@1.0.0/action-name --target home/user/Applications/my-other-stack </pre> |
+|`-q`, `--non-interactive` | Does not ask the user for missing input parameters and returns an error if any mandatory parameter has not been provided. | <pre>stk add action my-studio/my-stack@1.0.0/action-name --non-interactive</pre> |
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk add action --help</pre> |
+___
+
+### **stk create action**
+
+The **`stk create action`** command creates the basic structure for you to develop an Action.
+
+When you run the command in the terminal, you are prompted to choose what type the Action should be. Once you have chosen a type, a folder is generated with the structure to create that type of Action. You can then edit the **`action.yaml`** file to configure the Action's input parameters.
+
+:::tip
+
+The `-o`, `--target` option allows you to define a different folder name to create the Action content. If the folder does not exist, it will be created.
+
+If you do not use the `-o` or `--target` option, the Action content folder name will be the same as the one you gave when creating your Action.
+
+:::
+
+#### **Usage**
+
+```bash
+stk create action [NAME]
+```
+
+#### **Parameters**
+
+| **Option** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-d`, `--description` | Text that describes the behavior of the Action. Write the text in quotes to use spaces in the description. | <pre>stk create action my-action --description "Action description"</pre> |
+| `-v`, `--version` |  Adds the Action version. It is one of the requirements to publish the Action. | <pre>stk create action my-action --version 1.0.0</pre> |
+| `-j`, `--justification` | Inserts the text justifying the use of the Action for accounts that have governance enabled. | <pre>stk create action action-name --justification "my justification text"</pre> |
+| `-t`, `--type` |  Action type that will be created. Possible values are **shell** and **python**. | <pre>stk create action my-action --type shell</pre> |
+| `-r`, `--remote` |  Git URL to set as the origin of the Action's repository. Required when NAME is not provided, in which case NAME will be set to the name of the Git repository. | <pre>stk create action --remote my-url-git-repository</pre> |
+| `-sgi`, `--skip-git-init` | Use to not initialize a Git repository in the Action's folder. | <pre>stk create action my-action --description "Action description" --skip-git-init</pre> |
+|`-q`, `--non-interactive` | It does not ask the user for missing input parameters and returns an error if any mandatory parameter has not been provided. | <pre>stk create action my-action-name --non-interactive</pre> |
+| `-rc` , `--requires-connections` | Defines the Connection required by the Action. Every Connection must be in quotes (`"`). To define more than one Connection, separate each one with a comma (`,`). Use the pattern: <code>[type]&#124;[alias],[type]&#124;[alias]</code> | <pre>stk create action my-action -rc aws-eks-conn&#124;my-eks-conn,aws-rds-conn&#124;my-rds-conn</pre>|
+| `-o`, `--target` | The `-o`, `--target` option allows you to define a different folder name to create the Action content. If the folder does not exist, it will be created. If you do not use the `-o` or `--target` option, the Action content folder name will be the same as the one you gave when creating your Action. | <pre>stk create action my-action-name --target home/user/Applications/my-action </pre>|
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk create action --help</pre> |
+___
+
+### **stk list action**
+
+The **`stk list action`** command displays in the terminal a list with all the Actions.
+
+You have two options:
+
+1. List Actions from a Workspace available to your account. In this case, you must be inside a Workspace. To do this, execute the command [**stk use workspace**](home/stk-cli/commands/workspace-commands.md#stk-use-workspace) before listing the Actions.
+
+2. List Actions outside of a Workspace. Here, you need to specify the Studio after executing the command.
+
+> You can access the Action's name, type, description, and version. It also notifies if there is deprecated content with the `'deprecated'` tag.
+
+#### **Usage**
+
+```bash
+stk list action
+```
+
+#### **Parameters**
+
+| **Option** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-sta`, `--stack` | List only the Actions of a specific Stack | <pre>stk list action --stack my-stack-name</pre> |
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk list action --help</pre> |
+___
+
+### **stk publish action**
+
+The **`stk action`** command publishes your Action on StackSpot.
+
+:::warning
+
+[Files listed in **`.stkignore`** **will not be published to StackSpot**](create-use/create-content/yaml-files/stkignore.md), but will be added by Git commits as normal. They are not ignored in **`.gitignore`**.
+
+:::
+
+#### **Usage**
+
+```bash
+stk publish action --studio [TEXTO]
+```
+
+#### **Parameters**
+
+| **Option** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-s`, `--studio` | Name of the Studio you want to publish the Action. | <pre>stk publish action --studio my-studio-name</pre> |
+| `-v`, `--verbose` | Displays publishing steps in detail. | <pre>stk publish action --verbose</pre> |
+| `-j`, `--justification` | Insert the text justifying the use of the Action for Studios that have governance enabled. | <pre>stk publish action --studio my-studio-name --justification "my justification text"</pre> |
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk publish action --help</pre> |
+___
+
+### **stk run action**
+
+The **`stk run action`** command executes an Action.
+
+:::info
+To use an Action using the values configured in a Workspace, first access a Workspace with the [**stk use workspace**](home/stk-cli/commands/workspace-commands.md#stk-use-workspace) command.
+
+Execute the Action following the pattern **`stk run action [STUDIO/STACK/ACTION]`**:
+
+```bash
+stk run action my-studio-name/my-stack-name/my-action-name
+```
+
+:::
+
+#### **Usage**
+
+```bash
+stk run action [NAME_OR_PATH]
+```
+
+#### **Parameters**
+
+| **Option** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `NAME_OR_PATH` | Name of a published Action. Valid values: <br/><br/> **1.** Run an Action without using Workspace context variables: `<studio-slug>/<action-name>@<action-version>`. Can only be used when there is no active Workspace. <br/><br/> **2.** Execute an Action using the context variables configured for the Action in the Stack within the active Workspace. The Action version (`@stack-version`) can only be defined if there is no active Workspace: `<studio-slug>/<stack-slug>/<action-name>@<stack-version>`.  | **1.** Without Workspace: <pre>stk run action my-studio-name/action-name@1.0.0</pre> <br/><br/> **2.** Active Workspace: <pre>stk run action my-studio-name/my-stack-name@1.0.0/my-action-name</pre> <br/><br/> **3.** Path to the Action: <pre>stk run action User/HomeDir/action-folder-name</pre> |
+|`-i`, `--inputs-json` |  JSON input parameters for the Action. | <pre>stk run action [ action path ] --inputs-json "$INPUTS"</pre> |
+| `-e`, `--env` |  Name of the environment in which the Action will run. | <pre>stk run action my-studio-name/my-stack-name/my-action-name --env prod</pre>|
+|`-q`, `--non-interactive` | Do not prompt the user for missing input parameters and return an error if any required parameter is not provided. | <pre>stk run action my-studio-name/my-stack-name/my-action-name --non-interactive</pre> |
+| `-c`, `--connections` | Define the connections aliases for the Action. To define more than one alias, separate each one with a comma (`,`). Use the pattern: `'[{"alias": "connection_alias", "selected": "selected_alias"}]'` | Active Workspace: <pre>stk run action my-studio-name/my-stack-name/my-action-name --connections `'[\{"alias": "connection_alias", "selected": "selected_alias"}]'</pre> |
+| `-h`, `--help` | Displays the command help and exits. | <pre>stk run action --help</pre> |
+
+___
+
+### **stk validate action**
+
+The **`stk validate action`** command validates the structure of your Action. You must run the command from within the Action folder you want to validate.
+
+:::info
+Files ignored in the **`.gitignore`** file will not be validated by the command.
+:::
+
+Validation occurs by Action type. The items validated for each type are:
+
+**All Actions**
+
+- Validates that the **`action.yaml`** or **`action.yml`** file exists;
+- Validates that the **`action.yaml`** or **`action.yml`** files are not duplicated within the Action directory.
+
+**`Python` Actions**  
+
+- A path to the **`script.py`** file is specified.
+  - Validates that the **`script.py`** file is empty.
+  - Validates that the **`script.py`** file exists.
+  - Validates that the inputs are of the correct type (pattern with regex).
+
+**`Shell` Actions**  
+
+- Validates that the inputs are of the correct type (pattern with regex).
+
+<!--
+**Actions do tipo `webservice`** (para requisições *http*)
+
+- É validado se os inputs são do tipo certo (pattern com regex)
+
+**Actions do tipo `container`**
+
+- É especificado um path para o **Dockerfile**.
+  - É validado se o **Dockerfile** está vazio.
+  - É validado se existe arquivo **Dockerfile**.
+  - É validado se os inputs são do tipo certo (pattern com regex).
+
+-->
+
+#### **Usage**
+
+```bash
+stk validate action --verbose --studio my_studio_slug
+```
+
+#### **Parameters**
+
+| **Option** | **Description** | **Example** |
+| ----------- | ----------- | --- |
+| `-v`, `--verbose` |  List the details of all analyzed and validated items of your Action. | <pre>stk validate action --verbose</pre> |
+| `-stu`, `--studio` STUDIO_SLUG | Studio slug used to validate Action information based on the Action version published in the Studio. [**See more details in breaking changes**](#breaking-changes-warning) | <pre>stk validate action --studio my_studio_slug</pre> |
+| `-h`, `--help` | Display the command help and exit. | <pre>stk validate action --help</pre> |
+
+#### **Breaking Changes warning**
+
+In StackSpot, a breaking change in Plugins or Actions refers to a modification that can disrupt compatibility with previous versions. This means that after the update, Plugins or Actions that previously worked may no longer function the same way or require adjustments to operate correctly.
+
+The validation command detects breaking changes using the **`--studio`** parameter. In this scenario, you need to provide the Studio slug so that the validation can compare the Action version you want to publish with the already published version. If any changes cause a compatibility break, a warning will be displayed in the terminal, informing you that the changes will result in a breaking change.
+
+The modification of the following parameters in the **`action.yaml`** file will cause a breaking change in your Action:
+
+- **SchemaVersion**: Changing the schema version;  
+- **Requires changes**: Changes in the items within the **`requires`** field;  
+- **Connections changes**: Changes in the Connection Interfaces;  
+- **Input change size**: Changes in the input size (text length, adding options, etc.);  
+- **Input type change**: Changing the input type;  
+- **Input condition change**: Changing the value of the conditional variable used in the **`condition`** option of an input;  
+- **Input sub-input change**: Any changes in inputs nested within other inputs, such as items within a list or object.
+
+___

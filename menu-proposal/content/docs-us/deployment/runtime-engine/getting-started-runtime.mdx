@@ -1,0 +1,62 @@
+---
+title: Set Up
+description: Set up your Deploy Engine.
+---
+
+> In this section, you will find how to set up StackSpot's Deploy.
+
+<br/>
+
+:::caution
+
+The Deploy configuration flow and addition of Cloud accounts in StackSpot in this way is only available for:
+
+- **Enterprise accounts created before 2024**.
+
+**Enterprise accounts created from January 2024 onwards** must deploy via [**Self-hosted Runtimes**](deployment/deploy/self-hosted-runtime.md).
+:::
+
+### Before you begin
+
+This guide shows how to set up before working with the StackSpot's Deploy Engine. You will learn more about how to:
+
+- Select a Cloud Provider;
+- [**Connect AWS accounts**](home/workspace/config-cloud-account.md);
+- [**Create Infrastructure**](create-use/use-content/infra/infrastructure.md);   
+- [**Application Infrastructure Deployment**](deployment/runtime-engine/app-deployment.md);  
+- [**Infrastructure Deployment**](deployment/runtime-engine/deploy-infra.md).
+
+:::warning
+The deployment performed by StackSpot's Runtimes Engine is **not** for the Application itself but for the **Application's Infrastructure**. The **Application** deployment is done via a **Pipeline**.
+
+To learn about this process, navigate to the [**Register Application Deployment Section**](deployment/deploy/register-app-deployment.md). 
+:::
+
+### **Requirements**
+
+Check the requirements below:  
+
+- [**Configure AWS Cloud account**](home/workspace/config-cloud-account.md) or [**Configure Azure Cloud account**](home/workspace/config-cloud-account-azure.md);    
+- [**A Workspace**](home/workspace/create-workspace.md);
+- [**Access to a Cloud account**](home/account/organization/access-management/roles.md);
+- [**Environments in your account.**](home/account/organization/create-env.md).
+
+Before making one of the deploys available on StackSpot, check the specific settings for your Account:
+
+### **Enterprise Account**
+
+- [**Initial Setup**](home/account/organization/initial-setup.md); 
+- [**SSO Configuration**](home/account/organization/sso-group-mapping/sso-configuration.md);  
+- [**Generate, revoke, and edit Service Credentials**](home/account/organization/service-credential.md).
+
+- 
+## **Next step**
+
+Now, you can:
+
+- [**Application Infrastructure Deployment**](deployment/runtime-engine/app-deployment.md);  
+- [**Infrastructure Deployment**](deployment/runtime-engine/deploy-infra.md);  
+- [**Share Infrastructure Resources**](deployment/runtime-engine/infra-resources.md);  
+- [**Use Self-Hosted**](deployment/deploy/self-hosted-runtime.md);
+- [**Follow up on existing features in the Application or Infrastructure after deployment**](deployment/manage/dashboard.md);  
+- [**View the activities carried out in your Application or Infrastructure**](deployment/manage/activities.md).

@@ -1,0 +1,344 @@
+---
+title: "Download and Installation"
+sidebar_position: 2
+description: How to install STK CLI.
+sidebar_custom_props: 
+  icon: Download
+---
+
+> In this section, you can find how to install the STK CLI.
+
+<br/> 
+
+## **About STK CLI**
+
+STK CLI is StackSpot's **command line interface** tool. It is the main channel that allows you to **create and use** StackSpot content, in addition to accessing the Platform's other features.
+
+[**STK CLI has commands**](home/stk-cli/commands/index.md) that **facilitate access and creation** of StackSpot resources without the need for graphical environments and complex interfaces.
+
+## **Before installing:**
+
+### **Requirements**
+
+Check below the requirements to use the STK CLI:
+
+- [**Install Git - from version 2.32.**](https://git-scm.com/downloads).
+- Create an account on [**StackSpot Portal**](https://app.stackspot.com/login). 
+> - To **access all features available** on StackSpot, you **must have an Account** and **login** to use the STK CLI.
+
+
+### **Configure your Git user**
+
+After installing Git, you must configure **your repository account's username and email**. In the terminal, execute the following sequence of commands:
+
+#### **Step 1. Set up your username and email**
+
+Name:
+
+```bash
+git config --global user.name "{username}"
+```
+
+Email:
+
+```bash
+git config --global user.email "{email}"
+```
+
+#### **Step 2. Check the configuration**
+
+Execute the commands below:
+
+```bash
+git config --get user.name
+```
+
+Right away:
+
+```bash
+git config --get user.email
+```
+
+If your Git repository account **username and email** are displayed in the **terminal**, continue with the [**STK CLI Download and Installation**](#download-and-install-stk-cli) guide below. If you do not receive a response or need to correct any information, repeat [**Step 1**](#step-1-configure-your-username-and-email).
+
+## **Download and Install STK CLI**
+
+> Use **Git Bash** to use the commands and thus have a better experience (such as the *auto-complete* functionality).
+
+<br/>
+
+To install the **latest version of STK CLI**: 
+
+- Select your **operating system**; 
+- **Download** it; 
+- And **follow the installation steps** below. 
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs>
+<TabItem value="Tab1" label="Windows" default>
+
+#### **Download Windows installer**
+
+<br/>
+
+The StackSpot CLI has been approved to work on the following versions of Windows:
+
+- Windows 11
+- Windows 10
+
+<br/>
+
+**Installer link**:
+
+- [**stk.msi**](https://stk.stackspot.com/installer/windows/stk.msi)
+
+<br/>
+
+#### **Step 1.** Follow the wizard instructions on your machine
+
+<br/>
+
+Navigate to the folder where you placed the **`stk.msi`** file. Double click on the file to begin the installation. Follow the wizard instructions on your machine and complete the installation.
+
+<br/>
+
+</TabItem>
+<TabItem value="Tab2" label="Linux">
+
+#### **Installation on Linux (Recommended)**
+
+<br/>
+
+The StackSpot CLI has been approved to work on the following Linux distributions:
+
+- Ubuntu 20.04
+- Ubuntu 18.04
+- Red Hat Enterprise Linux (RHEL)
+
+<br/>
+
+> There are no installation requirements for other distributions, but StackSpot CLI compatibility may not be complete.
+
+<br/>
+
+Install via **command line**. Run the command below in your terminal to install the Linux version:
+
+```curl
+curl -fsSL https://stk.stackspot.com/install.sh | bash
+```
+
+#### **Manual Installation**
+
+<br/>
+
+Download via the links below and follow the installation steps below:
+
+- [**stk.deb**](https://stk.stackspot.com/installer/linux/stk.deb)
+- [**stk**](https://stk.stackspot.com/installer/linux/stk)
+- [**stk.rpm**](https://stk.stackspot.com/installer/linux/stk.rpm)
+
+<br/>
+
+#### **Step 1.** Navigate to the folder where the installation package is located
+
+<br/>
+
+Using the terminal, navigate to the folder. For the **`stk.deb`** file, run the command:
+
+```bash
+sudo dpkg --install stk.deb
+```
+
+<br/>
+
+For the **`stk.rpm`** file, run the command:
+
+```bash
+rpm -i stk.rpm
+```
+
+<br/>
+
+For **`RHEL`**, run the command:
+
+```bash
+sudo rpm -i
+```
+
+</TabItem>
+<TabItem value="Tab3" label="Install on MacOS">
+
+#### **Installation on Mac (Recommended)**
+
+<br/>
+
+The StackSpot CLI has been approved to work on the following versions of MacOS:
+
+- MacOS 13 (Ventura up to the latest release - 13.6.7)
+- MacOS 14 (Sonoma up to the latest release - 14.5)
+- MacOS 15 (Sequoia)
+
+<br/>
+
+> There are no installation requirements for other versions, but StackSpot CLI compatibility may not be complete.
+
+<br/>
+
+Install via command line. Run the command below in your terminal to install the MacOS version:
+
+
+```curl
+curl -fsSL https://stk.stackspot.com/install.sh | bash
+```
+
+<br/>
+
+#### **Manual Installation**
+
+<br/>
+
+Before proceeding, do the following steps:
+
+1. [**Z shell (zsh)**](https://support.apple.com/en-us/HT208050): Run the ``chsh -s /bin/zsh`` command in the terminal to enable zsh
+2. Keep [**Xcode Developer Tool updated**](https://developer.apple.com/xcode/resources/).
+
+<br/>
+
+Download using the link below and follow the installation steps below:
+
+- [**stk.pkg**](https://stk.stackspot.com/installer/darwin/stk.pkg)
+
+<br/>
+
+#### **Step 1.** Do not run the **`stk.pkg`** file through the UI (double-click on the file). Open the terminal and follow the instructions below:
+
+<br/>
+
+**1.** Access the directory where the installer was downloaded;
+**2.** Run the command:
+
+:::danger
+
+**Do not run the STK CLI installer (`stk.pkg`) by clicking on it**.
+Run the command below in your terminal to install the STK CLI.
+
+:::
+
+```bash
+installer -pkg stk.pkg -target CurrentUserHomeDirectory
+```
+
+The value after **`-target`** is **`CurrentUserHomeDirectory`**, no replacement is needed.
+
+</TabItem>
+</Tabs>
+
+:::caution
+
+After installation, if no proxy is configured, the STK CLI will prompt you in the terminal to set one up. 
+
+If a proxy is already configured, this step will be skipped.
+
+:::
+
+## **Restart terminal after installation**
+
+<br/>
+
+If the terminal is open, close it and open it again after installation, this ensures that the **`stk`** command is recognized.
+
+In the terminal, run the command:
+
+```bash
+stk --version
+```
+
+If everything is configured, the terminal will return the current STK CLI version number.
+
+If the **`stk`** command is not yet recognized, follow the instructions below:
+
+### **MacOS**
+
+In the MacOS terminal **'Zshell (zsh)'**, follow the steps below:
+
+**1.** Add the lines below at the end of your **`.zshrc`** file, respectively execute the commands below:
+
+```bash
+export PATH=$HOME/.stk/bin:$PATH
+```
+
+```bash
+test -f ~/.stk/bin/.zshrc && . ~/.stk/bin/.zshrc
+```
+
+**2.** Restart the terminal;
+
+**3.** Rerun the command:
+
+```bash
+stk -v
+```
+
+### **Linux**
+
+In the Linux terminal, follow the steps below:
+
+**1.** Run the command below in your terminal:
+
+```bash
+test -f ~/.stk/bin/.bash_profile && . ~/.stk/bin/.bash_profile
+```
+
+**2.** Restart the terminal;
+
+**3.** Rerun the command:
+
+```bash
+stk -v
+```
+
+## **Authenticate STK CLI**
+
+<br/>
+
+To authenticate the STK CLI, run the command below:
+
+```bash
+stk login
+```
+
+Enter the email address registered on the StackSpot Portal. In the command, you can also enter the email as a parameter:
+
+```bash
+stk login email-account@email.com
+```
+
+A screen will open in your default browser for you to enter the username and password associated with the account. After validating the information and confirming your login, return to the STK CLI where your session will begin.
+
+## **Change STK CLI language**
+
+The language displayed in the STK CLI will be the same as that configured in your operating system. The supported languages are **Portuguese** and **English**, but if your operating system is in a different language, the default will be **English**.
+
+1. To change the language, **run the following** command: 
+
+```bash
+stk config locale
+```
+
+2. Select the desired **language**. 
+
+<br/>
+
+
+Example:
+
+<AsciinemaPlayer src="/videos/stk-config-locale.cast" />
+
+
+## **Next steps**
+
+- [**STK CLI installation in Pipeline**s](home/stk-cli/pipeline-ci-cd.md)
+- [**Uninstall STK CLI**](home/stk-cli/uninstall.md)
+- [**List of STK CLI commands**](home/stk-cli/commands/index.md)

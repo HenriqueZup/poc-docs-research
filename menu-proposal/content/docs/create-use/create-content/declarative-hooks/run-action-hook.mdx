@@ -1,0 +1,263 @@
+---
+title: run-action
+---
+
+O Hook Declarativo do tipo **`run-action`** permite executar [**Actions**](create-use/create-content/action/run-action.mdx) de uma Stack quando um Plugin é aplicado em uma Aplicação ou Infraestrutura.
+
+```yaml
+schema-version: v3
+kind: plugin
+metadata:
+  name: run-action-hook-plugin
+  display-name: run-action-hook-plugin
+  description: Describe what your Plugin does.
+  version: 0.0.1
+spec:
+  type: app
+  compatibility:
+    - python
+  docs:
+    pt-br: docs/pt-br/docs.mdx
+    en-us: docs/en-us/docs.mdx
+  single-use: False
+  requires:
+    actions:
+      - my-studio-slug/my-stack-slug@1.0.0/my-action-slug
+  technologies: # Ref: https://docs.stackspot.com/create-use/create-content/yaml-files/plugin-yaml/#technologies-1
+    - Api
+  stk-projects-only: false
+  inputs:
+    - label: Select the connection for your my-dynamo-conn
+      name: my-dynamo-conn
+      type: required-connection
+      connection-interface-type: aws-dynamo-conn
+    - label: Type the name of your resource
+      name: resource
+      type: text
+      required: true
+// new-line-start      
+  hooks:
+    - type: run-action
+      trigger: after-render
+      name: my-studio/my-action-slug
+      inputs:
+        user_name: User with {{ resource }}
+      env: qastaging
+      connections:
+        - alias: my-dynamo-conn
+          selected: aws-dynamo-conn-selected
+// new-line-end          
+```
+
+## **Ações Disponíveis do Hook Declarativo `run-action`**  
+
+### **`trigger:`** 
+
+Campo para definir gatilhos que informam o momento em que a execução de comandos deve ocorrer.  
+
+**`before-input`**:
+
+Executa os comandos do hook antes de receber os parâmetros de entrada da pessoa usuária.  
+```yaml 
+trigger: before-input
+``` 
+___
+
+**`before-render`**:
+
+Executa os comandos do hook antes do Template gerar arquivos no projeto.  
+
+```yaml 
+trigger: before-render
+```
+
+___
+
+**`after-render`**:
+
+Executa os comandos do hook após o Template gerar arquivos no projeto.  
+```yaml 
+trigger: after-render
+```
+
+___
+
+### **`name:`**
+
+O nome da Action que você deseja executar. Use a seguinte sintaxe:
+
+Para usar com uma versão específica da Action, informe a versão da Stack em qua a Action desejada está inclusa:
+
+```yaml
+<studio-slug>/<action-slug>
+```
+
+Exemplo:
+
+```yaml
+name: my-studio-slug/my-action-slug
+```
+
+:::tip Dica!
+
+- Se você informar apenas o slug da Stack sem a versão semântica, o Hook Declarativo **`run-action`** executa a Action da última versão publicada da Stack.
+
+- Todas as Actions utilizadas no Hook Declarativo **`run-action`** devem estar listadas no campo [**`requires.actions`**](create-use/create-content/yaml-files/plugin-yaml.mdx#specrequiresactions) do seu Plugin.
+
+:::
+
+___
+
+### **`inputs:`(Opcional)**
+
+Se a Action possuir inputs, você precisa colocá-las no Hook Declarativo **`run-action`**.
+
+Para cada input, preencha o Hook Declarativo da seguinte forma:
+
+```yaml
+input_name: input value
+```
+
+Exemplo:
+
+O exemplo de Action a seguir tem um input marcado com um destaque vermelho. Na aba ao lado "**Exemplo do run-action em um Plugin**", você pode ver o mesmo input no preenchido no trecho do Hook Declarativo **`run-action`**:
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs>
+<TabItem value="action" label="Exemplo de Action" default>
+
+```yaml
+schema-version: v3
+kind: action
+metadata:
+  name: my-python-action
+  display-name: my-python-action
+spec:
+  type: python
+  docs:
+    pt-br: docs/pt-br/docs.mdx
+    en-us: docs/en-us/docs.mdx
+  requires:
+    actions:
+      - my-studio/my-stack@1.0.0/my-python-action
+  inputs:
+    - label: Who are you?
+// old-line    
+      name: user_name
+      type: text
+      required: false
+      pattern: '([A-Z][a-z]+)+'
+      help: 'Inform your name'
+  python:
+    workdir: .
+    script: script.py
+```
+</TabItem>
+
+<TabItem value="hook" label="Exemplo do run-action em um Plugin">
+
+```yaml
+# ***Outros campos do Plugin acima!***
+hooks:
+  - type: run-action
+    trigger: after-render
+    name: my-studio/my-stack@1.0.0/my-python-action
+    inputs:
+// new-line    
+      user_name: User with {{ resource }}
+```
+
+</TabItem>
+</Tabs>
+
+:::tip Dica!
+
+O campo **'inputs:'** suporta interpolação dos dados e filtros [**JINJA**](create-use/create-content/yaml-files/jinja.mdx).
+
+::: 
+
+___
+
+### **`env:`(Opcional)**
+
+Informe um [**ambiente específico]**(home/account/organization/create-env.mdx) onde o Action será executada.
+
+Exemplo:
+
+```yaml
+# ***Outros campos do Plugin acima!***
+hooks:
+  - type: run-action
+    trigger: after-render
+    name: my-studio/my-stack@1.0.0/my-action-slug
+    inputs:
+      user_name: User with {{ resource }}
+// new-line      
+    env: qastaging
+```
+
+### **`connections:`(Opcional)**
+
+Caso sua Action tenha Connections requeridas, informe o alias da Connection e o tipo selecionado da seguinte forma:
+
+Exemplo:
+
+<Tabs>
+<TabItem value="action-conn" label="Exemplo de Action com input required-connection" default>
+
+```yaml
+schema-version: v3
+kind: action
+metadata:
+  name: my-python-action
+  display-name: my-python-action
+  description: Describe your action explaining its purpose
+spec:
+  type: python
+  docs:
+    pt-br: docs/pt-br/docs.mdx
+    en-us: docs/en-us/docs.mdx
+  requires:
+    actions:
+      - my-studio-slug/my-stack-slug@1.0.0/my-action-slug
+  inputs:
+  // old-start 
+    - label: Select the connection for your my-dynamo-conn
+      name: my-dynamo-conn
+      type: required-connection
+      connection-interface-type: aws-dynamo-conn
+  // old-end    
+    - label: Who are you?    
+      name: user_name
+      type: text
+      required: false
+      pattern: '([A-Z][a-z]+)+'
+      help: 'Inform your name'
+  python:
+    workdir: .
+    script: script.py
+```
+</TabItem>
+
+<TabItem value="connections" label="Exemplo do run-action com Connections">
+
+```yaml
+# ***Outros campos do Plugin acima!***
+hooks:
+  - type: run-action
+    trigger: after-render
+    name: my-studio/my-stack@1.0.0/my-action-slug
+    inputs:
+      user_name: User with {{ resource }}
+    env: qastaging
+// new-line-start    
+    connections:
+      - alias: my-dynamo-conn
+        selected: aws-dynamo-conn
+// new-line-end        
+```
+
+</TabItem>
+</Tabs>

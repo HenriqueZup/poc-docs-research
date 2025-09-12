@@ -1,0 +1,75 @@
+---
+title: StackSpot Action AI Quick Command Execution
+description: How to leverage a StackSpot Action to execute a Quick Command on StackSpot
+  AI using Workflow.
+---
+
+This StackSpot Action allows you to create and execute a Quick Command using the StackSpot API. It supports creating a Quick Command execution, retrieving its details, and executing specific steps within the Quick Command.
+
+Action:
+
+```bash
+stackspot-core/stackspot-ai-quick-command@0
+```
+
+## **Features**
+
+- Create a Quick Command execution.
+- Retrieve details about the Quick Command execution.
+
+## **Inputs**
+
+| **Name**              | **Type** | **Description**                                                    | **Required** | **Default Value**         |
+|-----------------------|----------|--------------------------------------------------------------------|--------------|--------------------------|
+| `quick_command_slug`  | String   | The slug of the Quick Command to be executed.                      | Yes          | N/A                      |
+| `conversation_id`     | String   | The conversation ID to keep context across multiple executions.     | No           | Automatically generated ULID |
+
+## **Usage Example**
+
+### **Workflow Example**
+
+Here’s an example of how to use this Action in a StackSpot Workflow:
+
+#### **YAML do Workflow**
+
+```yaml
+schema-version: v1
+kind: workflow
+metadata:
+  name: workflow
+  display-name: workflow
+  description: workflow
+  version: 0.0.1
+spec:
+  type: reusable
+  label: Workflow Title
+  docs:
+    en-us: docs/en_us/docs.md
+    pt-br: docs/pt_br/docs.md
+  jobs:
+    - id: job_id_1
+      label: Job que diz olá
+      steps:
+        - id: step_id_1
+          label: Step says hello 
+          name: stackspot-core/stackspot-ai-quick-command@0
+          type: action
+          inputs:
+            quick_command_slug: test-hello-world
+            input_data: print('hello world')
+
+        - id: step_id_2
+          label: Step says hello 
+          name: stackspot-core/python-exec@1
+          type: action
+          inputs:
+            script: |
+              import json
+              print(json.dumps(metadata.inputs["outputs"]["job_id_1"]["step_id_1"], indent=4))
+
+        - id: step_id_3
+          label: Step says hello 
+          type: run
+          script: |
+            echo "{{outputs.job_id_1.step_id_1}}"
+```

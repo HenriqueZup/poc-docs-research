@@ -1,0 +1,176 @@
+---
+title: Infrastructure Plugin Fork
+description: Copy the Terraform files from a specific Infrastructure Plugin.
+---
+
+The StackSpot Infrastructure Plugins fork [**works through the `stk fork plugin` command**](home/stk-cli/commands/plugin-commands.md#stk-fork-plugin), which allows you to access and edit the Terraform of a specific Plugin, without exposing the Terraform of the entire project. The command creates a default folder and file structure for the Plugin's Terraform, allowing you to make custom changes.
+
+After making the changes, the deployment engine uses the Terraform you edited to provision the Infrastructure, replacing the code from the original. If the default Plugin meets your needs again, you can easily revert to the original version.
+
+## **Enabling forking in a Plugin**
+
+To allow other users to fork a Plugin, you need to add the **`allowed-resource-fork`** parameter to the YAML file:
+
+See the following example of a Plugin with fork enabled:
+
+```yaml
+schema-version: v3
+kind: plugin
+metadata:
+  name: infrastructure-plugin-fork-allowed
+  display-name: infrastructure-plugin-fork-allowed
+  description: Infrastructure Plugin with Fork allowed example
+  version: 1.0.0
+spec:
+  type: infra
+  allowed-resource-fork: 
+    - aws_s3_bucket
+    - aws_s3_bucket_policy
+    - aws_s3_bucket_object
+  docs:
+    pt-br: docs/pt-br/doc.md
+    en-us: docs/en-us/doc.md
+  compatibility:
+    - python
+  technologies:
+    - Api
+  runtime:
+    environment:
+      - terraform-1-4
+      - aws-cli-2
+      - git-2
+```
+
+**`allowed-resource-fork`** takes a list of strings with the names of Terraform resources that are allowed to fork. To enable forking, at least one item in the list is required.
+
+The following example lists three resources that will be allowed to be copied when forking. The listed resources will be copied from the original Terraform Plugin:
+
+```bash title="Example in a main.tf file"
+provider "aws" {
+  region = "{{ aws_region }}"
+}
+
+# Crate a bucket S3
+# new-line
+resource "aws_s3_bucket" "example" {
+  bucket = "{{ bucket_name }}"
+  acl    = "{{ bucket_acl }}"
+  tags = {
+    Name        = "{{ bucket_name }}"
+    Environment = "Dev"
+  }
+}
+
+# Bucket S3 policy
+# new-line
+resource "aws_s3_bucket_policy" "example" {
+  bucket = aws_s3_bucket.example.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "PublicReadGetObject"
+        Effect    = "Allow"
+        Principal = "*"
+        Action    = "s3:GetObject"
+        Resource  = "${aws_s3_bucket.example.arn}/*"
+      }
+    ]
+  })
+}
+
+# Bucket S3 upload object
+# new-line
+resource "aws_s3_bucket_object" "example" {
+  bucket = aws_s3_bucket.example.bucket
+  key    = "{{ file_path | basename }}"
+  source = "{{ file_path }}"
+  acl    = "{{ bucket_acl }}"
+}
+```
+
+> Your fork copy will be able to use these resources.
+
+```yaml title="Example snippet of an Infrastructure Plugin with fork enabled for the resources in the list."
+  allowed-resource-fork: 
+    - aws_s3_bucket
+    - aws_s3_bucket_policy
+    - aws_s3_bucket_object
+```  
+
+Applications and Infrastructures that use a forked Plugin will have the **`fork`** parameter set to **true** in the Plugin listing of the **stk.yaml** manifest.
+
+```yaml title:"stk.yaml file of an Infrastructure that uses forked Plugins."
+schema-version: v2
+kind: manifest
+metadata:
+  name: infrastructure-with-forked-plugins
+  description: "Infrastructure with forked Plugins."
+  stack-version-id: 01J7NRFWSH6P0RFVR8
+  stack: stack-infra@1.0.3
+spec:
+  type: infra
+  plugins:
+    - name: my-studio/stack-infra@1.0.3/plugin-infra-fork-allowed@1.0.0
+      fork: true
+      alias: plugin-infra-v2-no-req-gen-s3-1733230002287
+      plugin-version-id: 01J724AM0WBA78663Y19K90B7J
+      stack-version-id: 01J7NRNW12J28CFVCNYYZRZDBQ
+      type: infra
+      inputs:
+        resource: Client
+        method: GET
+      inputs-envs: {}
+      connections:
+        generates:
+          - type: aws-s3-conn
+            selected: dasdsa
+            alias: bucket-source
+        requires: []
+      links:
+        generates: []
+      global-inputs: {}
+      global-computed-inputs: {}
+```
+
+## **Forking Plugins FAQ**
+
+### **Forking an Allowed Infrastructure Plugin**
+
+- The user can run the **`stk fork plugin`** command to create a Terraform-independent copy of a Plugin that is fork-enabled; attempting to fork non-fork-enabled Plugins may result in errors.
+
+- Only fork-enabled Plugins will be displayed in the listing.
+
+- After forking, the Plugin code can be edited locally.
+
+### **Editing Plugin Code After Forking**
+
+You can make changes to the copied Plugin code, and these changes will be automatically applied during provisioning of the Infrastructure by the deployment engine.
+
+### **Overwriting an Existing Directory**
+
+If you already have a directory with the Plugin code, you can overwrite it by using the stk fork plugin command. Confirm the message displayed in the terminal to replace the contents of the existing directory.
+
+### **Revert a previously executed fork**
+
+You can use the **`stk unfork plugin`** command to revert the fork. This deletes the Terraform folder and returns the Plugin to its original state.
+
+### **Update a forked Plugin to a newer version**
+
+Use the **`stk update plugin`** command to update the Plugin to a newer version. During the update, the fork will be reverted and the Terraform files will be removed.
+
+### **View the fork mark on Plugins**
+
+After performing the fork, the Plugin will be marked as "forked" in the list of Application or Infrastructure Plugins in your Workspace.
+
+### **View the list of created resources**
+
+Go to the created resources tab in your Workspace to see the impact of the fork on the environment.
+
+### **Use the locally copied Terraform**
+
+After the fork, you can use the copied Terraform to customize the Plugin's behavior. To do this, you must access the path: **`​​{PATH_APP_OR_INFRA}/.stk/FORKED_PLUGIN/{plugin_alias}`** to access Terraform.
+
+### **Execute pipelines with changes in the forked Plugin**
+
+You can execute the project's pipeline to apply the changes made to the Plugin's code, so that the changes are applied during deployment.  

@@ -1,0 +1,96 @@
+---
+title: Action on the Stacks
+description: How to add, deprecate or delete Action to Stacks.
+---
+
+> In this section, you will find a guide on how to add, deprecate, or delete Actions in Stacks.
+
+<br/>
+
+## **Add Actions to your Stack**
+
+To add one or more Actions to your Stack, follow these steps:
+
+
+**Step 1.** In your Stack, click on the **'Actions'** subsection. Then, click the **"Add Action"**;
+
+**Step 2.**  Add the Actions that are **'Available in Studio'** and meet the **'Explore'** filter criteria;
+
+> In the **'Explore'** tab, you can group the Actions by Studios and select the desired version.
+
+StackSpot follows the [**semantic standard (SemVer)**](https://devhints.io/semver). You can choose from the following types:
+
+- **Specific version**: represents a single version of the Action, such as  `1.0.0`.  
+
+- **Range**: in the sequence **~1.x.y, ^1.x.y**, or **1.x.y-1.y.x** for example, the range **~1.2.3** represents any version greater than or equal to >=1.2.3 and less than \<1.3.0.
+
+<br/>
+
+**Step 3.** After selecting the Actions, click the **'Add Action'** button;
+
+You have added Actions to your Stack.
+
+See all the steps in the GIF below: 
+
+![GIF shows the steps to add an Action to a Stack in the StackSpot EDP Platform](/img/add-action-stack.gif)
+
+---
+
+## **Deprecate an Action in a Stack**  
+
+You can deprecate an Action from a Stack by following these rules:
+
+1. You need permission to remove content.
+
+2. The user must belong to the Stack where the Action version will be deprecated or removed.
+
+When deprecating the version of an Action within a Stack that uses a range, all versions of the Action will be deprecated. For example:
+
+In a Stack, you add an Action X, which uses the `~1.2.3` range, , i.e., any version greater than or equal to >=1.2.3 and less than \<1.3.0. In this sense, the Action has the following published versions: `1.0.0, 1.2.3, 1.2.4, 1.2.5, 1.2.6, 1.3.1.`.
+
+When you deprecate Action X in the Stack, it displays a deprecated content tag. This behavior continues even if you publish a new version of Action X in the Stack.
+
+3. The user must belong to the Studio or Stack where the Action version will be deprecated.
+
+<br/>
+
+To **deprecate the version** of an Action, follow the steps below:
+
+**Step 1.** Within your Stack, select the version of the Stack that is the Starter that will be deprecated.
+
+**Step 2.** Click on the version button, next to the Action version you want to depreciate, on the left-side of the screen. Then click **'Deprecate Action'**;
+
+**Step 3.** Fill out the following fields:
+
+- **Reasons** to deprecate:
+    - Lack of maintenance;  
+    - Security Issue;  
+    - Bugs;  
+    - Other
+
+- The **slug** and [**range version**](https://devhints.io/semver) of the Action you want to depreciate.
+
+To continue, click the **'Deprecate Action'** button.
+
+You have deprecated the version of an Action in a Stack.
+
+---
+
+## **Delete the version of an Action in a Stack**  
+
+To **delete the version** of an Action in a Stack, follow the steps below:  
+
+**Step 1.** Inside the Stack, click on the Action's dashboard;
+
+
+**Step 2.** Click on the version button next to the Action you wish to delete, on the left-side of the screen. Then click on **'Delete Action'**. Click the **'Confirm Delete'** button.
+
+
+You have deleted the version of an Action in a Stack.
+
+![GIF shows the steps to delete a version of an Action from a Stack in the StackSpot EDP Platform](/img/delete-action-stack.gif)
+
+
+## **Next Steps**
+
+- See how to [**create Applications**](create-use/use-content/application/index.md).

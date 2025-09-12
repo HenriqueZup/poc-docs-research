@@ -1,0 +1,62 @@
+---
+title: Workflow Outputs
+description: Information about outputs, generate about Workflows of the 'reusable'
+  type.
+---
+
+> In this section, you will find: details about Workflow outputs. 
+
+### **Outputs**
+
+You can declare **_`outputs`_** data [**only in `reusable` Workflows**](create-use/create-content/workflow/explanation/workflow-types.md). This enables the transfer of information between Workflows, Actions, or Plugins. Output data can be declared either in a Step or directly in the Workflow. Each method serves a specific purpose, but both adhere to the same syntax.
+
+```yaml title="Workflow inputs"
+inputs:
+   - type: text
+     name: text_input
+     label: "Type some text:"
+   - type: bool
+     name: boolean_input
+     label: "Do you want to run optional job?"
+computed-inputs:
+  computed_input_name: "{{ text_input_name | upper }}"
+outputs:
+  uppercase_text_output: "{{computed_input_name | encrypt }}" 
+```
+
+The output defined in the previous example can be accessed by other jobs and steps in the workflow executed later using a Jinja expression. 
+
+Consider the following job that will use the output:
+
+```yaml
+schema-version: v1
+kind: workflow
+metadata: ...
+spec:
+  jobs:
+    - name: my_job
+      label: My job
+      steps:
+        - action: my-studio/my-action@1
+          name: my_action
+          inputs:
+            some_text: "Hello!"
+```
+
+The Jinja expression to use the output should follow this syntax:
+
+```yaml 
+{{ outputs.<nome-do-job>.<nome-do-step>.<nome-do-output> }}
+```
+
+Example:
+
+```yaml
+{{ outputs.my_job.my_action.some_text_upper }}
+```
+
+:::tip 
+
+Workflow outputs function similarly to **`computed-inputs`**. To learn more about how to use Workflow Outputs, see the [**computed-inputs page**](create-use/create-content/yaml-files/advanced-inputs.md#computed-inputs).
+
+:::

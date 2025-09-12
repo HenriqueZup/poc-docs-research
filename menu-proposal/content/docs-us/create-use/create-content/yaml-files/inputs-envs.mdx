@@ -1,0 +1,52 @@
+---
+title: Inputs-envs
+description: Details for configuring Environment Inputs (inputs-envs) in YAML.
+---
+
+## **About environment inputs**
+
+**`inputs-envs`** are **'inputs'** that allow you to set a different value for the Plugin input based on the environments available in your Workspace. 
+
+**inputs-envs** are only compatible with [**Plugins (`plugin.yaml`)**](create-use/create-content/yaml-files/plugin-yaml.md), Actions and Starters do not currently support environment inputs.
+
+The use of environment inputs is the same as the [**inputs**](create-use/create-content/yaml-files/inputs.md) of a Plugin. The difference is in the declaration within your **`plugin.yaml`** file, which is as follows:
+
+1. The inputs continue to be declared within the **`spec`** field of your **`plugin.yaml`** file;
+2. The declaration of the **`inputs`** object changes to **`inputs-envs`**, and the entire structure of an input remains unchanged.
+
+For example:
+
+```yaml
+spec:
+  inputs-envs:
+    - label: SQS Arn
+      name: sqs_arn
+      type: text
+```
+
+An environment input still needs to contain [**the required fields of an input**](create-use/create-content/yaml-files/inputs.md).
+
+## **How do environment inputs work?**
+
+They allow you to set a different value for the input based on the environments available in your Workspace. For example, if your account has 3 environments such as **development**, **production**, and **staging** ("dev," "stg," and "prd"), it is possible with the same input to define 3 different values. This way, the final value when rendering the template, that is, during the deployment of the Application or Infrastructure, will be the value configured in the desired environment of your Workspace.
+
+For example, request a connection name for each type of environment:
+
+```yaml
+spec:
+  inputs-envs:
+    - label: Enter the name of your connection
+      name: connection_name
+      type: text
+```
+
+In the example, you can define a value for **`connection_name`** for each environment available in your Workspace. The corresponding value will be used during deployment for the selected environment.
+
+## **Use environment variables in the context of your Workspace**
+
+After configuring the environment variables in your Plugin, you must follow your Plugin's publishing flow:
+
+1. [**Publish your Plugin**](create-use/create-content/plugin/publish-plugin.md);
+2. [**Add Plugins to your Stack**](create-use/create-content/stack/create-stack.md#1-adding-plugins-to-your-stack)
+3. [**Configure your Workspace**](home/workspace/configure-workspace.md)
+4. Finally, the **environment variables will be visible** during the [**context configuration in your Workspace**](home/workspace/stacks-and-context/setup-context.md) step.

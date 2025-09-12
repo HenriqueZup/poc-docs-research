@@ -1,0 +1,465 @@
+---
+title: (Deprecated) Using Self-Hosted Runtimes GitHub
+description: How to set up and use a Self-Host in your deployment pipeline with GitHub.
+---
+
+:::danger
+
+This content is being deprecated. [**Learn how to deploy using Self-Hosted and the StackSpot Workflow**](docs/deployment/deploy/use-self-hosted/self-hosted-deploy.md).
+
+:::
+
+> In this section, you'll find how to use a Self-Hosted runner in your deployment pipeline.
+
+<br/>
+
+import FlowChart from '@site/src/components/MdxComponents/FlowChart';
+
+<FlowChart steps={[
+  { title: 'Account Configuration', link: 'home/account/intro-account.md' },
+  { title: 'Deployment Configuration', link: 'deployment/deploy/overview.md', default: true  },
+  { title: 'Create Content', link: 'create-use/create-content/getting-started.md' },
+  { title: 'Use Content', link: 'create-use/use-content/quickstart.md' },
+]} />
+
+### **Requirements**
+
+:::danger
+
+Only Account Holder, Account Admin, or SRE can set up a self-hosted Runtimes.
+
+:::
+
+- Write access to a **GitHub repository**.
+- Have access to an **AWS Account**;  
+- [**Generate a Service Credential**](home/account/organization/service-credential.md) or [**StackSpot Personal Access Token**](home/account/profile/access-token.md);
+
+:::tip  
+It is recommended that you use the **Service Credential**.  
+:::
+
+- [**Register the credentials as secrets in GitHub**](#1-set-your-credential-as-a-github-repository-secrets);  
+- [**The provider's runner (GitHub) must support Docker in Docker**](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runner);  
+- É necessário ter um Bucket na AWS para salvar os TFstates, e um para salvar os IaC gerados pelos Plugins (podem ser o mesmo Bucket).
+- Have an **Application or Infrastructure** created and registered with StackSpot.
+
+## **How to use a Self-Hosted**
+
+To use **Self-hosted Runtimes in your GitHub Pipeline**, you must first create and configure a pipeline to run some GitHub Actions.
+
+<br/>
+
+### **1. Set your credential as a GitHub repository secrets**
+
+Use the secrets of the step below:
+
+- **`Client ID`** as the **`CLIENT_ID`** in secret;
+- **`Client Key`** as the **`CLIENT_KEY`** in secret;
+- **`Realm`** as the **`CLIENT_REALM`** in secret;
+
+<img src="/img/actions-secrets.gif" alt="GitHub Actions Secrets" title="GitHub Actions Secrets" width="500" /> 
+
+For more details, follow the [**using secrets in GitHub Actions**](https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions) documentation.
+
+:::tip
+Set your AWS secrets using GitHub Actions Secrets.
+:::
+
+### **2. Implement the example Workflow in your pipeline**
+
+**Step 1.** Create a new workflow file in your repository. E.g.: **`.github/workflows/workflow_example.yml`**.
+
+**Step 2.** Copy and paste the following example into your new workflow file:
+
+```yaml title=".github/workflows/workflow_example.yml"
+name: Stk Self Hosted
+
+on:
+  push:
+	  branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  orchestrate_and_plan:
+    runs-on: <self-hosted-runner> # Here you should use a runner that can access your cloud account
+    outputs:
+        apply_tasks: ${{ steps.orchestrate_and_plan.outputs.apply_tasks }}
+        run_id: ${{ steps.orchestrate_and_plan.outputs.run_id }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy Infrastructure
+        uses: stackspot/edp-deploy-orchestration-action@v3
+        id: orchestrate_and_plan
+        with:
+            TFSTATE_BUCKET_NAME: "000000000000-tfstate-bucket"
+            TFSTATE_BUCKET_REGION: sa-east-1
+            IAC_BUCKET_NAME: "000000000000-iac-bucket"
+            IAC_BUCKET_REGION: sa-east-1
+            WORKSPACE: "my-workspace"
+            ENVIRONMENT: "prod"
+            VERSION: "v1.0.0"
+            REPOSITORY_NAME: ${{ github.event.repository.name }}
+            PATH_TO_MOUNT: /home/runner/_work/${{ github.event.repository.name }}/${{ github.event.repository.name }}
+            WORKDIR: /path/to/parent-folder-of-.stk # CIf your repository has a .stk that is not in the root folder of the repository
+            STK_CLIENT_ID: ${{ secrets.CLIENT_ID }}
+            STK_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+            STK_REALM: <realm>
+            AWS_IAM_ROLE: ${{ secrets.AWS_ROLE_ARN }}
+            AWS_REGION: sa-east-1
+            SKIP_DEPLOY: false
+            FEATURES_TERRAFORM_MODULES: >-
+              [
+                  {
+                    "sourceType": "gitHttps",
+                    "path": "github.com/stack-spot",
+                    "private":  true,
+                    "app": "app",
+                    "token": "token"
+                  },
+                  {
+                    "sourceType": "terraformRegistry",
+                    "path": "hashicorp/stack-spot",
+                    "private":  false
+                  }
+              ]
+
+  approve_plan_apply:
+    name: Deploy
+    needs: [orchestrate_and_plan]
+    runs-on: <self-hosted-runner> # Here you should use a runner that can access your cloud account
+    environment: prod # Here you define the environments where the user must approve the planned changes from the orchestration step
+    steps:
+      - name: Service Provision
+        id: run-task
+        uses: stack-spot/runtime-tasks-action@v2.1
+        if: needs.orchestrate_and_plan.outputs.run_id != ''
+        with:
+          RUN_ID: ${{ needs.orchestrate_and_plan.outputs.run_id }}
+          TASK_LIST: ${{ needs.orchestrate_and_plan.outputs.apply_tasks }}
+          REPOSITORY_NAME: ${{ github.event.repository.name }}
+          PATH_TO_MOUNT: /home/runner/_work/${{ github.event.repository.name }}/${{ github.event.repository.name }}
+          AWS_REGION: sa-east-1
+          AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+          FEATURES_TERRAFORM_MODULES: >-
+              [
+                  {
+                    "sourceType": "gitHttps",
+                    "path": "github.com/stack-spot",
+                    "private":  true,
+                    "app": "app",
+                    "token": "token"
+                  },
+                  {
+                    "sourceType": "terraformRegistry",
+                    "path": "hashicorp/stack-spot",
+                    "private":  false
+                  }
+              ]
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_KEY: ${{ secrets.CLIENT_SECRET }}
+          CLIENT_REALM: <realm>
+
+  cancel: # if something in your pipeline breaks or someone cancels it in the middle of the deployment, it is necessary to execute this action to inform StackSpot that an error occurred and prevent future deployments from being blocked
+    runs-on: ubuntu-latest
+    needs: [orchestrate_and_plan, approve_plan_apply]
+    if: ${{ always() && (contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')) }}
+    steps:
+      - name: Cancel run
+        if: needs.orchestrate_and_plan.outputs.run_id != ''
+        id: run-cancel
+        uses: stack-spot/runtime-cancel-run-action@v1
+        with:
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_KEY: ${{ secrets.CLIENT_SECRET }}
+          CLIENT_REALM: <realm>
+          RUN_ID: ${{ needs.orchestrate_and_plan.outputs.run_id }}
+```
+
+### **3. How Actions Work**
+
+<details>
+  <summary>Current StackSpot Deployment Process</summary>
+
+The current StackSpot deployment process generates the IaC from the deployment template of each Infrastructure Plugin and applies it to the cloud, one at a time. The process is interactive, not parallelized, and each Plugin will have a separate TF state stored in the bucket.
+
+#### **EDP Orchestrator Action**
+
+This Action analyzes the **stk.yaml** file and generates a manifest that will be sent to the StackSpot services. These services will orchestrate the order in which the Plugins are applied to the cloud and will return a list of tasks to be executed in the next step.
+
+The order in which Plugins are applied depends on the relationships between the Connection Interfaces defined in the relevant fields within the manifest. Plugins that generate a Connection Interface needed by another Plugin in the same manifest will be processed first. If there are no dependencies, the Plugins will be applied in the order they appear in the manifest. Additionally, any **destroy** tasks will always be executed last.
+
+#### **Action Tasks**
+
+The Action will process each task received iteratively.
+
+The task types are:
+
+- **IAC:**  
+  - This task will process the deployment template of each Plugin and then save the generated IaC in a bucket.
+- **DEPLOY:**  
+  - The Deploy task will apply the Terraform to the cloud, saving the managed TF state in the provided bucket.
+- **DESTROY:**  
+  - When a Plugin is removed from the **stk.yaml**, a **destroy** task is created. This task uses the IaC from the last successful execution and performs a **terraform destroy** to remove the Plugin.
+</details>
+
+<details>
+  <summary>Deploy StackSpot Unificado _**`BETA`**_</summary>
+
+#### **Unified Deployment functionality _`Enabled By Feature Flag`_**
+
+The Unified Deployment was developed to allow StackSpot to visualize the changes that will be made to the cloud before they are implemented. This addresses the issue where Plugins depend on outputs from other Plugins, which may change within the same deployment, complicating the overall planning process.
+
+In this model, all templates are combined and processed into a single Terraform project, which will then be applied to the cloud. Each Plugin will be organized as a separate module within this project.
+
+Example:
+In the following Infrastructure, there are two Plugins:
+
+- _alias_: sns-topic-1728484987960 
+- _alias_: sqs-queue-1728485030410
+
+After processing the templates, the generated Terraform structure will have the following layout:
+
+```title="Folder Structure"
+├── /sns-topic-1728484987960 ## templates-deploy do plugin
+│   ├── default-tags.tf
+│   ├── module-sns-topic.tf
+│   ├── provider.tf
+│   └── /sns-topic-module
+│       ├── sns-topic-locals.tf
+│       ├── sns-topic-main.tf
+│       ├── sns-topic-outputs.tf
+│       ├── sns-topic-ssm.tf
+│       └── sns-topic-variables.tf
+├── /sqs-queue-1728485030410 ## templates-deploy do plugin
+│   ├── default-tags.tf
+│   ├── provider.tf
+│   ├── sqs-queue-outputs.tf
+│   └── sqs-queue.tf
+├── sqs-queue-1728485030410-outputs.tf
+├── sns-topic-1728484987960-outputs.tf
+└── stk-modules.tf
+```
+
+```tf title="stk-modules.tf"
+  module "sns-topic-1728484987960" {
+    source = "./sns-topic-1728484987960"
+  }
+
+  module "sqs-queue-1728485030410" {
+    source = "./sqs-queue-1728485030410"
+  }
+```
+
+During processing, StackSpot performs the interpolation of internal references of the Connection Interfaces defined in **`requires`** and **`generates`**. It also maps the outputs of each Terraform module in the **`to`** and **`from`** fields of the Plugins to [**generate the Connection Interfaces**](create-use/create-content/plugin/create-plugin#2-gerar-connections).
+
+#### **How Actions work**
+
+##### **Orchestrator Action**
+
+The **Orchestrator Action** validates the deployment by checking if a Plugin can be removed and adds the necessary information for the process.
+
+Next, StackSpot will process the Plugin templates and merge them into a single Terraform project. Removed Plugins will be reapplied with the inputs from the last deployment, ensuring their **_providers_** are present during the destroy process.
+
+Finally, a process plan (deploy plan) is generated to show the user all the changes that will be made to their cloud.
+
+:::info
+
+During the Plan process, if any Plugin is removed, two separate Plans will be generated:
+
+1. For the modules of the Plugins that remain applied.
+2. For the Plugins that will be removed.
+
+
+    ```sh title="Plan Deploy"
+      $ terraform plan -target="module.<alias-plugin-aplicado>" ...
+    ```
+
+    ```sh title="Plan Destroy"
+      $ terraform plan -destroy -target="module.<alias-plugin-removido>"
+    ```
+
+:::
+
+##### **Tasks Action**
+
+This action will apply the Terraform generated in the previous process to the user's cloud.
+
+- **Deploy**
+
+During the deployment process, any removed plugins will be deleted separately.
+
+    ```bash title="Apply Deploy"
+      $ terraform apply -target="module.<alias-plugin-aplicado>" ...
+    ```
+
+    ```bash title="Apply Destroy"
+      $ terraform destroy -target="module.<alias-plugin-removido>"
+    ```
+
+</details>
+
+##### **Cancel Run Action**
+
+This Action acts as a fail-safe to prevent process crashes. StackSpot manages each deployment to avoid parallel deployments and other actions that could cause users issues. 
+
+If a pipeline is manually canceled or a runner fails during deployment, it is necessary to inform StackSpot services that the deployment was aborted. Otherwise, future deployments may be blocked.
+
+:::danger
+
+Using **`if: always()`** is mandatory.
+
+```yml
+cancel:
+  needs: [orchestrate_and_plan, approve_plan_apply]
+  if: ${{ always() && (contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')) }}
+  # The process will always execute if an error occurs or if the pipeline is canceled.
+  steps:
+    - name: Cancel run
+      if: needs.orchestrate_and_plan.outputs.run_id != ''
+      id: run-cancel
+      uses: stack-spot/runtime-cancel-run-action@v1
+      with:
+        CLIENT_ID: ${{ secrets.CLIENT_ID }}
+        CLIENT_KEY: ${{ secrets.CLIENT_SECRET }}
+        CLIENT_REALM: <realm>
+        RUN_ID: ${{ needs.orchestrate_and_plan.outputs.run_id }}
+```
+
+:::
+
+<br/>
+
+Now you are ready to configure and execute the StackSpot Action in your pipeline!
+
+:::tip 
+
+To learn more about the Action inputs, see the repositories:
+- [**Cancel Run Action**](https://github.com/stack-spot/runtime-cancel-run-action)
+- [**Deploy Orchestrator Action**](https://github.com/stack-spot/edp-deploy-orchestrator-action)
+- [**Runtime Tasks Action**](https://github.com/stack-spot/runtime-tasks-action)
+
+:::
+
+### **4. Special inputs**
+
+##### `AWS_IAM_ROLE`
+- **Description:** The AWS IAM Role to be used for Infrastructure deployment.
+- **Note:** If the input for the IAM role is provided, you should not input the `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_SESSION_TOKEN`. The action will automatically assume the role of the runner.
+
+##### `AWS_ACCESS_KEY_ID`
+- **Description:** This key is used for Infrastructure deployment. 
+- **Note:** It should only be provided if the `AWS_IAM_ROLE` is not being used. 
+
+##### `AWS_SECRET_ACCESS_KEY`
+- **Description:** The AWS Secret Access Key for Infrastructure deployment.
+- **Note:** It should only be provided if the `AWS_IAM_ROLE` is not being used.
+
+##### `AWS_SESSION_TOKEN`
+- **Description:** The AWS Session Token for Infrastructure deployment.
+- **Note:** It should only be provided if the `AWS_IAM_ROLE` is not being used.
+
+##### `SKIP_DEPLOY`  
+- **Description:** If set as `true`, it checks whether there have been any changes to the Manifest. If it hasn't changed, the deployment will be set to `SKIPPED` and won't apply the Infrastructure Plugins in the Cloud.
+- **Note**: If your pipeline adds dynamic inputs using the Github Action `DYNAMIC_INPUTS` input that changes every run, this flag will never recognize the Manifest as unchanged.
+- **Example:**    
+```yaml
+    with:
+      DYNAMIC_INPUTS:  ' --commit-sha="${{ github.sha }}" '
+``` 
+
+#### **Usage Guidelines**
+
+1. **Using `AWS_IAM_ROLE`:**
+   - If the `AWS_IAM_ROLE` input is provided, the action will automatically assume the role of the runner. In this case, **do not provide** the `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_SESSION_TOKEN`.
+   - Ensure that the runner has permission to assume the specified role.
+
+2. **Using Direct AWS Credentials:**
+   - If you choose not to use `AWS_IAM_ROLE`, provide the `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_SESSION_TOKEN` inputs.
+   - Make sure that the provided credentials have the necessary permissions to access AWS.
+
+##### **Additional Note**
+
+-For enhanced security, it is recommended to use the `AWS_IAM_ROLE` instead of directly providing sensitive credentials. If both methods are configured (using the `AWS_IAM_ROLE` and providing direct credentials), the action will prioritize the `AWS_IAM_ROLE` and ignore the direct credentials.
+
+#### **Forked Infrastructure Plugins with Self-Hosted Environment**
+
+Learn how to configure forked infrastructure Plugins in a self-hosted environment.
+
+##### **Path of Forked Plugins**
+
+When forking an Infrastructure Plugin, the deployment templates are stored in the following path within the repository: **`.stk/FORKED_PLUGINS/<plugin-alias>`**
+
+To ensure successful deployment, it is crucial that Docker has access to the folder where the repository files, including the forked Plugins, are located. You must configure the **`PATH_TO_MOUNT`** input to point to the directory containing these files. This step is essential for allowing Docker to access both the repository files and the forked Plugins.
+
+You can check an example configuration in GitHub Actions. The input can be set up as follows:
+
+```yaml
+WITH:
+  PATH_TO_MOUNT: /home/runner/_work/${{ github.event.repository.name }}/${{ github.event.repository.name }}
+```
+
+This path indicates the location of the repository files after executing a checkout in the workflow.
+
+##### **Notes**
+
+1. . Ensure that the repository has been correctly cloned on the runner before configuring **`PATH_TO_MOUNT`**.
+2. The runner must have the necessary permissions to access both the repository files and the specified directory **`.stk/FORKED_PLUGINS/<plugin-alias>`**.
+3. If the default path is not suitable for your environment, adjust the value of **`PATH_TO_MOUNT`** to reflect the correct location of the repository files. With this configuration, you will be able to successfully deploy forked Plugins in a self-hosted environment.
+
+<br/>
+
+Now you are ready to configure and execute the StackSpot Action in your pipeline!
+
+:::info 
+To learn more about the Action inputs, [**visit the official repository**](https://github.com/stack-spot/runtime-tasks-action).
+:::
+
+
+## **Tracking deployment status**
+
+You can track the deployment status in two ways:
+
+### **Locally in STK CLI**
+
+**Step 1.** Execute the command to access your Application's Workspace:
+
+```bash
+stk use workspace <workspace-slug>
+```
+
+**Step 2.** Execute the command to monitor the status:
+
+```bash
+stk deploy status <deploy-id> --watch
+```
+
+You can find the **deploy id** after completing the deployment execution in your pipeline. It should appear as in the following example:
+
+```bash
+RUN DEPLOY_SELF_HOSTED successfully started with ID: 01J9V6MWFTWQ392331QBCS46KQ
+```
+
+### **Via StackSpot EDP Platform**
+
+Follow the steps:
+
+**Step 1.** Access your Workspace on the [**StackSpot Platform**](https://app.stackspot.com/);
+
+**Step 2.** Access your Application or Infrastructure;
+
+**Step 3.** In the sidebar, select the **environment** where you deployed;
+
+**Step 4.** Go to the **'Activities'** section in the sidebar and click on the **'Deploy Self-hosted'** tab.
+
+## **Next Steps**
+
+- [**Set up the Application deployment registration command in your pipeline**](deployment/deploy/register-app-deployment.md);
+- [**Set up Webhook to register repository activities of your Application on the Activities screen**](deployment/manage/activities.md);
+- [**Manage your Application**](deployment/manage/index.md). 
+

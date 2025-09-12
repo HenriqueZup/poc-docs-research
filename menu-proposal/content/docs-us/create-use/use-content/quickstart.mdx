@@ -1,0 +1,216 @@
+---
+title: 'Get Started: Use'
+description: Example of how to use StackSpot content to create Applications and Infrastructures.
+---
+
+> In this section, you will find an example of how to use the content published in your Studio to create Applications and Infrastructures.
+
+<br/>
+
+import FlowChart from '@site/src/components/MdxComponents/FlowChart';
+
+<FlowChart steps={[
+  { title: 'Account Configuration', link: 'home/account/intro-account.md' },
+  { title: 'Deployment Configuration', link: 'deployment/deploy/overview.md' },
+  { title: 'Create Content', link: 'create-use/create-content/getting-started.md' },
+  { title: 'Use Content', link: 'create-use/use-content/quickstart.md', default: true },
+]} />
+
+## 1. **Understand the journey of Using Content**
+
+If you use StackSpot to **develop Applications or Infrastructures**, you are **using content such as Plugins and Actions grouped into Stacks, all standardized** published in Studios. This way, you can **focus on the functionalities of your Application or Infrastructure** by using these pre-configured technological pieces provided by your Organization's team of platform architects.
+
+By providing a **space** where your Organization's team of architects can produce Content, StackSpot **facilitates development** by making these technological pieces **ready to use** available.** Thus, the platform helps eliminate the effort in tasks such as:
+
+- Defining which standards and architectures your team should follow;
+- Dealing with configurations in each new project;
+- Avoiding the creation of duplicate codes, which generate inconsistencies in development;
+- Minimizing the need to manage infrastructure components (IaC) directly;
+- Reducing rework with the same configurations in different projects.
+
+To develop Applications and Infrastructure, your **StackSpot Account** is configured to display only what you need without additional configuration. Check it out below:
+
+### **StackSpot Account**
+
+This Account is intended for use within an organization. To create applications, you must:
+
+- Be a member of a **Workspace**; 
+- And have **Developer permissions** and access.
+
+:::warning
+
+If you are not in a Workspace or need help finding content within your Workspace and Stack, **stop following this guide** and look for the person responsible for your Organization's Account. If you are the person responsible for the Organization's Account, first make the necessary settings to start creating applications:
+
+- [**Explore what you can do with the Enterprise account**](home/account/organization/index.md);
+- [**See the required roles and permissions**](home/account/organization/access-management/roles.md );
+- [**Follow the starting guide to create content**](create-use/create-content/getting-started.md).
+
+:::
+
+## **2. Create Application or Infrastructure**
+
+At StackSpot, you can use **Application Plugins** to generate source code for your applications and **Infrastructure Plugins** to generate infrastructure code (IAC).
+
+You will primarily use your **Workspace**, where you will have easy access and visibility to all the resources you need to create applications and Infrastructures, such as:
+
+- Dashboard with general data about your Workspace;
+- Applications;
+- APIs;
+- Products;
+- Connection Interfaces;
+- Infrastructure;
+- Stacks, Starters, and their Plugins.
+
+### **Step 1. Log in to your Account:**
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs>
+<TabItem value="platform" label="Portal" default>
+
+Access the [**StackSpot platform**](https://app.stackspot.com/login):<br/><br/>
+
+1. Use your Organization's e-mail and click **Log in with SSO** (if you have an SSO configured.);  
+2. Or click **Log in with password**. Enter your password and click **Continue**.
+
+<br/><br/>
+
+![StackSpot EDP Platform Login](/img/login-portal.png)
+
+</TabItem>
+<TabItem value="cli" label="STK CLI">
+
+Log in to your Account via STK CLI:  
+
+1. Run the following **command** in your terminal:
+  
+```bash
+stk login
+```
+
+2. Fill in your **Account email**;
+
+Then, complete the authentication in the browser window that will open.
+
+</TabItem>
+</Tabs>
+
+### **Step 2. Access your Workspace**
+
+<Tabs>
+<TabItem value="platform" label="Portal" default>
+
+1. Click the **Workspaces** button to see all the Workspaces from your Account;  
+
+2. Then, **select the Workspace** you want to use.  
+
+![](/img/access_workspaces.gif)
+
+</TabItem>
+<TabItem value="cli" label="STK CLI">
+
+To view the Workspaces you have access to and use them, use the following commands:
+
+1. List all Workspaces in your Account:
+
+```bash
+stk list workspace
+```
+
+The list displays the Workspace registration names (Slug) in your Account. Choose a Workspace and save the name to use in the next command.
+
+2. Run the following command and enter the desired Workspace name:
+
+```bash
+stk use workspace
+```
+
+</TabItem>
+</Tabs>
+
+### **Step 3. Choose the desired technology stack**
+
+The StackSpot platform organizes technologies into Stacks, such as a Java Stack. Each Stack includes Plugins that provide Application code templates, method or class implementations, and Terraform (IaC) code. Starters configure the usage of these Stack Plugins.
+
+Every Stack contains one or more Starters, each with a predefined list of Plugins. This setup allows you to use a Stack with multiple Plugins and Starters to create various Applications or Infrastructures from the same Stack.
+
+<Tabs>
+<TabItem value="platform" label="Portal" default>
+
+- To create an **Application**, choose a **Stack with a Starter**;
+
+<br/>
+
+- To create an **Infrastructure**, choose a **Stack with Infrastructure Plugins**.
+   
+<br/>
+
+
+In your Workspace, you can access everything you need to create an Application or Infrastructure:<br/><br/>
+
+<img src="/img/workspace-platform-use.gif" alt="Workspace dashboard screen" title="Workspace" width="500" />
+</TabItem>
+
+<TabItem value="cli" label="STK CLI">
+
+- To **create an Application**, you need to choose a **Stack that has a Starter of type `app`**;
+
+<br/>
+
+- To **create an Infrastructure**, you must choose a **Stack that has a Starter of type `infra`**.
+
+With an active Workspace, use the commands to list the Stacks and Starters:
+
+1. List Stacks in your Workspace:
+
+```bash
+stk list stack
+```
+
+2. List Starters in your Workspace:
+
+```bash
+stk list starter
+```
+
+</TabItem>
+</Tabs>
+
+To create an Application with App Plugins or an Infrastructure with Infra Plugins, follow the steps in the guides:
+
+<br/>
+
+import CustomDocCard from '@site/src/components/MdxComponents/CustomDocCard';
+import CustomDocCardList from '@site/src/components/MdxComponents/CustomDocCardList';
+
+<CustomDocCardList>
+<CustomDocCard title="Create Application via STK CLI" description="In this section, you will find a guide on how to create your Application via STK CLI." link="/create-use/use-content/application/create-app-cli.md" />
+<CustomDocCard title="Create Application via StackSpo EDP Portal" description="In this section, you will find a guide on how to create your Application via StackSpo EDP Portal" link="/create-use/use-content/application/create-app-portal.md" />
+<CustomDocCard title="Create Infrastructure via STK CLI" description="In this section, you will find a guide on how to create your Infrastructure in STK CLI." link="/create-use/use-content/infra/infrastructure.md" />
+<CustomDocCard title="Create Infrastructure via StackSpo EDP Portal" description="In this section, you will find a guide on how to create your Infrastructure in the StackSpot EDP Portal." link="/create-use/use-content/infra/create-infra-portal.md" />
+</CustomDocCardList>
+
+## **3. Deploy Infrastructure pieces**
+
+With StackSpot, you can deploy your infrastructure parts (IAC code) to facilitate your Application or Infrastructure deployment. This way, your Application, and Infrastructure code will have infrastructure pieces ready to use.
+
+See more details in the guides:
+
+<br/>
+
+<CustomDocCardList>
+<CustomDocCard title="Deploying an Application's Infrastructure via Self-Hosted Runtime" description="In this section, you will find how to configure and use a Self-Hosted Runtime in your deployment pipeline." link="/deployment/deploy/self-hosted-runtime.md" />
+<CustomDocCard title="Registering Application Deployment via Pipeline" description="In this section, you will find how to register the deployment of an Application in your StackSpot EDP Pipeline to monitor the flows through the Activities screen." link="/deployment/deploy/register-app-deployment.md" />
+<CustomDocCard title="Deploying an Application's Infrastructure" description="In this section, you will find how to deploy the Application's infrastructure." link="/deployment/runtime-engine/app-deployment.md" />
+<CustomDocCard title="Infrastructure Deployment" description="In this section, you will find out how to deploy your Infrastructure." link="/deployment/runtime-engine/deploy-infra.md" />
+</CustomDocCardList>
+
+## **Next steps**
+
+<br/>
+
+<CustomDocCardList>
+<CustomDocCard title="Example of creating an Application created with an HTML Stack" description="In this section, you will find how to use Application and Infrastructure Plugins to create an Application and deploy it." link="/home/stackspot/examples/app-and-infra/create-deploy-app.md" />
+<CustomDocCard title="Example of creating a Shared Infrastructure with a CloudFrond Stack and S3 Bucket" description="In this section, you will find an example of how to use Infrastructure Plugins to create and deploy an Infrastructure." link="/home/stackspot/examples/app-and-infra/example-create-infra.md" />
+</CustomDocCardList>

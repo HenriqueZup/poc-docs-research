@@ -1,0 +1,118 @@
+---
+title: "Configure Azure Cloud account"
+sidebar_position: 10
+description: Configure your Azure cloud account on StackSpot.
+sidebar_custom_props: 
+  icon: Grid
+---
+
+> In this section, you will find a guide on configuring your Cloud Account.
+
+
+<br/>
+
+To deploy the infrastructure of your Applications on StackSpot, set up a cloud account. Configure this within your Workspace, delegating access between Azure accounts using Azure credentials to grant StackSpot access to your account profile.
+
+:::caution
+The configuration and addition of Cloud accounts in StackSpot in this manner are only available for:
+
+- **Enterprise Accounts created before 2024**.
+
+For **Enterprise Accounts created from January 2024 onwards**, the Cloud accounts must be connected via [**Self-hosted Deploy**](deployment/deploy/self-hosted-runtime.md). 
+:::
+
+## **Requirements**
+
+- Access to an [**Azure account**](https://learn.microsoft.com/en-us/dynamics-nav/how-to--sign-up-for-a-microsoft-azure-subscription) with a contracted subscription.  
+- [**Azure CLI**](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli) installed in version 3.0.0 or higher.  
+- Access to a Workspace;
+- You need an environment in your Workspace.
+- Permission to manage IAM. 
+- Permission to manage Cloud accounts in your StackSpot account: `cloud_services:manage_cloud_account`. See [**how to customize Roles and Permissions in your StackSpot Account**](home/account/organization/access-management/roles.md).
+- Configure the Terraform file with the Microsoft Azure provider as follows:
+
+```hcl
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "=3.0.0"
+    }
+  }
+}
+
+# Your code goes here
+```
+
+## **Step 1. Generate provider credentials**  
+
+From the Azure page:
+
+1. [**Log in to your Azure Account**](https://portal.azure.com/);  
+2. In the top menu of the Azure Portal, click on the **"Subscriptions"** button;
+3. Identify the **'Subscription ID'** in the table and copy the data available on the screen;
+
+<img src="/img/azure-subscriptionId.gif" alt="Obter subscription id" title="Tela Subscription" width="500" />
+
+:::tip
+The **Subscription ID** is a 35-digit code created when subscribing to an Azure plan. The example ID in this guide is for illustration purposes; you need your ID.
+:::
+
+4. Open your terminal and log in to the AZ CLI, running the **`az login`** command.
+
+Run the following command:
+
+```bash
+az ad sp create-for-rbac --name AzureTest --role Contributor --scopes /subscriptions/817a5e57-4838-4455-a3ae-75946c05ffdf 
+```
+
+Consider that:
+
+- [**`az ad sp create-for-rbac`**](https://learn.microsoft.com/en-us/entra/identity-platform/howto-create-service-principal-portal): creates a service principal and configures its access to Azure resources.
+
+- **`--display-name --name -n` `AzureTest`**: name of the service entity (or App registration). If not, the default is **`azure-cli-%Y-%m-%d-%H-%M-%S`**, where the suffix is the creation time.
+
+- **`--role` `Contributor`**: is the role needed to create and manage resources. You must have at least the **Contributor** role to continue. Check [**other predefined roles**](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles).
+
+- **`--scopes` `/subscriptions/817a5e57-4838-4455-a3ae-75946c05ffdf` (`subscription id`)**: list of scopes where the service organization role assignment applies. This command is just an example. The **“`--scopes`”** attribute must be the **“Subscription ID”** recovered in step 3. 
+
+The terminal will return values needed to configure the account in the StackSpot Workspace:
+
+- **`appId`**: represents the **`client_id`**.
+- **`displayName`**: represents the name.
+- **`password`**: represents the **`client_secret`**. Keep this value safe, as you can only see it **once in the terminal** when it is generated.  
+- **`tentant`**: represents the **`tenant_id`**.
+
+<AsciinemaPlayer src="/videos/create-service-principal.cast" autoplay="true" loop="true" />
+
+## **Step 2. Connect your account to your Workspace environment**  
+
+From StackSpot:
+
+1. [**Log in to the Platform**](https://app.stackspot.com/login);
+2. Access your **Workspace**;
+3. In the left side menu, in **Settings**, click **'Cloud accounts'**;
+4. Locate the environment you will use and click **Connect cloud**;  
+5. Under **'Select Cloud Provider'** choose **"Azure"**;
+6. Fill in the following:  
+
+    1. **Client ID**: the **appId** generated.  
+    2. **Client Secret**: the **`password`** generated.  
+    3. **Tentant ID**: the **`tentant`** generated.  
+    4. **Subscription ID**: the **Subscription ID** generated in the Azure Portal.  
+
+<img src="/img/terminal-credenciais.png" alt="Terminal- output das credenciais" title="Ordem de preenchimento das credenciais" width="500" />
+
+:::warning
+Using the same Subscription ID, you cannot connect another StackSpot account to the Cloud. Only one StackSpot Account can use it.
+:::
+
+<img src="/img/configure-azure-provider.gif" alt="Configurar Cloud Account" title="Tela de configuração da Nuvem Azure" width="500" />
+
+Check the data and click **'Continue'**.
+
+7. Click **'Connect Cloud'**.
+
+## **Next step**
+
+- You can deploy the infrastructure of your Application. To do that, see the [**Deploy section**](deployment/runtime-engine/app-deployment.md).

@@ -1,0 +1,164 @@
+---
+title: Versionar, Depreciar ou Deletar Stack
+description: Como fazer o versionamento, depreciação e deleção de Stacks.
+---
+
+> Nesta seção, você encontra um guia de com versionar, depreciar ou deletar uma Stack no Portal.
+
+
+## **Versionar uma Stack**  
+
+Na StackSpot você pode fazer o [**Versionamento Semântico**](https://semver.org/) de Stack. Isso significa que quando você criar uma nova versão, ela será a cópia de outra versão já publicada.
+
+Com o versionamento semântico, você pode ter uma Stack "Web" na versão 1.0.0, com Angular v13 e outra Stack "Web" na versão 2.0.0, com Angular v14, por exemplo. Assim, cada uma destas versões pode evoluir de forma independente, permitindo a existência de incrementos como **1.0.1**, **1.0.2**, assim como **2.0.1**, **2.1.0**, etc.
+
+Ao publicar uma nova versão da Stack, você precisa indicar:
+
+- A versão atual que é a base para a nova versão.
+
+- Qual o tipo de modificação está sendo feita.
+
+Confira os detalhes:
+
+- **PATCH**: é apenas uma correção de erro que não tem nenhum impacto em tipo de serviços, contratos, APIs, interfaces etc. Dessa forma, um incremento será feito na última "casa" do número semântico. Por exemplo: a Stack cópia da versão 1.0.2 gera a versão 1.0.3.
+
+- **MINOR (menor)**: representa a evolução de algum recurso novo na Stack, porém não afeta a compatibilidade de quem já utilizava a versão anterior. Com isso todos os recursos da versão anterior ainda são compatíveis. Um incremento é feito na "casa" intermediária do número semântico e o **`PATCH`** será zerado.
+
+Exemplo:
+
+- A Stack cópia da versão 1.0.2 gerará a versão 1.1.0.
+
+- **MAJOR (maior)**: é uma nova evolução da Stack, onde não há retrocompatibilidade com versões anteriores, contratos são modificados. Os usuários que utilizarem essa nova versão devem adaptar o código. Um incremento será feito na primeira "casa" do número semântico e tanto o **`PATCH`** quanto o **`MINOR`** serão zerados.
+
+Exemplo:
+
+- A Stack cópia da versão 1.0.2 gerará a versão 2.0.0.
+
+- **PERSONALIZÁVEL**: você pode escolher a versão que quiser gerar, mas não pode criar uma versão com um número já existente.
+
+Exemplo:
+
+- A Stack cópia da versão 1.0.2 pode gerar a versão 1.5.0.
+
+:::info Informação Adicional
+
+- Se uma Stack foi criada, mas uma versão dela não foi publicada (está em Draft), é possível apagar essa Stack. Se a versão **Draft** for apagada, a Stack também será.
+:::
+
+Para **criar uma versão** da sua Stack, siga os passos:
+
+**Passo 1.** Na seção de **'Visão Geral'** da sua Stack, clique no botão **'Nova Versão'**;
+
+**Passo 2.** Selecione a versão em que você quer se basear (fazer a cópia). Em seguida, clique no botão **'Criar nova versão'**;
+
+**Passo 3.** A nova versão está em rascunho. Para publicá-la, clique no botão **'Publicar'**;
+
+**Passo 4.** No modal na tela, escolha o **tipo da versão** e o **número da versão** que será criada. O **tipo da versão** pode ser:  
+
+- **Principal**: nova evolução da Stack, mas que não oferece compatibilidade com outras versões.  
+- **Minor**: quando são adicionadas novas melhorias na Stack, mas ainda tem compatibilidade com outras versões.  
+- **Correção**: correção de erros, melhorias na performance ou outras mudanças que não afetam o funcionamento da Stack.  
+- **Personalizado**: você pode escolher a versão semântica que quer gerar.  
+
+Clique no botão **'Publicar nova versão de Stack'**.
+
+![](/img/publish-new-version.gif)
+
+> O GIF está em inglês. 
+
+<br/>
+
+Pronto, você publicou uma nova versão da sua Stack. Agora, a Stack ainda está em Draft. Para Publicá-la, você precisa adicionar um Plugin e/ou um Starter nela. Confira:
+
+- [**Adicionar Plugins na Stack**](create-use/create-content/stack/create-stack.mdx)
+- [**Como criar e adicionar um Starter na Stack**](create-use/create-content/stack/create-stack.mdx)
+- [**Publicar uma Stack**](create-use/create-content/stack/create-stack.mdx)
+
+Depois de Publicar a nova versão da sua Stack, você pode escolher **qual versão dela** utilizar. Para isso, basta selecioná-la no Dashboard da Stack.
+
+:::warning Atenção!
+Não é possível ter mais de uma versão da mesma Stack em Draft.  
+:::
+
+Você pode conferir a versão de uma Stack na página em que ela está publicada no Estúdio.
+
+:::info Informação Adicional
+Depois que a versão da Stack é publicada, não é possível editá-la. Ou seja, só é possível adicionar ou remover um conteúdo na versão da Stack enquanto ela ainda está em **Draft**.  
+:::
+
+---
+
+## **Depreciar uma Stack**  
+
+:::tip Dica!
+
+Para mais informações, [**acesse a página com as regras de depreciação**](create-use/studio/deprecate-unpublish-delete.mdx).
+
+:::
+
+Você pode depreciar a **versão de uma Stack** já publicada em um Estúdio ou Workspace. Para isso, você precisa seguir as regras:  
+
+1. Ter permissão de depreciação de conteúdo;    
+2. O usuário deve pertencer ao Estúdio em que a versão da Stack será descontinuada.
+
+<br/>
+
+Para **depreciar uma versão** da sua Stack, siga os passos:
+
+**Passo 1.** No seu Estúdio, clique na seção **'Stacks'**;  
+
+**Passo 2.** Clique no botão **'Gerenciar Versão'**;
+
+**Passo 3.** Dentro de **'Gerenciamento de versão'**, na aba **'Ativa'**, clique no botão **'Mais opções'**;
+
+**Passo 4.** Clique no botão **'Depreciar versão'**;
+
+**Passo 5.** Na tela exibida, selecione um motivo para a depreciação:  
+- Falta de manutenção   
+- Falta de segurança    
+- Bugs    
+- Outros
+
+**Passo 6.** Para confirmar, digite a palavra **"DEPRECIAR"**. Em seguida, clique no botão **'Depreciar Versão'** .
+
+Pronto, você depreciou a versão de uma Stack.
+
+![](/img/deprecate-stack.gif)
+
+> O GIF está em inglês. 
+
+---
+
+## **Deletar uma versão**  
+
+:::tip Dica!
+
+Para mais informações, [**acesse a página com as regras de deleção**](create-use/studio/deprecate-unpublish-delete.mdx).
+
+:::
+
+Você só pode apagar uma versão de uma Stack que está em **'Draft' (rascunho)**. Para deletar, é preciso seguir as regras:
+
+1. A Stack não pode estar em uso ou associada em nenhum espaço da StackSpot: Plugin, Starter, Workspace ou Estúdio.  
+
+2. Ter um perfil com [**permissão**](home/account/organization/access-management/roles.mdx ) de remoção de conteúdo.
+
+:::warning Atenção!  
+A versão de um conteúdo removido não tem rollback. Ou seja, depois que a versão dele é removida, é preciso criar uma nova versão e publicá-la novamente.  
+:::
+
+Para deletar uma versão da sua Stack, siga os passos:
+
+**Passo 1.** Dentro do seu Estúdio, clique na seção de Stacks;
+
+**Passo 2.** Depois, clique no botão **'Gerenciar Versão'**;
+
+**Passo 3.** Em **'Gerenciamento de versão'**, na aba **'Ativa'**, clique no botão **Mais opções**;
+
+**Passo 4.** Clique no botão **'Deletar versão'**;
+
+**Passo 5.** Para confirmar, digite a palavra **"DELETAR"** e, em seguida, clique no botão **'Deletar Versão'**. 
+
+Agora, clique no botão **'Deletar Stack'**
+
+Pronto, você deletou uma versão da Stack.

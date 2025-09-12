@@ -1,0 +1,269 @@
+---
+title: Criar Workflow
+description: Confira como criar um Workflow no STK CLI.
+---
+
+## **Pré-requisitos**
+
+- StackSpot CLI instalado e atualizado.  
+- Permissão e acessos de **`Content Creator`** para criar conteúdos para um Estúdio.
+
+## **Criar um Workflow**
+
+Você deve criar o Workflow usando o STK CLI, execute o comando a seguir:
+
+```bash title="Comando para criar um Workflow"
+stk create workflow
+```
+
+Responda às perguntas no terminal. Confira a seguir as informações obrigatórias dos metadados do seu Workflow:
+
+- Informe um nome para o Workflow;  
+- Dê uma descrição para o uso do seu Workflow;  
+- Escolha o tipo do seu Workflow. Atualmente, os tipos disponíveis são **`create`**, **`starter`**, **`deploy`** e **`reusable`**. [**Acesse a página que detalha os tipos disponíveis**](create-use/create-content/workflow/explanation/workflow-types.mdx).  
+
+Uma pasta com o nome do Workflow é criada com a seguinte estrutura:
+
+![][image2]
+
+- Pasta **/docs:** pasta que contém um template para a documentação do seu Workflow. As documentações devem ser escritas em arquivos Markdown e têm as pastas `pt_br `e `en_us` para as documentações com versões em português e inglês.  
+- Arquivo **`.stkignore`**, comum em todo projeto StackSpot. [**Para mais detalhes, acesse a página do stkignore**](create-use/create-content/yaml-files/stkignore.mdx).  
+- Arquivo **`workflow.yaml`** com a estrutura do seu Workflow.
+
+Inicialmente, o Workflow possui a seguinte estrutura:
+
+```yaml
+schema-version: v1
+kind: workflow
+metadata:
+  name: create-app-template
+  display-name: "Criação de Aplicação Modelo"
+  description: "Workflow inicial para orquestrar a criação de uma aplicação genérica."
+  version: 0.1.0
+spec:
+  type: create
+  label: "Create Generic App"
+  targets:
+    - app
+  docs:
+    en-us: docs/en_us/docs.mdx
+    pt-br: docs/pt_br/docs.mdx
+  inputs:
+    - label: "Nome da Squad"
+      scope: default
+      name: squad_name
+      type: select
+      help: "Informe o nome da squad responsável pelo recurso."
+      items:
+        - exemplo1
+        - exemplo2
+        - exemplo3
+    - label: "Contexto do Projeto (kebabcase)"
+      scope: default
+      name: project_context
+      type: text
+      required: true
+      pattern: '^[a-z0-9]+(-[a-z0-9]+)*$'
+      help: "Informe o contexto do projeto. Exemplo: meu-projeto-api"
+    - label: "Adicionar MongoDB?"
+      scope: default
+      name: add_mongodb
+      type: bool
+      required: true
+      default: false
+      help: "Adiciona dependências do MongoDB."
+    - label: "Adicionar PostgreSQL?"
+      scope: default
+      name: add_postgresql
+      type: bool
+      required: true
+      default: false
+      help: "Adiciona dependências do PostgreSQL."
+    - label: "Adicionar Redis?"
+      scope: default
+      name: add_redis
+      type: bool
+      required: true
+      default: false
+      help: "Adiciona dependências do Redis."
+  jobs:
+    - id: job_create_app_code
+      label: "Criação do código da aplicação"
+      steps:
+        - id: step_create_code
+          name: fictitious-org/starter-app-base@1.0.0
+          type: workflow
+          inputs:
+            add_redis: "{{ add_redis }}"
+            add_mongodb: "{{ add_mongodb }}"
+            add_postgresql: "{{ add_postgresql }}"
+            squad_name: "{{ squad_name }}"
+            project_context: "{{ project_context }}"
+    - id: job_create_app_repository
+      label: "Criação do repositório da aplicação"
+      depends-on:
+        - job_create_app_code
+      steps:
+        - id: create_git_repository
+          name: fictitious-org/reusable-create-git-repo@0.1.0
+          type: workflow
+          inputs:
+            project_id: "{{ var.PROJECT_ID }}"
+            project_name: "{{ var.PROJECT_NAME }}"
+            repository_name: "{{ squad_name }}-api-{{ project_context }}"
+    - id: job_commit_app_code
+      label: "Commit do código da aplicação"
+      depends-on:
+        - job_create_app_repository
+      steps:
+        - id: step_commit_code
+          name: fictitious-org/reusable-commit-git-repo@0.1.0
+          type: workflow
+          inputs:
+            source_branch_name: "main"
+            commit_message: "Commit automático realizado pelo Workflow."
+            repository_url: "{{ outputs.job_create_app_repository.create_git_repository.repository_url }}"
+```
+
+## **Editando o seu Workflow**
+
+Um Workflow é formado por Jobs, que são compostos por Steps.
+
+Ao criar um Workflow, uma estrutura básica e funcional é gerada como exemplo. No entanto, essa estrutura inicial não é suficiente para atender às necessidades de um Workflow real e deve ser ajustada conforme o seu caso de uso.
+
+### **Escrevendo Jobs**
+
+Um Job é composto pelos seguintes parâmetros:
+
+- **id:** nome identificador do Job. Deve ser escrito no formato **_`snake_case`_**.  
+- **label:** texto apresentado para a pessoa usuária quando o Job estiver executando.  
+- **depends-on:** lista com os Jobs que o Job atual depende.  
+- **when:** condição que determina se o Job será executado. Retorna os valores "true" ou "false" e deve retornar "true" para que o Job execute.  
+- **steps:** lista dos passos que serão executados no Job.
+
+```yaml
+Jobs:
+  - id: optional
+    label: Optional job
+    depends-on:
+      - some_job-id
+    when: "{{ boolean_input }}"
+    steps:
+      - type: plugin
+        name: studio/optional_plugin@1
+        id: apply_optional_plugin
+        label: Apply optional plugin
+```
+
+### **Escrevendo Steps**
+
+Um Step é composto pelos seguintes parâmetros:
+
+- **type:** tipo do Step. As opções disponíveis são **`action`**, **`plugin`**, **`workflow`** e **`run`**. [**Acesse a página que detalha os tipos de Steps disponíveis**](create-use/create-content/workflow/explanation/workflow-types.mdx#steps-do-workflow).  
+
+:::warning Atenção!  
+
+Se o Step for do tipo **`workflow`**, ele deverá ser único dentro do Job.  
+
+:::  
+
+- **workdir:** diretório onde o Step será executado. O valor padrão caso não for preenchido será " . " (pasta atual). **Atributo opcional**.  
+- **id:** nome identificador do Step. Deve ser escrito no formato **_`snake_case`_**.  
+- **label:** texto apresentado no Portal da StackSpot quando o Step for exibido.  
+- **when:** condição que determina se o Step será executado. Retorna os valores "true" ou "false" e deve retornar "true" para que o Step execute.  
+- **inputs:** mapeamento dos valores de inputs a serem informados para a Action/ Plugin/ Workflow. Sintaxe: **`nome-do-input: "valor-do-input"`**. [**Acesse a página que detalha os tipos de Inputs disponíveis.**](create-use/create-content/workflow/explanation/inputs/input-types.mdx) 
+- **name:** indica qual Action, Plugin ou Worfklow que será executado ou aplicado. Sintaxe:  
+  - Action: `nome-do-estudio/nome-action@número-da-versão`;  
+  - Plugin: `nome-do-estudio/nome-plugin@número-da-versão`;  
+  - Workflow: `nome-do-estudio/nome-workflow@número-da-versão`;  
+- **generated-connections:** lista o mapeamento das Connections Interfaces geradas pelos Plugins. A chave é o alias da conexão e o valor é o nome indicado pela pessoa usuária.  
+
+```yaml
+steps:
+  - type: plugin
+    name: studio/optional_plugin@1
+    id: apply_optional_plugin
+    label: Apply optional plugin
+    when: "{{ boolean_input }}"
+    inputs:
+      some_plugin_input: "fixed_value"
+      other_plugin_input: "{{ text_input | lower }}"
+      input_from_other_job: "{{ outputs.some_job.some_action_execution.some_action_output }}"
+```
+
+### **Declarando Inputs**
+
+É preciso declarar os valores de inputs a na Action/Plugin/Workflow. A sintaxe é: **`nome-do-input: "valor-do-input"`**. 
+
+Confira os tipos de Inputs disponíveis. Eles são definidos no campo **`type`**.
+
+Tipos  | Valor
+--------- | ------
+[**`text`**  | String.|
+**`textarea`**  | String.|
+**`bool`** | Boolean. |
+**`int`**  | Integer.|  
+**`password`** | Criptografa o valor informado. (string) |
+**`select`** | Lista os valores, permitindo escolher apenas 1 valor (string). |
+**`multiselect`** | Lista os valores, permitindo escolher 1 ou mais valores (string). |
+**`list`** | Lista de Inputs de um mesmo tipo (text, int, object e required-connection). |
+**`object`** | Armazena um conjunto de Inputs dentro de um objeto. O objeto passa a ser um input pai com um conjunto de inputs filhos. |
+**`required-connection`** | Armazena um conjunto de Inputs necessários para se conectar em uma Infraestrutura dentro de um objeto.  |
+**`generated-connection`** | Armazena um conjunto de Inputs necessários para criar uma Infraestrutura dentro de um objeto.  |
+
+Confira a seguir o trecho de um exemplo de **`workflow.yaml`** do tipo **`create`** com Inputs dos tipos **`select`**, **`text`** e **`bool`**. 
+
+```yaml
+schema-version: v1
+kind: workflow
+metadata:
+  name: create-app-node-nest-api
+  display-name: Criação de API Node/Nest
+  description: "Orquestra a criação de uma API usando Node.js 22 e NestJS."
+  version: 1.0.0    
+spec:
+  type: create   
+  label: "Create Node API"
+  targets:
+    - app
+  docs:
+    en-us: docs/en_us/docs.mdx
+    pt-br: docs/pt_br/docs.mdx
+// new-line-start
+  inputs:
+    - label: "Nome da Squad"
+      scope: default
+      name: squad_name
+      type: select
+// new-line-end      
+      help: "Informe o nome da squad responsável pelo recurso."
+      items:
+        - alpha
+        - beta
+        - gamma
+        - delta
+    - label: "Contexto do Projeto (kebabcase)"
+      scope: default
+      name: project_context
+// new-line-start      
+      type: text
+// new-line-end      
+      required: true
+      pattern: '^[a-z0-9]+(-[a-z0-9]+)*$'
+      help: "Informe o contexto do projeto. Exemplo: meu-projeto-api"
+    - label: "Adicionar MongoDB?"
+      scope: default
+      name: add_mongodb
+// new-line-start      
+      type: bool
+// new-line-end      
+      required: true
+      default: false
+      help: "Adiciona dependências do MongoDB."
+```      
+
+
+
+[**Acesse a página que detalha os tipos de Inputs disponíveis com os respectivos exemplos**](create-use/create-content/workflow/explanation/inputs/input-types.mdx). 
+
+[image2]: <data:image/png;base64,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HboGCBYeYIoL25iG03bhgkc7V9yoRwePthpskQQPllhjahD7YdSxd+9e549Oc3JynP00oBACCEeU4eY+yiA+Pl7KdPGEHTD62cFelq2rALEoAPe5NHSAwUNE4TB4XI4cOSIdH+7VaJnegD9z5kxA20mTJklA6UotBABWedltIgke0MUKGJlgW4PHDoFg+2GUhE5bO32Mntx/e7RkyRKpQzBqma5m00UIoMGD6UIt0wUJel0KfweE+116XnxOnWrDlCXaILTcwYOl3gweorcbg+c1wCjCHg38GnAvZ8qUKZ7ywdLpRaWh6w4zhaDAdJuOpIiIBsLgoaAQpBh1YCoPK+cYLET0ujB4KCgsQsD0Ge554R6Uu56IaKgYPERE5CsGDxER+YrBQ0REvmLwEBGRrxg8RETkKwYPERH5isFDRES+YvAQEZGvGDxEROQrBg8REfmKwUNERL5i8BARka8YPERE5CsGDxER+YrBQ0REvmLwEBGRrxg8RETkKwYPERH5isFDRES+YvAQEZGvGDxEROQrBg8REfmKwUNERL5i8BARka8YPERE5CsGDxER+YrBQ0REvmLwEBGRrxg8RETkKwYPERH5isFDRES+YvAQEZGvGDxEROQrBg8REfmKwUNERL5i8BARka8YPERE5Kv/Bx/m/rDOODs4AAAAAElFTkSuQmCC>

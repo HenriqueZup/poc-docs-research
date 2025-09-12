@@ -1,0 +1,76 @@
+---
+title: Use Private Repositories during deployment
+---
+
+> In this section, you will find how use private repositories during your deployment.
+
+<br/>
+
+StackSpot Deploy Engine can access Git repositories via SSH keys when deploys occur. You can do this by adding the user **stackspot-runtime** as a collaborator in your project.  
+
+:::tip  
+
+This configuration can be done at the level of a repository, a team or an entire organization on GitHub.
+
+:::
+
+
+## How it works
+
+1. Deploy generates a public key from an SSH private key.
+2. The user allows the Deploy Machine User to access the private Git repository.
+3. The Deploy deployment process uses the Machine User to clone private repositories from GitHub.
+
+:::tip
+
+Machine User is an account not used by humans, but you can add a collaborator.
+For more details, [**access GitHub documentation**](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/managing-deploy-keys#machine-users).
+
+:::
+
+:::warning
+
+It is not allowed to run **`local-exec`**, **`remote-exec`**, **`module external`** and **`data "external"`** for security reasons.
+
+:::
+
+## How to allow Deploy access in a Private Repository
+
+Go to your GitHub account and follow the steps below:
+
+**Step 1.** On your repository, click **'Settings'**. Then, on the left side menu, click **'Collaborators'**;
+
+![GitHub image](/img/terraform-1.png)
+
+**Step 2.** Click on the **'Add people'** button;
+
+![GitHub image](/img/terraform-2.png)
+
+**Step 3.** Add the collaborator’s email and then click **'Add email to this repository'**;
+
+
+- **Enterprise account example**
+In your organization, add the users as  **Organization members** first. After that, you can add them as repository collaborators.
+
+![GitHub image](/img/terraform-5.png)
+
+:::warning
+
+The process only works if the collaborator accepts the invite.
+
+![GitHub image](/img/terraform-4.png)
+:::
+
+## **How to reference a Repository file  **
+
+Whenever you need to reference a file from your repository to be used by Deploy, you need to follow this format:
+
+**`<repository-name>/<file-path-in-repository>`**
+
+An example of this is during the application ([**`stk apply plugin`**](home/stk-cli/commands/plugin-commands.md)) of an Infra Plugin that requires an input with the path of a file to be used later, during deployment.
+
+Here's an example of the question asked in the terminal:
+
+```bash
+? Enter the path of the configuration file: <repository-name>/<file-path-in-repository.md>
+```

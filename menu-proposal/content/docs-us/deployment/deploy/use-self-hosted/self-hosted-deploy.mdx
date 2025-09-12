@@ -1,0 +1,495 @@
+---
+title: Application and Infrastructure Deployment
+description: Step-by-step guide to set up and run Application Deployment with StackSpot
+  Self-Hosted Workflow in your Cloud provider pipelines.
+---
+
+> This section provides a step-by-step guide to configure the StackSpot Self-Hosted Workflow (beta version) for deploying Applications or Infrastructure in your Cloud provider pipelines. This content is for developers, SREs, and administrators experienced with Cloud services and CI/CD pipelines.
+
+## **How to set up Self-Hosted deployments using StackSpot Workflow**
+
+**StackSpot Workflow deployment is cloud-agnostic** you can integrate with any Cloud provider as long as StackSpot supports it and you meet the provider’s requirements.
+
+Supported Cloud providers:
+
+- Amazon Web Services (AWS)
+- Azure DevOps
+>- Google Cloud Provider (GCP - coming soon)
+
+The deployment is orchestrated by the **`stackspot-core/stackspot-deploy@5`** Workflow of **reusable** type, you should use it within your Workflow to handle the deployment. This Workflow provides all the required inputs and configurations for integration with Cloud providers.
+
+:::info 
+
+Using the StackSpot Workflow **`stackspot-core/stackspot-deploy@5`** lets you deploy to different providers in a single Workflow. For example, you can deploy to AWS and/or Azure DevOps in the same Cloud infrastructure.
+
+:::
+
+## **Prerequisites**
+
+- Write access to a repository in your Cloud provider and permission to create/edit pipelines.
+- Cloud service account with permissions to create resources.
+- [**StackSpot Service Credential**](home/account/organization/service-credential.md) (Client ID and Client Key).
+- Cloud provider infrastructure (Storages) set up to store Terraform state and IaC artifacts.
+- Application or Infrastructure created and registered in StackSpot.
+
+## **How to Create a StackSpot Workflow for Deployment**
+
+### **Step 1. Create the Deployment Workflow**
+
+To deploy your Application or Infrastructure, create a **`deploy`** type Workflow to collect the inputs for the StackSpot Self-Hosted deployment Workflow.
+
+Run the following command to create the Workflow:
+
+```bash
+stk create workflow
+```
+
+```yaml title="Example StackSpot Workflow for Application/Infrastructure Deployment 'workflow.yaml'"
+schema-version: v1
+kind: workflow
+metadata:
+  name: deployworkflow
+  display-name: deployworkflow
+  description: Example of a deploy workflow
+  version: 0.0.1
+spec:
+  type: deploy
+  label: Deploy Workflow Example
+  targets:
+  - infra
+  docs:
+    en-us: docs/en_us/docs.md
+    pt-br: docs/pt_br/docs.md
+```
+
+You can run the deployment whenever you want. Before starting, you can configure your Workflow to run Actions or other Workflows. For example, add an Action to fetch your Cloud provider credentials, or a Workflow to [**install the STK CLI in your pipeline**](home\stk-cli\pipeline-ci-cd.md).
+
+### **Step 2. Add Your Provider Inputs to the Deployment Workflow**
+
+The following example shows how to collect the required inputs for **AWS** and **Azure DevOps**:
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs groupId="providers-inputs">
+<TabItem value="aws" label="AWS" default>
+
+:::tip Tip
+
+- Authenticate using the environment variables **`stk_client_id`** and **`stk_client_key`** from your StackSpot Organization.
+
+:::
+
+```yaml title="Workflow Inputs Example"
+inputs:
+  - label: Stackspot Credential Client ID
+    name: stk_client_id
+    type: password
+    required: True
+  - label: Stackspot Credential Client Key
+    name: stk_client_key
+    type: password
+    required: True
+  - label: AWS Credential accessKey
+    name: accessKey
+    type: password
+    required: True
+  - label: AWS Credential secretKey
+    name: secretKey
+    type: password
+    required: True
+  - label: AWS Credential accessToken
+    name: accessToken
+    subscriptionId: password
+    required: True
+  - label: Application Repo name
+    name: repository_name
+    subscriptionId: text
+    required: True
+```
+
+</TabItem>
+<TabItem value="azure" label="Azure DevOps">
+
+:::tip Tip
+
+- Authenticate using the environment variables **`stk_client_id`** and **`stk_client_key`** from your StackSpot Organization.
+
+:::
+
+```yaml title="Workflow Inputs Example"
+inputs:
+  - label: Stackspot Credential Client ID
+    name: stk_client_id
+    type: password
+    required: True
+  - label: Stackspot Credential Client Key
+    name: stk_client_key
+    type: password
+    required: True
+  - label: Azure Credential clientId
+    name: clientId
+    type: password
+    required: True
+  - label: Azure Credential clientSecret
+    name: clientSecret
+    type: password
+    required: True
+  - label: Azure Credential tenantId
+    name: tenantId
+    type: password
+    required: True
+  - label: Azure Credential subscriptionId
+    name: subscriptionId
+    type: password
+    required: True
+  - label: Application Repo name
+    name: repository_name
+    type: text
+    required: True
+```
+
+</TabItem>
+</Tabs>
+
+### **Step 3. Create the Job and Step to Run the Deployment**
+
+1. Create a Job for deployment and add a Step to run the Workflow that orchestrates the deployment.
+
+:::danger Warning
+
+You can only have one **workflow** type Step in the Job.
+
+:::
+
+2. Map your Workflow input variables to the Step inputs using the following expressions:
+
+```yaml
+authenticate_client_id: "{{ inputs.stk_client_id }}"
+authenticate_client_key: "{{ inputs.stk_client_key }}"
+repository_name: "{{ inputs.repository_name }}"
+```
+
+3. Fill in the following variables with valid JSON, using the contract for each provider:
+
+- **`cloud_credentials`**: Used by Terraform to create, update, and remove your infrastructure in AWS and/or Azure.
+
+:::tip Tip
+
+You can provide a list of credentials to deploy to AWS and Azure accounts at the same time in the same StackSpot infrastructure.
+
+Example:
+
+```yaml title="cloud_credentials with AWS and Azure DevOps providers"
+cloud_credentials: |
+          [
+            {
+              "type": "AZ_PRINC_SECRET",
+              "azPrincSecret": {
+                "clientId": "{{ inputs.clientId }}",
+                "clientSecret": "{{ inputs.clientSecret }}",
+                "tenantId": "{{ inputs.tenantId }}",
+                "subscriptionId": "{{ inputs.subscriptionId }}"
+              }
+            },
+            {
+                "type": "AWS_CREDS",
+                "awsCreds": {
+                    "accessKey": "{{ inputs.accessKey }}",
+                    "secretKey": "{{ inputs.secretKey }}",
+                    "accessToken": "{{ inputs.accessToken }}"
+                }
+            }
+          ]
+```
+:::
+
+- **`backend_credentials`**: Used by Terraform and StackSpot to save the generated IaC code and define where the Terraform state file (`tfstate`) will be stored. Unlike **`cloud_credentials`**, use only one provider here.
+
+- **`features_terraform_modules`** (Optional): Needed if you use external modules.
+
+<Tabs groupId="providers-inputs">
+<TabItem value="aws" label="AWS Example" default>
+
+```yaml title="Step Inputs Example"
+jobs:
+  - id: deploy
+    label: Deploys Infrastructure Plugins
+    steps:
+    - id: deploy
+      name: stackspot-core/stackspot-deploy@5
+      type: workflow
+      inputs:
+        authenticate_client_id: "{{ inputs.stk_client_id }}"
+        authenticate_client_key: "{{ inputs.stk_client_key }}"
+        repository_name: "{{ inputs.repository_name }}"
+        should_skip: False
+        cloud_credentials: |
+          [
+            {
+                "type": "AWS_CREDS",
+                "awsCreds": {
+                    "accessKey": "{{ inputs.accessKey }}",
+                    "secretKey": "{{ inputs.secretKey }}",
+                    "accessToken": "{{ inputs.accessToken }}"
+                }
+            }
+          ]
+        backend_credentials: |
+          {
+              "type": "AWS_CREDS",
+              "awsCreds": {
+                  "accessKey": "{{ inputs.accessKey }}",
+                  "secretKey": "{{ inputs.secretKey }}",
+                  "accessToken": "{{ inputs.accessToken }}"
+              }
+          }
+        features_terraform_modules: | # Opcional caso tenha módulos externos
+          [
+            {
+              "sourceType": "gitHttps",
+              "path": "github.com/sua-organization",
+              "private": true,
+              "app": "***",
+              "token": "<credencial-github>"
+            },
+            {
+              "sourceType": "terraformRegistry",
+              "path": "hashicorp",
+              "private": True
+            }
+          ]
+```
+
+</TabItem>
+<TabItem value="azure" label="Azure DevOps Example">
+
+```yaml title="Step Inputs Example"
+jobs:
+  - id: deploy
+    label: Deploys Infrastructure Plugins
+    steps:
+    - id: deploy
+      name: stackspot-core/stackspot-deploy@5
+      type: workflow
+      inputs:
+        authenticate_client_id: "{{ inputs.stk_client_id }}"
+        authenticate_client_key: "{{ inputs.stk_client_key }}"
+        repository_name: "{{ inputs.repository_name }}"
+        should_skip: False
+        cloud_credentials: |
+          [
+            {
+              "type": "AZ_PRINC_SECRET",
+              "azPrincSecret": {
+                "clientId": "{{ inputs.clientId }}",
+                "clientSecret": "{{ inputs.clientSecret }}",
+                "tenantId": "{{ inputs.tenantId }}",
+                "subscriptionId": "{{ inputs.subscriptionId }}"
+              }
+            }
+          ]
+        backend_credentials: |
+          {
+            "type": "AZ_PRINC_SECRET",
+            "azPrincSecret": {
+              "clientId": "{{ inputs.clientId }}",
+              "clientSecret": "{{ inputs.clientSecret }}",
+              "tenantId": "{{ inputs.tenantId }}",
+              "subscriptionId": "{{ inputs.subscriptionId }}"
+            }
+          }
+        features_terraform_modules: | # Optional caso tenha modulos externos
+          [
+            {
+              "sourceType": "gitHttps",
+              "path": "github.com/sua-organization",
+              "private": true,
+              "app": "***",
+              "token": "<credencial-github>"
+            },
+            {
+              "sourceType": "terraformRegistry",
+              "path": "hashicorp",
+              "private": True
+            }
+          ]
+```
+</TabItem>
+</Tabs>
+
+After you configure your deployment Workflow, [**publish the Workflow in your Studio to use it for deployments**](beta-version/workflow-beta/howto-guide/publish-workflow.md).
+
+### **Step 4. Set Up Your Pipeline to Run the Workflow**
+
+To run a Workflow in your CI/CD pipeline, set up your pipeline with the StackSpot CLI, for example:
+
+**1. Download the CLI**
+
+```sh title="CLI Download Script Example"
+shell: |
+    curl \
+    --fail \
+    --http2-prior-knowledge \
+    --location \
+    --output /tmp/stk.deb \
+    --silent \
+    --show-error \
+    --tlsv1.3 \
+    https://stk.stackspot.com/installer/linux/stk.deb
+```
+**2. Install the CLI**
+
+```sh title="CLI Installation Script Example"
+script: |
+    sudo dpkg --install /tmp/stk.deb || echo "Installation failed with exit code: $?"
+```
+
+**3. Authenticate**
+
+```sh title="CLI Authentication Script Example"
+script: |
+    $HOME/.stk/bin/stk login --client-id ${{ secrets.CLIENT_ID }} --client-key ${{ secrets.CLIENT_KEY }} --realm ${{ secrets.CLIENT_REALM }}
+```
+
+4. Go to the folder containing the **`.stk`** file (for your Application or Infrastructure) and run **`stk deploy app | infra`** with the **`--workflow`** parameter, all required command parameters, and the parameters used by the Workflow:
+
+```sh title="CLI Deployment Command Example"
+cd /< app-or-infra-folder-containing-.stk >
+
+export BACKEND_CONFIG='{"type":"AZURERM","azurerm":{"tfstate":{"storageAccountName":"<tfstate-storage-account>","containerName":"<tfstate-container>","resourceGroup":"<resource-group>"},"iac":{"storageAccountName":"<iac-storage-account>","containerName":"<iac-container>","resourceGroup":"<resource-group>"}}}'
+
+stk deploy [app|infra] \
+    --workflow <your-studio>/<your-workflow>@<version> \
+    --version <input.version> \
+    -bc "$BACKEND_CONFIG" \
+    --environment "<environment-name>" \
+    -rs \
+    -q \
+    --repository_name "<app-infra-repository_name>" 
+    --stk_client_id "<stk_client_id>" /
+    --stk_client_key "<stk_client_key>" /
+    --clientId "<clientId>" /
+    --clientSecret "<clientSecret>" /
+    --tenantId "<tenantId>" /
+    --subscriptionId "<subscriptionId>" /
+    --accessKey "<accessKey>" /
+    --secretKey "<secretKey>" /
+    --accessToken "<accessToken>" /
+    --repository_name "<repository_name>" /
+```
+
+#### **Using a Proxy for Docker Images**
+
+If you get a **Docker rate limit** error, add the **`container_url`** variable to your **deploy Workflow** with the proxy for your resource that stores the Docker image.
+
+Example:
+
+```yaml
+jobs:
+  - id: deploy
+    label: Deploys Infrastructure Plugins
+    steps:
+    - id: deploy
+      name: stackspot-core/stackspot-deploy@5
+      type: workflow
+      inputs:
+        ...
+        container_url: "ECR-proxy/copy-image:latest"
+        ...
+```
+
+## **References**
+
+### **List of Inputs for Deployment:**
+
+Inputs for the `stk deploy app/infra` command
+
+| **Parameter**         | **Description**                              | **Example**           |
+|-----------------------|----------------------------------------------|-----------------------|
+| `--workflow`          | Runs the deployment via workflow/pipeline    | -                     |
+| `-e`, `--environment` | Name of the deployment environment           | "dev"                 |
+| `-v`, `--version`     | Application/Infrastructure version           | "1.0.0"               |
+| `-bc/--backend-config`| JSON object with deployment settings         | "BACKEND_CONFIG"      |
+| `-rs`                 | Reports the Workflow execution status        | -                     |
+| `-q`                  | Non-interactive mode. Won't prompt for missing parameters. | -         |
+| `-h`                  | Shows command help and exits                 | -                     |
+
+Currently, you can save the tfstate and generated IaC (Infrastructure as Code) in two ways:
+
+- AWS S3
+- Azure Blob Storage
+
+The `-bc/--backend-config` input defines which bucket or Blob Storage to use.
+
+<Tabs groupId="backend-inputs">
+<TabItem value="aws" label="AWS S3 JSON Example" default>
+
+```json
+{
+    "type": "S3",
+    "s3": { 
+        "iac" : {
+            "bucket": "",
+            "region": ""
+        },
+        "tfstate": {
+            "bucket": "",
+            "region": "" 
+        }
+    }
+}
+```
+
+```sh title="Usage"
+stk deploy infra \
+  -bc '{"type":"S3","s3":{"iac":{"bucket":"","region":""},"tfstate":{"bucket":"","region":""}}}'
+```
+
+</TabItem>
+<TabItem value="azure" label="Azure Backend JSON Example">
+
+```json
+{
+    "type": "AZURERM",
+    "azurerm": {
+        "iac" : {
+            "storageAccountName": "",
+            "containerName": "",
+            "resourceGroup": ""
+        },
+        "tfstate": {
+            "storageAccountName": "",
+            "containerName": "",
+            "resourceGroup": ""
+        }
+    }
+}
+```
+
+```sh title="Usage"
+stk deploy infra \
+  -bc '{"type":"AZURERM","azurerm":{"tfstate":{"storageAccountName":"","containerName":"","resourceGroup":""},"iac":{"storageAccountName":"","containerName":"","resourceGroup":""}}}'
+```
+
+</TabItem>
+</Tabs>
+
+### **Inputs for the `stackspot-core/stackspot-deploy` Workflow**
+
+| **Name**                  | **Type**   | **Description**                                                                 | **Required** |
+|---------------------------|------------|---------------------------------------------------------------------------------|--------------|
+| `base_path_output`        | String     | Base path for output files. Default: "`.`".                                     | No           |
+| `path_to_mount`           | String     | Path to mount as a volume in the container. Default: "`.`".                     | No           |
+| `authenticate_client_id`  | String     | Client ID for authentication. (Can use env var: `STK_CLIENT_ID`)                | Yes          |
+| `authenticate_client_key` | Password   | Client Key for authentication. (Can use env var: `STK_CLIENT_KEY`)              | Yes          |
+| `backend_credentials`     | Password   | JSON credentials for the Terraform Backend (see notes for JSON structure)        | Yes          |
+| `cloud_credentials`       | Password   | JSON credentials for Deployment (see notes for JSON structure)                   | Yes          |
+| `features_release_localexec`   | String | Enable or disable Terraform “`local exec`”. Default: `False`.                   | No           |
+| `features_terraform_logprovider`| String| Log level for the Terraform provider. Default: info.                            | No           |
+| `features_level_log`      | String     | General log level. Default: info.                                               | No           |
+| `parallelism`             | int        | Number of resources Terraform processes at once. Default: `10`.                  | No           |
+| `container_url` | String | Docker image used by EDP Deploy to execute the deployment. Default: `stackspot/runtime-job-unified:latest` | No   
+| `should_skip`             | Bool       | If **`true`**, checks if the Manifest changed. If not, sets deploy as `SKIPPED` and skips Infra Plugins. | No |
+| `features_terraform_modules`   | Password | Terraform modules set up. Example value: `[{"sourceType":"gitHttps","path":"github.com/***-corp","private":true,"app":"***","token":"***"},{"sourceType":"terraformRegistry","path":"hashicorp","private":false}]`. | Não         |
+

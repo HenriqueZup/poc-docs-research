@@ -1,0 +1,107 @@
+---
+title: "About Workspaces"
+sidebar_position: 1
+description: Manage Workspaces.
+sidebar_custom_props: 
+  icon: Workspace
+---
+
+> In this section, you will find more information about what is a Workspace.
+
+<br/>
+
+## What is a Workspace
+
+Workspaces are StackSpot work environments **managed by the Company responsible for the Account**. They standardize technologies and settings for creating and deploying Applications and Infrastructure.
+
+Developers use these Workspaces to access **selected and pre-configured content (Stacks, Actions, Plugins)** to create their projects (Applications and Infrastructures).
+
+:::warning
+
+**Pay attention to how your organization manages the use of Workspaces:**
+
+- Workspaces can be created based on different criteria, such as technology type, project, product, and Squads. **It all depends on how the company organizes its work contexts.**
+
+- In some companies, if you are not responsible for creating and managing Workspaces, **you must request access to view and use them.** Check with your organization's Admin or Account Holder to understand how this process works.
+
+:::
+
+In Enterprise Accounts, **two types of users** use the Workspace differently. Learn more below:
+
+#### 1. **Workspace administrators**:
+
+These are the people **responsible** for the Account: Account holders, Account Administrators, Workspace Administrators.
+
+They are responsible for **creating, organizing, and setting up** the Workspaces so that they are ready for developers to create Applications and Infrastructures.
+
+**Workspace Administrator's responsibilities:** 
+
+- Create the Workspace; 
+- If your Account was **created before 2024**, you may need to [**connect the Workspace to one or more Cloud accounts**](home/workspace/config-cloud-account.md); 
+- [**Add Stacks**](home/workspace/stacks-and-context/add-stacks.md) that fit the Workspace Context; 
+- [**Set up Stack Contexts**](home/workspace/stacks-and-context/setup-context.md), i.e., pre-configure input values for Plugins and other Stack content, like Actions, so they are ready for developers; 
+- [**Set up Workflow Context**](home/workspace/configure-workflow.md) for creating Applications, Infrastructures, and APIs.
+
+#### 2. **Workspace users**
+
+Workspace users are the developers who create Applications and Infrastructures using the Workspace and its tools.
+For users, **the Workspace is simple**, as they just need to enter and access all the pre-configured content.
+
+**Workspace users' responsibilities** 
+
+- Use the available Stacks, Starters, and Plugins to create Applications; 
+- Use the available Stacks, Starters, and Plugins to create Infrastructures; 
+- Use the available links.
+
+### **What are the benefits of a Workspace?**
+
+- Reduces cognitive load in choosing tools and architecture by reusing what is prepared in the Workspace.
+- Centralizes the use of multiple developer tools in one place.
+- Automates repetitive tasks with Actions for local and remote use.
+
+:::info
+
+You don't need Workspaces to create Applications locally.  
+
+However, If you want to publish them on the StackSpot Platform, you must create the Application within a Workspace.
+
+:::
+
+### **Workspaces concepts**
+
+### **Account**
+
+A Workspace is in an Account. A company has one account in StackSpot with several Workspaces divided by projects. At one level, the Account context overlaps with the Workspaces context.
+
+### **Environments**
+
+Environments are used by developers to create content within Workspaces, such as Applications, Infrastructures, Connections Interface, etc., separately by development stages, such as development, quality testing, and production.
+
+### [**Content**](create-use/create-content/getting-started.md)
+
+All the pieces you create with StackSpot. It can be Stacks, Starters, Plugins, Actions, and Links.
+
+### [**Context**](home/workspace/stacks-and-context/setup-context.md)
+
+To [**create Applications**](create-use/use-content/application/index.md) or [**Infrastructures**](create-use/use-content/infra/infrastructure.md) in a Workspace, developers use the Stacks available within it. And, when using these Stacks, they need to **configure the values of their Plugins' inputs**.
+
+That's where Context Configuration comes in:
+
+As the Account or Workspace administrator, you can **predefine the values of the inputs of the Plugins and other resources of the Stacks**. You do this to standardize and speed up the developer's work when creating an Application. They don't have to configure them, just accept the values. This is called **configuring or defining contexts**.
+
+For more details, [**check out the guide on Add Stack to Workspace & Configure Context**](home/workspace/stacks-and-context/setup-context.md).
+
+:::warning
+You cannot use Context with the input variables of type **password**.
+:::
+
+### **See what you can do in a Workspace**
+
+> [**Check the permissions to see if you can configure a Workspace**](home/account/organization/access-management/roles.md ).
+
+- Add [**Stacks**](home/workspace/stacks-and-context/add-stacks.md);
+- Configure [**Mandatory Contexts**](home/workspace/stacks-and-context/setup-context.md), and reduce complex choices to configure the developer's Applications.
+- [**Configure Workflows**](home/workspace/configure-workflow.md);
+- [**Insert links**](home/workspace/links-on-workspace.md);
+- Manage [**Infrastructures**](create-use/use-content/infra/infrastructure.md);
+- Manage [**Connections Interfaces**](create-use/connections/connection-interface.md).

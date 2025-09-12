@@ -1,0 +1,189 @@
+---
+title: Hooks Declarativos
+description: Quais os tipos e como definir os Hooks Declarativos.
+---
+
+> Nesta seção você encontra: Como definir e quais são os tipos de Hooks Declarativos. Como executar condicional de um Hook Declarativo.
+
+## **Sobre Hooks Declarativos**
+
+Os **Hooks Declarativos** são uma forma de definir ações a serem executadas em momentos específicos da aplicação de Plugin.
+
+### **É possível trabalhar com Hooks Declarativos em Plugins de infraestrutura?**
+
+Sim, é possível usar Hooks Declarativos em Plugins de Infraestrutura, mas eles são executados apenas no momento da aplicação do Plugin, não durante o deploy. Quando você cria a Infraestrutura e faz o deploy pela interface da StackSpot, o sistema executa o comando **`stk apply plugin`** e depois o **`stk apply plugin deploy`** de maneira oculta.
+
+### **Quando os Hooks Declarativos são executados na StackSpot?**
+
+Os Hooks Declarativos são executados no momento da aplicação do Plugin na Aplicação ou Infraestrutura. Quando você cria a Aplicação, o deploy ainda não é feito, e os Hooks Declarativos funcionam normalmente. No entanto, quando você executa o comando **`stk deploy app`**, o Plugin já está aplicado e é usado apenas para gerar os arquivos Terraform, e nesse momento os Hooks Declarativos não são executados. Eles executam apenas durante a criação da Aplicação ou Infraestrutura.
+
+A aplicação do Plugin possui duas fases distintas:
+
+**Fase 1.** Perguntar ao usuário os parâmetros de entrada.  
+**Fase 2.** Interpolar os templates Jinja usando os valores informados pelo usuário para gerar arquivos.
+ 
+Você pode executar as ações definidas nos Hooks Declarativos:
+
+- Antes de inserir os parâmetros de entrada (**before-input**)
+- Antes de interpolar os templates Jinja para a geração dos arquivos (**before-render**)
+- Depois de gerar os arquivos (**after-render**)
+
+Confira a seguir o **Ciclo de renderização de Templates e Plugins**:
+
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import ThemedImage from '@theme/ThemedImage';
+
+<ThemedImage
+  alt="A imagem descreve a sequência em que a renderização dos templates JINJA ocorrem nos Plugins. As etapas na imagem são os passos enumerados do 1 ao 8. 
+  Passo 1. O arquivo de configuração (**`plugin.yaml`**) é carregado;
+  Passo 2. São executados os Hooks com trigger **`before-input`**;
+  Passo 3. Os inputs definidos na configuração são perguntados para o usuário;
+  Passo 4. São calculados os **`computed-inputs`**;
+  Passo 5. São executados os Hooks com trigger **`before-render`**;
+  Passo 6. São renderizados os templates Jinja contidos na pasta **`templates`** do Plugin;
+  Passo 7. São executados os Hooks com trigger **`after-render`**.
+  Passo 8. Merge de arquivos caso existam no destino."
+  sources={{
+    light: useBaseUrl('/img/diagrams/hook-exec-flow-PT-Light.png'),
+    dark: useBaseUrl('/img/diagrams/hook-exec-flow-PT-Dark.png'),
+  }}
+/>
+
+:::warning Atenção!
+
+Os parâmetros de entrada informados pelo usuário no passo **3** são usados como variáveis, elas podem ser usadas em expressões Jinja tanto nos templates usados para geração de arquivos, quanto em alguns pontos da configuração dos Plugins.
+
+:::
+
+## **Definir um Hook Declarativo**
+
+As definições dos Hooks Declarativos de Plugin podem ser feitas no arquivo de configuração [**plugin.yaml**](create-use/create-content/yaml-files/plugin-yaml.mdx), conforme o exemplo:
+
+```yaml
+schema-version: v3
+kind: plugin
+metadata:
+  name: Declarative Hooks Plugin example
+  display-name: Declarative Hooks Plugin example
+  description: My Plugin with Declarative Hooks
+  version: 3.0.0
+spec:
+  type: app
+  compatibility:
+    - python
+  docs:
+    pt-br: docs/pt-br/docs.mdx
+    en-us: docs/en-us/docs.mdx
+  technologies: # Ref: https://docs.stackspot.com/create-use/create-content/yaml-files/plugin-yaml/#technologies-1
+    - React
+    - Web
+    - JavaScript
+  hooks:
+    - type: run
+      trigger: before-input
+      working-dir: "{{project_name}}"
+      commands:
+        - echo plugin-python before-input!
+    - type: run-script
+      trigger: before-render
+      script: script.py
+    - type: edit
+      trigger: after-render
+      path: src/some-file.txt
+      changes:
+        - insert:
+            line: 0
+            value: "# Text inserted in first line\n\n"
+            when:
+              not-exists: "# Text inserted in first line"
+        - search:
+            string: "# Text inserted in first line"
+            insert-before:
+              snippet: snippets/insert-before-first-line.txt
+            when:
+              not-exists: "# Text inserted before first line"
+        - search:
+            pattern: (Text )inserted in( first line)
+            replace-by:
+              value: \1moved from\2
+            when:
+              not-exists: print(f"Hello {name}!")
+    - type: render-templates
+      trigger: after-render
+      path: templates-java
+      condition:
+        variable: language
+        operator: "=="
+        value: java
+```
+
+:::info
+
+É possível definir vários hooks em um mesmo Plugin.
+
+:::
+
+## **Gatilhos (Trigger)**
+
+Os gatilhos dos Hooks Declarativos são definidos pelo atributo **`trigger`** e indicam em que momento o Hook Declarativo irá executar, podendo assumir um dos seguintes valores:
+
+- **`before-input`**: Antes de inserir os parâmetros de entrada.
+- **`before-render`**: Antes de interpolar os templates Jinja para a geração dos arquivos
+- **`after-render`**: Após gerar os arquivos.
+
+## **Condições**
+
+A execução de um Hook Declarativo pode ser condicional e é controlada pelo atributo **opcional** **`condition`**. Você deve definir uma condição com:  
+
+**1.** Uma variável (**`variable`**);  
+
+**2.** Um operador (**`operator`**);  
+
+**3.** Em seguida, o valor de referência (**`value`**).  
+
+As variáveis acessíveis são as definidas pelos [**inputs**](create-use/create-content/yaml-files/advanced-inputs.mdx#computed-inputss) **`computed-inputs`** do Plugin. No trecho de exemplo apresentado, é verificado se o valor do input **`language`** é igual à string **`java`**. Em caso positivo, são gerados os arquivos definidos pelos templates que estão na pasta **`templates-java`**. 
+
+```yaml 
+hooks:
+  - type: render-templates
+    trigger: after-render
+    path: templates-java
+    condition:
+      variable: language
+      operator: "=="
+      value: java
+```
+
+Os operadores disponíveis para condições são:
+
+- **`"=="`**: Valida se os valores são iguais.
+- **`"!="`**: Valida se os valores são diferentes.
+- **`">"`**: Valida se a variável é maior ao valor.
+- **`"<"`**: Valida se a variável é menor ao valor.
+- **`">="`**: Valida se a variável é maior ou igual ao valor.
+- **`"<="`**: Valida se a variável é menor ou igual ao valor.
+- **`containsAny`**: Valida se a variável do tipo lista contém qualquer um dos valores contidos em **`value`**. Se **`value`** não for do tipo lista, considera-se uma lista onde **`value`** é o único elemento. Se **`value`** é uma lista vazia, **false** (falso) é retornado.
+- **`containsAll`**: Valida se a variável do tipo lista contém todos os valores contidos em **`value`**. Se **`value`** não for do tipo lista, considera-se uma lista onde **`value`** é o único elemento. Se **`value`** é uma lista vazia, **true** (verdadeiro) é retornado.
+- **`containsOnly`**: Valida se a variável do tipo lista é uma permutação dos itens de **`value`**. Se **`value`** não for do tipo lista, considera-se uma lista onde **`value`** é o único elemento.
+
+:::caution  Cuidado!
+
+Você deve usar aspas duplas para os seguintes operadores:  `"=="`, `"!="`, `">"`, `">="`, `"<"`, `"<="`.  
+
+:::
+
+## **Confira os tipos de Hooks Declarativos:**
+
+**Tipos de Hooks**  | **O que fazem**
+--------- | ------
+[**run**](create-use/create-content/declarative-hooks/run.mdx) | Executam alguns comandos.
+[**run-script**](create-use/create-content/declarative-hooks/run-script.mdx) | Executam scripts Python, dentro de um arquivo **`plugin.yaml`**.
+[**edit**](create-use/create-content/declarative-hooks/edit.mdx)| Definem alterações feitas em arquivos existentes.
+[**edit-xml**](create-use/create-content/declarative-hooks/edit-xml.mdx) | Definem alterações feitas em arquivos XML existentes.
+[**edit-json**](create-use/create-content/declarative-hooks/edit-json.mdx) | Definem alterações feitas em arquivos JSON existentes.
+[**edit-yaml**](create-use/create-content/declarative-hooks/edit-yaml.mdx) | Definem alterações feitas em arquivos YAML existentes.
+[**render-templates**](create-use/create-content/declarative-hooks/render-templates.mdx) | Executam a geração condicional de arquivos.
+[**code-transformation**](create-use/create-content/declarative-hooks/code-transformation/about-code-transformation.mdx) | Permite inserir, remover e modificar qualquer código fonte.
+
+
+<DocCardList />

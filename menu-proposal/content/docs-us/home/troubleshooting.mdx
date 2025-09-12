@@ -1,0 +1,797 @@
+---
+title: Troubleshooting
+description: Solution for possible errors.
+---
+
+> In this section, you will find StackSpot's troubleshoot.
+
+<br/>
+
+See below the errors you may experience when using StackSpot, and how you can resolve them:  
+
+## Issues
+
+### **I can't apply a Plugin on my Workspace**
+
+### **Solution**
+
+To apply a Plugin in a Workspace:
+
+1. In your terminal, Enter your Workspace, execute:
+
+```bash
+stk use workspace workspace-name
+```
+
+2. Execute the command to apply the Plugin:
+
+```bash
+stk apply plugin studio-name/stack-name/plugin-name
+```
+
+3. To apply a Plugin outside your Workspace, execute:
+
+```bash
+stk apply plugin account/studio/plugin@1.0.0
+```
+
+> To know which Workspace you are in, execute: **`stk list workspace`**
+> Your Workspace will have a *.
+
+### **On Windows 10 and 11: Error when downloading .msi and trying to install STK CLI**
+
+### **Solution**
+
+Execute the command:
+
+```bash
+msiexec /i stk.msi
+```
+
+### **Create App via Portal:"Waiting for Git provider workflow"". Pending"**
+
+### **Solution**
+
+When creating an Application via StackSpot Portal, the Workflow status is not updated, even showing the success message on Git.
+
+To work, you need to configure a webhook, [**see the steps on the SCM section**](home/account/organization/scm-integration/scm-github.md).
+
+---
+
+## **STK CLI**
+
+### **ERROR: STACK_NOT_FOUND_IN_WORKSPACE x Stack example-name is not part of the current workspace.**
+
+### **Solution**
+
+- If you are in a Workspace, you need to write on your terminal: **studio-name/stack-name/plugin-name**.
+
+- If you are outside a Workspace, run: **account-name/studio-name/**
+
+:::tip
+To know in which Workspace you are, execute the command: **`stk list workspace`**.
+Your Workspace has an asterisk.
+
+To enter a Workspace, execute: **`stk use workspace workspace-name`** command.
+
+To exit a Workspace, run: **`stk exit workspace`**
+:::
+
+### **ERROR: WORKSPACE_FORBIDDEN_ERROR x You don’t have access to this workspace!**
+
+### **Solution** 
+
+You don’t have a configured Workspace to use. Find your account admin. 
+
+> You can use Starters and Plugins directly from a Studio.
+
+### **ERROR: CREATE_PLUGIN x [WinError 5] Access denied**
+
+### **Solution** 
+
+Restart your Bash.
+
+### **Linux Installation: dpkg: error processing archive stk.deb (--install)**
+
+### **Solution**
+
+1. Execute the command:
+
+```
+curl -fsSL https://stk.stackspot.com/install.sh | bash
+```
+
+2. Follow the steps on the [**Install section**](home/stk-cli/install.md).
+
+### Apply local Plugin (with Path) via STK CLI: INVALID_PLUGIN_QUALIFIED_NAME x Invalid plugin name! Must follow the format: account/studio/plugin-name[@version]
+
+### **Solution**
+
+1. See if the selected folder on the Path is a Plugin (with a plugin.yaml in it);
+
+2. Copy the Path and add quotes in the **`stk apply plugin`** command.
+
+Example:
+
+```yaml
+stk apply plugin “C:/User/Meus-projetos/Meu-plugin”
+```
+
+### **ERROR: ACTIONAPI_0003_INVALID_WORKFLOW_URL**  
+
+### **Solution** 
+
+See in your [SCM] registration (home/account/organization/initial-setup.md) if the URL you enter follows one of the patterns below:   
+
+- **GitHub**: `^https://github.com/[a-zA-Z0-9-_%]*/[a-zA-Z0-9-_%]*$`   
+- **Azure**: `^https://dev.azure.com/[a-zA-Z0-9-_]*/[a-zA-Z0-9-_%]*$`
+- **Bitbucket**: `^https://bitbucket.org/[a-zA-Z0-9-_]*/[a-zA-Z0-9-_%]*$`
+- **GitLab**: `^https://gitlab.com/[a-zA-Z0-9-_]*/[a-zA-Z0-9-_%]*\?project_id=[0-9]*&trigger_id=[0-9]*$`
+
+### **ERROR: ACTIONAPI_5001_GITHUB_DISPATCH_WORKFLOW_NOT_FOUND x Workflow not found**  
+
+### **Solution** 
+
+1. Workflow was not configured in your Organization. Use the [**Workflow configuration action**](home/workspace/configure-workflow.md) to create the necessary files in your Organization. 
+
+2. The SCM token configured in the StackSpot account does not have access to view the repository in which the Workflow is configured. See that your account has permission to do so.
+
+### **ERROR: ACTIONAPI_5004_GITHUB_SAML_ERROR** x Unauthorized token by the organization
+
+### **Solution**
+
+If your organization has login via **SSO** (*Single Sign On*) configured, authorize your Token in your organization:
+
+1. On GitHub, access **'Settings'**  
+2. Click on **'Developer Settings'**  
+3. In your token, click on **'Configure SSO'**:  
+
+<img src="/img/authorize-sso.gif" title="Authorize SSO" alt="Page located in the Settings/ Developer Settings > Personal access tokens (classic) menu that demonstrates the option to authorize SSO on the token." width="500px" />
+
+Then, see if your token was authorized as per the example below:
+
+<img src="/img/check-sso-auth.png" title="Check SSO" alt="Page located in the Settings/ Developer Settings > Personal access tokens (classic) menu to consult the authorized token." width="500px" />
+
+Then, see if your token was authorized.
+
+For more information about the Personal Access Token, [**see GitHub documentation**](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token).
+
+### **ERROR: ACTIONAPI_5020_GITHUB_APP_INSTALLATION_ACCESS_TOKEN_FAILURE	x A problem happened calling github** 
+
+### **Solution**  
+
+See the workflow connection's health.
+
+### **ERROR: ACTIONAPI_5021_GITHUB_APP_INSTALLATION_ACCESS_TOKEN_NOT_FOUND	x installation not found**  
+
+### **Solution**  
+
+See that the **`install id`** entered on the SCM registration screen is valid. 
+
+### **ERROR: ACTIONAPI_5022_GITHUB_APP_INSTALLATION_ACCESS_TOKEN_UNAUTHORIZED x Unauthorized to get installation access token**  
+
+### **Solution**  
+
+See that the **`private key`** entered has access to the **`install id`** entered. 
+
+### **ERROR: ACTIONAPI_E5122_ACCOUNT_SERVICE_GET_USER_SCM_NOT_FOUND x User scm not found**  
+
+### **Solution**  
+
+See in the Workflow Settings that the [SCM configuration](home/account/profile/access-token.md) toggle is activated.
+
+### **ERROR: ACTIONAPI_5201_AZURE_LIST_PIPELINE_NOT_FOUND x Pipeline not found**  
+
+### **Solution** 
+
+Use the [**Configuration action**](home/workspace/configure-workflow.md) to create the pipeline in your Azure account. 
+
+### **ERROR: ACTIONAPI_5202_AZURE_LIST_PIPELINE_UNAUTHORIZED	x Unauthorized to list pipelines**
+
+### **Solution**  
+
+The PAT you entered doesn't have the necessary permissions to list pipelines in Azure. Add the permission to the PAT.
+
+### **ERROR: ACTIONAPI_5212_AZURE_RUN_PIPELINE_UNAUTHORIZED x Unauthorized to run pipelines**
+
+### **Solution**  
+
+The PAT you entered doesn't have the necessary permissions to list pipelines in Azure. Add the permission to the PAT.
+
+### **ERROR: ACTIONAPI_5401_BITBUCKET_RUN_PIPELINE_NOT_FOUND	x Pipeline not found** 
+
+### **Solution**  
+
+The pipeline has not been created in your Bitbucket account. Use the [**Configuration action**](home/workspace/configure-workflow.md) to create the pipeline. 
+
+### **ERROR: ACTIONAPI_5402_BITBUCKET_RUN_PIPELINE_UNAUTHORIZED x Não autorizado a acionar o pipeline**  
+
+### **Solution** 
+
+The PAT you entered doesn't have the necessary permissions to run pipelines on Bitbucket. Add the permission to the PAT.
+
+### **ERROR: ACTIONAPI_5501_GITLAB_TRIGGER_PIPELINE_NOT_FOUND x Pipeline not found**  
+
+### **Solution** 
+
+The pipeline has not been created in your GitLab account. Use the [**Configuration action**](home/workspace/configure-workflow.md) to create the pipeline.
+
+### **ERROR: ACTIONAPI_5502_GITLAB_TRIGGER_PIPELINE_UNAUTHORIZED	x Trigger token is not authorized to trigger pipeline**  
+
+### **Solution**  
+
+The registered PAT does not have the necessary permissions to query the pipeline trigger token. Add the permission to the PAT. 
+
+### **ERROR: ACTIONAPI_5512_GITLAB_GET_TRIGGERS_UNAUTHORIZED x	Unauthorized to get trigger token**  
+
+### **Solution**  
+
+The PAT informed doesn't have access to search for the **`trigger token`** informed on the SCM registration screen. 
+
+### **ERROR: ACTIONAPI_2105_BAD_REQUEST_INVALID_REPO_URL**  
+### **Solution**  
+
+The **`repository url`** doesn't match the allowed regex according to the configured provider.
+
+### **ERROR: ERROR: Found xterm, while expecting a Windows console**
+
+### **Solution** 
+
+During the installation of Git (Windows, Mac or Linux), add the information about activating experimental support for pseudo-consoles.
+
+---
+
+## **Plugins**
+
+See the main errors that may happen while creating or publishing a Plugin.
+
+| **Code** | **Description** | **When happens** |
+| ---- | --- | ----- |
+|`PLUGINAPI_1000_PLUGIN_NOT_FOUND` | Plugin not found. | |`PLUGINAPI_1000_PLUGIN_NOT_FOUND` | Plugin not found. | The Plugin doesn't exist or the user doesn't have access to view the Plugin. |
+| `PLUGINAPI_1002_PLUGIN_ALREADY_EXISTS` | Plugin version already exists. | When trying to publish a version of an already published Plugin. The Plugin version cannot change. |
+| `PLUGINAPI_1013_SAVE_ZIP_TMP_ERROR` | Error saving zip. | Error not handled. If it happens, contact support. |
+| `PLUGINAPI_1015_INVALID_TYPE_ERROR` | Type change is not allowed when publishing a version.| When you try to publish a version with a different type of the before versions. The Plugin type cannot change. |
+| `PLUGINAPI_2000_BAD_REQUEST` | Invalid request data. | Bad request |
+| `PLUGINAPI_5000_UNEXPECTED_ERROR` | Unexpected error. | Error not handled. If it happens, contact support. |
+
+---
+
+## Jinja Variable Interpolation
+
+### **I don't want a code line of my file interpolated by Jinja, I need the original content; How to solve it?**
+
+### **Solution**
+
+Add in your code:
+
+```bash
+ {%raw%} 
+```
+
+The content to be ignored by Jinja:
+
+```bash
+ {%endraw%}
+```
+
+## Search Engine
+
+### **Problem: What is the 403 error that appears when I click on an item that appeared in a search in the StackSpot Portal?**
+
+In the search list, you can see all the items found according to the term you entered. But, **if you don't have permission to access them**, the server will return an **error 403**when you click on it. 
+
+### **Solution**
+
+See with your **Account Holder**, the responsible for managing roles and permissions, if you can access this content.
+
+---
+
+## `plugin.yaml` e `action.yaml`
+
+### **Problem: plugin/action `'{slug}'` has undergone significant changes that may impact compatibility. Details: "The new version needs to be a major version because the schema version has been changed."**
+
+It happens when there is an error in the schema version of two versions of a **`plugin.yaml`**, where there is no change in the Major. 
+
+See the example below where the schema version has changed from **v2 to v3**:
+
+- **`.yaml`** file in v2:
+
+```yaml
+schema-version: v2
+```
+
+- **`.yaml`** file in v3:
+
+```yaml
+schema-version: v3
+```
+
+### **Solution**
+
+Publish a new [**Major version**](create-use/create-content/plugin/plugin-version.md) of [**`plugin.yaml`**](create-use/create-content/yaml-files/plugin-yaml.md). 
+
+
+### **Problem: plugin/action `'{slug}'` has undergone significant changes that may impact compatibility. Detail: "The new version needs to be a major version because a required Plugin has been either added or removed."**
+
+This error occurs when adding and removing [**Plugin Requires**](create-use/create-content/plugin/plugin-requirements.md). 
+
+See the following example where the **`plugin studio-it-3/plugin-4`** has been added: 
+
+- **`.yaml`** file in a previous version:
+
+```yaml
+spec:
+ requires:
+   plugins:
+     - studio-it-2/plugin-1
+```
+
+- **`.yaml`** file in an update version:
+
+```yaml
+spec:
+ requires:
+   plugins:
+ 	- studio-it-2/plugin-1
+// new-line-start  
+     	- studio-it-3/plugin-4
+// new-line-end      
+```
+
+### **Solution**
+
+Publish a new [**Major version**](create-use/create-content/plugin/plugin-version.md) of [**`plugin.yaml`**](create-use/create-content/yaml-files/plugin-yaml.md). 
+
+---
+
+### **Problem: plugin/action `'{slug}'` has undergone significant changes that may impact compatibility. Detail: "The new version needs to be a major version because a required Action has been either added or removed."**
+
+The error occurs when adding or removing [**Action Requires**](create-use/create-content/plugin/plugin-requirements.md#use-action-as-requirement).
+
+See the following example where the action **`studio-it-2/action-docker-3`** has been removed: 
+
+
+- **`.yaml`** file in a previous version:
+
+```yaml
+spec:
+ requires:
+   actions:
+      - studio-it-2/action-container-1
+      - studio-it-2/action-docker-3
+```
+
+- **`.yaml`** file in a update version: 
+
+```yaml
+spec:
+ requires:
+   actions:
+      - studio-it-2/action-container-1
+```
+
+### **Solution**  
+
+You need to publish a new [**Major version**](create-use/create-content/action/publish-action.md) of [**`action.yaml`**](create-use/create-content/yaml-files/action-yaml.md). 
+
+---
+
+### **Problem: plugin/action `'{slug}'` has undergone significant changes that may impact compatibility. Detail: "The new version needs to be a major version because a Connection Interface in the required section has been either added or removed."**
+
+The error occurs when adding or removing [**Connection Interface Requires**](/create-use/create-content/yaml-files/inputs.md). 
+
+See the following example in which the **`connection aws-rds-conn`** requirement was removed:
+
+- **`.yaml`** file in a previous version:
+
+```yaml
+spec:
+ requires:
+   connections:
+     - type: aws-eks-conn
+       alias: alias-0
+     - type: aws-rds-conn
+       alias: alias-1
+```
+
+- **`.yaml`** file in an update version:
+
+```yaml
+spec:
+ requires:
+   connections:
+     - type: aws-eks-conn
+       alias: alias-0
+```
+
+### **Solution**  
+
+Publish a new [**Major version**](create-use/create-content/plugin/plugin-version.md) of [**`plugin.yaml`**](create-use/create-content/yaml-files/plugin-yaml.md). 
+
+---
+
+### **Problem: plugin/action `'{slug}'` has undergone significant changes that may impact compatibility. Detail: "The new version needs to be a major version because a Connection Interface in the generates section has been either added or removed."**  
+
+The error occurs when adding or removing [**Connection Interface Generates**](create-use/create-content/yaml-files/plugin-yaml.md). 
+
+Take a look at the following example in which a **`connection aws-s3-conn`** generates has been added:
+
+- **`.yaml`** file in a previous version:
+
+```yaml
+spec:
+ generates:
+   connections:
+     - type: aws-ecr-conn
+       selected: plugin-registry-ecr
+       alias: aws-ecr-conn
+```
+
+- **`.yaml`** file in an update version:
+
+```yaml
+spec:
+ generates:
+   connections:
+     - type: aws-ecr-conn
+       selected: plugin-registry-ecr
+       alias: aws-ecr-conn
+// new-line-start        
+     - type: aws-s3-conn
+       selected: content-registry-bucket
+       alias: aws-s3-bucket-conn
+// new-line-end       
+```
+
+### **Solution**  
+
+Publish a new [**Major version**](create-use/create-content/plugin/plugin-version.md) of [**`plugin.yaml`**](create-use/create-content/yaml-files/plugin-yaml.md). 
+
+---
+
+### **Problem: plugin/action `'{slug}'` has undergone significant changes that may impact compatibility. Detail: "The new version needs to be a major version because an input has been either added or removed."**
+
+This error occurs when adding or removing [**Inputs**](create-use/create-content/yaml-files/inputs.md). 
+
+See the following example in which the **`input resource`** was removed:
+
+- **`.yaml`** file in a previous version:
+
+
+```yaml
+spec:
+ inputs:
+   - label: label 0
+     name: resource
+     type: text
+     required: true
+     default: hue 1
+     pattern: '[a-z]+'
+     help: 'Inform your resource name (e.g.: Client)'
+   - label:  label 1
+     name: select_field
+     type: text
+     required: true
+     default: Item1
+     external-items:
+       source: https://my-mock-api.com/listItems
+       value: $[*].id
+       label: $[*].name
+     items:
+       - Item1
+       - Item2
+       - Item3
+```
+
+- **`.yaml`** file in an updated version:
+
+```yaml
+spec:
+ inputs:
+   - label:  label 1
+     name: select_field
+     type: text
+     required: true
+     default: Item1
+     external-items:
+       source: https://my-mock-api.com/listItems
+       value: $[*].id
+       label: $[*].name
+     items:
+       - Item1
+       - Item2
+       - Item3
+```
+
+### **Solution**  
+
+Publish a new [**Major version**](create-use/create-content/plugin/plugin-version.md) of [**`plugin.yaml`**](create-use/create-content/yaml-files/plugin-yaml.md) or of [**`action.yaml`**](create-use/create-content/yaml-files/action-yaml.md).
+
+---
+
+### **Problem: plugin/action `'{slug}'` has undergone significant changes that may impact compatibility. Detail: "The new version needs to be major version because the type of an existing input has been edited."**
+
+The error occurs when publishing [**input types**](create-use/create-content/yaml-files/inputs.md#input-types). 
+
+See the following example where the input type has been changed from **`text`** to **`bool`**:
+
+- **`.yaml`** file in a previous version:
+
+```yaml
+spec:
+ inputs:
+   - label:  label 1
+     name: select_field
+// old-start     
+     type: text
+// old-end
+     required: true
+     default: Item1
+     external-items:
+       source: https://my-mock-api.com/listItems
+       value: $[*].id
+       label: $[*].name
+     items:
+       - Item1
+       - Item2
+       - Item3
+```
+
+- **`.yaml`** file in an updated version:
+
+```yaml
+spec:
+ inputs:
+   - label:  label 1
+     name: select_field
+// new-line-start     
+     type: bool
+// new-line-end     
+     required: true
+     default: Item1
+     external-items:
+       source: https://my-mock-api.com/listItems
+       value: $[*].id
+       label: $[*].name
+     items:
+       - Item1
+       - Item2
+       - Item3
+```
+
+### **Solution**  
+
+Publish a new [**major version**](create-use/create-content/plugin/plugin-version.md) of [**`plugin.yaml`**](create-use/create-content/yaml-files/plugin-yaml.md) or of [**`action.yaml`**](create-use/create-content/yaml-files/action-yaml.md).
+
+---
+
+### **Problem: plugin/action `'{slug}'` has undergone significant changes that may impact compatibility. Detail: "The new version needs to be a major version because a sub input in an input has been either added or removed."**
+
+
+The error occurs in scenarios where [**input subtypes**] are published (create-use/create-content/yaml-files/inputs.md#input-mandatory-fields). 
+
+See the following example where **`subinput`** **`host`** has been removed:
+
+- **`.yaml`** file in a previous version:
+
+```yaml
+spec:
+ type: python
+ docs:
+   pt-br: docs/pt-br.md
+ inputs:
+   - type: object
+     name: firewall_rule
+     label: Informe o CIDR/Porta da regra de firewall
+     inputs:
+       - type: text
+         name: cidr
+         label: CIDR
+         pattern: '^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}/\d{2}$'
+       - type: int
+         name: port
+         label: Porta
+```
+
+- **`.yaml`** file in an update version:
+
+```yaml
+spec:
+ type: python
+ docs:
+   pt-br: docs/pt-br.md
+ inputs:
+   - type: object
+     name: firewall_rule
+     label: Informe o CIDR/Porta da regra de firewall
+     inputs:
+       - type: text
+         name: cidr
+         label: CIDR
+         pattern: '^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}/\d{2}$'
+       - type: int
+         name: port
+         label: Porta
+ // old-start         
+       - type: int
+         name: host
+         label: Host
+// old-end         
+```
+
+### **Solution**  
+
+Publish a new [**major version**](create-use/create-content/plugin/plugin-version.md) of [**`plugin.yaml`**](create-use/create-content/yaml-files/plugin-yaml.md) or of [**`action.yaml`**](create-use/create-content/yaml-files/action-yaml.md).
+
+---
+
+### **Problem: plugin/action `'{slug}'` has undergone significant changes that may impact compatibility. Detail: "The new version needs to be a major version because an input condition has been edited."**
+
+This error occurs when publishing [**input conditions**](create-use/create-content/yaml-files/inputs.md#condition) in the following scenarios:
+
+- Change   
+- Removal    
+- Addition of [**variable**](create-use/create-content/yaml-files/inputs.md#condition), [**operator**](create-use/create-content/yaml-files/inputs.md#condition) or [**value**](/create-use/create-content/yaml-files/inputs.md#value). 
+
+
+See the following example where the condition operator has been changed from **`==`** to **`!=`**:
+
+- **`.yaml`** file in a previous version:
+
+```yaml
+spec:
+ type: python
+ docs:
+   pt-br: docs/pt-br.md
+ inputs:
+   - label: Qual versão do Java deseja usar?
+     type: text
+     name: java_version
+     items:
+       - test
+       - test
+     condition:
+       variable: language
+       operator: "=="
+       value: Java
+```
+
+- **`.yaml`** file in an updated version:
+
+```yaml
+spec:
+ type: python
+ docs:
+   pt-br: docs/pt-br.md
+ inputs:
+   - label: Qual versão do Java deseja usar?
+     type: text
+     name: java_version
+     items:
+       - test
+       - test
+     condition:
+       variable: language
+// new-line-start       
+       operator: "!="
+// new-line-end       
+       value: Java
+```
+
+### **Solution**  
+
+Publish a new [**Major version**](create-use/create-content/plugin/plugin-version.md) of [**`plugin.yaml`**](create-use/create-content/yaml-files/plugin-yaml.md) or of [**`action.yaml`**](create-use/create-content/yaml-files/action-yaml.md).
+
+
+---
+
+### **Problem: plugin/action `'{slug}'` has undergone significant changes that may impact  compatibility. Detail: "The new version needs to be a major version because the app_allowed field has been changed."**
+
+The error occurs in scenarios where the [**Application of Infrastructure Plugins in Applications**](create-use/create-content/plugin/plugin-requirements.md#allow-the-infrastructure-plugin-to-be-applied-in-applications) permission is changed.
+
+See the following example where `app allowed` has been changed from **`false`** to **`true`**:
+
+
+- **`.yaml`** file in a previous version:
+
+```yaml
+spec:
+ type: infra
+// old-start 
+ app-allowed: false
+// old-end 
+```
+
+- **`.yaml`** file in an updated version:
+
+```yaml
+spec:
+ type: infra
+// new-line-start 
+ app-allowed: true
+// new-line-end 
+```
+
+### **Solution**  
+
+Publish a new [**Major version**](create-use/create-content/plugin/plugin-version.md) of [**`plugin.yaml`**](create-use/create-content/yaml-files/plugin-yaml.md).
+
+---
+
+### **Problem: plugin/action `'{slug}'` has undergone significant changes that may impact compatibility. Detail: "The version published needs to be a major version, an input connection interface type has been edited"**
+
+This error occurs when the [**required-connection-type-input**](create-use/create-content/yaml-files/inputs.md#required-connection-type-input) is changed. 
+
+See the following example where the Connection Interface Type input has been changed from **`dns_conn`** to **`eks_conn`**
+
+- **`.yaml`** file in a previous version:
+
+```yaml
+spec:
+ type: python
+ docs:
+   pt-br: docs/pt-br.md
+ inputs:
+   - type: object
+     name: firewall_rule
+     label: Informe o CIDR/Porta da regra de firewall
+// old-start     
+     connection-interface-type: dns_conn
+// old-end     
+```
+
+- **`.yaml`** file in an updated version:
+
+```yaml
+spec:
+ type: python
+ docs:
+   pt-br: docs/pt-br.md
+ inputs:
+   - type: object
+     name: firewall_rule
+     label: Informe o CIDR/Porta da regra de firewall
+// new-line-start     
+     connection-interface-type: eks_conn
+// new-line-end     
+```
+
+### **Solution**  
+
+Publish a new [**Major version**](create-use/create-content/plugin/plugin-version.md) of [**`plugin.yaml`**](create-use/create-content/yaml-files/plugin-yaml.md) or of [**`action.yaml`**](create-use/create-content/yaml-files/action-yaml.md).
+
+
+---
+
+### **Problem: Error during deployment to a new environment for an Infrastructure or Application previously deployed in another environment with an associated Stack version**
+
+This error occurs when the associated Stack version is archived.
+
+### **Solution**
+
+To deploy in this situation, you first need to **update the Stack version**.
+
+**Step 1.** Access your Application's code (**`stk.yaml`**);
+
+**Step 2.** Run the command [**`stk update plugin`**](home/stk-cli/commands/plugin-commands.md#stk-update-plugin), specifying the new Stack version. See the example below:
+
+```bash
+stk update plugin studio/stack@4.0.0/plugin
+```
+
+- `studio`: Studio where the Stack was published.
+- `stack@4.0.0`: new Stack version.
+- `plugin`: Plugin associated with the Stack.
+
+<br/>
+
+Check an example of the update in **`stk.yaml`**:
+
+```yaml
+- name:
+   stack@v4/plugin@version
+```
+
+> You must run the **`stk update plugin`** command for each Stack Plugin referenced in the **`stk.yaml`**.
+
+

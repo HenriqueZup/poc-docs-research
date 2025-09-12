@@ -1,0 +1,80 @@
+---
+title: Executar Action em Aplicação e Infraestrutura
+description: Como executar Actions.
+---
+
+## **Contexto**
+
+Quando você criar uma [**Aplicação**](create-use/use-content/application/index.mdx) ou uma [**Infraestrutura**](deployment/runtime-engine/deploy-infra.mdx), você pode executar as Actions que foram configuradas nos [**contextos**](/home/account/organization/configure-context-account.mdx) da sua Conta e Workspace.
+
+As Actions podem ser executadas no momento do deploy, ou depois, quando o deploy da Aplicação já aconteceu e já tem recursos criados como, por exemplo, um Dynanmo DB.
+
+As Actions **executam alguma ação nos recursos provisionados** pelos [**Plugins de Infra**](create-use/create-content/plugin/create-plugin.mdx). Por exemplo, você pode utilizar uma Action para fazer um backup em um Dynamo DB que foi gerado por uma aplicação.
+
+## **Executar Actions**
+
+Siga os passos:
+
+:::warning Atenção!
+
+Os passos a seguir são os mesmos para executar Actions em Infraestrutura. Exceto o **Passo 1**, porque você precisar entrar na seção **'Infraestrutura'** do Workspace e não em **'Aplicações'**.
+
+:::
+
+> Os passos a seguir são feitos no [**Portal da StackSpot**](https://app.stackspot.com/login).
+
+**Passo 1.** Acesse o seu Workspace e clique na em **'Aplicações'**;
+
+**Passo 2.** Uma lista de Aplicações aparece na tela, selecione em qual você deseja executar as Actions;
+
+**Passo 3.** Logo depois do nome do Workspace, você encontra um campo com o título **'Ambientes*'**. Clique no botão com a seta para baixo e a lista de ambientes aparece. Selecione qual você irá executar as Actions na sua Aplicação;
+
+Depois disso, existem duas opções:
+
+**Opção 1.** Acessar diretamente pela seção de **'Actions'**
+
+**Opção 2.** Acessar pela seção de Plugins.
+
+Confira os passos para as duas:
+
+### Opção 1. Executar Actions por meio da seção **'Actions'**
+
+**Passo 1.** Clique em **'Actions'** dentro do menu principal da Aplicação. Aqui, você encontra os Plugins de Infra da Aplicação com a lista de Actions que podem ser executadas.
+
+**Passo 2.**  Escolha uma Action e clique no botão **'Run'**.;
+> Dentro de cada Action, você encontra o nome dela, a descrição e as Connections Interfaces vinculadas aos recursos que você deseja executar a ação.
+
+**Passo 3.** Preencha a lista de parâmetros da Action e clique no botão **'Próximo'** para começar a executar a ação.
+
+> Os parâmetros são os inputs das Actions e podem já ter sido configurados no contexto do Workspace e, com isso, ser mandatório ou não. Se for mandatório, você não pode alterá-los.
+
+**Passo 4.** Na tela de Review, confira as informações e clique no botão **'Run'**.  
+
+**Passo 5.** Você será redirecionado para o status da execução da Action e suas respostas. Confira se falhou, ou não.
+
+Pronto, você acabou de executar uma Action na sua Aplicação ou Infraestrutura.
+
+### Opção 2. Executar Actions por meio da seção de **'Plugins'**
+
+> Os passos a seguir são feitos no [**Portal da StackSpot**](https://app.stackspot.com/login).
+
+**Passo 1.** Clique em **'Plugins'** dentro do menu lateral da Aplicação;
+
+**Passo 2.** Clique em **'App Infra'**;
+
+**Passo 3.** Selecione o Plugin de Infra que você quer executar a Action. Por exemplo, RDS Postgrees.
+
+**Passo 4.** Dentro do Plugin, selecione a aba **'Actions'**;
+
+**Passo 5.** A lista de Actions que podem ser executas aparece, escolha uma Action e clique no botão **'Executar'**.;
+
+> Dentro de cada Action, você encontra o nome dela, sua descrição, as Connections Interfaces vinculadas ao recursos que você deseja executar a ação.
+
+**Passo 6.** Preencha a lista de parâmetros da Action e clique no botão **'Próximo'** para começar a executar a ação.
+> Os parâmetros são os inputs das Actions e podem já ter sido configurados no contexto do Workspace e, com isso, ser mandatório ou não. Se for mandatório, você não pode alterá-los.
+
+**Passo 7.** Na tela de Review, confira as informações e clique no botão **'Run'**.  
+
+**Passo 8.** Você será redirecionado para o status da execução da Action e suas respostas. Confira se falhou, ou não.
+
+Pronto, você executou uma Action na sua Aplicação ou Infraestrutura.
