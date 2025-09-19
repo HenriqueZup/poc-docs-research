@@ -1,3 +1,4 @@
+"use client";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
@@ -10,7 +11,7 @@ interface MarkdownRendererProps {
 
 export const MarkdownRenderer = ({ content, className }: MarkdownRendererProps) => {
   return (
-    <div className={cn("prose prose-sm max-w-none dark:prose-invert", className)}>
+    <div className={cn("prose prose-sm max-w-none prose-fd", className)}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight]}
@@ -21,7 +22,7 @@ export const MarkdownRenderer = ({ content, className }: MarkdownRendererProps) 
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-ai-primary hover:text-ai-accent transition-colors underline underline-offset-2"
+              className="text-fd-primary hover:text-fd-primary/80 transition-colors underline underline-offset-2"
               {...props}
             >
               {children}
@@ -32,14 +33,14 @@ export const MarkdownRenderer = ({ content, className }: MarkdownRendererProps) 
             <img
               src={src}
               alt={alt}
-              className="rounded-lg shadow-sm max-w-full h-auto"
+              className="rounded-lg shadow-sm max-w-full h-auto border border-fd-border"
               loading="lazy"
               {...props}
             />
           ),
           // Customize code blocks
           pre: ({ children, ...props }) => (
-            <pre className="bg-search-input border border-search-border rounded-lg p-4 overflow-x-auto" {...props}>
+            <pre className="bg-fd-card border border-fd-border rounded-lg p-4 overflow-x-auto" {...props}>
               {children}
             </pre>
           ),
@@ -47,8 +48,8 @@ export const MarkdownRenderer = ({ content, className }: MarkdownRendererProps) 
           code: ({ children, className, ...props }) => (
             <code
               className={cn(
-                "bg-search-input px-1.5 py-0.5 rounded text-sm font-mono",
-                !className && "text-foreground",
+                "bg-fd-muted px-1.5 py-0.5 rounded text-sm font-mono",
+                !className && "text-fd-foreground",
                 className
               )}
               {...props}
@@ -58,23 +59,23 @@ export const MarkdownRenderer = ({ content, className }: MarkdownRendererProps) 
           ),
           // Customize headings
           h1: ({ children, ...props }) => (
-            <h1 className="text-xl font-semibold text-foreground mb-3" {...props}>
+            <h1 className="text-xl font-semibold text-fd-foreground mb-3" {...props}>
               {children}
             </h1>
           ),
           h2: ({ children, ...props }) => (
-            <h2 className="text-lg font-semibold text-foreground mb-2" {...props}>
+            <h2 className="text-lg font-semibold text-fd-foreground mb-2" {...props}>
               {children}
             </h2>
           ),
           h3: ({ children, ...props }) => (
-            <h3 className="text-base font-semibold text-foreground mb-2" {...props}>
+            <h3 className="text-base font-semibold text-fd-foreground mb-2" {...props}>
               {children}
             </h3>
           ),
           // Customize paragraphs
           p: ({ children, ...props }) => (
-            <p className="text-foreground mb-3 leading-relaxed" {...props}>
+            <p className="text-fd-foreground mb-3 leading-relaxed" {...props}>
               {children}
             </p>
           ),
@@ -90,15 +91,38 @@ export const MarkdownRenderer = ({ content, className }: MarkdownRendererProps) 
             </ol>
           ),
           li: ({ children, ...props }) => (
-            <li className="text-foreground" {...props}>
+            <li className="text-fd-foreground" {...props}>
               {children}
             </li>
           ),
           // Customize blockquotes
           blockquote: ({ children, ...props }) => (
-            <blockquote className="border-l-4 border-ai-primary pl-4 italic text-search-muted mb-3" {...props}>
+            <blockquote className="border-l-4 border-fd-primary pl-4 italic text-fd-muted-foreground mb-3" {...props}>
               {children}
             </blockquote>
+          ),
+          // Customize tables
+          table: ({ children, ...props }) => (
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse border border-fd-border rounded-lg" {...props}>
+                {children}
+              </table>
+            </div>
+          ),
+          thead: ({ children, ...props }) => (
+            <thead className="bg-fd-muted" {...props}>
+              {children}
+            </thead>
+          ),
+          th: ({ children, ...props }) => (
+            <th className="border border-fd-border px-3 py-2 text-left font-medium text-fd-foreground" {...props}>
+              {children}
+            </th>
+          ),
+          td: ({ children, ...props }) => (
+            <td className="border border-fd-border px-3 py-2 text-fd-foreground" {...props}>
+              {children}
+            </td>
           ),
         }}
       >
@@ -107,3 +131,4 @@ export const MarkdownRenderer = ({ content, className }: MarkdownRendererProps) 
     </div>
   );
 };
+

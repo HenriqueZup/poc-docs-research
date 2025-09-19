@@ -1,11 +1,10 @@
+"use client";
 import { useState, useEffect } from 'react';
 import { X, Command } from 'lucide-react';
-import { Dialog, DialogContent, DialogOverlay } from '@/components/ui/dialog';
 import { SearchToggle } from './SearchToggle';
 import { SearchResults } from './SearchResults';
 import { ChatInterface } from './ChatInterface';
-import { Button } from '@/components/ui/button';
-import { cn } from 'lib/utils';
+import { cn } from '@/lib/utils';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -74,25 +73,26 @@ export const SearchModal = ({
     onClose();
   };
 
+  if (!isOpen) return null;
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogOverlay className="fixed inset-0 bg-black/50 backdrop-blur-md z-50 animate-backdrop-in data-[state=closed]:animate-backdrop-out" />
-      <DialogContent
-        className={cn(
-          "fixed top-[10%] left-1/2 -translate-x-1/2 w-full max-w-2xl max-h-[80vh] bg-search border border-search-border rounded-xl shadow-modal z-50",
-          "animate-modal-in data-[state=closed]:animate-modal-out",
-          "focus:outline-none"
-        )}
-        onPointerDownOutside={onClose}
-      >
+    <>
+      {/* Backdrop */}
+      <div 
+        className="fixed inset-0 bg-fd-background/80 backdrop-blur-sm z-50 animate-in fade-in-0 duration-300"
+        onClick={onClose}
+      />
+      
+      {/* Modal */}
+      <div className="fixed top-[10%] left-1/2 -translate-x-1/2 w-full max-w-2xl max-h-[80vh] bg-fd-background border border-fd-border rounded-xl shadow-lg z-50 animate-in fade-in-0 slide-in-from-top-4 duration-300">
         <div className="flex flex-col h-full max-h-[80vh]">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-search-border" data-modal-header>
+          <div className="flex items-center justify-between p-4 border-b border-fd-border" data-modal-header>
             <div className="flex items-center gap-3">
-              <div className="w-6 h-6 bg-gradient-search rounded-md flex items-center justify-center">
-                <Command className="w-4 h-4 text-ai-primary" />
+              <div className="w-6 h-6 bg-fd-primary/10 rounded-md flex items-center justify-center">
+                <Command className="w-4 h-4 text-fd-primary" />
               </div>
-              <h2 className="font-medium text-foreground">
+              <h2 className="font-medium text-fd-foreground">
                 {mode === 'search' ? 'Search Documentation' : 'Ask StackSpot'}
               </h2>
             </div>
@@ -103,14 +103,12 @@ export const SearchModal = ({
                 onModeChange={setMode}
                 className="flex-shrink-0"
               />
-              <Button
+              <button
                 onClick={onClose}
-                variant="ghost"
-                size="sm"
-                className="w-8 h-8 p-0 text-search-muted hover:text-foreground hover:bg-search-hover"
+                className="w-8 h-8 p-0 text-fd-muted-foreground hover:text-fd-foreground hover:bg-fd-accent rounded-md transition-colors ml-2"
               >
                 <X className="w-4 h-4" />
-              </Button>
+              </button>
             </div>
           </div>
 
@@ -119,13 +117,13 @@ export const SearchModal = ({
             {mode === 'search' ? (
               <div className="flex flex-col h-full">
                 {/* Search Input */}
-                <div className="p-4 border-b border-search-border">
+                <div className="p-4 border-b border-fd-border">
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder={searchPlaceholder}
-                    className="w-full px-4 py-3 rounded-lg border border-search-border bg-search-input text-foreground placeholder-search-muted focus:outline-none focus:ring-2 focus:ring-ai-primary focus:border-transparent text-sm"
+                    className="w-full px-4 py-3 rounded-lg border border-fd-border bg-fd-background text-fd-foreground placeholder-fd-muted-foreground focus:outline-none focus:ring-2 focus:ring-fd-primary focus:border-transparent text-sm"
                     autoFocus
                   />
                 </div>
@@ -149,29 +147,29 @@ export const SearchModal = ({
           </div>
 
           {/* Footer */}
-          <div className="px-4 py-3 border-t border-search-border bg-search-input/50">
-            <div className="flex items-center justify-between text-xs text-search-muted">
+          <div className="px-4 py-3 border-t border-fd-border bg-fd-muted/50">
+            <div className="flex items-center justify-between text-xs text-fd-muted-foreground">
               <div className="flex items-center gap-4">
-                <span>Press <kbd className="px-1.5 py-0.5 bg-search-border rounded text-xs">Esc</kbd> to close</span>
+                <span>Press <kbd className="px-1.5 py-0.5 bg-fd-muted rounded text-xs">Esc</kbd> to close</span>
                 <div className="hidden sm:flex items-center gap-1">
-                  <kbd className="px-1.5 py-0.5 bg-search-border rounded text-xs">Ctrl+1</kbd> 
+                  <kbd className="px-1.5 py-0.5 bg-fd-muted rounded text-xs">Ctrl+1</kbd> 
                   <span className="text-xs">Search</span>
                   <span className="mx-1">•</span>
-                  <kbd className="px-1.5 py-0.5 bg-search-border rounded text-xs">Ctrl+2</kbd> 
+                  <kbd className="px-1.5 py-0.5 bg-fd-muted rounded text-xs">Ctrl+2</kbd> 
                   <span className="text-xs">Chat</span>
                 </div>
                 {mode === 'search' && (
-                  <span>Press <kbd className="px-1.5 py-0.5 bg-search-border rounded text-xs">Enter</kbd> to search</span>
+                  <span>Press <kbd className="px-1.5 py-0.5 bg-fd-muted rounded text-xs">Enter</kbd> to search</span>
                 )}
               </div>
               <div className="flex items-center gap-1 text-xs">
                 <span>Powered by</span>
-                <span className="font-medium text-ai-primary">Fumadocs</span>
+                <span className="font-medium text-fd-primary">Fumadocs</span>
               </div>
             </div>
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </>
   );
 };

@@ -1,5 +1,6 @@
+"use client";
 import { Search, Bot } from 'lucide-react';
-import { cn } from 'lib/utils';
+import { cn } from '@/lib/utils';
 
 interface SearchToggleProps {
   mode: 'search' | 'chat';
@@ -23,7 +24,7 @@ export const SearchToggle = ({ mode, onModeChange, className, size = 'md' }: Sea
 
   return (
     <div className={cn(
-      "flex bg-search-input rounded-lg border border-search-border transition-all duration-200 hover:border-ai-primary/50",
+      "flex bg-fd-muted rounded-lg border border-fd-border transition-all duration-200 hover:border-fd-primary/50",
       sizeClasses[size],
       className
     )}>
@@ -33,8 +34,8 @@ export const SearchToggle = ({ mode, onModeChange, className, size = 'md' }: Sea
           "flex items-center gap-2 rounded-md font-medium transition-all duration-200",
           buttonSizeClasses[size],
           mode === 'search'
-            ? "bg-background text-foreground shadow-sm ring-1 ring-search-border"
-            : "text-search-muted hover:text-foreground hover:bg-search-hover"
+            ? "bg-fd-background text-fd-foreground shadow-sm ring-1 ring-fd-border"
+            : "text-fd-muted-foreground hover:text-fd-foreground hover:bg-fd-accent"
         )}
         title="Search documentation (Ctrl+1)"
       >
@@ -49,8 +50,8 @@ export const SearchToggle = ({ mode, onModeChange, className, size = 'md' }: Sea
           "flex items-center gap-2 rounded-md font-medium transition-all duration-200",
           buttonSizeClasses[size],
           mode === 'chat'
-            ? "bg-background text-foreground shadow-sm ring-1 ring-search-border"
-            : "text-search-muted hover:text-foreground hover:bg-search-hover"
+            ? "bg-fd-background text-fd-foreground shadow-sm ring-1 ring-fd-border"
+            : "text-fd-muted-foreground hover:text-fd-foreground hover:bg-fd-accent"
         )}
         title="Ask StackSpot AI (Ctrl+2)"
       >

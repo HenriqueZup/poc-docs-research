@@ -1,8 +1,8 @@
+"use client";
 import { useState, useEffect } from 'react';
 import { Search, Bot, Command, Zap } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { SearchModal } from './SearchModal';
-import { cn } from 'lib/utils';
+import { cn } from '@/lib/utils';
 
 interface QuickSwitchButtonsProps {
   className?: string;
@@ -72,44 +72,45 @@ export const QuickSwitchButtons = ({
         className
       )}>
         {/* Search Button */}
-        <Button
+        <button
           onClick={openSearch}
-          variant="outline"
           className={cn(
-            "group hover:border-search-accent hover:shadow-search transition-all duration-200",
+            "group inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+            "border border-fd-border bg-fd-background hover:bg-fd-accent hover:text-fd-accent-foreground",
             buttonSizes[size]
           )}
         >
-          <Search className={cn(iconSizes[size], "text-search-accent group-hover:scale-110 transition-transform")} />
+          <Search className={cn(iconSizes[size], "text-fd-primary group-hover:scale-110 transition-transform")} />
           {showLabels && <span className="ml-2">Search Docs</span>}
           <div className="ml-auto hidden sm:flex items-center gap-1 opacity-60">
-            <kbd className="px-1 py-0.5 bg-muted rounded text-xs">
+            <kbd className="px-1 py-0.5 bg-fd-muted rounded text-xs">
               <Command className="w-2 h-2" />
             </kbd>
-            <kbd className="px-1 py-0.5 bg-muted rounded text-xs">K</kbd>
+            <kbd className="px-1 py-0.5 bg-fd-muted rounded text-xs">K</kbd>
           </div>
-        </Button>
+        </button>
 
         {/* AI Chat Button */}
-        <Button
+        <button
           onClick={openChat}
           className={cn(
-            "group bg-gradient-ai border border-ai-primary/20 hover:border-ai-primary hover:shadow-ai transition-all duration-200",
+            "group inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+            "bg-fd-primary text-fd-primary-foreground hover:bg-fd-primary/90",
             buttonSizes[size]
           )}
         >
           <div className="relative">
-            <Bot className={cn(iconSizes[size], "text-ai-primary group-hover:scale-110 transition-transform")} />
-            <Zap className="w-2 h-2 text-ai-accent absolute -top-1 -right-1 group-hover:animate-pulse" />
+            <Bot className={cn(iconSizes[size], "text-fd-primary-foreground group-hover:scale-110 transition-transform")} />
+            <Zap className="w-2 h-2 text-fd-primary-foreground absolute -top-1 -right-1 group-hover:animate-pulse" />
           </div>
-          {showLabels && <span className="ml-2 text-foreground">Ask StackSpot</span>}
+          {showLabels && <span className="ml-2">Ask StackSpot</span>}
           <div className="ml-auto hidden sm:flex items-center gap-1 opacity-60">
-            <kbd className="px-1 py-0.5 bg-background/20 rounded text-xs">
+            <kbd className="px-1 py-0.5 bg-fd-primary-foreground/20 rounded text-xs">
               <Command className="w-2 h-2" />
             </kbd>
-            <kbd className="px-1 py-0.5 bg-background/20 rounded text-xs">J</kbd>
+            <kbd className="px-1 py-0.5 bg-fd-primary-foreground/20 rounded text-xs">J</kbd>
           </div>
-        </Button>
+        </button>
       </div>
 
       <SearchModal
@@ -122,3 +123,4 @@ export const QuickSwitchButtons = ({
     </>
   );
 };
+

@@ -1,6 +1,6 @@
+"use client";
 import { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { MarkdownRenderer } from './MarkdownRenderer';
 import { cn } from '@/lib/utils';
 
@@ -119,34 +119,34 @@ Would you like me to elaborate on any specific aspect?`,
     return (
       <div id="center-chat">
         <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-          <div className="w-12 h-12 bg-gradient-ai rounded-full flex items-center justify-center mb-4 animate-pulse">
-            <Bot className="w-6 h-6 text-ai-primary" />
+          <div className="w-12 h-12 bg-fd-primary/10 rounded-full flex items-center justify-center mb-4 animate-pulse">
+            <Bot className="w-6 h-6 text-fd-primary" />
           </div>
-          <h3 className="text-lg font-semibold text-foreground mb-2">
+          <h3 className="text-lg font-semibold text-fd-foreground mb-2">
             Hi! I'm an AI assistant trained on documentation.
           </h3>
-          <p className="text-search-muted mb-6 max-w-md">
+          <p className="text-fd-muted-foreground mb-6 max-w-md">
             I can help with technical questions, code examples, and finding specific information in the docs.
           </p>
           
-            <div className="bg-ai-secondary/50 border border-ai-primary/20 rounded-lg p-3 mb-6 max-w-md">
-              <p className="text-xs text-ai-primary font-medium mb-1">💡 Quick Switch</p>
-              <p className="text-xs text-search-muted">
-                Use <kbd className="px-1 py-0.5 bg-search-border rounded text-xs">Ctrl+1</kbd> for Search or 
-                <kbd className="px-1 py-0.5 bg-search-border rounded text-xs ml-1">Ctrl+2</kbd> for Chat to switch modes quickly!
-              </p>
-            </div>
+          <div className="bg-fd-secondary/50 border border-fd-border rounded-lg p-3 mb-6 max-w-md">
+            <p className="text-xs text-fd-primary font-medium mb-1">💡 Quick Switch</p>
+            <p className="text-xs text-fd-muted-foreground">
+              Use <kbd className="px-1 py-0.5 bg-fd-muted rounded text-xs">Ctrl+1</kbd> for Search or 
+              <kbd className="px-1 py-0.5 bg-fd-muted rounded text-xs ml-1">Ctrl+2</kbd> for Chat to switch modes quickly!
+            </p>
+          </div>
           
           <div className="space-y-3 w-full max-w-md">
-            <p className="text-sm font-medium text-foreground mb-3">EXAMPLE QUESTIONS</p>
+            <p className="text-sm font-medium text-fd-foreground mb-3">EXAMPLE QUESTIONS</p>
             {EXAMPLE_PROMPTS.slice(0, 3).map((prompt, index) => (
               <button
                 key={index}
                 onClick={() => handleExampleClick(prompt)}
-                className="w-full text-left p-3 rounded-lg border border-search-border hover:border-ai-primary hover:bg-search-hover transition-all duration-200 text-sm text-foreground group"
+                className="w-full text-left p-3 rounded-lg border border-fd-border hover:border-fd-primary hover:bg-fd-accent transition-all duration-200 text-sm text-fd-foreground group"
               >
                 <div className="flex items-start gap-2">
-                  <Bot className="w-4 h-4 text-ai-primary mt-0.5 group-hover:scale-110 transition-transform" />
+                  <Bot className="w-4 h-4 text-fd-primary mt-0.5 group-hover:scale-110 transition-transform" />
                   <span>{prompt}</span>
                 </div>
               </button>
@@ -154,7 +154,7 @@ Would you like me to elaborate on any specific aspect?`,
           </div>
         </div>
 
-        <div className="border-t border-search-border p-4">
+        <div className="border-t border-fd-border p-4">
           <div className="flex gap-2">
             <div className="flex-1 relative">
               <input
@@ -164,16 +164,15 @@ Would you like me to elaborate on any specific aspect?`,
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                 placeholder={placeholder}
-                className="w-full px-4 py-3 pr-12 rounded-lg border border-search-border bg-search-input text-foreground placeholder-search-muted focus:outline-none focus:ring-2 focus:ring-ai-primary focus:border-transparent"
+                className="w-full px-4 py-3 pr-12 rounded-lg border border-fd-border bg-fd-background text-fd-foreground placeholder-fd-muted-foreground focus:outline-none focus:ring-2 focus:ring-fd-primary focus:border-transparent"
               />
-              <Button
+              <button
                 onClick={() => handleSend()}
                 disabled={!input.trim() || isLoading}
-                size="sm"
-                className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 p-0 bg-ai-primary hover:bg-ai-accent"
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 p-0 bg-fd-primary hover:bg-fd-primary/90 text-fd-primary-foreground rounded-md disabled:opacity-50 disabled:pointer-events-none transition-colors"
               >
                 <Send className="w-4 h-4" />
-              </Button>
+              </button>
             </div>
           </div>
         </div>
@@ -188,13 +187,13 @@ Would you like me to elaborate on any specific aspect?`,
           <div
             key={message.id}
             className={cn(
-              "flex gap-3 animate-slide-up",
+              "flex gap-3 animate-in slide-in-from-bottom-2 duration-300",
               message.type === 'user' ? 'justify-end' : 'justify-start'
             )}
           >
             {message.type === 'assistant' && (
-              <div className="w-8 h-8 bg-gradient-ai rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                <Bot className="w-4 h-4 text-ai-primary" />
+              <div className="w-8 h-8 bg-fd-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                <Bot className="w-4 h-4 text-fd-primary" />
               </div>
             )}
             
@@ -202,8 +201,8 @@ Would you like me to elaborate on any specific aspect?`,
               className={cn(
                 "max-w-[80%] rounded-lg p-4",
                 message.type === 'user'
-                  ? "bg-ai-primary text-white"
-                  : "bg-search-input border border-search-border"
+                  ? "bg-fd-primary text-fd-primary-foreground"
+                  : "bg-fd-card border border-fd-border"
               )}
             >
               {message.type === 'assistant' ? (
@@ -214,20 +213,20 @@ Would you like me to elaborate on any specific aspect?`,
             </div>
 
             {message.type === 'user' && (
-              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                <User className="w-4 h-4 text-primary-foreground" />
+              <div className="w-8 h-8 bg-fd-primary rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                <User className="w-4 h-4 text-fd-primary-foreground" />
               </div>
             )}
           </div>
         ))}
         
         {isLoading && (
-          <div className="flex gap-3 animate-slide-up">
-            <div className="w-8 h-8 bg-gradient-ai rounded-full flex items-center justify-center flex-shrink-0">
-              <Bot className="w-4 h-4 text-ai-primary" />
+          <div className="flex gap-3 animate-in slide-in-from-bottom-2 duration-300">
+            <div className="w-8 h-8 bg-fd-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+              <Bot className="w-4 h-4 text-fd-primary" />
             </div>
-            <div className="bg-search-input border border-search-border rounded-lg p-4">
-              <div className="flex items-center gap-2 text-search-muted">
+            <div className="bg-fd-card border border-fd-border rounded-lg p-4">
+              <div className="flex items-center gap-2 text-fd-muted-foreground">
                 <Loader2 className="w-4 h-4 animate-spin" />
                 <span className="text-sm">Thinking...</span>
               </div>
@@ -237,7 +236,7 @@ Would you like me to elaborate on any specific aspect?`,
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="border-t border-search-border p-4">
+      <div className="border-t border-fd-border p-4">
         <div className="flex gap-2">
           <div className="flex-1 relative">
             <input
@@ -247,19 +246,19 @@ Would you like me to elaborate on any specific aspect?`,
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
               placeholder={placeholder}
-              className="w-full px-4 py-3 pr-12 rounded-lg border border-search-border bg-search-input text-foreground placeholder-search-muted focus:outline-none focus:ring-2 focus:ring-ai-primary focus:border-transparent"
+              className="w-full px-4 py-3 pr-12 rounded-lg border border-fd-border bg-fd-background text-fd-foreground placeholder-fd-muted-foreground focus:outline-none focus:ring-2 focus:ring-fd-primary focus:border-transparent"
             />
-            <Button
+            <button
               onClick={() => handleSend()}
               disabled={!input.trim() || isLoading}
-              size="sm"
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 p-0 bg-ai-primary hover:bg-ai-accent"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 p-0 bg-fd-primary hover:bg-fd-primary/90 text-fd-primary-foreground rounded-md disabled:opacity-50 disabled:pointer-events-none transition-colors"
             >
               {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-            </Button>
+            </button>
           </div>
         </div>
       </div>
     </div>
   );
 };
+

@@ -87,52 +87,7 @@ export default function HomePage() {
             </div>
           </section>
 
-          {/* Demo Section */}
-          <section className="mt-16 p-8 rounded-xl bg-gradient-ai border border-search-border">
-            <h3 className="text-xl font-semibold text-foreground mb-4">Try the Search Component</h3>
-            <p className="text-search-muted mb-6">
-              This is a fully functional search component with AI chat integration, designed for Fumadocs. 
-              Click any button below or use keyboard shortcuts to test both modes.
-            </p>
-            
-            {/* Multiple ways to interact */}
-            <div className="space-y-6">
-              {/* Quick Switch Buttons */}
-              <div className="flex flex-col items-center gap-4">
-                <p className="text-sm font-medium text-foreground">Quick Mode Switch Buttons:</p>
-                <QuickSwitchButtons size="lg" />
-              </div>
-              
-              {/* Traditional Search Triggers */}
-              <div className="flex flex-col items-center gap-4">
-                <p className="text-sm font-medium text-foreground">Traditional Search Bars:</p>
-                <div className="flex flex-wrap gap-4 justify-center">
-                  <SearchTrigger 
-                    variant="compact"
-                    placeholder="Search documentation..."
-                    className="w-64"
-                  />
-                  <SearchTrigger 
-                    variant="compact"
-                    placeholder="Ask StackSpot..."
-                    initialMode="chat"
-                    className="w-64"
-                  />
-                </div>
-              </div>
-              
-              {/* Keyboard shortcuts info */}
-              <div className="text-center pt-4 border-t border-search-border/50">
-                <p className="text-xs text-search-muted mb-2">Keyboard Shortcuts:</p>
-                <div className="flex justify-center gap-4 text-xs flex-wrap">
-                  <span><kbd className="px-2 py-1 bg-search-border rounded">Cmd+K</kbd> Open Search</span>
-                  <span><kbd className="px-2 py-1 bg-search-border rounded">Cmd+J</kbd> Open Chat</span>
-                  <span><kbd className="px-2 py-1 bg-search-border rounded">Ctrl+1</kbd> Switch to Search</span>
-                  <span><kbd className="px-2 py-1 bg-search-border rounded">Ctrl+2</kbd> Switch to Chat</span>
-                </div>
-              </div>
-            </div>
-          </section>
+         
         </div>
       </main>
 

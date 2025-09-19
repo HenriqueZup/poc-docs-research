@@ -1,8 +1,8 @@
+"use client";
 import { useState, useEffect } from 'react';
 import { Search, Command } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { SearchModal } from './SearchModal';
-import { cn } from 'lib/utils';
+import { cn } from '@/lib/utils';
 
 interface SearchTriggerProps {
   variant?: 'default' | 'compact' | 'icon';
@@ -52,14 +52,16 @@ export const SearchTrigger = ({
   if (variant === 'icon') {
     return (
       <>
-        <Button
+        <button
           onClick={openModal}
-          variant="ghost"
-          size="sm"
-          className={cn("w-9 h-9 p-0", className)}
+          className={cn(
+            "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+            "hover:bg-fd-accent hover:text-fd-accent-foreground h-9 w-9",
+            className
+          )}
         >
           <Search className="w-4 h-4" />
-        </Button>
+        </button>
         
         <SearchModal
           isOpen={isModalOpen}
@@ -75,22 +77,25 @@ export const SearchTrigger = ({
   if (variant === 'compact') {
     return (
       <>
-        <Button
+        <button
           onClick={openModal}
-          variant="outline"
-          className={cn("justify-start gap-2 text-search-muted", className)}
+          className={cn(
+            "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+            "border border-fd-border bg-fd-background hover:bg-fd-accent hover:text-fd-accent-foreground h-10 px-4 py-2 justify-start text-fd-muted-foreground",
+            className
+          )}
         >
           <Search className="w-4 h-4" />
           <span className="hidden sm:inline">{placeholder}</span>
           {showShortcut && (
             <div className="ml-auto hidden sm:flex items-center gap-1">
-              <kbd className="px-1.5 py-0.5 bg-search-border rounded text-xs">
+              <kbd className="px-1.5 py-0.5 bg-fd-muted rounded text-xs">
                 <Command className="w-3 h-3" />
               </kbd>
-              <kbd className="px-1.5 py-0.5 bg-search-border rounded text-xs">K</kbd>
+              <kbd className="px-1.5 py-0.5 bg-fd-muted rounded text-xs">K</kbd>
             </div>
           )}
-        </Button>
+        </button>
         
         <SearchModal
           isOpen={isModalOpen}
@@ -108,20 +113,20 @@ export const SearchTrigger = ({
       <button
         onClick={openModal}
         className={cn(
-          "flex items-center gap-3 w-full max-w-md px-4 py-3 rounded-lg border border-search-border bg-search-input hover:bg-search-hover transition-colors text-left group",
+          "flex items-center gap-3 w-full max-w-md px-4 py-3 rounded-lg border border-fd-border bg-fd-background hover:bg-fd-accent transition-colors text-left group",
           className
         )}
       >
-        <Search className="w-4 h-4 text-search-muted group-hover:text-foreground" />
-        <span className="text-search-muted group-hover:text-foreground text-sm flex-1">
+        <Search className="w-4 h-4 text-fd-muted-foreground group-hover:text-fd-foreground" />
+        <span className="text-fd-muted-foreground group-hover:text-fd-foreground text-sm flex-1">
           {placeholder}
         </span>
         {showShortcut && (
           <div className="flex items-center gap-1 opacity-60">
-            <kbd className="px-1.5 py-0.5 bg-search-border rounded text-xs">
+            <kbd className="px-1.5 py-0.5 bg-fd-muted rounded text-xs">
               <Command className="w-3 h-3" />
             </kbd>
-            <kbd className="px-1.5 py-0.5 bg-search-border rounded text-xs">K</kbd>
+            <kbd className="px-1.5 py-0.5 bg-fd-muted rounded text-xs">K</kbd>
           </div>
         )}
       </button>

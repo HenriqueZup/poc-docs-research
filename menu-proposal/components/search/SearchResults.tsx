@@ -1,6 +1,7 @@
+"use client";
 import { useState, useEffect } from 'react';
 import { Search, FileText, ExternalLink, Loader2 } from 'lucide-react';
-import { cn } from 'lib/utils';
+import { cn } from '@/lib/utils';
 
 interface SearchResult {
   id: string;
@@ -107,7 +108,7 @@ export const SearchResults = ({ query, isVisible, onResultClick }: SearchResults
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-8">
-        <div className="flex items-center gap-2 text-search-muted">
+        <div className="flex items-center gap-2 text-fd-muted-foreground">
           <Loader2 className="w-4 h-4 animate-spin" />
           <span className="text-sm">Searching...</span>
         </div>
@@ -118,8 +119,8 @@ export const SearchResults = ({ query, isVisible, onResultClick }: SearchResults
   if (!query.trim()) {
     return (
       <div className="text-center py-8">
-        <Search className="w-8 h-8 text-search-muted mx-auto mb-3" />
-        <p className="text-search-muted text-sm">Start typing to search the documentation</p>
+        <Search className="w-8 h-8 text-fd-muted-foreground mx-auto mb-3" />
+        <p className="text-fd-muted-foreground text-sm">Start typing to search the documentation</p>
       </div>
     );
   }
@@ -127,16 +128,16 @@ export const SearchResults = ({ query, isVisible, onResultClick }: SearchResults
   if (results.length === 0) {
     return (
       <div className="text-center py-8">
-        <Search className="w-8 h-8 text-search-muted mx-auto mb-3" />
-        <p className="text-foreground font-medium mb-1">No results found</p>
-        <p className="text-search-muted text-sm">Try adjusting your search terms</p>
+        <Search className="w-8 h-8 text-fd-muted-foreground mx-auto mb-3" />
+        <p className="text-fd-foreground font-medium mb-1">No results found</p>
+        <p className="text-fd-muted-foreground text-sm">Try adjusting your search terms</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-2">
-      <p className="text-xs text-search-muted px-2 mb-3">
+      <p className="text-xs text-fd-muted-foreground px-2 mb-3">
         Found {results.length} result{results.length !== 1 ? 's' : ''} for "{query}"
       </p>
       
@@ -145,33 +146,33 @@ export const SearchResults = ({ query, isVisible, onResultClick }: SearchResults
           key={result.id}
           onClick={() => onResultClick?.(result)}
           className={cn(
-            "w-full text-left p-4 rounded-lg border border-search-border hover:border-ai-primary hover:bg-search-hover transition-all duration-200 group animate-slide-up",
-            "focus:outline-none focus:ring-2 focus:ring-ai-primary focus:border-transparent"
+            "w-full text-left p-4 rounded-lg border border-fd-border hover:border-fd-primary hover:bg-fd-accent transition-all duration-200 group animate-in slide-in-from-bottom-2",
+            "focus:outline-none focus:ring-2 focus:ring-fd-primary focus:border-transparent"
           )}
           style={{ animationDelay: `${index * 50}ms` }}
         >
           <div className="flex items-start gap-3">
-            <div className="w-8 h-8 bg-search-input rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-ai-primary/10">
-              <FileText className="w-4 h-4 text-search-muted group-hover:text-ai-primary" />
+            <div className="w-8 h-8 bg-fd-muted rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-fd-primary/10">
+              <FileText className="w-4 h-4 text-fd-muted-foreground group-hover:text-fd-primary" />
             </div>
             
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <h3 className="font-medium text-foreground text-sm group-hover:text-ai-primary transition-colors">
+                <h3 className="font-medium text-fd-foreground text-sm group-hover:text-fd-primary transition-colors">
                   {result.title}
                 </h3>
                 {result.section && (
-                  <span className="px-2 py-0.5 bg-search-input text-xs text-search-muted rounded">
+                  <span className="px-2 py-0.5 bg-fd-muted text-xs text-fd-muted-foreground rounded">
                     {result.section}
                   </span>
                 )}
               </div>
               
-              <p className="text-xs text-search-muted mb-2 line-clamp-2">
+              <p className="text-xs text-fd-muted-foreground mb-2 line-clamp-2">
                 {result.description}
               </p>
               
-              <div className="flex items-center gap-1 text-xs text-search-muted">
+              <div className="flex items-center gap-1 text-xs text-fd-muted-foreground">
                 <span>{result.url}</span>
                 <ExternalLink className="w-3 h-3" />
               </div>
