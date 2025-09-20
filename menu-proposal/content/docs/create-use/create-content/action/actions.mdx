@@ -216,37 +216,7 @@ A estrutura de uma Action é gerada pelo STK CLI, com o comando [**`stk create a
 
 Para testar, [**execute em seu terminal o comando `stk create action` para criar**](create-use/create-content/action/run-action.mdx) cada um dos tipos de Actions e confira a estrutura gerada por cada um.
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 
-<Tabs>
-<TabItem value="shell" label="Action do tipo shell" default>
-
-```bash
-stk create action shell-action --type shell
-```
-
-```bash
-~ ➜  shell-action  
-└── action.yaml  
-```
-
-</TabItem>
-
-<TabItem value="python" label="Action do tipo python">
-
-```bash
-stk create action python-action --type python
-```
-
-```bash
-~ ➜  python-action  
-├── action.yaml  
-└── script.py  
-```
-
-</TabItem>
-</Tabs>
 
 ### **Metadados da Action (arquivo `action.yaml`**)
 
@@ -281,8 +251,7 @@ spec:
 
 As Actions possuem em sua estrutura quatro atributos principais que são obrigatórios para todas as Actions além dos atributos comuns:
 
-<Tabs>
-<TabItem value="principais" label="Principais Atributos da Action" default>
+
 
 ```yaml title="Início de um arquivo action.yaml"
 // new-line-start
@@ -308,9 +277,6 @@ spec:
   - **`version`**: Versão da Action;
   - **`picture` (Opcional)**: Imagem exibida no Portal para representar a Action publicada.
 
-</TabItem>
-
-<TabItem value="opcionais" label="Atributos comuns da especificação da Action">
 
 ```yaml title="Especificações comuns do arquivo action.yaml"
 # ... other action attributes ...
@@ -357,9 +323,6 @@ Quando você for **criar uma Action para associá-la a um Plugin de Infra**, voc
 - **inputs (Opcional)**: Define os inputs de entrada da Action. São permitidos os mesmos inputs dos Plugins;
 - **repository (Opcional)**: Endereço do repositório Git onde o código fonte da Action está hospedado para exibição no Portal.
 
-</TabItem>
-
-</Tabs>
 
 ## **Próximos Passos**  
 

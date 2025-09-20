@@ -3,11 +3,12 @@ title: Usar Actions
 description: Como criar e executar uma Action.
 ---
 
+
 ## **Criar uma Action**
 
 Você pode criar Actions pelo [**CLI da StackSpot (STK CLI)**](home/stk-cli/index.mdx). Por padrão, toda Action possui um escopo **local** e só pode ser executada pelo STK CLI, mas você também pode configurar a Action em sua Conta e executá-la remotamente.
 
-<!-- Para mais informações sobre como executar uma Action remotamente, acesse a página de **Actions remotas*. -->
+
 Para criar a estrutura inicial da sua Action, execute o comando [**`stk create action`**](home/stk-cli/commands/action-commands.mdx#stk-create-action). Confira o exemplo:
 
 ```bash title="A estrutura da Action 'my-action-name' será criada"
@@ -20,7 +21,6 @@ Após executar o comando acima, responda algumas perguntas no terminal:
     - python
     - shell
 
-<!-- Quando sair, adicionar: `- container; - webservice` -->
 
 Você pode informar o tipo da Action pelo terminal com a opção **`--type`**.
 
@@ -116,7 +116,6 @@ Exemplo com Workspace Ativo:
 stk run action my-studio-name/my-stack-name/my-action-name
 ```
 
-<!-- Confira como executar **Actions remotamente**. -->
 
 :::warning Atenção!
 Confira se a Equipe em que você está ainda pertence ao Estúdio em que a Action foi adicionada. Caso a Equipe em que você está for deletada do Estúdio, não será possível fazer nenhuma ação nele.

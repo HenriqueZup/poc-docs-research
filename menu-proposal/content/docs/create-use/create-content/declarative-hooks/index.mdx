@@ -30,24 +30,7 @@ Você pode executar as ações definidas nos Hooks Declarativos:
 
 Confira a seguir o **Ciclo de renderização de Templates e Plugins**:
 
-import useBaseUrl from '@docusaurus/useBaseUrl';
-import ThemedImage from '@theme/ThemedImage';
 
-<ThemedImage
-  alt="A imagem descreve a sequência em que a renderização dos templates JINJA ocorrem nos Plugins. As etapas na imagem são os passos enumerados do 1 ao 8. 
-  Passo 1. O arquivo de configuração (**`plugin.yaml`**) é carregado;
-  Passo 2. São executados os Hooks com trigger **`before-input`**;
-  Passo 3. Os inputs definidos na configuração são perguntados para o usuário;
-  Passo 4. São calculados os **`computed-inputs`**;
-  Passo 5. São executados os Hooks com trigger **`before-render`**;
-  Passo 6. São renderizados os templates Jinja contidos na pasta **`templates`** do Plugin;
-  Passo 7. São executados os Hooks com trigger **`after-render`**.
-  Passo 8. Merge de arquivos caso existam no destino."
-  sources={{
-    light: useBaseUrl('/img/diagrams/hook-exec-flow-PT-Light.png'),
-    dark: useBaseUrl('/img/diagrams/hook-exec-flow-PT-Dark.png'),
-  }}
-/>
 
 :::warning Atenção!
 
@@ -184,6 +167,3 @@ Você deve usar aspas duplas para os seguintes operadores:  `"=="`, `"!="`, `">"
 [**edit-yaml**](create-use/create-content/declarative-hooks/edit-yaml.mdx) | Definem alterações feitas em arquivos YAML existentes.
 [**render-templates**](create-use/create-content/declarative-hooks/render-templates.mdx) | Executam a geração condicional de arquivos.
 [**code-transformation**](create-use/create-content/declarative-hooks/code-transformation/about-code-transformation.mdx) | Permite inserir, remover e modificar qualquer código fonte.
-
-
-<DocCardList />

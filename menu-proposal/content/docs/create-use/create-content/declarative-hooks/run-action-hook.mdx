@@ -122,55 +122,6 @@ Exemplo:
 
 O exemplo de Action a seguir tem um input marcado com um destaque vermelho. Na aba ao lado "**Exemplo do run-action em um Plugin**", você pode ver o mesmo input no preenchido no trecho do Hook Declarativo **`run-action`**:
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
-<Tabs>
-<TabItem value="action" label="Exemplo de Action" default>
-
-```yaml
-schema-version: v3
-kind: action
-metadata:
-  name: my-python-action
-  display-name: my-python-action
-spec:
-  type: python
-  docs:
-    pt-br: docs/pt-br/docs.mdx
-    en-us: docs/en-us/docs.mdx
-  requires:
-    actions:
-      - my-studio/my-stack@1.0.0/my-python-action
-  inputs:
-    - label: Who are you?
-// old-line    
-      name: user_name
-      type: text
-      required: false
-      pattern: '([A-Z][a-z]+)+'
-      help: 'Inform your name'
-  python:
-    workdir: .
-    script: script.py
-```
-</TabItem>
-
-<TabItem value="hook" label="Exemplo do run-action em um Plugin">
-
-```yaml
-# ***Outros campos do Plugin acima!***
-hooks:
-  - type: run-action
-    trigger: after-render
-    name: my-studio/my-stack@1.0.0/my-python-action
-    inputs:
-// new-line    
-      user_name: User with {{ resource }}
-```
-
-</TabItem>
-</Tabs>
 
 :::tip Dica!
 
@@ -204,8 +155,7 @@ Caso sua Action tenha Connections requeridas, informe o alias da Connection e o 
 
 Exemplo:
 
-<Tabs>
-<TabItem value="action-conn" label="Exemplo de Action com input required-connection" default>
+
 
 ```yaml
 schema-version: v3
@@ -239,9 +189,6 @@ spec:
     workdir: .
     script: script.py
 ```
-</TabItem>
-
-<TabItem value="connections" label="Exemplo do run-action com Connections">
 
 ```yaml
 # ***Outros campos do Plugin acima!***
@@ -259,5 +206,3 @@ hooks:
 // new-line-end        
 ```
 
-</TabItem>
-</Tabs>

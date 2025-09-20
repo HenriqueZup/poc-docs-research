@@ -17,21 +17,6 @@ Quando você cria um Plugin com o comando **`stk create plugin`**, dentro dos ar
 
 Essa estrutura começa com o diretório chamado **`/tests`** (uma pasta chamada `/tests`) e outros arquivos, confira que tanto para Plugins de App, quanto para Plugins de Infra: 
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
-<Tabs groupId="test-plugin">
-  <TabItem value="app" label="Plugin de Aplicação" default>
-  
-  <img src="/img/test-plugin-mode-app.png" alt="Captura de tela do Visual Studio Code mostrando a estrutura de pastas de um Plugin de Aplicação. As pastas e arquivos visíveis são: docs (contendo subpastas en-us e pt-br com arquivos .mdx), templates (contendo arquivos de template), e o arquivo plugin.yaml na raiz." title="Plugin mode app" width="500px"/>
-
-  </TabItem>
-  <TabItem value="deploy" label="Plugin de infraestrutura">
-  
-  <img src="/img/test-plugin-mode-deploy.png" alt="Infrastructure Plugin type folder" title="Plugin mode deploy" width="500px"/>
-
-  </TabItem>
-</Tabs>
 
 ### **Pastas utilizadas nos testes**
 
@@ -60,8 +45,6 @@ Cada caso de teste possui um manifesto no formato **`.yaml`** chamado **`test-ca
 
 Confira:
 
-<Tabs groupId="test-plugin">
-<TabItem value="app" label="Caso de teste de Aplicação" default>
 
   
 ```yaml title="test-case.yaml modo 'apply'"
@@ -76,8 +59,6 @@ spec:
 // new-line-end    
 ```
 
-</TabItem>
-<TabItem value="deploy" label="Caso de teste de Infraestrutura">
 
 
 ```yaml title="test-case.yaml modo 'deploy'"
@@ -93,8 +74,6 @@ spec:
 // new-line-end    
 ```
 
-</TabItem>
-</Tabs>
 
 ### **Campos do arquivo test-case.yaml**
 
@@ -150,8 +129,6 @@ Dentro da pasta do seu Plugin:
 
 - Crie o arquivo **`test-case.yaml`** e cole o conteúdo em seu arquivo de test:
 
-<Tabs>
-<TabItem value="app-plugin" label="Para Plugins de Aplicação" default>
 
 
 ```yaml title="test-case.yaml content"
@@ -165,8 +142,6 @@ spec:
   inputs-envs: {}
 ```
 
-</TabItem>
-<TabItem value="infra-plugin" label="Para Plugins de Infraestrutura">
 
 
 ```yaml title="test-case.yaml content"
@@ -182,8 +157,6 @@ spec:
   inputs-envs: {}
 ```
 
-</TabItem>
-</Tabs>
 
 4. Crie as pastas **expected** e **target**.
 
@@ -292,8 +265,6 @@ inputs-envs:
     production: "input-env production value"
 ```
 
-<Tabs>
-<TabItem value="apply-env" label="Plugin no modo 'apply'" default>
 
 ```yaml title="./test-case-apply/test-case.yaml"
 schema-version: v2
@@ -314,8 +285,6 @@ spec:
 // new-line-end      
 ```
 
-</TabItem>
-<TabItem value="deploy-env-dev" label="Plugin no modo 'deploy' e ambiente 'development'">
 
 ```yaml title="./test-case-deploy-dev/test-case.yaml"
 schema-version: v2
@@ -335,8 +304,6 @@ spec:
 // new-line-end        
 ```
 
-</TabItem>
-<TabItem value="deploy-env-prod" label="Plugin no modo 'deploy' e ambiente 'production'">
 
 ```yaml title="./deploy-env-prod/test-case.yaml"
 schema-version: v2
@@ -356,15 +323,11 @@ spec:
 // new-line-end      
 ```
 
-</TabItem>
-</Tabs>
 
 #### **Preencher `requires` e `generates` Connections**
 
 Se o seu Plugin gerar ou requerer Connections, você deve adicioná-las ao caso de teste. Considere os exemplos:
 
-<Tabs groupId="connections">
-<TabItem value="s3-req" label="Plugin que requer uma Connection" default>
 
 ```yaml title="Plugin de Infraestrutura que requer um bucket s3"
 schema-version: v3
@@ -401,9 +364,6 @@ spec:
   stk-projects-only: false  
 ```
 
-</TabItem>
-
-<TabItem value="s3-gen" label="Plugin que gera uma Connection">
 
 ```yaml title="Plugin de Infraestrutura que gera um bucket s3"
 schema-version: v3
@@ -440,13 +400,10 @@ spec:
 // old-end   
 ```
 
-</TabItem>
-</Tabs>
 
 O arquivo de teste preenchido deve ser como um dos exemplos, onde a sintaxe das Connections devem ser:
 
-<Tabs groupId="connections">
-<TabItem value="s3-req" label="Requires Connection no modo 'apply'" default>
+
 
 
 ```yaml
@@ -477,9 +434,7 @@ spec:
   inputs-envs: {} 
 ```
 
-</TabItem>
 
-<TabItem value="requires-deploy" label="Requires Connection no modo 'deploy'">
 
 
 ```yaml
@@ -510,9 +465,6 @@ spec:
   inputs-envs: {} 
 ```
 
-</TabItem>
-
-<TabItem value="s3-gen" label="Generates Connection no modo 'apply'" default>
 
 ```yaml
 inputs:
@@ -542,9 +494,7 @@ spec:
   inputs-envs: {}
 ```
 
-</TabItem>
 
-<TabItem value="generates-deploy" label="Generates Connection no modo 'deploy'">
 
 
 ```yaml
@@ -575,8 +525,6 @@ spec:
   inputs-envs: {}
 ```
 
-</TabItem>
-</Tabs>
 
 #### **Preencher outputs com listas e objetos**
 
@@ -640,7 +588,6 @@ Execute o comando:
 stk test plugin 
 ```
 
-<AsciinemaPlayer src="/videos/stk-test-plugin1.cast" autoplay="1" loop="1" />
 
 ### **Executar um teste específico do Plugin**
 
@@ -650,7 +597,6 @@ Execute o comando de teste informando o nome da pasta do teste:
 stk test plugin [test-case-name]
 ```
 
-<AsciinemaPlayer src="/videos/stk-test-plugin2.cast" autoplay="1" loop="1" />
 
 ### **Executar testes com o filtro '--mode'**
 
@@ -660,7 +606,6 @@ Você pode executar os testes com a opção **`--mode`** para filtrar os testes 
 stk test plugin --mode deploy/apply
 ```
 
-<AsciinemaPlayer src="/videos/stk-test-plugin3.cast" autoplay="1" loop="1" />
 
 ## **Cenários de erros e testes ignorados**
 
@@ -738,10 +683,4 @@ Clique nos itens para abrir o conteúdo:
 
 <br/>
 
-import CustomDocCard from '@site/src/components/MdxComponents/CustomDocCard';
-import CustomDocCardList from '@site/src/components/MdxComponents/CustomDocCardList';
 
-<CustomDocCardList>
-  <CustomDocCard title="Crie o seu Estúdio" description="Confira o guia para criar um Estúdio." link="/create-use/studio/create-studio.mdx" />
-  <CustomDocCard title="Publique o seu Plugin" description="Confira o passo a passo para publicar um Plugin em seu Estúdio." link="/create-use/create-content/plugin/publish-plugin.mdx" />
-</CustomDocCardList>

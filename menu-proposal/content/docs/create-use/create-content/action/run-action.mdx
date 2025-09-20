@@ -33,10 +33,6 @@ Você pode criar Actions pelo [**CLI da StackSpot (STK CLI)**](home/stk-cli/inde
 
 #### **Confira os passos**
 
-import ThemedImage from '@theme/ThemedImage';
-import useBaseUrl from '@docusaurus/useBaseUrl';
-
-<ThemedImage alt="Criar uma aplicação via o Portal da StackSpot." width="auto" sources={{ light: useBaseUrl('/img/diagrams/CRIARACTION-PT-light.png'), dark: useBaseUrl('img/diagrams/CRIARACTION-PT-dark.png'), }} />
 
 Para criar a estrutura inicial da sua Action, execute o comando [**`stk create action`**](home/stk-cli/commands/action-commands.mdx#stk-create-action) e responda no terminal as perguntas a seguir:
 
@@ -67,8 +63,7 @@ Quando você **criar uma Action para associá-la a um Plugin de Infra**, você p
 
 Acesse a pasta da Action que você acabou de criar e confira os arquivos que foram gerados:
 
-<Tabs groupId="action-folders">
-<TabItem value="python" label="Action do tipo Python" default>
+
 
 ```bash title="/my-python-action"
 /docs #required
@@ -77,8 +72,7 @@ action.yaml #required
 script.py # required
 ```
 
-</TabItem>
-<TabItem value="shell" label="Action do tipo Shell" >
+
 
 ```bash title="/my-shell-action"
 /docs #required
@@ -86,8 +80,7 @@ script.py # required
 action.yaml #required
 ```
 
-</TabItem>
-</Tabs>
+
 
 - Na pasta **`/templates`** você deve adicionar quaisquer arquivos ou scripts que possam ser executados ou complementares ao tipo da sua Action. 
 
@@ -101,8 +94,7 @@ action.yaml #required
 
 Após criar o seu Plugin, você terá um dos exemplos:
 
-<Tabs groupId="create-action">
-<TabItem value="python" label="Action do tipo Python" default>
+
 
 ```yaml
 schema-version: v3
@@ -134,8 +126,7 @@ spec:
 - **python.workdir**: Pasta onde a Action deve ser executada.
 - **python.script**: Caminho para o script Python que será executado.
 
-</TabItem>
-<TabItem value="shell" label="Action do tipo Shell">
+
 
 ```yaml
 schema-version: v3
@@ -185,8 +176,6 @@ spec:
   - **info**: Mensagem de erro exibida caso o comando executado retorne falha na verificação da dependência.
 - **shell.script**: Define os comandos que serão executados no shell do sistema operacional. Podem ser definidos comandos diferentes para cada sistema operacional suportado, os sistemas suportados são **Linux**, **MacOs** e **Windows**.
 
-</TabItem>
-</Tabs>
 
 ## **Passo 2. Editar a sua Action**
 
@@ -305,16 +294,12 @@ Você deve criar a pasta **templates** dentro da Action. Adicione quaisquer arqu
 
 ## **Conteúdo de templates e metadados da Action**
 
-<Tabs>
-  <TabItem value="templates" label="Arquivo da pasta templates" default>
 
   Arquivo de texto **`name-value.txt`** contém os valores que serão utilizados pela Action antes da sua execução.
 
   ```bash title="my-shell-action/templates/name-value.txt"
   Hello {{full_name}} !
   ```
-  </TabItem>
-  <TabItem value="yaml" label="Metadados da Action">
 
   ```yaml title="my-shell-action/action.yaml"
   schema-version: v3
@@ -343,8 +328,7 @@ Você deve criar a pasta **templates** dentro da Action. Adicione quaisquer arqu
       // new-line
         linux: cat {{component_path}}/name-value.txt
   ```
-  </TabItem>
-</Tabs>  
+
 
 O arquivo **`action.yaml`** contém os inputs que irão coletar os valores que serão interpolados no arquivo **`name-value.txt`** para serem utilizados na Action.
 
@@ -403,12 +387,3 @@ Se retornar algum erro, você precisa corrigi-los e executar a validação novam
 
 ## **Próximo passos**
 
-import CustomDocCard from '@site/src/components/MdxComponents/CustomDocCard';
-import CustomDocCardList from '@site/src/components/MdxComponents/CustomDocCardList';
-
-<CustomDocCardList>
-  <CustomDocCard title="Publicar sua Action em um Estúdio" description="Confira como publicar a sua Action em um Estúdio." link="/create-use/create-content/action/publish-action.mdx" />
-  <CustomDocCard title="Publicar uma Action com STK CLI" description="Confira os comandos para publicar uma action via STK CLI." link="/home/stk-cli/commands/action-commands.mdx" />
-  <CustomDocCard title="Associe Actions à Plugins de Infraestrutura" description="Confira como associar Actions à Plugins de Infra." link="/create-use/create-content/action/action-infra-plugin.mdx" />
-  <CustomDocCard title="Connection Interfaces" description="Confira mais detalhes sobre as Connections Interfaces." link="/create-use/connections/connection-interface.mdx" />
-</CustomDocCardList>

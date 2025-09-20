@@ -26,22 +26,12 @@ Uma Connection Interface é criada ao usar um Plugin de Infraestrutura que imple
 
 A instância de uma Connection Interface só é gerada após a aplicação de um Plugin e quando acontece o deploy de uma Infraestrutura ou Aplicação. Confira a imagem a seguir: 
 
-import ThemedImage from '@theme/ThemedImage';
-import useBaseUrl from '@docusaurus/useBaseUrl';
-
-<ThemedImage
-  alt="Funcionamento da Connection Interface. 1. Na sua conta, se possuir um Workspace com Ambientes configurados. 2. A Connection Interface Type fornece um contrato que gera a Connection Interface. A instância da Connection Interface é gerada baseada no Workspace e Ambientes da Conta. 3. O Connection Interface Type define um identificador para um conjunto de parâmetros que conectam uma Aplicação na Infraestrutura de cada ambiente"
-  sources={{
-    light: useBaseUrl('/img/post_1Diagrama-light1.png'),
-    dark: useBaseUrl('/img/post_1Diagrama-dark1.png'),
-  }}
-/>
 
 ### **Exemplo**
 
 Imagine que você tem um ECS Cluster Fargate provisionado na AWS. A forma como você irá utilizá-lo e como esse recurso está provisionado e configurado é chamada de Connection Interface. O nome dessa interface será ECS Cluster Fargate Conn.
 
----
+
 
 ## **Como criar uma Connection Interface manualmente no Workspace**
 

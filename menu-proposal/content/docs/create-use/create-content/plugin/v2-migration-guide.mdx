@@ -275,7 +275,7 @@ spec:
         url: http://www.stackspot.com
         type: static
 ```
-<!-- 
+
 **3.** O atributo **`spec.requires.connections[n].alias`** permite definir o nome da variável que contém a Connection Interface no template. Isso é útil para acessar essa Connection Interface.
 
 Confira o De/Para das versões:
@@ -328,61 +328,6 @@ spec:
       help: 'Inform the method of the endpoint (e.g.: post or delete)'
 ```
 
-#### **v2**
-
-```yaml
-// highlight-start  
-schema-version: v2
-// highlight-end 
-kind: plugin
-metadata:
-  name: lambda-new-endpoint 
-  display-name: Endpoint para Lambda  #required
-  description: Add new endpoint to an existing Lambda API. 
-  version: 1.0.0
-  picture: plugin.png
-spec:
-  type: app
-  compatibility:
-    - python
-  about: docs/about.mdx
-  implementation: docs/implementation.mdx
-  release-notes: docs/release-notes-1.0.0.mdx
-  requirements: docs/requirements.mdx
-  technologies: # Ref: https://docs.stackspot.com/create-use/create-content/yaml-files/plugin-yaml/#technologies
-    - Api
-// highlight-start
-  requires: 
-    connections:
-      - type: aws-api-gateway-conn
-        alias: alias-test
-      - type: aws-cloud-front-conn
-        alias: alias-test2
-      - type: aws-api-gateway-conn
-        alias: same-conn-alias-test1
-// highlight-end  
-  inputs:
-    - label: Type name of your resource
-      name: resource
-      type: text
-      required: true
-      default: Client
-      pattern: '([A-Z][a-z]+)+'
-      help: 'Inform your resource name (e.g.: Client)'
-    - label: Choose http method of new endpoint
-      name: method
-      type: text
-      items:
-        - GET
-        - POST
-        - PUT
-        - DELETE
-        - PATCH
-      default: GET
-      required: true
-      help: 'Inform the method of the endpoint (e.g.: post or delete)'
-```
--->
 
 ### **Plugins de Infraestrutura**
 
@@ -543,119 +488,6 @@ spec:
         type: static
 ```
 
-<!-- 
-### **Confira o De/Para**
-
-#### **De:**
-
-```yaml
-schema-version:v1 
-kind: plugin 
-metadata: 
-  name: lambda-new-endpoint 
-  description: Add new endpoint to an existing Lambda API.  
-  display-name: Endpoint para Lambda  
-  version: 1.0.0  
-  picture: plugin.png  
-spec: 
-  type: app   
-  compatibility: 
-    - python
-  about: docs/about.mdx  
-  usage: docs/usage.mdx  
-  implementation: docs/implementation.mdx  
-  requirements: docs/requirements.mdx     
-  repository: https://github.com/stack-spot/environments-runtime-stack  
-  technologies: 
-    - Api
-  release-notes: docs/release-notes-{{version}}.mdx 
-  requires: 
-    connection-interface: 
-      - lambda-conn             
-  inputs: 
-    - label: Type name of your resource 
-      name: resource 
-      type: text
-      required: true 
-      default: Client 
-      pattern: '([A-Z][a-z]+)+' 
-      help: 'Inform your resource name (e.g.: Client)' 
-    - label: Choose http method of new endpoint
-      name: method
-      type: select
-      items:
-        - GET
-        - POST
-        - PUT
-        - DELETE
-        - PATCH
-      default: GET
-      required: true
-      help: 'Inform the method of the endpoint (e.g.: post or delete)'
-```
-
-#### **Para:**
-
-> A diferença é a parte destacada.
-
-```yaml
-// highlight-start
-schema-version: v2
-// highlight-end  
-kind: plugin
-metadata:
-  name: new-test-infra
-  display-name: new-test-infra
-  description: teste plugin infra
-  version: 1.0.0
-  picture: plugin.png
-spec:
-  type: infra
-  compatibility:
-    - python
-  about: docs/about.mdx
-  implementation: docs/implementation.mdx
-  release-notes: docs/release-notes-1.0.0.mdx
-  requirements: docs/requirements.mdx
-  technologies: # Ref: https://docs.stackspot.com/create-use/create-content/yaml-files/plugin-yaml/#technologies
-    - Api
-  // highlight-start  
-  runtime:
-    environment:
-      - terraform-1-4
-      - aws-cli-2
-      - git-2
-  requires:
-    connections:
-      - type: aws-cloud-front-conn
-        alias: alias-1
-  generates:
-    connections:
-      - type: aws-api-gateway-conn
-        alias: alias-2
-// highlight-end  
-  inputs:
-    - label: Type name of your resource
-      name: resource
-      type: text
-      required: true 
-      default: Client
-      pattern: '([A-Z][a-z]+)+'
-      help: 'Inform your resource name (e.g.: Client)'
-    - label: Choose http method of new endpoint
-      name: method
-      type: text
-      items:
-        - GET
-        - POST
-        - PUT
-        - DELETE
-        - PATCH
-      default: GET
-      required: true
-      help: 'Inform the method of the endpoint (e.g.: post or delete)'
-```
--->
 ## **Usar Connection Interface**
 
 Na versão **`v1`** era necessário editar o seu arquivo Terraform seguindo uma sintaxe específica para que a Connection Interface pudesse acessar os outputs do seu Terraform.
@@ -742,41 +574,6 @@ spec:
         url: http://www.stackspot.com
         type: static
 ```
-<!-- 
-#### **De:**
-
-```bash
-output "aws-s3-conn__{{aws_s3_conn__CONNECTOR}}__arn" {   
-  value = module.s3-{{ inputs.app_name }}.bucket_arn}
-output "aws-s3-conn__{{aws_s3_conn__CONNECTOR}}__bucket_name" {    
-  value = "{{ bucket_name }}"}
-```
-
-#### **Para:**
-
-```bash
-resource "aws_s3_bucket" "aws-deploy-s3" {  
-  bucket = "{{bucket_name}}"}
-  output "aws-s3-gen-alias" {  
-    value       = aws_s3_bucket.aws-deploy-s3.arn }
-    output "aws-s3-gen-alias" {  
-      value       =  aws_s3_bucket.aws-deploy-s3.id}
-```
-
-Confira o YAML:
-
-```yaml
-generates:   
-  connections:     
-    - type: aws-s3-conn       
-      alias: aws-s3-gen-alias        
-      outputs:          
-        - from: aws-s3-gen-alias-arn            
-          to: arn          
-        - from: aws-s3-gen-alias-bucket_name            
-          to: bucket_name
-```
--->
 
 Para mais detalhes, confira a [**a seção para mapear outputs de uma Connection Interface com os outputs do seu arquivo Terraform**](create-use/create-content/plugin/create-plugin.mdx#mapear-outputs-de-um-arquivo-terraform).
 

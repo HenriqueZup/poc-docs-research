@@ -35,7 +35,7 @@ Cada caso de teste possui uma pasta **"expected"** que deve conter todos os arqu
 
 Cada caso de teste possui um manifesto no formato **`.yaml`** chamado **`test-case.yaml`**, que fornece informações para testar seu Starter.
 
-Confira o **`test-case.yaml`** de um Starter: <!-- Add in the snippet bellow: inputs-envs: {} -->
+Confira o **`test-case.yaml`** de um Starter: 
 
 ```yaml
 schema-version: v2
@@ -76,7 +76,7 @@ Refere-se às informações necessárias ao criar umm Aplicação ou Infraestrut
 
   - **inputs:** O nome e valor de cada input do Plugin.
 
-<!-- - **inputs-envs:** The name and value of each environment input of the Plugin.-->
+
 
 - **connections:** A lista de Connections Interfaces requeridas ou geradas pelo Plugin.
 
@@ -93,7 +93,7 @@ Dentro da sua **Stack**, na pasta **starters**:
 2. Dentro da pasta **tests**, crie a pasta com o nome do seu caso de teste, por exemplo, **"test-case-001"**;    
 3. Dentro do seu caso de teste:  
 - Crie o arquivo **`test-case.yaml`** e cole o conteúdo em seu arquivo de teste:
-<!-- Add in the snippet bellow: inputs-envs: {} -->
+
 ```yaml title="basic starter test scaffold"
 schema-version: v2
 kind: test
@@ -116,7 +116,7 @@ spec:
 ### **Preencher o teste do Starter**
 
 Com a estrutura de testes em seu Starter pronta, adicione os arquivos e preencha os inputs do seu Starter:
-<!-- #### **1. Fill in the inputs and inputs-envs** -->
+
 #### **Passo 1. Adicione os arquivos da Aplicação ou Infraestrutura no caso de teste**
 
 Na pasta **'/expected'**: Adicione nesta pasta uma cópia de todos os arquivos da sua Aplicação ou Infraestrutura, exceto os arquivos **infra-spec.yaml** e **app-spec.yaml**.
@@ -144,51 +144,7 @@ spec:
       required: true
 ```
 
-<!-- *-*-*- inputs-envs BACKUP -*-*-*
 
-Consider a Plugin of your Starter with the following **inputs** and **input-envs**:
-
-- The example below highlights the **`name:`** fields of the inputs and input-envs that you should add to the test case;
-- Also highlighted are the values you can test for the input-envs.
-
-```yaml
-spec:
-  # . 
-  # .
-  # . Other spec fields above...
-  inputs:
-    - label: Database name
-// old-line    
-      name: database_name
-      type: text
-      required: true
-  inputs-envs:
-    - label: Database Type
-// old-line    
-      name: database_type
-      type: select
-      required: true
-      items:
-// old-start    
-        - Relational
-        - Relational PROD
-        - Non-Relational
-// old-end        
-    - label: Database
-// old-line    
-      name: database
-      type: select
-      required: true
-      items:
-// old-start      
-        - MySQL
-        - PostgreSQL
-        - SQL Server
-        - MongoDB
-// old-end         
-```
-
--->
 
 O arquivo de teste preenchido deve se parecer com um dos exemplos, onde a sintaxe das entradas deve ser:
 
@@ -198,16 +154,7 @@ O arquivo de teste preenchido deve se parecer com um dos exemplos, onde a sintax
 inputs:
   input_name: "input value"
 ```
-<!-- *-*-*- inputs-envs BACKUP -*-*-*
-- **inputs-envs**
 
-```yaml
-inputs-envs:
-  input_name:
-    development: "input-env development value"
-    production: "input-env production value"
-```
--->
 Exemplo:
 
 ```yaml title="Este é um exemplo para demonstrar como preencher corretamente os inputs em seu caso de teste. Por favor, não use este exemplo para seus projetos."
@@ -227,34 +174,7 @@ spec:
 // new-line-end          
 ```
 
-<!-- ***inputs-envs BACKUP***
 
-```yaml title="This is an example to demonstrate how to correctly fill inputs and input-envs in your Starter test. Please do not use this example for your projects."
-schema-version: v1
-kind: test
-metadata: 
-  name: my-app
-  description: my-description
-spec:
-  type: starter
-  plugins:
-    - name: studio-slug/plugin-name
-      alias: example-plugin-alias
-// new-line-start      
-      inputs:
-        input_name: "input value"
-      inputs-envs:
-        input_name:
-          development: "input-env development value"
-          production: "input-env production value"
-// new-line-end          
-      requires:
-        connections: []
-      generates:
-        connections: []
-```
-
--->
 
 #### **Preencher `requires` e `generates` Connections**
 

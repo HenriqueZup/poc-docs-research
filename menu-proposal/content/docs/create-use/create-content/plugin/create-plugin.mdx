@@ -3,9 +3,6 @@ title: Criar Plugin
 description: Como criar, editar e validar Plugin e editar o arquivo plugin.yaml.
 ---
 
-import ThemedImage from '@theme/ThemedImage';
-import useBaseUrl from '@docusaurus/useBaseUrl';
-
 > Nesta seção, você encontra um guia de como criar Plugins de App e de Infra.
 
 ## **Pré-requisitos**
@@ -31,13 +28,11 @@ Você pode criar Plugins do tipo **'Aplicação' (app)** ou **'Infraestrutura' (
 
 ## **Criar Plugin de App**
 
-<ThemedImage alt="Diagrama mostrando os passos para criar e publicar um Plugin e Starter na StackSpot. Passo 1: Criar um Plugin de App. Passo 2: Editar o arquivo YAML do Plugin. Passo 3: Adicionar seus arquivos na pasta templates. Passo 4: Aplicar o Plugin para teste local. Passo 5: Publicar o Plugin. Passo 6: Criar ou acessar uma Stack. Passo 7: Adicionar Plugins à Stack. Passo 8: Criar um Starter" width="auto" sources={{ light: useBaseUrl('/img/diagrams/CRIARPLUGIN-APP-PT-Light.png'), dark: useBaseUrl('img/diagrams/CRIARPLUGIN-APP-PT-dark.png'), }} />
 
 <br/>
 
 ## **Criar Plugin de Infra**
 
-<ThemedImage alt="Diagrama mostrando os passos para criar e publicar um Plugin de Infraestrutura na StackSpot. Passo 1: Criar um Plugin de Infraestrutura. Passo 2: Editar o arquivo YAML do Plugin. Passo 3: Adicionar seus arquivos na pasta templates. Passo 4: Aplicar o Plugin para teste local. Passo 5: Publicar o Plugin. Passo 6: Criar ou acessar uma Stack. Passo 7: Adicionar Plugins à Stack. Passo 8: Criar um Starter" width="auto" sources={{ light: useBaseUrl('/img/diagrams/CRIAR-PLUGINNFRA-PT-light.png'), dark: useBaseUrl('img/diagrams/CRIAR-PLUGININFRA-PT-dark.png'), }} />
 
 Confira os detalhes:
 
@@ -73,8 +68,6 @@ Responda as perguntas no seu terminal:
 
 Acesse a pasta do Plugin que você acabou de criar e confira os arquivos que foram gerados:
 
-<Tabs groupId="plugin-folders">
-<TabItem value="app" label="Plugin de Aplicação" default>
 
 ```bash title="/application-plugin-type"
 /docs #required
@@ -83,8 +76,6 @@ Acesse a pasta do Plugin que você acabou de criar e confira os arquivos que for
 plugin.yaml #required
 ```
 
-</TabItem>
-<TabItem value="infra" label="Plugin de Infraestrutura" >
 
 ```bash title="/application-infrastructure-type"
 /docs #required
@@ -95,8 +86,6 @@ plugin.yaml #required
 plugin.yaml #required
 ```
 
-</TabItem>
-</Tabs>
 
 - No arquivo **`docs`** você consegue preencher a documentação para o seu Plugin;
 
@@ -119,8 +108,6 @@ Confira um [**guia de Markdown**](create-use/studio/documentation.mdx) com um te
 
 Após criar o seu Plugin, você terá um dos exemplos:
 
-<Tabs groupId="plugin-folders">
-<TabItem value="app" label="Plugin do tipo App" default>
 
 ```yaml
 schema-version: v3
@@ -162,9 +149,6 @@ spec:
       required: true
       help: 'Inform the method of the endpoint (e.g.: post or delete)'
 ```
-
-</TabItem>
-<TabItem value="infra" label="Plugin do tipo Infra">
 
 ```yaml
 schema-version: v3
@@ -211,9 +195,6 @@ spec:
       required: true
       help: 'Inform the method of the endpoint (e.g.: post or delete)'
 ```
-
-</TabItem>
-</Tabs>
 
 ## **Passo 3. Configurar/Editar o seu Plugin no plugin.yaml**
 
@@ -566,32 +547,6 @@ Seu Plugin está pronto!
 
 ## **Próximos passos**
 
-import CustomDocCard from '@site/src/components/MdxComponents/CustomDocCard';
-import CustomDocCardList from '@site/src/components/MdxComponents/CustomDocCardList';
-
-<CustomDocCardList>
-  <CustomDocCard title="Criar e executar testes de Plugins" description="Confira a seção de Testes de Plugins." link="/create-use/create-content/plugin/test-plugin.mdx" />
-  <CustomDocCard title="Criar Estúdio" description="Se você não possui um Estúdio, confira como criar um Estúdio para plublicar o seu conteúdo." link="/create-use/studio/create-studio.mdx" />
-  <CustomDocCard title="Editar um Plugin" description="Confira mais detalhes sobre como editar os seus Plugins." link="/create-use/create-content/plugin/edit-plugin.mdx" />
-</CustomDocCardList>
-
-<!-- 
-> Depois de criar um Plugin, se você quiser que o código dele vá para um determinado diretório, é preciso informar na [**Aplicação do Plugin**](home/stk-cli/commands/plugin-commands.mdx/#stk-apply-plugin), através do input, a pasta desejada. Confira um exemplo abaixo:
-
-```yaml
-inputs:
-  - label: Source folder
-    type: text
-    name: source_folder
-    default: event-producer
-```
--->
-
-<!-- 
-**Passo 3.** Abra a sua IDE e confira o arquivo de configuração do Plugin (arquivo **plugin.yaml**). Você pode ajustar o campo **schema-version** e os campos dentro de **spec** de acordo com o que você precisa.
-
-**Passo 4.** Clique em cada **arquivo .mdx** e confira mais detalhes de como preencher seu YAML. Confira dicas sobre markdown no arquivo **guia-markdown.mdx**. Este é um passo **opcional**.
-
 > Este arquivo é a documentação do seu Plugin que ficará disponível no Portal da StackSpot.
 
 Confira abaixo o exemplo de inputs de um Plugin que adiciona endpoints em uma API Lambda:
@@ -599,8 +554,7 @@ Confira abaixo o exemplo de inputs de um Plugin que adiciona endpoints em uma AP
 
 ## **Descrição dos campos do `plugin.yaml`**
 
-<Tabs groupId="plugin-fields-description">
-<TabItem value="v.2" label="v.2 (atual)" default>
+
 
 **Veja abaixo os campos Obrigatórios (Required):**
 
@@ -636,8 +590,7 @@ Confira abaixo o exemplo de inputs de um Plugin que adiciona endpoints em uma AP
 | `spec.env.inputs` | Alguns inputs podem ter o valor variado de acordo com o ambiente. Por exemplo, um valor em prd, outro em qa etc. Este campo especifica quais inputs têm esse comportamento e os preenche por ambiente. | String | - | - |
 | `spec.computed-inputs` | Cria inputs baseados em outros inputs. | String | - | - |
 
-</TabItem>
-<TabItem value="v.1" label="v.1">
+
 
 **Confira abaixo os campos Obrigatórios (Required):**
 
@@ -669,10 +622,6 @@ Confira abaixo o exemplo de inputs de um Plugin que adiciona endpoints em uma AP
 | `spec.inputs` | Coletam informações relevantes para o escopo do Plugin. Os inputs são interpretados pelo STK CLI durante a execução dos comandos para pedir essas informações para os usuários. | String | - | - |
 | `spec.env.inputs` | Alguns inputs podem ter o valor variado de acordo com o ambiente. Por exemplo, um valor em prd, outro em qa etc. Este campo especifica quais inputs têm esse comportamento e os preenche por ambiente. | String | - | - |
 | `spec.computed-inputs` | Cria inputs baseados em outros inputs. | String | - | - |
-
-</TabItem>
-</Tabs>
-
 
 
 Confira o exemplo a seguir, na linha **`58`** de um Plugin de Infraestrutura que usa a variável como expressão JINJA **`{{var.STK_ENV}}}`** para gerar [**Links Dinâmicos**](create-use/create-content/plugin/dynamic-links.mdx):
@@ -753,8 +702,6 @@ stk create plugin nome-do-plugin --type infra
 
 **Passo 3.** Abra a sua IDE e verifique a estrutura do Plugin de Infra. Confira um exemplo abaixo:
 
-<Tabs groupId="create-an-infra-plugin">
-<TabItem value="v.2" label="v.2 (atual)" default>
 
 ```yaml
 schema-version: v2 #required
@@ -803,8 +750,6 @@ spec: #required
       help: 'Inform your resource name (e.g.: Website)' #optional
 ```
 
-</TabItem>
-<TabItem value="v.1" label="v.1">
 
 ```yaml
 schema-version: v1 #optional
@@ -834,13 +779,6 @@ spec:
     connection-interface: lambda-conn
 ```
 
-  </TabItem>
-</Tabs>
-
--->
-
-
-<!-- 
 ### **Exemplo de outputs**
 
 
@@ -1002,4 +940,4 @@ spec:
             to: user
         // new-line-end 
 ```
--->
+

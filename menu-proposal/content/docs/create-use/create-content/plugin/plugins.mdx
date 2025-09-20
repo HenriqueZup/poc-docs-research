@@ -26,9 +26,6 @@ O Plugin do tipo App auxilia na escrita de uma Aplicação.
 
 ### **Estrutura do YAML**
 
-<Tabs>
-
-<TabItem value="v.3" label="v3 (versão atual)" default>
 
 ```yaml
 schema-version: v3 #required
@@ -82,9 +79,6 @@ spec:
       required: true
 ```
 
-</TabItem>
-
- <TabItem value="v.2" label="v2">
 
 ```yaml
 schema-version: v2 #required
@@ -134,8 +128,7 @@ spec:
       required: true
       help: 'Inform the method of the endpoint (e.g.: post or delete)'
 ```
-</TabItem>
-  <TabItem value="v.1" label="v1">
+
 
   ```yaml
 schema-version: v1 #optional #warning
@@ -159,8 +152,7 @@ spec: #required
   technologies: #optional 
     - Api  
 ```
-  </TabItem>
-</Tabs>
+
 
 ### **Plugin de Infraestrutura (Infra-plugin)**
 
@@ -170,9 +162,7 @@ O Plugin de Infra depende de um Plugin de Aplicação, já que ele é o respons�
 
 ### **Estrutura do YAML**
 
-<Tabs>
 
-<TabItem value="v.3" label="v3 (versão atual)" default>
 
 ```yaml
 schema-version: v3 #required
@@ -213,9 +203,6 @@ spec:
           to: gateway_id
 ```
 
-</TabItem>
-
- <TabItem value="v.2" label="v2">
 
 ```yaml
 schema-version: v2 #required
@@ -250,8 +237,7 @@ spec:
       - type: aws-api-gateway-conn
         alias: alias-2
 ```
-</TabItem>
-  <TabItem value="v.1" label="v1">
+
 
 ```yaml
 schema-version: v1 #required
@@ -280,8 +266,7 @@ spec:
   generates:
     connection-interface: lambda-conn
 ```
-  </TabItem>
-</Tabs>
+
 
 ## **Próximos Passos**
 
@@ -289,14 +274,3 @@ Para mais informações sobre Plugins, acesse os guias:
 
 <br/>
 
-import CustomDocCard from '@site/src/components/MdxComponents/CustomDocCard';
-import CustomDocCardList from '@site/src/components/MdxComponents/CustomDocCardList';
-
-<CustomDocCardList>
-  <CustomDocCard title="Como criar Plugin" description="Passos para criar o seu Plugin." link="/create-use/create-content/plugin/create-plugin.mdx" />
-  <CustomDocCard title="Aprenda a publicar seus Plugin" description="Confira como fazer a publicação do seu Plugin." link="/create-use/create-content/plugin/publish-plugin.mdx" />
-  <CustomDocCard title="Como migrar Plugin v1 para v2" description="Passos para fazer a migração da versão do schema do seu Plugin de v1 para v2." link="/create-use/create-content/plugin/v2-migration-guide.mdx" />
-  <CustomDocCard title="Como usar Jinja na StackSpot" description="Documentação sobre o uso de JINJA na StackSpot." link="/create-use/create-content/yaml-files/jinja.mdx" />
-  <CustomDocCard title="Como criar Plugin Localmente" description="Passos para criar e testar o seu Plugin localmente." link="/create-use/create-content/plugin/create-plugin-tutorial.mdx" />
-  <CustomDocCard title="Como Publicar Plugin via Pipeline" description="Passos para publicar o seu Plugin pela pipeline utilizando uma GitHub Action de publicação da StackSpot." link="/create-use/create-content/plugin/publish-workflow.mdx" />
-</CustomDocCardList>
