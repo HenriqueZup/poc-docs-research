@@ -9,7 +9,7 @@ const inter = Inter({
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <html lang="pt-BR">
+    <html lang="en">
       <head>
         <link rel='icon' href='/img/favicon.ico' type='image/svg+xml' />
       </head>
